@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.hundsun.demo.dubbo.common.api.config.DoneTimeAutoConfiguration,\
+com.hundsun.demo.dubbo.common.redis.config.RedissonClientAutoConfiguration,\
+com.hundsun.demo.dubbo.common.api.config.ResultAspectAutoConfiguration,\
+com.hundsun.demo.dubbo.common.curator.config.CuratorAutoConfiguration

@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.hundsun</groupId>
+    <artifactId>demo-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0.0-SNAPSHOT</version>
+
+
+    <!--springboot 父依赖-->
+    <!-- 定义了 Java 编译版本，如上为 1.6。-->
+    <!-- 使用 UTF-8 格式编码-->
+    <!-- maven源文件和目标文件编译的版本-->
+    <!-- 执行打包操作的配置-->
+    <!-- 自动化的资源过滤-->
+    <!-- 自动化的插件配置-->
+    <!-- 针对 application.properties 和 application.yml 的资源过滤，包括通过 profile 定义的不同环境的配置文件，例如 application-dev.properties 和 application-dev.yml-->
+    <!--仅仅针对单项目，实际环境往往都有自己parent项目，这个时候自己在parent项目中定义-->
+    <!--<parent>-->
+    <!--    <groupId>org.springframework.boot</groupId>-->
+    <!--    <artifactId>spring-boot-starter-parent</artifactId>-->
+    <!--    <version>2.2.6.RELEASE</version>-->
+    <!--</parent>-->
+
+
+    <properties>
+
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <spring.boot.dependencies.version>2.3.1.RELEASE</spring.boot.dependencies.version>
+
+        <!--spring-boot-dependencies 2.3.1.RELEASE 包含的依赖版本-->
+        <spring.boot.starter.web.version>2.3.1.RELEASE</spring.boot.starter.web.version>
+        <spring.boot.starter.test.version>2.3.1.RELEASE</spring.boot.starter.test.version>
+        <spring.boot.starter.log4j2.version>2.3.1.RELEASE</spring.boot.starter.log4j2.version>
+        <lombok.version>1.18.12</lombok.version>
+        <junit.version>4.12</junit.version>
+        <mysql.connector.java.version>8.0.19</mysql.connector.java.version>
+        <commons.lang3.version>3.9</commons.lang3.version>
+        <aspectjweaver.version>1.9.5</aspectjweaver.version>
+
+        <!--第三方依赖，版本不可控-->
+        <hutool.core.version>5.6.1</hutool.core.version>
+        <cglib.version>3.2.10</cglib.version>
+        <mybatis.generator.core.version>1.3.2</mybatis.generator.core.version>
+        <mapper.spring.boot.starter.version>2.1.5</mapper.spring.boot.starter.version>
+        <commons.io.version>2.6</commons.io.version>
+        <pagehelper.spring.boot.starter.version>1.3.0</pagehelper.spring.boot.starter.version>
+        <apache.poi.version>4.0.1</apache.poi.version>
+        <apache.poi.ooxml.version>4.1.2</apache.poi.ooxml.version>
+        <alibaba.fastjson.version>1.2.75</alibaba.fastjson.version>
+        <apache.curator.framework.version>4.2.0</apache.curator.framework.version>
+        <apache.curator.recipes.version>4.2.0</apache.curator.recipes.version>
+        <apache.curator.x.discovery>5.1.0</apache.curator.x.discovery>
+        <apache.dubbo.springboot.starter.version>3.0.6</apache.dubbo.springboot.starter.version>
+        <spring.boot.starter.data.redis>2.3.1.RELEASE</spring.boot.starter.data.redis>
+        <redisson.version>3.16.1</redisson.version>
+
+    </properties>
+
+
+    <dependencies>
+
+    </dependencies>
+
+    <dependencyManagement>
+
+        <dependencies>
+
+            <!--把springboot的依赖管理过来，版本可控了-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!--springboot-web 依赖-->
+            <!--spring-boot-start-logging依赖slf4j和logback-->
+            <!--Spring Boot 为 Spring MVC 提供了自动配置，并在 Spring MVC 默认功能的基础上添加了以下特性：-->
+            <!--引入了 ContentNegotiatingViewResolver 和 BeanNameViewResolver（视图解析器）-->
+            <!--对包括 WebJars 在内的静态资源的支持-->
+            <!--自动注册 Converter、GenericConverter 和 Formatter （转换器和格式化器）-->
+            <!--对 HttpMessageConverters 的支持（Spring MVC 中用于转换 HTTP 请求和响应的消息转换器）-->
+            <!--自动注册 MessageCodesResolver（用于定义错误代码生成规则）-->
+            <!--支持对静态首页（index.html）的访问-->
+            <!--自动使用 ConfigurableWebBindingInitializer-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>${spring.boot.starter.web.version}</version>
+                <exclusions>
+                    <!--排除logback日志，在下文导入log4j来作为项目的日志记录-->
+                    <!--当springboot自带的logback生效时，会无视log4j日志，log4j的配置同时也会失效 -->
+                    <exclusion>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!--redis-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-redis</artifactId>
+                <version>${spring.boot.starter.data.redis}</version>
+            </dependency>
+
+            <!--dubbo-->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-spring-boot-starter</artifactId>
+                <version>${apache.dubbo.springboot.starter.version}</version>
+            </dependency>
+
+            <!--Fastjson 是一个 Java 库，可以将 Java 对象转换为 JSON 格式，当然它也可以将 JSON 字符串转换为 Java 对象。-->
+            <!--Fastjson 可以操作任何 Java 对象，即使是一些预先存在的没有源码的对象。-->
+            <!--Fastjson 源码地址：https://github.com/alibaba/fastjson-->
+            <!--Fastjson 中文 Wiki：https://github.com/alibaba/fastjson/wiki/Quick-Start-CN-->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${alibaba.fastjson.version}</version>
+            </dependency>
+
+            <!--Curator是Netflix公司开源的一套zookeeper客户端框架，解决了很多Zookeeper客户端非常底层的细节开发工作，包括连接重连、反复注册Watcher和NodeExistsException异常等等。-->
+            <!--1.curator-framework对zookeeper的底层api的一些封装-->
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-framework</artifactId>
+                <version>${apache.curator.framework.version}</version>
+            </dependency>
+            <!--2.curator-recipes封装了一些高级特性，如：Cache事件监听、选举、分布式锁、分布式Barrier-->
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-recipes</artifactId>
+                <version>${apache.curator.recipes.version}</version>
+            </dependency>
+            <!--3.curator-x-discovery是一个服务发现的解决方案。-->
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-x-discovery</artifactId>
+                <version>${apache.curator.x.discovery}</version>
+            </dependency>
+
+
+            <!--poi工具包（apache用于处理文档的工具包）-->
+            <!--<dependency>-->
+            <!--    <groupId>org.apache.poi</groupId>-->
+            <!--    <artifactId>poi</artifactId>-->
+            <!--    <version>${apache.poi.version}</version>-->
+            <!--</dependency>-->
+            <!--用于 Microsoft Documents 的 Java API-->
+            <!--解决xlsx的文件(包含了org.apache.poi工具包)-->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${apache.poi.ooxml.version}</version>
+            </dependency>
+
+            <!--Apache Commons IO is a library of utilities to assist with developing IO functionality(用于帮助开发IO功能).-->
+            <!--官网：https://commons.apache.org/proper/commons-io/-->
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons.io.version}</version>
+            </dependency>
+
+
+            <!--MyBatis Generator （MBG） 是 MyBatis MyBatis 的代码生成器。-->
+            <dependency>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-core</artifactId>
+                <version>${mybatis.generator.core.version}</version>
+            </dependency>
+
+            <!-- 通用Mapper(包含了mybatis和mybatis spring两个包) -->
+            <!--https://mapperhelper.github.io/docs/-->
+            <dependency>
+                <groupId>tk.mybatis</groupId>
+                <artifactId>mapper-spring-boot-starter</artifactId>
+                <version>${mapper.spring.boot.starter.version}</version>
+            </dependency>
+
+            <!--Spring版本的PageHelper分页插件-->
+            <!--使用这个依赖，springboot会自动装配，不需要再配置文件配置也可以使用-->
+            <!--使用tkmybatis包含了mybatis和mybatis spring两个包，这里移除-->
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${pagehelper.spring.boot.starter.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>spring-boot-starter-logging</artifactId>
+                        <groupId>org.springframework.boot</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>mybatis-spring</artifactId>
+                        <groupId>org.mybatis</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>mybatis</artifactId>
+                        <groupId>org.mybatis</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!--Hutool是一个小而全的Java工具类库，通过静态方法封装，降低相关API的学习成本，提高工作效率，使Java拥有函数式语言般的优雅，让Java语言也可以“甜甜的”。-->
+            <!--https://gitee.com/dromara/hutool-->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-core</artifactId>
+                <version>${hutool.core.version}</version>
+            </dependency>
+
+            <!--CGLIB是一个强大的、高性能的代码生成库。其被广泛应用于AOP框架（Spring、dynaop）中，用以提供方法拦截操作。-->
+            <!--Hibernate作为一个比较受欢迎的ORM框架，同样使用CGLIB来代理单端（多对一和一对一）关联（延迟提取集合使用的另一种机制）。-->
+            <!--CGLIB作为一个开源项目，其代码托管在github，地址为：https://github.com/cglib/cglib-->
+            <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib</artifactId>
+                <version>${cglib.version}</version>
+            </dependency>
+
+            <!-- redisson -->
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson</artifactId>
+                <version>${redisson.version}</version>
+            </dependency>
+
+
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.2.6.RELEASE</version>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>
