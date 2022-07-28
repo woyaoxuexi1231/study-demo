@@ -8,15 +8,12 @@ import com.hundsun.demo.dubbo.consumer.service.LocalLockService;
 import com.hundsun.demo.dubbo.provider.api.model.request.UserRequestDTO;
 import com.hundsun.demo.dubbo.provider.api.service.SimpleProviderService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.curator.framework.CuratorFramework;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-
-import java.nio.charset.StandardCharsets;
 
 /**
  * @ProductName: Hundsun amust

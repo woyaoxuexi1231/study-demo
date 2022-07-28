@@ -1,11 +1,9 @@
 package com.hundsun.demo.dubbo.consumer;
 
-import com.hundsun.demo.dubbo.common.api.config.ResultAspectConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 
 /**
  * @ProductName: Hundsun amust
