@@ -15,12 +15,27 @@
             %-5level：级别从左显示5个字符宽度
             %msg：日志消息，%n是换行符
             %logger{36} 表示 Logger 名字最长36个字符
+            在Log4j 2.10以前的版本，pattern中配置%highlight属性是可以正常打印彩色日志的例如：
+            pattern: “%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%-5level} [%t] %highlight{%c{1.}.%M(%L)}: %msg%n”
+            但是更新到2.10版本以后，控制台中就无法显示彩色日志了，各种级别的日志混杂在一起，难以阅读
+            通过查阅官方文档，发现在2.10版本以后，Log4j2默认关闭了Jansi（一个支持输出ANSI颜色的类库）
+            可见，配置 log4j.skipJansi 这个全局属性即可。
+
+            IDEA中，点击右上角->Edit Configurations，在VM options中添加
+            -Dlog4j.skipJansi=false
+
+            MYECLIPSE中，Run Configurations->Arguments-> VM arguments 中添加
+            -Dlog4j.skipJansi=false
+
+            MYECLIPSE 需要ansi 插件的支持
+
         -->
-        <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%-5level}[%thread] %style{%logger{36}}{cyan} : %msg%n" />
+        <property name="LOG_PATTERN"
+                  value="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%-5level}{ERROR=Bright RED, WARN=Bright Yellow, INFO=Bright Green, DEBUG=Bright Cyan, TRACE=Bright White} %style{[%t]}{bright,magenta} %style{%c{1.}.%M(%L)}{cyan} : %msg%n"/>
 
         <!-- 定义日志存储的路径，不要配置相对路径 -->
-        <property name="FILE_PATH" value="demo-dubbo-consumer/logs" />
-        <property name="FILE_NAME" value="demo-dubbo-consumer" />
+        <property name="FILE_PATH" value="demo-dubbo-consumer/logs"/>
+        <property name="FILE_NAME" value="demo-dubbo-consumer"/>
     </Properties>
 
     <appenders>
@@ -35,7 +50,8 @@
         　　这个会打印出所有的info及以下级别的信息，每次大小超过size，
         　　则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档
         -->
-        <RollingFile name="RollingFileInfo" fileName="${FILE_PATH}/info.log" filePattern="${FILE_PATH}/${FILE_NAME}-INFO-%d{yyyy-MM-dd}_%i.log.gz">
+        <RollingFile name="RollingFileInfo" fileName="${FILE_PATH}/info.log"
+                     filePattern="${FILE_PATH}/${FILE_NAME}-INFO-%d{yyyy-MM-dd}_%i.log.gz">
             <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
             <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
@@ -49,7 +65,8 @@
         </RollingFile>
 
         <!-- 这个会打印出所有的warn及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
-        <RollingFile name="RollingFileWarn" fileName="${FILE_PATH}/warn.log" filePattern="${FILE_PATH}/${FILE_NAME}-WARN-%d{yyyy-MM-dd}_%i.log.gz">
+        <RollingFile name="RollingFileWarn" fileName="${FILE_PATH}/warn.log"
+                     filePattern="${FILE_PATH}/${FILE_NAME}-WARN-%d{yyyy-MM-dd}_%i.log.gz">
             <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
             <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
@@ -63,7 +80,8 @@
         </RollingFile>
 
         <!-- 这个会打印出所有的error及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
-        <RollingFile name="RollingFileError" fileName="${FILE_PATH}/error.log" filePattern="${FILE_PATH}/${FILE_NAME}-ERROR-%d{yyyy-MM-dd}_%i.log.gz">
+        <RollingFile name="RollingFileError" fileName="${FILE_PATH}/error.log"
+                     filePattern="${FILE_PATH}/${FILE_NAME}-ERROR-%d{yyyy-MM-dd}_%i.log.gz">
             <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
             <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
