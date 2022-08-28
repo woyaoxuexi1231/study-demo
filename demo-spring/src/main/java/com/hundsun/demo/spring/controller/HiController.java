@@ -1,5 +1,9 @@
 package com.hundsun.demo.spring.controller;
 
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @ProductName: Hundsun amust
  * @ProjectName: study-demo
@@ -15,14 +19,46 @@ package com.hundsun.demo.spring.controller;
 
 public class HiController {
 
+
     public static void main(String[] args) {
-        String s = "123";
-        change(s);
-        System.out.println(s);
+        List<HiController> hiControllerList = new ArrayList<>();
+        while (true){
+            hiControllerList.add(new HiController());
+        }
     }
 
-    public static String change(String s){
-        s = "sss";
-        return s;
+
+}
+interface A {
+    void setName();
+    void setAge();
+    void getName();
+    void getAge();
+}
+
+class A1 implements A{
+
+    private String name;
+
+    private String age;
+
+    @Override
+    public void setName() {
+
+    }
+
+    @Override
+    public void setAge() {
+
+    }
+
+    @Override
+    public void getName() {
+
+    }
+
+    @Override
+    public void getAge() {
+
     }
 }
