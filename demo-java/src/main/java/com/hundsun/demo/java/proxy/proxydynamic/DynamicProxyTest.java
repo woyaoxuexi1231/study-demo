@@ -47,8 +47,10 @@ public class DynamicProxyTest {
 
         // 通过代理对象来调用方法
         proxy.find();
-        proxy2.find();
-        proxy3.find();
+        proxy.update();
+
+        // proxy2.find();
+        // proxy3.find();
 
     }
 }
