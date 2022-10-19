@@ -5,6 +5,9 @@ import com.hundsun.demo.dubbo.common.api.utils.ResultDTOBuild;
 import com.hundsun.demo.dubbo.consumer.service.RabbitMqService;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +37,16 @@ public class RabbitMqServiceImpl implements RabbitMqService {
 
         MessageProperties messageProperties = new MessageProperties();
         messageProperties.setExpiration("30000");
+        MessagePostProcessor messagePostProcessor = new MessagePostProcessor() {
+            @Override
+            public Message postProcessMessage(Message message) throws AmqpException {
+                message.getMessageProperties().setExpiration("30000");
+                return message;
+            }
+        };
         String msg = "hello";
         log.info("sent the msg 'hello'");
-        rabbitTemplate.convertAndSend("notice_queue",msg,messageProperties);
+        rabbitTemplate.convertAndSend("notice_queue", (Object) msg,messagePostProcessor);
         return ResultDTOBuild.resultDefaultBuild();
     }
     

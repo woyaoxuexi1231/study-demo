@@ -88,8 +88,8 @@ public class SimpleProviderServiceImpl implements SimpleProviderService {
         // throw new RuntimeException("error!!!");
     }
 
-    // @RabbitHandler
-    // @RabbitListener(queuesToDeclare = @Queue("notice_queue"))
+    @RabbitHandler
+    @RabbitListener(queuesToDeclare = @Queue("notice_queue"))
     public void receiveMsg2(String msg) {
         log.info("im receive " + msg + "too");
     }
