@@ -58,8 +58,8 @@ public class SimpleProviderServiceImpl implements SimpleProviderService {
     }
 
 
-    @Autowired
-    RedissonClient redissonClient;
+    // @Autowired
+    // RedissonClient redissonClient;
 
     /**
      *
@@ -71,25 +71,25 @@ public class SimpleProviderServiceImpl implements SimpleProviderService {
     // @RabbitHandler
     // @RabbitListener(queuesToDeclare = @Queue("notice_queue"))
     public void receiveMsg(String msg) {
-        log.info("im receive " + msg);
-        RABBITMQ_POOL.execute(() -> {
-            Lock lock = redissonClient.getLock("DEMO:RABBITMQ:INSERTTEST");
-            lock.lock();
-            log.info("当前线程:" + Thread.currentThread().getName() + "续约成功");
-            try {
-                // 再往这张表插入40万条数据
-                jdbcTemplate.execute("INSERT INTO io_test2(c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,c14,c15,c16,c17,c18,c19,c20,c21,c22,c23,c24,c25,c26,c27,c28,c29,c30,c31,c32) SELECT * FROM io_test");
-            } finally {
-                lock.unlock();
-                log.info("当前线程:" + Thread.currentThread().getName() + "解约成功");
-            }
-        });
-        log.info("execute end");
-        throw new RuntimeException("error!!!");
+        // log.info("im receive " + msg);
+        // RABBITMQ_POOL.execute(() -> {
+        //     Lock lock = redissonClient.getLock("DEMO:RABBITMQ:INSERTTEST");
+        //     lock.lock();
+        //     log.info("当前线程:" + Thread.currentThread().getName() + "续约成功");
+        //     try {
+        //         // 再往这张表插入40万条数据
+        //         jdbcTemplate.execute("INSERT INTO io_test2(c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,c14,c15,c16,c17,c18,c19,c20,c21,c22,c23,c24,c25,c26,c27,c28,c29,c30,c31,c32) SELECT * FROM io_test");
+        //     } finally {
+        //         lock.unlock();
+        //         log.info("当前线程:" + Thread.currentThread().getName() + "解约成功");
+        //     }
+        // });
+        // log.info("execute end");
+        // throw new RuntimeException("error!!!");
     }
 
-    @RabbitHandler
-    @RabbitListener(queuesToDeclare = @Queue("notice_queue"))
+    // @RabbitHandler
+    // @RabbitListener(queuesToDeclare = @Queue("notice_queue"))
     public void receiveMsg2(String msg) {
         log.info("im receive " + msg + "too");
     }
