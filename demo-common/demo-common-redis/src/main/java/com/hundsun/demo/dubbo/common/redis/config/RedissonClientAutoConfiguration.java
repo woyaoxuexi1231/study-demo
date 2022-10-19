@@ -1,5 +1,6 @@
 package com.hundsun.demo.dubbo.common.redis.config;
 
+import org.apache.commons.lang3.StringUtils;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -45,15 +46,17 @@ public class RedissonClientAutoConfiguration {
         String host = configuration.getHost();
         String password = configuration.getPassword();
 
+        if (StringUtils.isNotBlank(master) && StringUtils.isNotBlank(nodes)) {
+            config.useSentinelServers().setMasterName(master);
 
-        config.useSentinelServers().setMasterName(master);
-
-        String[] address = nodes.split(",");
-        for (String add : address) {
-            config.useSentinelServers().addSentinelAddress("redis://" + add);
+            String[] address = nodes.split(",");
+            for (String add : address) {
+                config.useSentinelServers().addSentinelAddress("redis://" + add);
+            }
+            config.useSentinelServers().setPassword(password);
+            return Redisson.create(config);
         }
-        config.useSentinelServers().setPassword(password);
-        return Redisson.create(config);
+        return null;
     }
 
     @Bean
