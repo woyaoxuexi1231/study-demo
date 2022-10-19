@@ -49,8 +49,8 @@ public class SimpleServiceImpl implements SimpleService {
     @Autowired
     LocalLockService localLockService;
 
-    @Autowired
-    RedissonClient redissonClient;
+    // @Autowired
+    // RedissonClient redissonClient;
 
 
     @Override
@@ -80,14 +80,14 @@ public class SimpleServiceImpl implements SimpleService {
 
     @Override
     public ResultDTO redisson() {
-        RLock rLock = redissonClient.getLock("myLock");
-        rLock.lock();
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        rLock.unlock();
+        // RLock rLock = redissonClient.getLock("myLock");
+        // rLock.lock();
+        // try {
+        //     Thread.sleep(5000);
+        // } catch (InterruptedException e) {
+        //     e.printStackTrace();
+        // }
+        // rLock.unlock();
         return ResultDTOBuild.resultDefaultBuild();
     }
 

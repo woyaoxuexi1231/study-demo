@@ -3,7 +3,9 @@ package com.hundsun.demo.dubbo.consumer.service.impl;
 import com.hundsun.demo.dubbo.common.api.model.dto.ResultDTO;
 import com.hundsun.demo.dubbo.common.api.utils.ResultDTOBuild;
 import com.hundsun.demo.dubbo.consumer.service.RabbitMqService;
+
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,9 +31,12 @@ public class RabbitMqServiceImpl implements RabbitMqService {
 
     @Override
     public ResultDTO sentSampleMsg() {
+
+        MessageProperties messageProperties = new MessageProperties();
+        messageProperties.setExpiration("30000");
         String msg = "hello";
         log.info("sent the msg 'hello'");
-        rabbitTemplate.convertAndSend("notice_queue",msg);
+        rabbitTemplate.convertAndSend("notice_queue",msg,messageProperties);
         return ResultDTOBuild.resultDefaultBuild();
     }
     
