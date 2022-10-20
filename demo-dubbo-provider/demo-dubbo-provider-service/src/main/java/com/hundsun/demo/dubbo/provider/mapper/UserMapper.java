@@ -2,6 +2,9 @@ package com.hundsun.demo.dubbo.provider.mapper;
 
 import com.hundsun.demo.dubbo.provider.model.domain.UserDO;
 import tk.mybatis.mapper.common.BaseMapper;
+import tk.mybatis.mapper.common.ConditionMapper;
+import tk.mybatis.mapper.common.ExampleMapper;
+import tk.mybatis.mapper.common.RowBoundsMapper;
 
 /**
  * @projectName: dubbo-demo
@@ -17,5 +20,5 @@ import tk.mybatis.mapper.common.BaseMapper;
  * @see :
  */
 
-public interface UserMapper extends BaseMapper<UserDO> {
+public interface UserMapper extends BaseMapper<UserDO>, ExampleMapper<UserDO>, ConditionMapper<UserDO>, RowBoundsMapper<UserDO> {
 }

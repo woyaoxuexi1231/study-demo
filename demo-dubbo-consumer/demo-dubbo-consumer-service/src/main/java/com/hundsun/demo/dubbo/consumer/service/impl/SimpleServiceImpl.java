@@ -6,14 +6,18 @@ import com.hundsun.demo.dubbo.common.api.utils.ResultDTOBuild;
 import com.hundsun.demo.dubbo.consumer.api.service.SimpleService;
 import com.hundsun.demo.dubbo.consumer.service.LocalLockService;
 import com.hundsun.demo.dubbo.provider.api.model.request.UserRequestDTO;
+import com.hundsun.demo.dubbo.provider.api.model.request.UserSelectReqDTO;
 import com.hundsun.demo.dubbo.provider.api.service.SimpleProviderService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @ProductName: Hundsun amust
@@ -60,14 +64,42 @@ public class SimpleServiceImpl implements SimpleService {
     }
 
     @Override
-    public ResultDTO addUser(UserRequestDTO userRequestDTO) {
-        return simpleProviderService.insertUser(userRequestDTO);
+    public ResultDTO<?> addUser(UserRequestDTO req) {
+        // 先插入mysql, 再插入redis
+        simpleProviderService.insertUser(req);
+        redisTemplateSO.opsForSet().add("userInfo", req);
+        return ResultDTOBuild.resultDefaultBuild();
     }
 
     @Override
     public ResultDTO addRedisInfo(UserRequestDTO req) {
         redisTemplateSO.opsForSet().add("userInfo", req);
         return ResultDTOBuild.resultSuccessBuild(redisTemplateSO.opsForSet().members("userInfo"));
+    }
+
+    @Override
+    public ResultDTO<?> selectUser(UserSelectReqDTO req) {
+
+        if (StringUtils.isBlank(req.getName())) {
+            return ResultDTOBuild.resultDefaultBuild();
+        }
+
+        List<UserRequestDTO> rsp = new ArrayList<>();
+
+        // 先查redis再查mysql
+        Set<?> redisUsers = redisTemplateSO.opsForSet().members("userInfo");
+        for (Object redisUser : redisUsers) {
+            UserRequestDTO requestDTO = (UserRequestDTO) redisUser;
+            if (requestDTO.getName().contains(req.getName())) {
+                rsp.add(requestDTO);
+            }
+        }
+
+        if (!rsp.isEmpty()) {
+            return ResultDTOBuild.resultSuccessBuild(rsp);
+        }
+
+        return ResultDTOBuild.resultSuccessBuild(simpleProviderService.selectUser(req).getData());
     }
 
     @Override

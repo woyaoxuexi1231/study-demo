@@ -2,6 +2,7 @@ package com.hundsun.demo.dubbo.provider.api.service;
 
 import com.hundsun.demo.dubbo.common.api.model.dto.ResultDTO;
 import com.hundsun.demo.dubbo.provider.api.model.request.UserRequestDTO;
+import com.hundsun.demo.dubbo.provider.api.model.request.UserSelectReqDTO;
 
 /**
  * @ProductName: Hundsun amust
@@ -18,7 +19,24 @@ import com.hundsun.demo.dubbo.provider.api.model.request.UserRequestDTO;
 
 public interface SimpleProviderService {
 
-    ResultDTO getHelloWorld(String hello);
+    /**
+     * 返回一个简单的字符串
+     * @param hello req
+     * @return result
+     */
+    ResultDTO<?> getHelloWorld(String hello);
 
-    ResultDTO insertUser(UserRequestDTO userRequestDTO);
+    /**
+     * 插入一个新用户
+     * @param userRequestDTO req
+     * @return result
+     */
+    ResultDTO<?> insertUser(UserRequestDTO userRequestDTO);
+
+    /**
+     * 查询一个用户 -DB
+     * @param req req
+     * @return result
+     */
+    ResultDTO<?> selectUser(UserSelectReqDTO req);
 }

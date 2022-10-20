@@ -1,6 +1,7 @@
 package com.hundsun.demo.dubbo.consumer.api.service;
 
 import com.hundsun.demo.dubbo.common.api.model.dto.ResultDTO;
+import com.hundsun.demo.dubbo.provider.api.model.request.UserSelectReqDTO;
 import com.hundsun.demo.dubbo.provider.api.model.request.UserRequestDTO;
 import org.springframework.validation.annotation.Validated;
 
@@ -27,7 +28,7 @@ public interface SimpleService {
      * @param testString
      * @return
      */
-    ResultDTO getHelloWorld(String testString);
+    ResultDTO<?> getHelloWorld(String testString);
 
     /**
      * 通过服务端向数据库插入一个简单的数据
@@ -35,19 +36,27 @@ public interface SimpleService {
      * @param userRequestDTO
      * @return
      */
-    ResultDTO addUser(UserRequestDTO userRequestDTO);
+    ResultDTO<?> addUser(UserRequestDTO userRequestDTO);
 
     /**
      * 往redis里插入一个简单的数据
      *
      * @param userRequestDTO
      */
-    ResultDTO addRedisInfo(@Valid UserRequestDTO userRequestDTO);
+    ResultDTO<?> addRedisInfo(@Valid UserRequestDTO userRequestDTO);
+
+    /**
+     * 查询用户信息
+     *
+     * @param req req
+     * @return result
+     */
+    ResultDTO<?> selectUser(UserSelectReqDTO req);
 
     /**
      * 测试本地锁
      */
-    ResultDTO testLock();
+    ResultDTO<?> testLock();
 
-    ResultDTO redisson();
+    ResultDTO<?> redisson();
 }
