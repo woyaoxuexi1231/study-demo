@@ -18,26 +18,26 @@ import lombok.Data;
 @Data
 public class ResultDTOBuild {
 
-    public static ResultDTO<Object> resultDefaultBuild() {
-        ResultDTO<Object> resultDTO = new ResultDTO<>();
+    public static ResultDTO<?> resultDefaultBuild() {
+        ResultDTO<?> resultDTO = new ResultDTO<>();
         resultDTO.setCode(200);
         resultDTO.setMsg("success");
         return resultDTO;
     }
 
-    public static ResultDTO<Object> resultSuccessBuild(Object data) {
-        ResultDTO<Object> resultDTO = new ResultDTO<>();
+    public static <Rsp> ResultDTO<Rsp> resultSuccessBuild(Rsp rsp) {
+        ResultDTO<Rsp> resultDTO = new ResultDTO<>();
         resultDTO.setCode(200);
         resultDTO.setMsg("success");
-        resultDTO.setData(data);
+        resultDTO.setData(rsp);
         return resultDTO;
     }
 
-    public static ResultDTO<Object> resultErrorBuild(String msg, Object data) {
-        ResultDTO<Object> resultDTO = new ResultDTO<>();
+    public static <Rsp> ResultDTO<Rsp> resultErrorBuild(String msg, Rsp rsp) {
+        ResultDTO<Rsp> resultDTO = new ResultDTO<>();
         resultDTO.setCode(-1);
         resultDTO.setMsg(msg);
-        resultDTO.setData(data);
+        resultDTO.setData(rsp);
         return resultDTO;
     }
 }
