@@ -64,6 +64,8 @@
         <apache.dubbo.springboot.starter.version>3.0.6</apache.dubbo.springboot.starter.version>
         <spring.boot.starter.data.redis>2.3.1.RELEASE</spring.boot.starter.data.redis>
         <redisson.version>3.16.1</redisson.version>
+        <ojdbc8.version>21.5.0.0</ojdbc8.version>
+        <orai18n.version>21.5.0.0</orai18n.version>
 
         <!--插件版本-->
         <spring.boot.maven.plugin.version>2.2.6.RELEASE</spring.boot.maven.plugin.version>
@@ -241,6 +243,20 @@
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson</artifactId>
                 <version>${redisson.version}</version>
+            </dependency>
+
+            <!--oracle的驱动包-->
+            <dependency>
+                <groupId>com.oracle.database.jdbc</groupId>
+                <artifactId>ojdbc8</artifactId>
+                <version>${ojdbc8.version}</version>
+            </dependency>
+
+            <!--解决springboot连接oracle的报错(不支持的字符集 (在类路径中添加 orai18n.jar):ZHS16GBK)-->
+            <dependency>
+                <groupId>com.oracle.database.nls</groupId>
+                <artifactId>orai18n</artifactId>
+                <version>${orai18n.version}</version>
             </dependency>
 
             <dependency>
