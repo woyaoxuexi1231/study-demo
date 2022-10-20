@@ -3,6 +3,8 @@ package com.hundsun.demo.java.proxy.proxycglib;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Objects;
+
 /**
  * cglib代理测试
  *
@@ -28,12 +30,15 @@ public class CglibProxyTest {
         // 通过cglib代理对象类得到一个代理对象
         AdminCglibService proxy = (AdminCglibService) proxyFactory.getProxyInstance();
 
-        log.info("代理对象：" + proxy.getClass());
-
-        Object obj = proxy.find();
-        log.info("find 返回对象：" + obj.getClass());
-        log.info("----------------------------------");
+        // log.info("代理对象：" + proxy.getClass());
+        //
+        // Object obj = proxy.find();
+        // log.info("find 返回对象：" + obj.getClass());
+        // log.info("----------------------------------");
         proxy.update();
+
+        System.out.println(Objects.equals(new Integer(1),new Integer(1)));
+        ;
     }
 }
 

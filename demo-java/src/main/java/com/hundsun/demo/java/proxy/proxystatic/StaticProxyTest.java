@@ -1,9 +1,8 @@
 package com.hundsun.demo.java.proxy.proxystatic;
 
-
-import lombok.extern.slf4j.Slf4j;
 import com.hundsun.demo.java.proxy.service.AdminService;
 import com.hundsun.demo.java.proxy.service.serviceimpl.AdminServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 静态代理测试类

@@ -1,9 +1,13 @@
 package com.hundsun.demo.java.proxy.proxycglib;
 
 import lombok.extern.slf4j.Slf4j;
+import net.sf.cglib.core.DebuggingClassWriter;
+import net.sf.cglib.proxy.Callback;
+import net.sf.cglib.proxy.CallbackFilter;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
+import net.sf.cglib.proxy.NoOp;
 
 import java.lang.reflect.Method;
 
@@ -34,14 +38,26 @@ public class AdminServiceCglibProxy implements MethodInterceptor {
 
     public Object getProxyInstance() {
 
+        System.setProperty(DebuggingClassWriter.DEBUG_LOCATION_PROPERTY, "D:\\java\\java_workapace");
+
         // 工具类(字节码增强器，可以用来为无接口的类创建代理，功能与proxy类似)
         Enhancer en = new Enhancer();
 
         // 设置父类(设置增强类的类型)
         en.setSuperclass(target.getClass());
 
+        CallbackFilter callbackFilter = new TargetMethodCallbackFilter();
+
+        Callback noopCb= NoOp.INSTANCE;
+        Callback callback1=new AdminServiceCglibProxy(this.target);
+        Callback fixedValue=new TargetResultFixed();
+        Callback[] cbarray=new Callback[]{callback1,noopCb,fixedValue};
+
         // 设置回调函数(设置代理方法--参数是一个实现MethodInterceptor接口的实现类)
-        en.setCallback(this);
+        // en.setCallback(this);
+
+        en.setCallbacks(cbarray);
+        en.setCallbackFilter(callbackFilter);
 
         // 创建子类代理对象(创建cglib代理对象)
         return en.create();
