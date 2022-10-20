@@ -11,6 +11,8 @@ import com.hundsun.demo.dubbo.provider.api.service.SimpleProviderService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.rpc.cluster.LoadBalance;
+import org.apache.dubbo.rpc.cluster.loadbalance.RandomLoadBalance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -38,7 +40,7 @@ public class SimpleServiceImpl implements SimpleService {
     /**
      * 微服务
      */
-    @DubboReference(check = false)
+    @DubboReference(check = false, timeout = 30000, loadbalance = RandomLoadBalance.NAME)
     SimpleProviderService simpleProviderService;
 
     /**
