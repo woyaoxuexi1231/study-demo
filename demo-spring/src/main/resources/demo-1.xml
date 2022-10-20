@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="student" class="com.hundsun.demo.spring.model.pojo.Student">
+        <property name="age" value="13"/>
+        <property name="name" value="xxx"/>
+        <property name="sid" value="001"/>
+    </bean>
+    <bean name="teacher" class="com.hundsun.demo.spring.model.pojo.Teacher">
+        <constructor-arg index="0" value="aaa"/>
+        <constructor-arg index="1" value="math"/>
+        <constructor-arg index="2" value="10"/>
+    </bean>
+    <bean name="school" class="com.hundsun.demo.spring.model.pojo.School">
+        <property name="students">
+            <set>
+                <ref bean="student"/>
+            </set>
+        </property>
+        <property name="teachers" >
+            <list>
+                <ref bean="teacher"/>
+            </list>
+        </property>
+    </bean>
+</beans>
