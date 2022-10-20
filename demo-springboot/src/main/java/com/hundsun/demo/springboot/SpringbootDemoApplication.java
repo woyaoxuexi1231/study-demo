@@ -2,6 +2,7 @@ package com.hundsun.demo.springboot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import tk.mybatis.spring.annotation.MapperScan;
 
 /**
  * @ProductName: Hundsun amust
@@ -16,6 +17,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Copyright  2022 Hundsun Technologies Inc. All Rights Reserved
  */
 @SpringBootApplication
+@MapperScan("com.hundsun.demo.springboot.mapper")
 public class SpringbootDemoApplication {
 
     public static void main(String[] args) {
