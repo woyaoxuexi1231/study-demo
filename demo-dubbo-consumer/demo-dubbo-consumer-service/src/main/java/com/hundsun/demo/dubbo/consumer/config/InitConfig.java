@@ -38,17 +38,17 @@ public class InitConfig implements ApplicationRunner {
         try {
 
             if (curatorFramework.checkExists().forPath("/demo") == null) {
-                curatorFramework.create().forPath("/demo", "项目信息".getBytes(StandardCharsets.UTF_8));
+                curatorFramework.create().forPath("/demo", "project information".getBytes(StandardCharsets.UTF_8));
             }
 
             if (curatorFramework.checkExists().forPath("/demo/" + applicationName) != null) {
                 curatorFramework.delete().deletingChildrenIfNeeded().forPath("/demo/" + applicationName);
             }
-            curatorFramework.create().forPath("/demo/" + applicationName, ("项目名:" + applicationName).getBytes(StandardCharsets.UTF_8));
-            log.info("项目信息录入zk正常");
+            curatorFramework.create().forPath("/demo/" + applicationName, ("project name : " + applicationName).getBytes(StandardCharsets.UTF_8));
+            log.info("add the project information into zookeeper normal .");
 
         } catch (Exception e) {
-            log.error("项目信息录入zk异常!", e);
+            log.error("add the project information into zookeeper error !", e);
         }
     }
 }
