@@ -1,6 +1,8 @@
 package com.hundsun.demo.spring;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -23,11 +25,16 @@ public class SpringDemoApplication {
 
     public static void main(String[] args) {
 
+
+        // ((AbstractApplicationContext)applicationContext).registerShutdownHook();
+
         String[] beans = applicationContext.getBeanDefinitionNames();
 
         for (String bean : beans) {
             System.out.println("bean : " + applicationContext.getBean(bean));
         }
+
+        ((AbstractApplicationContext)applicationContext).close();
 
     }
 

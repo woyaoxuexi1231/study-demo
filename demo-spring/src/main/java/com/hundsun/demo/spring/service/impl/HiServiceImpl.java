@@ -1,6 +1,7 @@
 package com.hundsun.demo.spring.service.impl;
 
 import com.hundsun.demo.spring.service.HiService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,10 +18,19 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
+@Slf4j
 public class HiServiceImpl implements HiService {
 
     @Override
     public void sayHi() {
 
+    }
+
+    public void init(){
+        log.info("HiServiceImpl initializing...");
+    }
+
+    public void destroy(){
+        log.info("HiServiceImpl destroying...");
     }
 }
