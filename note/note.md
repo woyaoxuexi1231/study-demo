@@ -30,9 +30,21 @@
 ###### 2022-10-09 - 2022-10-10
 
 > CGLIB  
-> 拦截器 - 需要我们自己写一个拦截器(实现MethodInterceptor接口),这个拦截器定义我们在调用目标方法前后进行的增强逻辑,以及创建代理对象的逻辑  
+> 拦截器 - 需要我们自己写一个拦截器(实现MethodInterceptor接口)
+> ,这个拦截器定义我们在调用目标方法前后进行的增强逻辑,以及创建代理对象的逻辑  
 > 回调过滤器 - 实现CallbackFilter接口,可以自定义回调函数的过滤器,配合Callback[]可以实现不同的方法调用不同的回调函数  
 > 代理对象 - 生成的代理对象会继承我们的目标对象,然后实现Factory接口
 
-###### 2022-10-10
-> 
+###### 2022-10-31
+
+> Spring AOP  
+> Joinpoint -- 在确切的某个点进行织入操作的那个点就是一个Joinpoint  
+> Pointcut -- Joinpoint是我们逻辑上的一个点, 而Pointcut在代码层面帮我们描述Joinpoint,
+> 且Pointcut可以描述由一堆Joinpoint的集合  
+> Advice -- 表示在这个Jointpoint需要添加的横切逻辑  
+> Around Advice -- 在Joinpoint前后都执行的横切逻辑  
+> Introduction -- 与其他类型的Advice关注点不同的是, Introduction根据它可以完成的功能而区别与其他类型的Advice  
+> Aspect -- 代表的是系统中由Pointcut和Advice组合而成的一个AOP概念实体,一个完整的横切逻辑的描述
+> -------------------------
+> per-class类型的Aspect 包括 Advice 和 Around Advice  
+> per-instance类型的Aspect 包括 Introduction
