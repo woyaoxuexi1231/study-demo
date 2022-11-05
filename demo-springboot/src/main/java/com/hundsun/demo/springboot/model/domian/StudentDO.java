@@ -22,7 +22,7 @@ import javax.persistence.Table;
 @Builder
 public class StudentDO {
 
-    String name;
+    private String name;
 
-    Integer age;
+    private Integer age;
 }
