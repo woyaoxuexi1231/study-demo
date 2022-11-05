@@ -44,14 +44,14 @@ public class DoneTimeAspect {
         // 计时器
         StopWatch stopWatch = new StopWatch();
         // 方法参数
-        Object param = joinPoint.getArgs()[0];
+        Object[] param = joinPoint.getArgs();
 
         try {
             stopWatch.start();
             return joinPoint.proceed();
         } finally {
             stopWatch.stop();
-            log.info("Invoke Method {}, Param: {}, Time: {}ms", joinPoint.getSignature(), param.toString(), stopWatch.getTotalTimeMillis());
+            log.info("Invoke Method {}, Param: {}, Time: {}ms", joinPoint.getSignature(), param, stopWatch.getTotalTimeMillis());
         }
 
     }
