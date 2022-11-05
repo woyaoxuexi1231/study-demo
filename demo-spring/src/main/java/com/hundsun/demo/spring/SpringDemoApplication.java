@@ -31,7 +31,7 @@ public class SpringDemoApplication {
         String[] beans = applicationContext.getBeanDefinitionNames();
 
         for (String bean : beans) {
-            System.out.println("bean : " + applicationContext.getBean(bean));
+            System.out.println("bean : " + applicationContext.getBean(bean).getClass());
         }
 
         ((AbstractApplicationContext)applicationContext).close();
