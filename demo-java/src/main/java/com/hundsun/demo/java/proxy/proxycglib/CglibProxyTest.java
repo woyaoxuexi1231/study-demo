@@ -1,8 +1,13 @@
 package com.hundsun.demo.java.proxy.proxycglib;
 
 
+import com.hundsun.demo.java.proxy.service.AdminService;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
 
+import java.lang.reflect.Method;
 import java.util.Objects;
 
 /**
@@ -37,8 +42,16 @@ public class CglibProxyTest {
         // log.info("----------------------------------");
         proxy.update();
 
-        System.out.println(Objects.equals(new Integer(1),new Integer(1)));
-        ;
+        Enhancer en = new Enhancer();
+        // jvm参数-设置此项可以在指定位置生成cglib生成的字节码文件 -Dcglib.debugLocation=C:\Project\study-demo\demo-java\target\classes
+        en.setSuperclass(AdminService.class);
+        en.setCallback((MethodInterceptor) (o, method, objects, methodProxy) -> {
+            System.out.println("只代理了一个接口...");
+            return null;
+        });
+        // return en.create();
+        AdminService proxy2 = (AdminService)en.create();
+        proxy2.update();
     }
 }
 

@@ -1,6 +1,7 @@
 package com.hundsun.demo.java.proxy.proxycglib;
 
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 /**
