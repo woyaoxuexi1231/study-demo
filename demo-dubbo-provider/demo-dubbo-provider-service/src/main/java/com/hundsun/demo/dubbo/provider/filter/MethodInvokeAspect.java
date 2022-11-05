@@ -1,10 +1,9 @@
 package com.hundsun.demo.dubbo.provider.filter;
 
-import cn.hutool.core.date.StopWatch;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
@@ -27,23 +26,14 @@ import org.springframework.stereotype.Component;
 public class MethodInvokeAspect {
 
     @Pointcut(value = "execution(* com.hundsun.demo.dubbo.provider.api.service.*.*(..))")
-    public void pointCut(){}
+    public void pointCut() {
+    }
 
-    @Around(value = "pointCut()")
-    public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
+    @Before(value = "pointCut()")
+    public void around(JoinPoint joinPoint) {
 
-        // 计时器
-        StopWatch stopWatch = new StopWatch();
         // 方法参数
         Object[] param = joinPoint.getArgs();
-
-        try {
-            stopWatch.start();
-            return joinPoint.proceed();
-        } finally {
-            stopWatch.stop();
-            log.info("Invoke Method {}, Param: {}, Time: {}ms", joinPoint.getSignature(), param, stopWatch.getTotalTimeMillis());
-        }
-
+        log.info("Invoke Method {}, Param: {}", joinPoint.getSignature(), param);
     }
 }
