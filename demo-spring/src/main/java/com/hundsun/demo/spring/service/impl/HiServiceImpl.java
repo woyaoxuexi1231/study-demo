@@ -23,7 +23,7 @@ public class HiServiceImpl implements HiService {
 
     @Override
     public void sayHi() {
-
+        log.info("hi");
     }
 
     public void init(){
