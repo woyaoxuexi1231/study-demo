@@ -1,6 +1,9 @@
 package com.hundsun.demo.spring.controller;
 
+import com.hundsun.demo.spring.event.SimpleEvent;
 import com.hundsun.demo.spring.service.HiService;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -21,12 +24,14 @@ import javax.servlet.http.HttpServletResponse;
  * @see :
  */
 
-public class TestController extends AbstractController {
+public class TestController extends AbstractController implements ApplicationContextAware {
 
 
     private HiService hiService;
 
     private String viewName;
+
+
 
     @Override
     protected ModelAndView handleRequestInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
@@ -36,8 +41,13 @@ public class TestController extends AbstractController {
         ModelAndView mav = new ModelAndView(getViewName());
         mav.addObject("hello","hello");
 
+        this.getApplicationContext().publishEvent(new SimpleEvent(new Object()));
+        // SimpleEvent simpleEvent = new SimpleEvent();
+
         return mav;
     }
+
+
 
     public HiService getHiService() {
         return hiService;
