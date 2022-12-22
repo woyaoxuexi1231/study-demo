@@ -48,3 +48,10 @@
 > -------------------------
 > per-class类型的Aspect 包括 Advice 和 Around Advice  
 > per-instance类型的Aspect 包括 Introduction
+> 
+###### 2022-11-24
+spring 读取配置文件的顺序如下:   
+–file:./config/  
+–file:./  
+–classpath:/config/  
+–classpath:/  
