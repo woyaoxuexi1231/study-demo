@@ -37,8 +37,8 @@ public class TaskTest {
         /*
         Object 提供的方法
         关于 Object.wait()方法
-        调用该方法必须持有对象的监视器所, 否则会抛出 IllegalMonitorStateException 异常
-        调用该方法的线程会被阻塞挂起, 直到:
+        调用该方法必须持有对象的监视器锁, 否则会抛出 IllegalMonitorStateException 异常
+        调用该方法的线程会被阻塞挂起, 直到以下情况, 会尝试重新获取监视器锁, 然后往下执行:
         1. 其他线程调用 notify() 或者 notifyAll() 方法
         2. 其他线程调用该线程的 interrupt() 方法, 该线程会抛出 InterruptedException 异常而返回
 
@@ -98,6 +98,33 @@ public class TaskTest {
         ThreadLocal 不支持继承性, 即子线程是不能获取父线程的 ThreadLocal 的
         InheritableThreadLocal 可以获取到父线程的 ThreadLocal
         具体的操作方式是在 初始化线程的时候把父类的 threadLocals 存放到子类的 inheritableThreadLocals 中, 最后通过 get 方法去拿 inheritableThreadLocals 这里面的值
+         */
+
+        /*
+         多线程下存在的问题:
+         1. 线程安全问题 - 多个线程同时操作共享内存的值时, 不考虑内存可见性问题, 在事务A提交之前事务B读取了值, 事务A和事务B都对变量进行修改会造成线程安全问题
+         2. 内存可见性问题 - 多核cpu存在一级缓存和二级缓存, 一级缓存会造成内存可见性问题,
+
+         synchronized 原子性内置锁, 监视器锁, 内部锁
+         在 synchronized 内的变量, 不会从线程的工作内存中获取, 而是会直接从主内存中获取, 退出 synchronized 块会把共享变量的修改直接刷新到主内存
+
+         volatile 关键字, 不加锁解决内存可见性问题
+         被 volatile 修饰的变量在被线程写入值的时候会直接刷新到主内存, 读取该变量时会直接从主内存读取最新值
+         但是使用 volatile 在进行非原子性操作时依旧会产生问题, a++和++a这种操作就不是原子性的
+         */
+
+        /*
+        Java CAS - compare and swap
+        ABA问题
+        Unsafe类 - JDK rt.jar包下的提供硬件级别的原子性操作类
+        Java指令重排序 - Java内存模型允许编译器和处理器对指令进行重排序以提高运行性能, 并且只会对不存在数据依赖性的指令进行重排序
+        伪共享 - cpu和主内存之间存在一级或者多级缓存(Cache), 在缓存内部按行存储,
+                如果几个连续的变量在同一个缓存行内又同时被多个cpu的一级缓存存储,
+                每个线程操作某个变量时会导致其他cpu的一级缓存内的该变量失效,
+                下次读取该变量时又会去主存获取数据导致性能下降, 这就是伪内存
+                JDK 8 之前为了避免伪共享的问题, 做法是手动将多个变量放在同一个缓存行内
+                JDK 8 之后提供了一个@Contended注解用来解决伪共享问题, 默认情况下这个注解只用于Java核心类
+        乐观锁与悲观锁, 公平锁与非公平锁, 独占锁和共享锁, 可重入锁, 自旋锁
          */
 
     }
