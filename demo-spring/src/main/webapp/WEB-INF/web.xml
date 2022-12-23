@@ -3,6 +3,17 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
+    <!--
+    这里的web.xml供Servlet容器访问, Servlet容器在加载和启动的时候JavaWeb应用的时候会读取web.xml配置文件
+    主要配置信息:
+    1.Servlet的定义
+    2.Servlet的初始化参数
+    3.Servlet以及JSP的映射
+    4.安全域配置参数
+    5.welcome文件清单
+    6.资源引用
+    7.环境变量的定义
+    -->
 
     <!--可以考虑使用这种配置方式来配置多个配置文件-->
     <!--    <context-param>-->
@@ -20,6 +31,7 @@
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
 
+    <!--为Servlet类定义名字-->
     <servlet>
         <servlet-name>controller</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -29,7 +41,8 @@
         </init-param>
         <load-on-startup>2</load-on-startup>
     </servlet>
-    
+
+    <!--为Servlet映射一个URL-->
     <servlet-mapping>
         <servlet-name>controller</servlet-name>
         <url-pattern>*.do</url-pattern>
