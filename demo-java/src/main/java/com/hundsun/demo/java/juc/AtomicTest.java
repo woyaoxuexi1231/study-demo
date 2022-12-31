@@ -31,7 +31,9 @@ public class AtomicTest {
      * JDK 8 新增比这些性能更好的 LongAdder
      * 为了解决高并发下大量线程同时竞争一个原子变量而造成的大量线程不断自旋尝试 cas 操作, 这会浪费 cpu 资源
      * LongAdder 内部通过 base 和 cell 来减少竞争, 线程会对 cell 进行争抢, 最后的结果由 base 计算所有 cell 的值得到
-     *
+     * cell 结构简单, 由一个被 volatile 修饰的 long 类型变量组成, 修改 cell 的值时采用 cas 保证原子性
+     * 具体哪个线程访问哪个 cell 由 ( getProbe() & cell数组元素个数-1 ) 得到, 这个值作为 cell 数组的下标
+     * cells 被初始化时初始大小为 2, 后续扩容为之前的 2 倍, 并复制 cell 的元素到扩容之后的数组
      */
     LongAdder longAdder = new LongAdder();
 }
