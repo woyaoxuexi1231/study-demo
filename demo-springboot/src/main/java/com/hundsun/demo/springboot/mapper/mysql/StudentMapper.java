@@ -1,4 +1,4 @@
-package com.hundsun.demo.springboot.mapper;
+package com.hundsun.demo.springboot.mapper.mysql;
 
 import com.hundsun.demo.springboot.model.domian.StudentDO;
 import tk.mybatis.mapper.common.BaseMapper;
