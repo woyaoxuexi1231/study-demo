@@ -1,8 +1,9 @@
-package com.hundsun.demo.spring.model.pojo;
+package com.hundsun.demo.springboot.model.domian;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import javax.persistence.Column;
+import javax.persistence.Table;
 
 /**
  * @ProductName: Hundsun amust
@@ -10,29 +11,31 @@ import lombok.NoArgsConstructor;
  * @Package: com.hundsun.demo.spring.model.pojo
  * @Description:
  * @Author: hulei42031
- * @Date: 2022-10-19 14:01
+ * @Date: 2023-01-13 16:26
  * @UpdateRemark:
  * @Version: 1.0
  * <p>
  * Copyright  2022 Hundsun Technologies Inc. All Rights Reserved
  */
+@Table(name = "DEPT")
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class Teacher {
+public class DeptDO {
 
     /**
      *
      */
-    private String name;
+    @Column(name = "DEPTNO")
+    private Integer DEPTNO;
 
     /**
      *
      */
-    private String major;
+    @Column(name = "DNAME")
+    private String DNAME;
 
     /**
      *
      */
-    private Integer studentCount;
+    @Column(name = "LOC")
+    private String LOC;
 }

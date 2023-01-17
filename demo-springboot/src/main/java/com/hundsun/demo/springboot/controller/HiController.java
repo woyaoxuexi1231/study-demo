@@ -1,8 +1,6 @@
 package com.hundsun.demo.springboot.controller;
 
-import com.hundsun.demo.springboot.model.req.StudentSelectReqDTO;
-import com.hundsun.demo.springboot.model.req.StudentUpdateReqDTO;
-import com.hundsun.demo.springboot.service.NoImplInterface;
+import com.hundsun.demo.springboot.service.DeptService;
 import com.hundsun.demo.springboot.service.StudentService;
 import com.hundsun.demo.springboot.service.serviceimpl.HiServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -30,13 +28,31 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class HiController implements ApplicationContextAware {
 
+    /**
+     *
+     */
     @Autowired
     StudentService studentService;
 
+    /**
+     *
+     */
+    @Autowired
+    DeptService deptService;
+
+    /**
+     *
+     */
     @Autowired
     HiServiceImpl hiServiceImpl;
 
+    /**
+     *
+     */
     private ApplicationContext applicationContext;
+
+    // @Resource
+    // StudentMapper studentMapper;
 
     @RequestMapping("/say")
     public void say() {
@@ -53,12 +69,32 @@ public class HiController implements ApplicationContextAware {
         this.applicationContext = applicationContext;
     }
 
-    // todo 这里显然是注入不了的
-    @Autowired(required = false)
-    NoImplInterface noImplInterface;
-
-    @RequestMapping("/say2")
-    public void say2(){
-        noImplInterface.say();
+    @RequestMapping("/getAllStudent")
+    public void getAllStudent() {
+        studentService.getAllStudent();
     }
+
+    @RequestMapping("/getAllDept")
+    public void getAllDept() {
+        deptService.getAllDept();
+    }
+
+    // @RequestMapping("/selectAll")
+    // public void selectAll(){
+    //     PageHelper.startPage(1,10);
+    //     PageInfo<StudentDO> studentDOS = new PageInfo<>(studentMapper.selectAll());
+    //     System.out.println(studentDOS);
+    // }
+    // // todo 这里显然是注入不了的
+    // @Autowired(required = false)
+    // NoImplInterface noImplInterface;
+    //
+    // @Autowired
+    // DataSource dataSource;
+
+    // @RequestMapping("/say2")
+    // public void say2() throws SQLException {
+    //     System.out.println(dataSource.toString());
+    //     System.out.println(dataSource.getConnection().getMetaData().getURL());
+    // }
 }

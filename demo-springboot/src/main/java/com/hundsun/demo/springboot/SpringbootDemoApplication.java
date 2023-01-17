@@ -4,9 +4,9 @@ import com.hundsun.demo.springboot.service.serviceimpl.StudentServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.AbstractApplicationContext;
-import tk.mybatis.spring.annotation.MapperScan;
 
 /**
  * @ProductName: Hundsun amust
@@ -20,8 +20,12 @@ import tk.mybatis.spring.annotation.MapperScan;
  * <p>
  * Copyright  2022 Hundsun Technologies Inc. All Rights Reserved
  */
-@SpringBootApplication
-@MapperScan("com.hundsun.demo.springboot.mapper")
+@SpringBootApplication(exclude = {
+        DataSourceAutoConfiguration.class,
+        DataSourceTransactionManagerAutoConfiguration.class
+})
+// @SpringBootApplication
+// @MapperScan("com.hundsun.demo.springboot.mapper")
 @Slf4j
 public class SpringbootDemoApplication {
 

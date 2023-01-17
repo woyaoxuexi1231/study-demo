@@ -1,13 +1,10 @@
 package com.hundsun.demo.springboot.service.serviceimpl;
 
-import com.hundsun.demo.springboot.mapper.TeacherMapper;
 import com.hundsun.demo.springboot.model.domian.TeacherDO;
 import com.hundsun.demo.springboot.service.TeacherService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
 
 /**
  * @ProductName: Hundsun amust
@@ -24,8 +21,8 @@ import javax.annotation.Resource;
 @Service
 public class TeacherServiceImpl implements TeacherService {
 
-    @Resource
-    TeacherMapper teacherMapper;
+    // @Resource
+    // TeacherMapper teacherMapper;
 
     @Override
     @Transactional(propagation = Propagation.NEVER)
@@ -33,7 +30,7 @@ public class TeacherServiceImpl implements TeacherService {
         TeacherDO teacherDO = new TeacherDO();
         teacherDO.setName("2");
         teacherDO.setAge(2);
-        teacherMapper.insertSelective(teacherDO);
+        // teacherMapper.insertSelective(teacherDO);
     }
 
     @Override
@@ -48,7 +45,7 @@ public class TeacherServiceImpl implements TeacherService {
         TeacherDO teacherDO = new TeacherDO();
         teacherDO.setName("3");
         teacherDO.setAge(3);
-        teacherMapper.insertSelective(teacherDO);
+        // teacherMapper.insertSelective(teacherDO);
         int a = 1 / 0;
     }
 

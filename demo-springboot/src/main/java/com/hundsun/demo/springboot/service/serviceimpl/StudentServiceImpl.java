@@ -1,9 +1,10 @@
 package com.hundsun.demo.springboot.service.serviceimpl;
 
-import com.hundsun.demo.springboot.mapper.StudentMapper;
+import com.hundsun.demo.springboot.mapper.mysql.StudentMapper;
 import com.hundsun.demo.springboot.model.domian.StudentDO;
 import com.hundsun.demo.springboot.service.StudentService;
 import com.hundsun.demo.springboot.service.TeacherService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,7 @@ import javax.annotation.Resource;
  * Copyright  2022 Hundsun Technologies Inc. All Rights Reserved
  */
 @Service
+@Slf4j
 public class StudentServiceImpl implements StudentService {
 
     @Resource
@@ -36,9 +38,14 @@ public class StudentServiceImpl implements StudentService {
     public void insertRequired() {
 
         StudentDO studentDO = StudentDO.builder().name("张三").age(28).build();
-        studentMapper.insertSelective(studentDO);
+        // studentMapper.insertSelective(studentDO);
 
         teacherService.insertNever();
         teacherService.insertSupports();
+    }
+
+    @Override
+    public void getAllStudent() {
+        log.info(studentMapper.selectAll().toString());
     }
 }
