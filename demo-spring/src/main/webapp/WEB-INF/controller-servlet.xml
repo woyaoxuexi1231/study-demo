@@ -15,5 +15,6 @@
     <bean name="/test.do" class="com.hundsun.demo.spring.controller.TestController">
         <property name="hiService" ref="hiService"/>
         <property name="viewName" value="SayHi"/>
+        <property name="studentService" ref="studentService"/>
     </bean>
 </beans>

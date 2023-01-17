@@ -4,5 +4,31 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean name="hiService" class="com.hundsun.demo.spring.service.impl.HiServiceImpl"/>
-    <bean class="com.hundsun.demo.spring.listener.SimpleListener" />
+    <bean class="com.hundsun.demo.spring.listener.SimpleListener"/>
+    <bean name="studentService" class="com.hundsun.demo.spring.service.impl.StudentServiceImpl"/>
+
+    <bean id="dataSource1" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url"
+                  value="jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>
+        <property name="username" value="root"/>
+        <property name="password" value="123456"/>
+    </bean>
+
+    <bean id="dataSource2" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+        <property name="url"
+                  value="jdbc:oracle:thin:@localhost:1521:ORCL"/>
+        <property name="username" value="SCOTT"/>
+        <property name="password" value="Abcd1234"/>
+    </bean>
+
+    <bean id="jdbcTemplate1" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource1"/>
+    </bean>
+
+    <bean id="jdbcTemplate2" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource2"/>
+    </bean>
+
 </beans>

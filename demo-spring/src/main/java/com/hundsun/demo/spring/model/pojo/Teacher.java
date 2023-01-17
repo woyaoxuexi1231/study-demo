@@ -21,9 +21,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Teacher {
 
+    /**
+     *
+     */
     private String name;
 
+    /**
+     *
+     */
     private String major;
 
+    /**
+     *
+     */
     private Integer studentCount;
 }

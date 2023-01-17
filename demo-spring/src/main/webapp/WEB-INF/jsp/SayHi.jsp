@@ -13,6 +13,8 @@
 <body>
 <p>
     ${hello}
+    ${student}
+    ${depts}
 </p>
 </body>
 </html>
