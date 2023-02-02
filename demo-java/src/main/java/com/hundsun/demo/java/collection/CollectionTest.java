@@ -3,6 +3,7 @@ package com.hundsun.demo.java.collection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @ProductName: Hundsun amust
@@ -35,9 +36,16 @@ public class CollectionTest {
     private LinkedList<?> linkedList;
 
     /**
+     * 线程安全的 ArrayList
+     * 新增和删除都只是加了一个 ReentrantLock
+     * 写时复制 - 新增时直接新建一个数组, 不操作原数组, 最后把新元素加入队伍末尾
+     */
+    private CopyOnWriteArrayList<?> copyOnWriteArrayList;
+
+    /**
      * 非线程安全
      * 默认初始大小为 1<<4, 扩容因子为 0.75, 每次扩容变大一倍, 且所有元素重新洗牌
      * Node[]下标处的链表超过长度8时, 链表变为红黑树
      */
-    private HashMap<?,?> hashMap;
+    private HashMap<?, ?> hashMap;
 }
