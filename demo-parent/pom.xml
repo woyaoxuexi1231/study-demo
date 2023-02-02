@@ -49,7 +49,7 @@
         <hutool.core.version>5.6.1</hutool.core.version>
         <cglib.version>3.2.10</cglib.version>
         <mybatis.generator.core.version>1.3.2</mybatis.generator.core.version>
-        <mapper.spring.boot.starter.version>2.1.5</mapper.spring.boot.starter.version>
+        <mapper.spring.boot.starter.version>4.2.1</mapper.spring.boot.starter.version>
         <commons.io.version>2.6</commons.io.version>
         <pagehelper.spring.boot.starter.version>1.3.0</pagehelper.spring.boot.starter.version>
         <apache.poi.version>4.0.1</apache.poi.version>
@@ -64,6 +64,8 @@
         <ojdbc8.version>21.5.0.0</ojdbc8.version>
         <orai18n.version>21.5.0.0</orai18n.version>
         <guava.version>21.0</guava.version>
+        <javax.servlet.jsp.version>2.2.1</javax.servlet.jsp.version>
+        <mybatis.version>3.5.9</mybatis.version>
 
         <!--插件版本-->
         <spring.boot.maven.plugin.version>2.2.6.RELEASE</spring.boot.maven.plugin.version>
@@ -196,6 +198,13 @@
                 <version>${mapper.spring.boot.starter.version}</version>
             </dependency>
 
+            <!--mybatis 的入门依赖-->
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis</artifactId>
+                <version>${mybatis.version}</version>
+            </dependency>
+
             <!--Spring版本的PageHelper分页插件-->
             <!--使用这个依赖，springboot会自动装配，不需要再配置文件配置也可以使用-->
             <!--使用tkmybatis包含了mybatis和mybatis spring两个包，这里移除-->
@@ -280,6 +289,13 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.plugin.version}</version>
+            </dependency>
+
+            <!-- Classes and interfaces for the Core JSP 2.0 API. -->
+            <dependency>
+                <groupId>javax.servlet.jsp</groupId>
+                <artifactId>javax.servlet.jsp-api</artifactId>
+                <version>${javax.servlet.jsp.version}</version>
             </dependency>
 
         </dependencies>
