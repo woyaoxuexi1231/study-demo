@@ -6,7 +6,6 @@
     <bean id="student" class="com.hundsun.demo.spring.model.pojo.Student">
         <property name="age" value="13"/>
         <property name="name" value="xxx"/>
-        <property name="sid" value="001"/>
     </bean>
     <bean name="teacher" class="com.hundsun.demo.spring.model.pojo.Teacher">
         <constructor-arg index="0" value="aaa"/>
