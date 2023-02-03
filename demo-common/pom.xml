@@ -17,6 +17,7 @@
         <module>demo-common-starter</module>
         <module>demo-common-redis</module>
         <module>demo-common-curator</module>
+        <module>demo-commom-cloud</module>
     </modules>
 
     <properties>

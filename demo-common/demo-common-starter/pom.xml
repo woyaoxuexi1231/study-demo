@@ -49,7 +49,7 @@
 
         <dependency>
             <groupId>com.hundsun</groupId>
-            <artifactId>demo-cloud-commom</artifactId>
+            <artifactId>demo-commom-cloud</artifactId>
             <version>${demo.cloud.common.version}</version>
         </dependency>
 

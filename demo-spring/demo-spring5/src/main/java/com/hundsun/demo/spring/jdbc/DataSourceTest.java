@@ -28,7 +28,7 @@ public class DataSourceTest {
 
 
     private static final String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
-    private static final String MYSQL_URL = "jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai";
+    private static final String MYSQL_URL = "jdbc:mysql://192.168.175.128:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai";
     private static final String MYSQL_USER = "root";
     private static final String MYSQL_PASS = "123456";
 
@@ -43,6 +43,9 @@ public class DataSourceTest {
     private static final String MYSQL_SQL = "select * from student";
 
 
+    public static void main(String[] args) {
+        jdbc();
+    }
 
     /**
      * 通过 spring 的 DriverManagerDataSource + JdbcTemplate 访问
@@ -68,36 +71,38 @@ public class DataSourceTest {
         Statement statement = null;
         try {
             // 注册 jdbc 驱动类
-            Class.forName(ORACLE_DRIVER);
+            // Class.forName(MYSQL_DRIVER);
             // 获取连接
-            connection = DriverManager.getConnection(ORACLE_URL, ORACLE_USER, ORACLE_PASS);
+            connection = DriverManager.getConnection(MYSQL_URL, MYSQL_USER, MYSQL_PASS);
             // 实例化 Statement 对象
             statement = connection.createStatement();
 
 
-            ResultSet rs = statement.executeQuery(ORACLE_SQL);
+            ResultSet rs = statement.executeQuery(MYSQL_SQL);
 
             // 展开结果集数据库
             while (rs.next()) {
                 // 通过字段检索
-                int DEPTNO = rs.getInt("DEPTNO");
-                String DNAME = rs.getString("DNAME");
-                String LOC = rs.getString("LOC");
-
-                // 输出数据
-                System.out.print("DEPTNO: " + DEPTNO);
-                System.out.print(", DNAME: " + DNAME);
-                System.out.print(", LOC: " + LOC);
-                System.out.println();
+                // int DEPTNO = rs.getInt("DEPTNO");
+                // String DNAME = rs.getString("DNAME");
+                // String LOC = rs.getString("LOC");
+                //
+                // // 输出数据
+                // System.out.print("DEPTNO: " + DEPTNO);
+                // System.out.print(", DNAME: " + DNAME);
+                // System.out.print(", LOC: " + LOC);
+                // System.out.println();
+                System.out.println(rs.getString("name"));
+                System.out.println(rs.getInt("age"));
             }
             // 完成后关闭
             rs.close();
             statement.close();
             connection.close();
 
-        } catch (ClassNotFoundException e) {
+        // } catch (ClassNotFoundException e) {
             // 找不到 jdbc 驱动类, 后面的操作都没意义了, 连不上
-            throw new RuntimeException(e);
+            // throw new RuntimeException(e);
         } catch (SQLException e) {
             // 连接获取失败
             throw new RuntimeException(e);

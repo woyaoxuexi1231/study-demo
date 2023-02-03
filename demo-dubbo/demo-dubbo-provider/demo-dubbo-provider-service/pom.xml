@@ -28,7 +28,7 @@
 
         <dependency>
             <groupId>com.hundsun</groupId>
-            <artifactId>demo-cloud-commom</artifactId>
+            <artifactId>demo-commom-cloud</artifactId>
             <version>${demo.cloud.commom.version}</version>
         </dependency>
 
