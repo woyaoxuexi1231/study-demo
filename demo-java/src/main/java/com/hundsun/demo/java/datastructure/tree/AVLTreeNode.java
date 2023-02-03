@@ -4,7 +4,7 @@ package com.hundsun.demo.java.datastructure.tree;
  * @projectName: study-demo
  * @package: com.hundsun.demo.java.tree
  * @className: AVLTreeNode
- * @description:
+ * @description: 二叉平衡树
  * @author: h1123
  * @createDate: 2023/2/2 23:40
  */
