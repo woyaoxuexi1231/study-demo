@@ -44,33 +44,17 @@ public class AVLTreeNode extends BiTreeNode<Integer> {
                 this.setRight(node);
                 return this;
             } else {
-                // 这里判断走向, 以确定如果失衡, 具体采用哪种旋转方法
-                if (node.getData() > right.getData()) {
-                    // 插入右孩子的右子树
-                    if (right.getRight() == null) {
-                        right.setRight(node);
-                    } else {
-                        right.getRight().add(node);
-                    }
-                    // 添加完成后进行计算平衡因子, 如果失衡了
-                    int balance = this.getBF();
-                    if (balance < -1) {
-                        // 这种情况是 RR, 直接左旋
-                        return treeUtils.rrRotate(this.getMinBalNode(this));
-                    }
+                right.add(node);
+            }
+            int balance = this.getBF();
+            if (balance < -1) {
+                // 失衡了
+                if (right.getBF() < 0) {
+                    // 说明在右孩子的右子树插入节点导致失衡
+                    return treeUtils.rrRotate(this);
                 } else {
-                    // 这里插入右孩子的左子树
-                    if (right.getLeft() == null) {
-                        right.setLeft(node);
-                    } else {
-                        right.getLeft().add(node);
-                    }
-                    // 添加完成后进行计算平衡因子, 如果失衡了
-                    int balance = this.getBF();
-                    if (balance < -1) {
-                        // 这种情况是 RR, 直接左旋
-                        return treeUtils.rlRotate(this);
-                    }
+                    // 说明在右孩子的左子树插入节点导致失衡
+                    return treeUtils.rlRotate(this);
                 }
             }
         } else if (node.getData() < getData()) {
@@ -80,33 +64,17 @@ public class AVLTreeNode extends BiTreeNode<Integer> {
                 this.setLeft(node);
                 return this;
             } else {
-                // 这里判断走向, 以确定如果失衡, 具体采用哪种旋转方法
-                if (node.getData() > left.getData()) {
-                    // 插入左孩子的右子树
-                    if (left.getRight() == null) {
-                        left.setRight(node);
-                    } else {
-                        left.getRight().add(node);
-                    }
-                    // 添加完成后进行计算平衡因子, 如果失衡了
-                    int balance = this.getBF();
-                    if (balance > 1) {
-                        // 这种情况是 LR
-                        return treeUtils.lrRotate(this);
-                    }
+                left.add(node);
+            }
+            int balance = this.getBF();
+            if (balance > 1) {
+                // 失衡了
+                if (left.getBF() > 0) {
+                    // 说明在左孩子的左子树插入节点导致失衡
+                    return treeUtils.llRotate(this);
                 } else {
-                    // 这里插入左孩子的左子树
-                    if (left.getLeft() == null) {
-                        left.setLeft(node);
-                    } else {
-                        left.getLeft().add(node);
-                    }
-                    // 添加完成后进行计算平衡因子, 如果失衡了
-                    int balance = this.getBF();
-                    if (balance > 1) {
-                        // 这种情况是 LL
-                        return treeUtils.llRotate(this);
-                    }
+                    // 说明在左孩子的右子树插入节点导致失衡
+                    return treeUtils.lrRotate(this);
                 }
             }
         } else {
@@ -127,14 +95,4 @@ public class AVLTreeNode extends BiTreeNode<Integer> {
         return super.getLeft();
     }
 
-    public BiTreeNode<Integer> getMinBalNode(BiTreeNode<Integer> node) {
-        if ((node.getLeft() == null || (node.getLeft().getBF() <= 1 && node.getLeft().getBF() >= -1))
-                && ((node.getRight() == null || (node.getRight().getBF() <= 1 && node.getRight().getBF() >= -1)))) {
-            return node;
-        } else if (node.getLeft() != null && (node.getLeft().getBF() > 1 || node.getLeft().getBF() < -1)) {
-            return node.getMinBalNode(node.getLeft());
-        } else {
-            return node.getMinBalNode(node.getRight());
-        }
-    }
 }

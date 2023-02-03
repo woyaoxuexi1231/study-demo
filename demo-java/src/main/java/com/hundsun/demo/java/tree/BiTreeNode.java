@@ -89,5 +89,4 @@ public abstract class BiTreeNode<T> {
 
     public abstract BiTreeNode<T> add(BiTreeNode<T> node);
 
-    public abstract BiTreeNode<T> getMinBalNode(BiTreeNode<T> node);
 }

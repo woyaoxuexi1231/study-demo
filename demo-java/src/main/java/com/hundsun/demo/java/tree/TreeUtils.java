@@ -72,11 +72,18 @@ public class TreeUtils<T> {
             // 获取左子树和左子树的右子树
             BiTreeNode<T> lson;
             if ((lson = parent.getLeft()) != null) {
-                // 设置父节点的左子树为左子树的右子树
+
+                // 1. 源节点的左子树的右子树 -> 源节点的左子树
                 parent.setLeft(lson.getRight());
-                // 左子树作为新的根节点
+                if (lson.getRight() != null) {
+                    lson.getRight().setParent(parent);
+                }
+
+                // 2. 源节点 -> 源节点的左子树的右子树
                 lson.setRight(parent);
+                parent.setParent(lson);
             }
+            // 3. 源节点的左子树作为新的根节点返回
             return lson;
         }
 
@@ -100,11 +107,18 @@ public class TreeUtils<T> {
             // 获取左子树和左子树的右子树
             BiTreeNode<T> rson;
             if ((rson = node.getRight()) != null) {
-                // 设置父节点的右子树为右子树的左子树
+
+                // 1. 源节点的右子树的左子树 -> 源节点的右子树
                 parent.setRight(rson.getLeft());
-                // 右子树作为新的根节点
+                if (rson.getLeft() != null) {
+                    rson.getLeft().setParent(parent);
+                }
+
+                // 2. 源节点 -> 源节点的右子树的左子树
                 rson.setLeft(parent);
             }
+
+            // 3. 源节点的右子树作为新的根节点返回
             return rson;
         }
 
