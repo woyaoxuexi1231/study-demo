@@ -21,16 +21,10 @@ import java.util.concurrent.locks.LockSupport;
  * @projectName: study-demo
  * @package: com.hundsun.demo.java.juc
  * @className: TaskTest
- * @description: Java并发编程之美 -- 第一章, 第二章主要内容
+ * @description: 笔记来自 《Java并发编程之美》
  * @author: h1123
  * @createDate: 2022/12/22 19:30
- * @updateUser: h1123
- * @updateDate: 2022/12/22 19:30
- * @updateRemark:
- * @version: v1.0
- * @see :
  */
-
 public class JUC {
 
     /* 创建线程的三种方式  */
