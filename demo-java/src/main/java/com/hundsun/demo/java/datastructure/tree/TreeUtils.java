@@ -7,11 +7,6 @@ package com.hundsun.demo.java.datastructure.tree;
  * @description:
  * @author: h1123
  * @createDate: 2023/2/1 23:07
- * @updateUser: h1123
- * @updateDate: 2023/2/1 23:07
- * @updateRemark:
- * @version: v1.0
- * @see :
  */
 
 public class TreeUtils<T> {
