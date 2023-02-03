@@ -9,11 +9,6 @@ import lombok.Data;
  * @description:
  * @author: h1123
  * @createDate: 2023/2/1 23:01
- * @updateUser: h1123
- * @updateDate: 2023/2/1 23:01
- * @updateRemark:
- * @version: v1.0
- * @see :
  */
 @Data
 public abstract class BiTreeNode<T> {
@@ -43,12 +38,24 @@ public abstract class BiTreeNode<T> {
      */
     private int depth;
 
+    /**
+     * constructor with data, left, right
+     *
+     * @param data  节点数据
+     * @param left  左子树
+     * @param right 右子树
+     */
     public BiTreeNode(T data, BiTreeNode<T> left, BiTreeNode<T> right) {
         this.data = data;
         this.left = left;
         this.right = right;
     }
 
+    /**
+     * default constructor
+     *
+     * @param data 节点数据
+     */
     public BiTreeNode(T data) {
         this.data = data;
     }
@@ -87,6 +94,18 @@ public abstract class BiTreeNode<T> {
         }
     }
 
+    /**
+     * 新增节点
+     *
+     * @param node 新增的节点
+     * @return 新的根节点
+     */
     public abstract BiTreeNode<T> add(BiTreeNode<T> node);
 
+    @Override
+    public String toString() {
+        return "BiTreeNode{" +
+                "data=" + data +
+                '}';
+    }
 }

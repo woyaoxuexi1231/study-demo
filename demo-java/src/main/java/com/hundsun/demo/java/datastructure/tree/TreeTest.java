@@ -7,11 +7,6 @@ package com.hundsun.demo.java.datastructure.tree;
  * @description:
  * @author: h1123
  * @createDate: 2023/2/2 0:16
- * @updateUser: h1123
- * @updateDate: 2023/2/2 0:16
- * @updateRemark:
- * @version: v1.0
- * @see :
  */
 
 public class TreeTest {
@@ -122,10 +117,15 @@ public class TreeTest {
 
         RL_TREE = a;
         a.setLeft(b);
+        b.setParent(a);
         a.setRight(c);
+        c.setParent(a);
         c.setLeft(d);
+        d.setParent(c);
         c.setRight(e);
+        e.setParent(c);
         d.setRight(f);
+        f.setParent(d);
 
     }
 
