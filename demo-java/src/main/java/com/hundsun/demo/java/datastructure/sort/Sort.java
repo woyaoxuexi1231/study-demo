@@ -1,4 +1,4 @@
-package com.hundsun.demo.java.algorithms;
+package com.hundsun.demo.java.datastructure.sort;
 
 import java.util.List;
 
@@ -9,13 +9,17 @@ import java.util.List;
  * @Description:
  * @Author: hulei42031
  * @Date: 2022/02/22 9:59
- * @Version: 1.0
- * <p>
- * Copyright © 2022 Hundsun Technologies Inc. All Rights Reserved
  */
 
 public class Sort {
 
+    /**
+     * 快速排序
+     *
+     * @param nums  源数组
+     * @param start 排序开始的下标
+     * @param end   排序结束的下标
+     */
     public void quickSort(List<Integer> nums, int start, int end) {
 
 
@@ -53,6 +57,19 @@ public class Sort {
 
     }
 
+    /**
+     * 冒泡排序
+     * <p>
+     * 原理 : 每次两两比较, 较大的元素总是往后沉, 最外层循环每次结束可以得到一个本次循环的最大数字, 并排在最后
+     * <p>
+     * 空间复杂度 : O(1)
+     * <p>
+     * 时间复杂度 : O(n^2)
+     * <p>
+     * 稳定排序算法
+     *
+     * @param nums 源数组
+     */
     public void buSort(List<Integer> nums) {
         for (int i = 0; i < nums.size(); i++) {
             for (int j = i; j < nums.size(); j++) {
