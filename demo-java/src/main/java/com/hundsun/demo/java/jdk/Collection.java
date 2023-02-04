@@ -1,10 +1,12 @@
 package com.hundsun.demo.java.jdk;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,6 +23,28 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Collection {
 
+    /*
+    Java集合主要由两大接口派生而来 - Collection 和 Map
+
+    Collection
+        Set
+            HashSet
+            LinkedHashSet
+            TreeSet
+        List
+            ArrayList
+            LinkedList
+            CopyOnWriteArrayList
+        Queue
+            ArrayDeque
+            PriorityQueue
+     Map
+        HashMap
+        LinkedHashMap
+        Hashtable
+        ConcurrentHashMap
+     */
+
     /**
      * 非线程安全
      * <p>
@@ -33,7 +57,7 @@ public class Collection {
     private ArrayList<?> arrayList;
 
     /**
-     * 非线程安全
+     * 非线程安全 - 可当作队列使用, 可以当作栈使用
      * <p>
      * 不扩容, 内部是一个双向链表, 每次添加的元素在队伍末尾
      * <p>
@@ -113,4 +137,22 @@ public class Collection {
      * JDK1.8使用 volatile + synchronized + CAS 实现线程安全
      */
     private ConcurrentHashMap<?, ?> concurrentHashMap;
+
+    /**
+     * Deque - double ended queue 双端队列, 可以当作队列和栈来使用
+     * <p>
+     * Stack是JDK早期设计的栈, 由于粗糙的设计以及性能不太好已经被抛弃使用
+     * <p>
+     * 现在在Java中推荐使用的首选是 ArrayDeque, 其次是 LinkedList, 当然这两个都不是线程安全的
+     */
+    private ArrayDeque<?> arrayDeque;
+
+    /**
+     * 优先队列
+     * <p>
+     * 保证每次取出的元素都是队列中权值最小的
+     * <p>
+     * 基于堆实现, 具体为小顶堆
+     */
+    private PriorityQueue<?> priorityQueue;
 }
