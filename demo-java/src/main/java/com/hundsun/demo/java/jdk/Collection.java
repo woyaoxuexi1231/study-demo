@@ -2,6 +2,7 @@ package com.hundsun.demo.java.jdk;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -68,5 +69,14 @@ public class Collection {
      */
     private HashMap<?, ?> hashMap;
 
-
+    /**
+     * 非线程安全
+     * <p>
+     * 基于 HashMap 实现的顺序的 Map
+     * <p>
+     * 内部的 Entry 继承自 HashMap 的 Node 结点, 结点是一个双向链表结点
+     * <p>
+     * 在 LinkedHashMap 内部保存着 head结点和 tail结点, 每次新增的时候会把新加的结点进行链接
+     */
+    private LinkedHashMap<?, ?> linkedHashMap;
 }
