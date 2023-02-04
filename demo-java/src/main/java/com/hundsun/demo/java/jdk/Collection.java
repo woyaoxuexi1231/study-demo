@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.TreeMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -79,4 +80,11 @@ public class Collection {
      * 在 LinkedHashMap 内部保存着 head结点和 tail结点, 每次新增的时候会把新加的结点进行链接
      */
     private LinkedHashMap<?, ?> linkedHashMap;
+
+    /**
+     * 非线程安全
+     * <p>
+     * 基于红黑树实现, 可以实现自定义排序
+     */
+    private TreeMap<?, ?> treeMap;
 }
