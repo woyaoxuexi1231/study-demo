@@ -2,10 +2,12 @@ package com.hundsun.demo.java.jdk;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -93,4 +95,22 @@ public class Collection {
      * Set系列全部底层全部复用的Map
      */
     private Set<?> set;
+
+    /**
+     * 线程安全的 HashMap
+     * <p>
+     * 实现方法很粗造, 几乎所有方法加上 synchronized 关键字来保证线程安全, 这导致效率低下
+     */
+    private Hashtable<?, ?> hashtable;
+
+    /**
+     * 线程安全的 HashMap - 效率很好
+     * <p>
+     * key 和 value 都不允许为 null, 会直接抛 NullPointerException
+     * <p>
+     * JDK1.7中ConcurrentHashMap采用了数组+Segment+分段锁的方式实现。
+     * <p>
+     * JDK1.8使用 volatile + synchronized + CAS 实现线程安全
+     */
+    private ConcurrentHashMap<?, ?> concurrentHashMap;
 }
