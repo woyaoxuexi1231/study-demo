@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -87,4 +88,9 @@ public class Collection {
      * 基于红黑树实现, 可以实现自定义排序
      */
     private TreeMap<?, ?> treeMap;
+
+    /**
+     * Set系列全部底层全部复用的Map
+     */
+    private Set<?> set;
 }
