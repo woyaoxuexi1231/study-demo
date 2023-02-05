@@ -1,7 +1,7 @@
-package com.hundsun.demo.java.pattern.factory.abs;
+package com.hundsun.demo.java.pattern.create.factory.abs;
 
-import com.hundsun.demo.java.pattern.factory.Benz;
-import com.hundsun.demo.java.pattern.factory.Car;
+import com.hundsun.demo.java.pattern.create.Benz;
+import com.hundsun.demo.java.pattern.create.Car;
 
 /**
  * @projectName: study-demo

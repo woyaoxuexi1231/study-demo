@@ -1,4 +1,4 @@
-package com.hundsun.demo.java.pattern.factory;
+package com.hundsun.demo.java.pattern.create;
 
 /**
  * @projectName: study-demo
