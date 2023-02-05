@@ -1,4 +1,4 @@
-package com.hundsun.demo.java.pattern.create;
+package com.hundsun.demo.java.pattern.creational;
 
 import lombok.Data;
 

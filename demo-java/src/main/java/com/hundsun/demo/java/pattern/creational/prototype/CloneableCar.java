@@ -1,6 +1,6 @@
-package com.hundsun.demo.java.pattern.create.prototype;
+package com.hundsun.demo.java.pattern.creational.prototype;
 
-import com.hundsun.demo.java.pattern.create.Car;
+import com.hundsun.demo.java.pattern.creational.Car;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

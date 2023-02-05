@@ -1,6 +1,6 @@
-package com.hundsun.demo.java.pattern.create;
+package com.hundsun.demo.java.pattern.creational;
 
-import com.hundsun.demo.java.pattern.create.builder.BenzAndFerrariBuilder;
+import com.hundsun.demo.java.pattern.creational.builder.BenzAndFerrariBuilder;
 
 /**
  * @projectName: study-demo

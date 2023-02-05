@@ -1,13 +1,13 @@
-package com.hundsun.demo.java.pattern.create;
+package com.hundsun.demo.java.pattern.creational;
 
 /**
  * @projectName: study-demo
  * @package: com.hundsun.demo.java.pattern.factory
- * @className: Ferrari
+ * @className: Lamborghini
  * @description:
  * @author: h1123
  * @createDate: 2023/2/5 17:38
  */
 
-public class Ferrari extends Car{
+public class Lamborghini extends Car{
 }

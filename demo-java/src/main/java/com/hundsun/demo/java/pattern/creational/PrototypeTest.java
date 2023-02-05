@@ -1,6 +1,6 @@
-package com.hundsun.demo.java.pattern.create;
+package com.hundsun.demo.java.pattern.creational;
 
-import com.hundsun.demo.java.pattern.create.prototype.CloneableCar;
+import com.hundsun.demo.java.pattern.creational.prototype.CloneableCar;
 
 /**
  * @projectName: study-demo

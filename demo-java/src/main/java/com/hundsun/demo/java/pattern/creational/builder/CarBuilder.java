@@ -1,6 +1,6 @@
-package com.hundsun.demo.java.pattern.create.builder;
+package com.hundsun.demo.java.pattern.creational.builder;
 
-import com.hundsun.demo.java.pattern.create.Car;
+import com.hundsun.demo.java.pattern.creational.Car;
 import lombok.Data;
 
 /**

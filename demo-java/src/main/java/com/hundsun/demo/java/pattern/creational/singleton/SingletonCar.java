@@ -1,6 +1,6 @@
-package com.hundsun.demo.java.pattern.create.singleton;
+package com.hundsun.demo.java.pattern.creational.singleton;
 
-import com.hundsun.demo.java.pattern.create.Car;
+import com.hundsun.demo.java.pattern.creational.Car;
 
 /**
  * @projectName: study-demo
