@@ -1,4 +1,4 @@
-package com.hundsun.demo.dubbo.common.api.config;
+package com.hundsun.demo.common.autoconfigure.commom;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

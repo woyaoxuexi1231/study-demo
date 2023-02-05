@@ -1,5 +1,6 @@
-package com.hundsun.demo.dubbo.common.curator.config;
+package com.hundsun.demo.common.autoconfigure.curator;
 
+import com.hundsun.demo.dubbo.common.curator.config.CuratorConfiguration;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;

@@ -1,4 +1,4 @@
-package com.hundsun.demo.dubbo.common.api.config;
+package com.hundsun.demo.common.autoconfigure.commom;
 
 
 import com.hundsun.demo.dubbo.common.api.aop.DoneTimeAspect;
