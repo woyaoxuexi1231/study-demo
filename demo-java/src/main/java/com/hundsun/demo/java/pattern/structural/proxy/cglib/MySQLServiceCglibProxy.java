@@ -1,6 +1,6 @@
-package com.hundsun.demo.java.pattern.proxy.cglib;
+package com.hundsun.demo.java.pattern.structural.proxy.cglib;
 
-import com.hundsun.demo.java.pattern.proxy.MySQLService;
+import com.hundsun.demo.java.pattern.structural.proxy.MySQLService;
 import net.sf.cglib.core.DebuggingClassWriter;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.CallbackFilter;

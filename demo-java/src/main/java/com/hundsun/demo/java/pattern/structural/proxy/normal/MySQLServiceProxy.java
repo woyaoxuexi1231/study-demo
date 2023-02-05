@@ -1,7 +1,7 @@
-package com.hundsun.demo.java.pattern.proxy.normal;
+package com.hundsun.demo.java.pattern.structural.proxy.normal;
 
 
-import com.hundsun.demo.java.pattern.proxy.MySQLService;
+import com.hundsun.demo.java.pattern.structural.proxy.MySQLService;
 
 /**
  * @ProductName: Java

@@ -1,4 +1,4 @@
-package com.hundsun.demo.java.pattern.proxy;
+package com.hundsun.demo.java.pattern.structural.proxy;
 
 /**
  * @ProductName: Java

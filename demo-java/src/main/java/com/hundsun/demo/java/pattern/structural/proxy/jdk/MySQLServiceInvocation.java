@@ -1,7 +1,7 @@
-package com.hundsun.demo.java.pattern.proxy.jdk;
+package com.hundsun.demo.java.pattern.structural.proxy.jdk;
 
 
-import com.hundsun.demo.java.pattern.proxy.MySQLService;
+import com.hundsun.demo.java.pattern.structural.proxy.MySQLService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationHandler;

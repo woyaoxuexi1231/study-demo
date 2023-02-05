@@ -1,8 +1,10 @@
-package com.hundsun.demo.java.pattern.proxy;
+package com.hundsun.demo.java.pattern.structural;
 
-import com.hundsun.demo.java.pattern.proxy.cglib.MySQLServiceCglibProxy;
-import com.hundsun.demo.java.pattern.proxy.jdk.MySQLServiceInvocation;
-import com.hundsun.demo.java.pattern.proxy.normal.MySQLServiceProxy;
+import com.hundsun.demo.java.pattern.structural.proxy.MySQLService;
+import com.hundsun.demo.java.pattern.structural.proxy.MySQLServiceImpl;
+import com.hundsun.demo.java.pattern.structural.proxy.cglib.MySQLServiceCglibProxy;
+import com.hundsun.demo.java.pattern.structural.proxy.jdk.MySQLServiceInvocation;
+import com.hundsun.demo.java.pattern.structural.proxy.normal.MySQLServiceProxy;
 
 /**
  * @projectName: study-demo
@@ -20,7 +22,7 @@ public class ProxyTest {
 
     Java中有三种方式来供我们创建代理对象, 自定义的静态代理, JDK提供的动态代理, CGLIB代理
 
-    代理模式的思想在很多地方都有体现, 日志系统、SpringAop、事务
+    代理模式的思想在很多地方都有体现, 日志系统、SpringAop、事务, vpn
      */
 
     public static void main(String[] args) {
