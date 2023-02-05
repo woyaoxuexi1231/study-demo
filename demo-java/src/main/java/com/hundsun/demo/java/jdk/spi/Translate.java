@@ -14,7 +14,7 @@ public interface Translate {
     /*
     SPI - Service Provider Interface
     JDK内置的一种服务提供发现机制, 可以用来启动框架和替换组件.
-    SPI的应用场景有 JDBC, Common-Logging, Dubbo
+    SPI的应用场景有 JDBC, Common-Logging, Dubbo, SpringBoot自动配置
 
     SPI的流程
     1. 定义接口标准(就像java.sql.Driver接口)
