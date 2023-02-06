@@ -1,6 +1,6 @@
 package com.hundsun.demo.spring.jdbc;
 
-import com.hundsun.demo.spring.model.pojo.Student;
+import com.hundsun.demo.spring.model.pojo.CustomerDO;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -28,7 +28,7 @@ public class DataSourceTest {
 
 
     private static final String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
-    private static final String MYSQL_URL = "jdbc:mysql://192.168.175.128:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai";
+    private static final String MYSQL_URL = "jdbc:mysql://192.168.175.128:3306/yiibaidb?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai";
     private static final String MYSQL_USER = "root";
     private static final String MYSQL_PASS = "123456";
 
@@ -38,9 +38,9 @@ public class DataSourceTest {
     private static final String ORACLE_PASS = "Abcd1234";
 
 
-    private static final String ORACLE_SQL = "select * from DEPT";
+    // private static final String ORACLE_SQL = "select * from DEPT";
 
-    private static final String MYSQL_SQL = "select * from student";
+    private static final String MYSQL_SQL = "select * from customers limit 0,10";
 
 
     public static void main(String[] args) {
@@ -52,11 +52,11 @@ public class DataSourceTest {
      */
     public static void springDataSource() {
 
-        DriverManagerDataSource dataSource = new DriverManagerDataSource(MYSQL_URL,MYSQL_USER,MYSQL_PASS);
+        DriverManagerDataSource dataSource = new DriverManagerDataSource(MYSQL_URL, MYSQL_USER, MYSQL_PASS);
         dataSource.setDriverClassName(MYSQL_DRIVER);
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
-        Object object = jdbcTemplate.query(MYSQL_SQL,new BeanPropertyRowMapper<>(Student.class));
+        Object object = jdbcTemplate.query(MYSQL_SQL, new BeanPropertyRowMapper<>(CustomerDO.class));
 
         System.out.println(object);
     }
@@ -66,43 +66,33 @@ public class DataSourceTest {
      */
     public static void jdbc() {
 
-
         Connection connection = null;
         Statement statement = null;
+
         try {
-            // 注册 jdbc 驱动类
-            // Class.forName(MYSQL_DRIVER);
+
+            // 注册 JDBC 驱动类
+            Class.forName(MYSQL_DRIVER);
             // 获取连接
             connection = DriverManager.getConnection(MYSQL_URL, MYSQL_USER, MYSQL_PASS);
             // 实例化 Statement 对象
             statement = connection.createStatement();
 
-
+            // 处理结果
             ResultSet rs = statement.executeQuery(MYSQL_SQL);
-
-            // 展开结果集数据库
             while (rs.next()) {
                 // 通过字段检索
-                // int DEPTNO = rs.getInt("DEPTNO");
-                // String DNAME = rs.getString("DNAME");
-                // String LOC = rs.getString("LOC");
-                //
-                // // 输出数据
-                // System.out.print("DEPTNO: " + DEPTNO);
-                // System.out.print(", DNAME: " + DNAME);
-                // System.out.print(", LOC: " + LOC);
-                // System.out.println();
-                System.out.println(rs.getString("name"));
-                System.out.println(rs.getInt("age"));
+                System.out.println(rs.getString("customerName") + " - " + rs.getString("phone"));
             }
+
             // 完成后关闭
             rs.close();
             statement.close();
             connection.close();
 
-        // } catch (ClassNotFoundException e) {
-            // 找不到 jdbc 驱动类, 后面的操作都没意义了, 连不上
-            // throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            // 找不到 JDBC 驱动类
+            throw new RuntimeException(e);
         } catch (SQLException e) {
             // 连接获取失败
             throw new RuntimeException(e);
