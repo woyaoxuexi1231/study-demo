@@ -7,10 +7,11 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
-  <head>
-    <title>$Title$</title>
-  </head>
-  <body>
-  $END$
-  </body>
+<head>
+    <title>这是一个简单web应用</title>
+</head>
+<body>
+<b>Hello : <%= request.getAttribute("name")%>
+</b>
+</body>
 </html>
