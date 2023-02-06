@@ -11,10 +11,5 @@
     <title>Title</title>
 </head>
 <body>
-<p>
-    ${hello}
-    ${student}
-    ${depts}
-</p>
 </body>
 </html>
