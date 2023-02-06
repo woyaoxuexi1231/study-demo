@@ -105,14 +105,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
                 <version>${spring.boot.starter.web.version}</version>
-                <exclusions>
-                    <!--排除logback日志，在下文导入log4j来作为项目的日志记录-->
-                    <!--当springboot自带的logback生效时，会无视log4j日志，log4j的配置同时也会失效 -->
-                    <exclusion>
-                        <groupId>org.springframework.boot</groupId>
-                        <artifactId>spring-boot-starter-logging</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <!--redis-->
@@ -212,20 +204,6 @@
                 <groupId>com.github.pagehelper</groupId>
                 <artifactId>pagehelper-spring-boot-starter</artifactId>
                 <version>${pagehelper.spring.boot.starter.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>spring-boot-starter-logging</artifactId>
-                        <groupId>org.springframework.boot</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>mybatis-spring</artifactId>
-                        <groupId>org.mybatis</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>mybatis</artifactId>
-                        <groupId>org.mybatis</groupId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <!--Hutool是一个小而全的Java工具类库，通过静态方法封装，降低相关API的学习成本，提高工作效率，使Java拥有函数式语言般的优雅，让Java语言也可以“甜甜的”。-->

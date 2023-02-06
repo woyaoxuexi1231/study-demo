@@ -33,6 +33,11 @@
             <artifactId>spring-boot</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+
         <!--curator-->
         <dependency>
             <groupId>org.apache.curator</groupId>

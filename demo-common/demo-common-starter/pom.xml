@@ -34,7 +34,6 @@
             <version>${demo.common.verison}</version>
         </dependency>
 
-
         <dependency>
             <groupId>com.hundsun</groupId>
             <artifactId>demo-commom-cloud</artifactId>
