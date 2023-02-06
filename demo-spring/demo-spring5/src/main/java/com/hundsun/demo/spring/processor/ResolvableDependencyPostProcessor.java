@@ -1,9 +1,6 @@
 package com.hundsun.demo.spring.processor;
 
-import com.hundsun.demo.spring.service.ResolvableDependencyA;
-import com.hundsun.demo.spring.service.ResolvableDependencyB;
-import com.hundsun.demo.spring.service.impl.ResolvableDependencyImplA;
-import com.hundsun.demo.spring.service.impl.ResolvableDependencyImplB;
+import com.hundsun.demo.java.pattern.structural.proxy.MySQLService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -15,19 +12,16 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
  * @description:
  * @author: h1123
  * @createDate: 2022/11/17 22:07
- * @updateUser: h1123
- * @updateDate: 2022/11/17 22:07
- * @updateRemark:
- * @version: v1.0
- * @see :
  */
 
 public class ResolvableDependencyPostProcessor implements BeanFactoryPostProcessor {
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
-        configurableListableBeanFactory.registerResolvableDependency(ResolvableDependencyA.class,new ResolvableDependencyImplA());
-        configurableListableBeanFactory.registerResolvableDependency(ResolvableDependencyB.class,new ResolvableDependencyImplB());
-
+        /*
+        该方法的主要作用就是指定该类型接口, 如果外部要注入该类型接口的对象, 则会注入我们指定的对象, 而不会去管其他接口实现类
+        这里我们实现一个简单的代理模式
+         */
+        configurableListableBeanFactory.registerResolvableDependency(MySQLService.class, configurableListableBeanFactory.getBean("mySQLServiceProxy"));
     }
 }

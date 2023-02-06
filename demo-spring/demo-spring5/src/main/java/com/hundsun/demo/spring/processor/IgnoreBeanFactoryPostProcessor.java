@@ -12,17 +12,13 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
  * @description:
  * @author: h1123
  * @createDate: 2022/11/17 21:26
- * @updateUser: h1123
- * @updateDate: 2022/11/17 21:26
- * @updateRemark:
- * @version: v1.0
- * @see :
  */
 
 public class IgnoreBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
-        // configurableListableBeanFactory.ignoreDependencyInterface(IgnoreAware.class);
+        // 这个方法用于忽略指定接口类型的 bean 的自动注入(不会被自动注入到其他类中)
+        configurableListableBeanFactory.ignoreDependencyInterface(IgnoreAware.class);
     }
 }
