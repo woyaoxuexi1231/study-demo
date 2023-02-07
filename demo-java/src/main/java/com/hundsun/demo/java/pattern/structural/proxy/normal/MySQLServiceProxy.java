@@ -2,6 +2,7 @@ package com.hundsun.demo.java.pattern.structural.proxy.normal;
 
 
 import com.hundsun.demo.java.pattern.structural.proxy.MySQLService;
+import lombok.Data;
 
 /**
  * @ProductName: Java
@@ -12,13 +13,16 @@ import com.hundsun.demo.java.pattern.structural.proxy.MySQLService;
  * @Version: 1.0
  * <p>
  */
-
+@Data
 public class MySQLServiceProxy implements MySQLService {
 
     /**
      * 被代理的对象
      */
-    private final MySQLService mySqlService;
+    private MySQLService mySqlService;
+
+    public MySQLServiceProxy() {
+    }
 
     public MySQLServiceProxy(MySQLService mySqlService) {
         this.mySqlService = mySqlService;
