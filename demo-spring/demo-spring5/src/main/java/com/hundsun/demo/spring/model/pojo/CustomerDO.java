@@ -1,5 +1,7 @@
 package com.hundsun.demo.spring.model.pojo;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 
 /**
@@ -10,6 +12,7 @@ import java.math.BigDecimal;
  * @author: h1123
  * @createDate: 2023/2/7 0:31
  */
+@Data
 public class CustomerDO {
 
     /**
