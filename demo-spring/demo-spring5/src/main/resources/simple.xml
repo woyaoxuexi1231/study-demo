@@ -7,4 +7,24 @@
           init-method="init"
           destroy-method="destroy" autowire="byType"/>
 
+    <!-- 数据库连接 -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url"
+                  value="jdbc:mysql://192.168.175.128:3306/yiibaidb?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>
+        <property name="username" value="root"/>
+        <property name="password" value="123456"/>
+    </bean>
+
+    <!-- Mybatis -->
+    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="mybatis-config.xml"/>
+    </bean>
+    <!--配置 Mybatis 接口扫描, Mybatis 通过这种方式帮我们把 mapper 接口做成实现类, 并注册成 bean-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.hundsun.demo.spring.mybatis"/>
+    </bean>
+    <bean class="com.hundsun.demo.spring.mybatis.MyBatisTest" autowire="byName"/>
+
 </beans>

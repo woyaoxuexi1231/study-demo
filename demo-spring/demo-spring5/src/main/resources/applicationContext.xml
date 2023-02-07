@@ -3,12 +3,18 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+    <!-- <context:component-scan base-package="com.hundsun.demo.spring"></context:com> -->
+
     <!-- BeanFactoryPostProcessor -->
     <bean class="com.hundsun.demo.spring.processor.IgnoreBeanFactoryPostProcessor"/>
     <bean class="com.hundsun.demo.spring.processor.ResolvableDependencyPostProcessor"/>
     <bean class="com.hundsun.demo.spring.service.impl.IgnoreBean"/>
     <bean name="mySQLServiceImpl" class="com.hundsun.demo.java.pattern.structural.proxy.MySQLServiceImpl"/>
-    <bean name="mySQLServiceProxy" class="com.hundsun.demo.java.pattern.structural.proxy.normal.MySQLServiceProxy"/>
+    <bean name="mySQLServiceProxy" class="com.hundsun.demo.java.pattern.structural.proxy.normal.MySQLServiceProxy">
+        <property name="mySqlService" ref="mySQLServiceImpl"/>
+    </bean>
 
-    <!--<context:component-scan base-package="com.hundsun.demo.spring"></context:com>-->
+    <!-- ApplicationListener -->
+    <bean class="com.hundsun.demo.spring.listener.SimpleListener"/>
+
 </beans>
