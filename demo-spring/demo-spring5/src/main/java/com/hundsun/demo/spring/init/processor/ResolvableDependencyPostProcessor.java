@@ -1,4 +1,4 @@
-package com.hundsun.demo.spring.processor;
+package com.hundsun.demo.spring.init.processor;
 
 import com.hundsun.demo.java.pattern.structural.proxy.MySQLService;
 import org.springframework.beans.BeansException;

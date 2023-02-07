@@ -4,7 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean name="simpleService" class="com.hundsun.demo.spring.service.impl.SimpleServiceImpl"/>
-    <bean class="com.hundsun.demo.spring.listener.SimpleListener"/>
+    <bean class="com.hundsun.demo.spring.init.listener.SimpleListener"/>
     <bean name="yiibaidbService" class="com.hundsun.demo.spring.service.impl.YiibaidbServiceImpl"/>
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">

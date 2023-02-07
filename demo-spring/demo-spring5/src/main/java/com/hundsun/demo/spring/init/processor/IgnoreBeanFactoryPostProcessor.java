@@ -1,4 +1,4 @@
-package com.hundsun.demo.spring.processor;
+package com.hundsun.demo.spring.init.processor;
 
 import com.hundsun.demo.spring.service.IgnoreAware;
 import org.springframework.beans.BeansException;

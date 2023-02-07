@@ -1,7 +1,7 @@
 package com.hundsun.demo.spring.mybatis;
 
 import com.github.pagehelper.PageHelper;
-import com.hundsun.demo.spring.listener.SimpleEvent;
+import com.hundsun.demo.spring.init.listener.SimpleEvent;
 import com.hundsun.demo.spring.model.pojo.CustomerDO;
 import lombok.Data;
 import org.apache.ibatis.io.Resources;

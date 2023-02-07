@@ -1,4 +1,4 @@
-package com.hundsun.demo.spring.listener;
+package com.hundsun.demo.spring.init.listener;
 
 import org.springframework.context.ApplicationEvent;
 

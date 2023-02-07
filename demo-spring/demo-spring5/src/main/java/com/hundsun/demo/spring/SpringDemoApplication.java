@@ -1,6 +1,6 @@
 package com.hundsun.demo.spring;
 
-import com.hundsun.demo.spring.listener.SimpleEvent;
+import com.hundsun.demo.spring.init.listener.SimpleEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

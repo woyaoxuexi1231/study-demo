@@ -1,4 +1,4 @@
-package com.hundsun.demo.spring.listener;
+package com.hundsun.demo.spring.init.listener;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
