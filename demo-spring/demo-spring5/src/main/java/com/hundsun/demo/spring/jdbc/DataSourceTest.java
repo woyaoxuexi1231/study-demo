@@ -1,5 +1,6 @@
 package com.hundsun.demo.spring.jdbc;
 
+import com.github.pagehelper.PageHelper;
 import com.hundsun.demo.spring.model.pojo.CustomerDO;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,6 +11,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 /**
  * @ProductName: Hundsun amust
@@ -56,9 +58,8 @@ public class DataSourceTest {
         dataSource.setDriverClassName(MYSQL_DRIVER);
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
-        Object object = jdbcTemplate.query(MYSQL_SQL, new BeanPropertyRowMapper<>(CustomerDO.class));
-
-        System.out.println(object);
+        List<CustomerDO> customerDOS = jdbcTemplate.query(MYSQL_SQL, new BeanPropertyRowMapper<>(CustomerDO.class));
+        System.out.println(customerDOS);
     }
 
     /**
