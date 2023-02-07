@@ -6,7 +6,6 @@
         <artifactId>demo-parent</artifactId>
         <groupId>com.hundsun</groupId>
         <version>1.0.0.0-SNAPSHOT</version>
-        <relativePath>../demo-parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -40,16 +39,10 @@
             <artifactId>guava</artifactId>
         </dependency>
 
-        <!-- 加入servlet依赖(servlet的jar)-->
+        <!-- servlet -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-        </dependency>
-
-        <!-- jsp的依赖(jsp相关的jar加进来) -->
-        <dependency>
-            <groupId>javax.servlet.jsp</groupId>
-            <artifactId>javax.servlet.jsp-api</artifactId>
         </dependency>
 
         <dependency>
