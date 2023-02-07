@@ -1,6 +1,5 @@
 package com.hundsun.demo.spring.service.impl;
 
-import com.hundsun.demo.spring.listener.SimpleEvent;
 import com.hundsun.demo.spring.service.SimpleService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -39,8 +38,7 @@ public class SimpleServiceImpl implements SimpleService, ApplicationContextAware
      * 一个在容器初始化阶段会被调用的方法
      */
     public void init() {
-        // 这里通过 applicationContext 容器来发布一个简单的事件
-        applicationContext.publishEvent(new SimpleEvent("The container is initializing..."));
+        log.info("The container is initializing...");
     }
 
     /**

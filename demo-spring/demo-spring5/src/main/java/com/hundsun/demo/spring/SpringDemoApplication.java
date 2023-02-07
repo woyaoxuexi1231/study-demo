@@ -1,5 +1,6 @@
 package com.hundsun.demo.spring;
 
+import com.hundsun.demo.spring.listener.SimpleEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -23,6 +24,8 @@ public class SpringDemoApplication {
     static {
         // 创建容器
         applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml", "simple.xml");
+        // 这里通过 applicationContext 容器来发布一个简单的事件
+        applicationContext.publishEvent(new SimpleEvent("Application Started"));
     }
 
     public static void main(String[] args) {
