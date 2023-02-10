@@ -27,7 +27,7 @@
     </bean>
     <bean class="com.hundsun.demo.spring.mybatis.MyBatisTest" autowire="byName"/>
 
-    <!-- spring如何解决循环依赖的问题的? -->
+    <!-- Spring通过三级缓存来解决循环依赖的问题 -->
     <bean name="positiveBean" class="com.hundsun.demo.spring.init.circle.PositiveBean">
         <property name="negativeBean" ref="negativeBean"/>
     </bean>
