@@ -14,10 +14,6 @@ import org.springframework.context.ApplicationContextAware;
  * @Description:
  * @Author: hulei42031
  * @Date: 2022-07-22 16:21
- * @UpdateRemark:
- * @Version: 1.0
- * <p>
- * Copyright  2022 Hundsun Technologies Inc. All Rights Reserved
  */
 
 @Slf4j

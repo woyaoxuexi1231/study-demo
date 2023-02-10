@@ -16,11 +16,6 @@ import org.springframework.stereotype.Component;
  * @description:
  * @author: h1123
  * @createDate: 2022/5/22 16:44
- * @updateUser: h1123
- * @updateDate: 2022/5/22 16:44
- * @updateRemark:
- * @version: v1.0
- * @see :
  */
 
 @Aspect

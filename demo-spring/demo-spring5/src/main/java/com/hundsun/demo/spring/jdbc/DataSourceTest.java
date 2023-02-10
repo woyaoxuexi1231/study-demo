@@ -20,10 +20,6 @@ import java.util.List;
  * @Description:
  * @Author: hulei42031
  * @Date: 2023-01-12 10:50
- * @UpdateRemark:
- * @Version: 1.0
- * <p>
- * Copyright  2022 Hundsun Technologies Inc. All Rights Reserved
  */
 
 public class DataSourceTest {

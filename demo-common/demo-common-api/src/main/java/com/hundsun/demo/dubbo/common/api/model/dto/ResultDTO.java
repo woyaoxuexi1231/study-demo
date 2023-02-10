@@ -11,10 +11,6 @@ import java.io.Serializable;
  * @Description:
  * @Author: hulei42031
  * @Date: 2022-06-10 15:55
- * @UpdateRemark:
- * @Version: 1.0
- * <p>
- * Copyright  2022 Hundsun Technologies Inc. All Rights Reserved
  */
 
 @Data

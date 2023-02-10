@@ -13,10 +13,6 @@ import tk.mybatis.spring.annotation.MapperScan;
  * @Description:
  * @Author: hulei42031
  * @Date: 2022-05-21 15:10
- * @UpdateRemark:
- * @Version: 1.0
- * <p>
- * Copyright  2022 Hundsun Technologies Inc. All Rights Reserved
  */
 @MapperScan("com.hundsun.demo.dubbo.provider.mapper")
 @SpringBootApplication

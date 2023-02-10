@@ -20,10 +20,6 @@ import org.springframework.stereotype.Service;
  * @Description:
  * @Author: hulei42031
  * @Date: 2022-06-17 13:49
- * @UpdateRemark:
- * @Version: 1.0
- * <p>
- * Copyright  2022 Hundsun Technologies Inc. All Rights Reserved
  */
 @Slf4j
 @Service

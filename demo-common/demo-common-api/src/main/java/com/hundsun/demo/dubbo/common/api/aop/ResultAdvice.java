@@ -12,10 +12,6 @@ import org.aopalliance.intercept.MethodInvocation;
  * @Description:
  * @Author: hulei42031
  * @Date: 2022-06-16 15:28
- * @UpdateRemark:
- * @Version: 1.0
- * <p>
- * Copyright  2022 Hundsun Technologies Inc. All Rights Reserved
  */
 @Slf4j
 public class ResultAdvice implements MethodInterceptor {

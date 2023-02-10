@@ -12,11 +12,6 @@ import java.lang.annotation.Target;
  * @description:
  * @author: h1123
  * @createDate: 2022/5/22 16:42
- * @updateUser: h1123
- * @updateDate: 2022/5/22 16:42
- * @updateRemark:
- * @version: v1.0
- * @see :
  */
 
 @Retention(RetentionPolicy.RUNTIME)
