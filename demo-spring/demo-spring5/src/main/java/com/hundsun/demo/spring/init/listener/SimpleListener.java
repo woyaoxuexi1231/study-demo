@@ -1,5 +1,6 @@
 package com.hundsun.demo.spring.init.listener;
 
+import com.hundsun.demo.dubbo.common.api.annotation.DoneTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 
@@ -23,6 +24,7 @@ public class SimpleListener implements ApplicationListener<SimpleEvent> {
     这里实现一个简单的事件监听
      */
     @Override
+    @DoneTime
     public void onApplicationEvent(SimpleEvent event) {
         log.info("A message is received: {}", event.getSource());
     }

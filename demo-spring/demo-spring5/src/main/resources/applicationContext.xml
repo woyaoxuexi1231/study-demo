@@ -17,4 +17,10 @@
     <!-- ApplicationListener -->
     <bean class="com.hundsun.demo.spring.init.listener.SimpleListener"/>
 
+    <!-- Spring AOP -->
+    <bean class="com.hundsun.demo.dubbo.common.api.aop.DoneTimeAspect"/>
+    <bean class="org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator">
+        <property name="proxyTargetClass" value="true"/>
+    </bean>
+
 </beans>
