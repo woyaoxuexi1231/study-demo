@@ -150,6 +150,12 @@
                 <groupId>org.apache.curator</groupId>
                 <artifactId>curator-framework</artifactId>
                 <version>${apache.curator.framework.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <!--2.curator-recipes封装了一些高级特性，如：Cache事件监听、选举、分布式锁、分布式Barrier-->
             <dependency>
