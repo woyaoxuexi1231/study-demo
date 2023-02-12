@@ -1,4 +1,4 @@
-package com.hundsun.demo.dubbo.common.curator.config;
+package com.hundsun.demo.common.curator.config;
 
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;

@@ -1,6 +1,6 @@
 package com.hundsun.demo.dubbo.consumer.service;
 
-import com.hundsun.demo.dubbo.common.api.model.dto.ResultDTO;
+import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 
 /**
  * @ProductName: Hundsun amust

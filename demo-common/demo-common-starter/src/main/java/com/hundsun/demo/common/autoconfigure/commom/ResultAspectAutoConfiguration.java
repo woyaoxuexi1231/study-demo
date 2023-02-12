@@ -1,6 +1,6 @@
 package com.hundsun.demo.common.autoconfigure.commom;
 
-import com.hundsun.demo.dubbo.common.api.aop.ResultAdvice;
+import com.hundsun.demo.commom.core.aop.ResultAdvice;
 import org.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

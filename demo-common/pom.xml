@@ -12,7 +12,7 @@
     <artifactId>demo-common</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>demo-common-api</module>
+        <module>demo-common-core</module>
         <module>demo-common-starter</module>
         <module>demo-common-curator</module>
         <module>demo-commom-cloud</module>

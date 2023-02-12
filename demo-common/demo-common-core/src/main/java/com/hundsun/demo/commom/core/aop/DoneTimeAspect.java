@@ -1,7 +1,7 @@
-package com.hundsun.demo.dubbo.common.api.aop;
+package com.hundsun.demo.commom.core.aop;
 
 import cn.hutool.core.date.StopWatch;
-import com.hundsun.demo.dubbo.common.api.annotation.DoneTime;
+import com.hundsun.demo.commom.core.annotation.DoneTime;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

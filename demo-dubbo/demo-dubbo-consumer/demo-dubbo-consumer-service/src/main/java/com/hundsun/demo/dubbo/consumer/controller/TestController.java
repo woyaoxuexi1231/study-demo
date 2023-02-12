@@ -1,8 +1,8 @@
 package com.hundsun.demo.dubbo.consumer.controller;
 
 import com.hundsun.demo.common.autoconfigure.commom.ResultAspectConfiguration;
-import com.hundsun.demo.dubbo.common.api.model.dto.ResultDTO;
-import com.hundsun.demo.dubbo.common.api.utils.ResultDTOBuild;
+import com.hundsun.demo.commom.core.model.dto.ResultDTO;
+import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
 import com.hundsun.demo.dubbo.consumer.api.service.SimpleService;
 import com.hundsun.demo.dubbo.consumer.service.RabbitMqService;
 import com.hundsun.demo.dubbo.provider.api.model.request.UserRequestDTO;

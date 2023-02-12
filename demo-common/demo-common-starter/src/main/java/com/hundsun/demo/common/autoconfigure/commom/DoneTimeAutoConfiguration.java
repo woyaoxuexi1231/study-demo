@@ -1,7 +1,7 @@
 package com.hundsun.demo.common.autoconfigure.commom;
 
 
-import com.hundsun.demo.dubbo.common.api.aop.DoneTimeAspect;
+import com.hundsun.demo.commom.core.aop.DoneTimeAspect;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

@@ -1,6 +1,6 @@
-package com.hundsun.demo.dubbo.common.api.aop;
+package com.hundsun.demo.commom.core.aop;
 
-import com.hundsun.demo.dubbo.common.api.utils.ResultDTOBuild;
+import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;

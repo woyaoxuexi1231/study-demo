@@ -1,7 +1,7 @@
 package com.hundsun.demo.dubbo.consumer.service.impl;
 
-import com.hundsun.demo.dubbo.common.api.model.dto.ResultDTO;
-import com.hundsun.demo.dubbo.common.api.utils.ResultDTOBuild;
+import com.hundsun.demo.commom.core.model.dto.ResultDTO;
+import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
 import com.hundsun.demo.dubbo.consumer.service.RabbitMqService;
 
 import lombok.extern.slf4j.Slf4j;

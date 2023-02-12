@@ -1,4 +1,4 @@
-package com.hundsun.demo.dubbo.common.api.model.dto;
+package com.hundsun.demo.commom.core.model.dto;
 
 import lombok.Data;
 

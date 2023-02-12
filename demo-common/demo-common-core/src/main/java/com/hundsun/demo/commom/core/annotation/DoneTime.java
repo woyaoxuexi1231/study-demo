@@ -1,4 +1,4 @@
-package com.hundsun.demo.dubbo.common.api.annotation;
+package com.hundsun.demo.commom.core.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

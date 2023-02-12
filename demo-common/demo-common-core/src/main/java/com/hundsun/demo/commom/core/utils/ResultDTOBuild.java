@@ -1,6 +1,6 @@
-package com.hundsun.demo.dubbo.common.api.utils;
+package com.hundsun.demo.commom.core.utils;
 
-import com.hundsun.demo.dubbo.common.api.model.dto.ResultDTO;
+import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import lombok.Data;
 
 /**

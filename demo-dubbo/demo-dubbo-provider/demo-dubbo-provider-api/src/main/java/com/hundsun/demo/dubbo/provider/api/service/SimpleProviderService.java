@@ -1,6 +1,6 @@
 package com.hundsun.demo.dubbo.provider.api.service;
 
-import com.hundsun.demo.dubbo.common.api.model.dto.ResultDTO;
+import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import com.hundsun.demo.dubbo.provider.api.model.request.UserRequestDTO;
 import com.hundsun.demo.dubbo.provider.api.model.request.UserSelectReqDTO;
 

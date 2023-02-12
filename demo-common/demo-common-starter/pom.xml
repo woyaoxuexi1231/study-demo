@@ -30,7 +30,7 @@
 
         <dependency>
             <groupId>com.hundsun</groupId>
-            <artifactId>demo-common-api</artifactId>
+            <artifactId>demo-common-core</artifactId>
             <version>${demo.common.verison}</version>
         </dependency>
 
