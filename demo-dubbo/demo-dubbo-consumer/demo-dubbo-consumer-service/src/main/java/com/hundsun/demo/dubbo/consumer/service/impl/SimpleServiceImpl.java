@@ -42,7 +42,7 @@ public class SimpleServiceImpl implements SimpleService {
      * redis
      */
     @Autowired
-    RedisTemplate<String, Object> redisTemplateSO;
+    RedisTemplate<Object, Object> redisTemplate;
 
     /**
      * local lock
@@ -64,14 +64,14 @@ public class SimpleServiceImpl implements SimpleService {
     public ResultDTO<?> addUser(UserRequestDTO req) {
         // 先插入mysql, 再插入redis
         simpleProviderService.insertUser(req);
-        redisTemplateSO.opsForSet().add("userInfo", req);
+        redisTemplate.opsForSet().add("userInfo", req);
         return ResultDTOBuild.resultDefaultBuild();
     }
 
     @Override
     public ResultDTO addRedisInfo(UserRequestDTO req) {
-        redisTemplateSO.opsForSet().add("userInfo", req);
-        return ResultDTOBuild.resultSuccessBuild(redisTemplateSO.opsForSet().members("userInfo"));
+        redisTemplate.opsForSet().add("userInfo", req);
+        return ResultDTOBuild.resultSuccessBuild(redisTemplate.opsForSet().members("userInfo"));
     }
 
     @Override
@@ -84,7 +84,7 @@ public class SimpleServiceImpl implements SimpleService {
         List<UserRequestDTO> rsp = new ArrayList<>();
 
         // 先查redis再查mysql
-        Set<?> redisUsers = redisTemplateSO.opsForSet().members("userInfo");
+        Set<?> redisUsers = redisTemplate.opsForSet().members("userInfo");
         for (Object redisUser : redisUsers) {
             UserRequestDTO requestDTO = (UserRequestDTO) redisUser;
             if (requestDTO.getName().contains(req.getName())) {
