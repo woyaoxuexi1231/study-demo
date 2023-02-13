@@ -21,7 +21,7 @@
 
         <dependency>
             <groupId>com.hundsun</groupId>
-            <artifactId>demo-common-core</artifactId>
+            <artifactId>demo-java</artifactId>
             <version>1.0.0.0-SNAPSHOT</version>
         </dependency>
 
