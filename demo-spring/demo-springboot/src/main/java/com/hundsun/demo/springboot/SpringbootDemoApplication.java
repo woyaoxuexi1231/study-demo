@@ -3,9 +3,8 @@ package com.hundsun.demo.springboot;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.context.ApplicationContext;
+import tk.mybatis.spring.annotation.MapperScan;
 
 /**
  * @ProductName: Hundsun amust
@@ -17,6 +16,7 @@ import org.springframework.context.ApplicationContext;
  */
 
 @SpringBootApplication
+@MapperScan(basePackages = {"com.hundsun.demo.springboot.mapper"})
 @Slf4j
 public class SpringbootDemoApplication {
 
