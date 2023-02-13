@@ -16,6 +16,14 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class SpringDemoApplication {
 
+    /*
+    spring 读取配置文件的顺序如下:
+    –file:./config/
+    –file:./
+    –classpath:/config/
+    –classpath:/
+     */
+
     /**
      * spring容器
      */
