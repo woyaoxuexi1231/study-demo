@@ -15,14 +15,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class BeanConfig {
 
-
-    @Bean("test")
-    public DoneTimeAspect doneTimeAspect1(){
-        return new DoneTimeAspect();
-    }
-
-    @Bean("test")
-    public DoneTimeAspect doneTimeAspect2(){
+    @Bean
+    public DoneTimeAspect doneTimeAspect() {
         return new DoneTimeAspect();
     }
 }
