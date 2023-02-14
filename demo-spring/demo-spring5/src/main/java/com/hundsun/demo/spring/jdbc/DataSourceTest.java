@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * @ProductName: Hundsun amust
@@ -56,25 +55,26 @@ public class DataSourceTest {
          */
 
         new Thread(() -> jdbc(statement -> {
+
+            statement.execute("update customers set phone = '40.32.2554' where customerNumber = '103' ");
+
+            statement.execute("update customers set phone = '7025551839' where customerNumber = '112' ");
             try {
-                statement.execute("update customers set phone = '40.32.2554' where customerNumber = '103' ");
                 Thread.sleep(2000);
-            } catch (SQLException | InterruptedException e) {
+            } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-        }, true)).start();
+            throw new SQLException("执行失败, 准备回滚...");
+
+        })).start();
 
         new Thread(() -> jdbc(statement -> {
-            try {
-                ResultSet rs = statement.executeQuery(MYSQL_SQL);
-                while (rs.next()) {
-                    // 通过字段检索
-                    System.out.println(rs.getInt("customerNumber") + " - " + rs.getString("customerName") + " - " + rs.getString("phone"));
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+            ResultSet rs = statement.executeQuery(MYSQL_SQL);
+            while (rs.next()) {
+                // 通过字段检索
+                System.out.println(rs.getInt("customerNumber") + " - " + rs.getString("customerName") + " - " + rs.getString("phone"));
             }
-        }, false)).start();
+        })).start();
 
     }
 
@@ -94,7 +94,7 @@ public class DataSourceTest {
     /**
      * 通过 JDBC 直连
      */
-    public static void jdbc(Consumer<Statement> consumer, boolean isRollback) {
+    public static void jdbc(SqlExecuteFunc consumer) {
 
         Connection connection = null;
         Statement statement = null;
@@ -112,14 +112,25 @@ public class DataSourceTest {
             // 关闭事务的自动提交
             connection.setAutoCommit(false);
 
-            // 执行操作
-            consumer.accept(statement);
+            boolean isRollback = false;
+            try {
+                // 执行操作
+                consumer.execute(statement);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                isRollback = true;
+                connection.rollback();
+            }
+
+            if (!isRollback) {
+                connection.commit();
+            }
 
             /*
             手动提交事务
              */
             if (isRollback) {
-                connection.rollback();
+
             } else {
                 connection.commit();
             }
@@ -135,6 +146,7 @@ public class DataSourceTest {
             // 连接获取失败
             throw new RuntimeException(e);
         } finally {
+
             try {
                 if (statement != null) statement.close();
             } catch (SQLException e) {
