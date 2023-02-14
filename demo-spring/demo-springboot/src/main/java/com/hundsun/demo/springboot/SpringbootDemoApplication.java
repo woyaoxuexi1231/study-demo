@@ -21,6 +21,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 public class SpringbootDemoApplication {
 
     public static void main(String[] args) {
+        // System.setProperty("cglib.debugLocation","C:\\Project\\study-demo\\demo-spring\\demo-springboot\\target\\classes");
         ApplicationContext applicationContext = SpringApplication.run(SpringbootDemoApplication.class);
         log.info("启动完成");
     }
