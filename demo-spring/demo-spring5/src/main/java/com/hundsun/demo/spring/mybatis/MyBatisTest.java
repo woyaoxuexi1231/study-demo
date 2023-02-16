@@ -33,8 +33,12 @@ public class MyBatisTest implements ApplicationListener<SimpleEvent> {
     @Override
     public void onApplicationEvent(SimpleEvent event) {
 
-        // 通过 spring 的方式使用 Mybatis
+        /*
+        pageHelper
+        pageSizeZero 参数 - pageSize 为 0 的时候会查出所有数据而不进行分页, 在稍低版本中 pageNum 为 0 不会影响这个参数的使用, 稍新版本中 pageNum 为 0 不会查数据(这里使用 5.2.0 版本)
+         */
         PageHelper.startPage(1, 10);
+        // 通过 spring Bean 的方式使用 Mybatis
         List<CustomerDO> customerDOS = customerMapper.selectAll();
         customerDOS.forEach(System.out::println);
     }
