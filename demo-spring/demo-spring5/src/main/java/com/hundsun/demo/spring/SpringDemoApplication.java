@@ -1,6 +1,7 @@
 package com.hundsun.demo.spring;
 
 import com.hundsun.demo.spring.init.listener.SimpleEvent;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -14,6 +15,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @Date: 2022-07-29 14:23
  */
 
+@Slf4j
 public class SpringDemoApplication {
 
     /*
@@ -34,6 +36,15 @@ public class SpringDemoApplication {
         applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml", "simple.xml");
         // 这里通过 applicationContext 容器来发布一个简单的事件
         applicationContext.publishEvent(new SimpleEvent("Application Started"));
+
+        // 测试多数据源切换
+        // try {
+        //     applicationContext.publishEvent(new MultipleDataSourceTestEvent(DataSourceType.MASTER));
+        //     applicationContext.publishEvent(new MultipleDataSourceTestEvent(DataSourceType.SECOND));
+        // } catch (Exception e) {
+        //     log.error("多数据源更新异常, 执行回滚操作. ", e);
+        // }
+
     }
 
     public static void main(String[] args) {

@@ -17,10 +17,107 @@
     <!-- ApplicationListener -->
     <bean class="com.hundsun.demo.spring.init.listener.SimpleListener"/>
 
+    <!-- Spring通过三级缓存来解决循环依赖的问题 -->
+    <!-- todo 不过三级缓存确实可以解决循环依赖的问题, 但是我无法回答的是为什么要用三级缓存, 因为看上去二级缓存就可以解决问题了, 三级缓存似乎有点多余, 它肯定有更多的用途... 2023-2-10 -->
+    <bean name="positiveBean" class="com.hundsun.demo.spring.init.circle.PositiveBean">
+        <property name="negativeBean" ref="negativeBean"/>
+    </bean>
+    <bean name="negativeBean" class="com.hundsun.demo.spring.init.circle.NegativeBean">
+        <property name="positiveBean" ref="positiveBean"/>
+    </bean>
+    <bean name="circleBean" class="com.hundsun.demo.spring.init.circle.CircleBean">
+        <property name="circleBean" ref="circleBean"/>
+    </bean>
+
     <!-- Spring AOP -->
     <bean class="com.hundsun.demo.commom.core.aop.DoneTimeAspect"/>
     <bean class="org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator">
         <property name="proxyTargetClass" value="true"/>
     </bean>
+
+    <!-- Spring 多数据源解决方案 -->
+    <!-- 先定义三套数据库 -->
+    <bean id="masterDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url"
+                  value="jdbc:mysql://192.168.175.128:3306/yiibaidb?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>
+        <property name="username" value="root"/>
+        <property name="password" value="123456"/>
+    </bean>
+    <bean id="secondDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url"
+                  value="jdbc:mysql://192.168.175.128:3306/test?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>
+        <property name="username" value="root"/>
+        <property name="password" value="123456"/>
+    </bean>
+    <bean id="thirdDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url"
+                  value="jdbc:mysql://192.168.175.128:3306/test?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>
+        <property name="username" value="root"/>
+        <property name="password" value="123456"/>
+    </bean>
+    <!-- 动态数据源切换 -->
+    <bean id="dataSource" class="com.hundsun.demo.spring.jdbc.ThreadLocalVariableRoutingDataSource">
+        <property name="defaultTargetDataSource" ref="masterDataSource"/>
+        <property name="targetDataSources">
+            <map key-type="com.hundsun.demo.spring.jdbc.DataSourceType">
+                <entry key="MASTER" value-ref="masterDataSource"/>
+                <entry key="SECOND" value-ref="secondDataSource"/>
+                <entry key="THIRD" value-ref="thirdDataSource"/>
+            </map>
+        </property>
+    </bean>
+    <bean id="multipleDataSourceJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <bean name="yiibaidbServiceTarget" class="com.hundsun.demo.spring.service.impl.YiibaidbServiceImpl"/>
+    <!-- 测试多数据源的监听器 -->
+    <bean class="com.hundsun.demo.spring.init.listener.MultipleDataSourceTestListener">
+        <property name="yiibaidbService" ref="yiibaidbService"/>
+    </bean>
+
+    <!-- Spring 多数据源 + 事务管理 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <bean id="transactionInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="multipleDataSourceTransaction">PROPAGATION_REQUIRED</prop>
+            </props>
+        </property>
+    </bean>
+    <bean id="yiibaidbService" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="yiibaidbServiceTarget"/>
+        <property name="proxyInterfaces" value="com.hundsun.demo.spring.service.YiibaidbService"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Mybatis 事务 -->
+    <!-- 数据库连接 -->
+    <bean id="singleDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url"
+                  value="jdbc:mysql://192.168.175.128:3306/yiibaidb?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>
+        <property name="username" value="root"/>
+        <property name="password" value="123456"/>
+    </bean>
+    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="singleDataSource"/>
+        <property name="configLocation" value="mybatis-config.xml"/>
+    </bean>
+    <!--配置 Mybatis 接口扫描, Mybatis 通过这种方式帮我们把 mapper 接口做成实现类, 并注册成 bean-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.hundsun.demo.spring.mybatis"/>
+    </bean>
+    <bean class="com.hundsun.demo.spring.mybatis.MyBatisTest" autowire="byName"/>
+
 
 </beans>

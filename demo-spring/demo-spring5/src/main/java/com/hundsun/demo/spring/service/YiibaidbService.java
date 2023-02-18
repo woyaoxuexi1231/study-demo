@@ -1,5 +1,6 @@
 package com.hundsun.demo.spring.service;
 
+import com.hundsun.demo.spring.jdbc.DataSourceType;
 import com.hundsun.demo.spring.model.pojo.CustomerDO;
 
 import java.util.List;
@@ -26,4 +27,14 @@ public interface YiibaidbService {
      * JdbcTemplate + Spring 事务管理小 demo
      */
     void jdbcTemplateUpdate();
+
+    /**
+     * Spring 多数据源小 demo
+     */
+    void multipleDataSource(DataSourceType dataSourceType);
+
+    /**
+     * Spring 多数据源 + 事务
+     */
+    void multipleDataSourceTransaction(DataSourceType dataSourceType);
 }
