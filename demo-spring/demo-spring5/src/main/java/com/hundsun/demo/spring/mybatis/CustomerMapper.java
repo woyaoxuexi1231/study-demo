@@ -21,4 +21,11 @@ public interface CustomerMapper {
      * @return CustomerDOs
      */
     List<CustomerDO> selectAll();
+
+    /**
+     * 单条更新
+     *
+     * @param customerDO customerDO
+     */
+    void updateOne(CustomerDO customerDO);
 }

@@ -33,17 +33,25 @@ public class MyBatisTest implements ApplicationListener<SimpleEvent> {
     @Override
     public void onApplicationEvent(SimpleEvent event) {
 
+        System.out.println();
+        System.out.println("-------------------------------------- Spring + Mybatis --------------------------------------");
         /*
         pageHelper
         pageSizeZero 参数 - pageSize 为 0 的时候会查出所有数据而不进行分页, 在稍低版本中 pageNum 为 0 不会影响这个参数的使用, 稍新版本中 pageNum 为 0 不会查数据(这里使用 5.2.0 版本)
          */
-        PageHelper.startPage(1, 10);
-        // 通过 spring Bean 的方式使用 Mybatis
-        List<CustomerDO> customerDOS = customerMapper.selectAll();
-        customerDOS.forEach(System.out::println);
+        try {
+            PageHelper.startPage(1, 10);
+            // 通过 spring Bean 的方式使用 Mybatis
+            List<CustomerDO> customerDOS = customerMapper.selectAll();
+            customerDOS.forEach(System.out::println);
+        } finally {
+            System.out.println("-------------------------------------- Spring + Mybatis --------------------------------------");
+            System.out.println();
+        }
     }
 
-    public void staticInvoke() {
+
+    private static void staticInvoke() {
 
         // 读取 mybatis-config.xml 配置文件
         String resource = "mybatis-config.xml";
@@ -59,12 +67,21 @@ public class MyBatisTest implements ApplicationListener<SimpleEvent> {
         selectAll(sessionFactory);
     }
 
-    private void selectAll(SqlSessionFactory sessionFactory) {
+    private static void selectAll(SqlSessionFactory sessionFactory) {
 
         try (SqlSession session = sessionFactory.openSession()) {
             PageHelper.startPage(1, 10);
             List<CustomerDO> customerDOS = session.selectList("com.hundsun.demo.spring.mybatis.CustomerMapper.selectAll");
-            customerDOS.forEach(System.out::println);
         }
+    }
+
+    private static void update(SqlSessionFactory sessionFactory) {
+        SqlSession session = sessionFactory.openSession();
+        CustomerDO customerDO = new CustomerDO();
+        customerDO.setCustomernumber(103);
+        customerDO.setPhone("40.32.25541");
+        session.update("com.hundsun.demo.spring.mybatis.CustomerMapper.updateOne", customerDO);
+        // mybatis 不主动提交的话, 是不会自动提交的, 更新操作不提交是不会生效的
+        session.commit();
     }
 }
