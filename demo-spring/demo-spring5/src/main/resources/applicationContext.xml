@@ -111,11 +111,13 @@
     </bean>
     <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="singleDataSource"/>
-        <property name="configLocation" value="mybatis-config.xml"/>
+        <property name="configLocation" value="spring-mybatis-config.xml"/>
+        <property name="mapperLocations" value="mapper/*.xml"/>
     </bean>
     <!--配置 Mybatis 接口扫描, Mybatis 通过这种方式帮我们把 mapper 接口做成实现类, 并注册成 bean-->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="com.hundsun.demo.spring.mybatis"/>
+        <property name="sqlSessionFactoryBeanName" value="sessionFactory"/>
     </bean>
     <bean class="com.hundsun.demo.spring.mybatis.MyBatisTest" autowire="byName"/>
 
