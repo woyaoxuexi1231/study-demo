@@ -3,6 +3,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
+    <!--Tomcat 控制台如果乱码可以在 Tomcat的启动参数中设置 -Dfile.encoding=utf-8, 保持编码统一以解决乱码问题-->
+
     <!--
     这里的web.xml供Servlet容器访问, Servlet容器在加载和启动的时候JavaWeb应用的时候会读取web.xml配置文件
     主要配置信息:
