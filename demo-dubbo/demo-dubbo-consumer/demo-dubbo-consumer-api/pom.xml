@@ -14,23 +14,27 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <dubbo.demo.common.starter.version>1.0.0.0-SNAPSHOT</dubbo.demo.common.starter.version>
+        <common.version>1.0.0.0-SNAPSHOT</common.version>
         <dubbo.demo.provider.api.version>1.0.0.0-SNAPSHOT</dubbo.demo.provider.api.version>
     </properties>
 
     <dependencies>
 
-
         <dependency>
             <groupId>com.hundsun</groupId>
-            <artifactId>demo-common-starter</artifactId>
-            <version>${dubbo.demo.common.starter.version}</version>
+            <artifactId>demo-common-core</artifactId>
+            <version>${common.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.hundsun</groupId>
             <artifactId>demo-dubbo-provider-api</artifactId>
             <version>${dubbo.demo.provider.api.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
         </dependency>
 
     </dependencies>

@@ -15,7 +15,7 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <demo.dubbo.provider.api.version>1.0.0.0-SNAPSHOT</demo.dubbo.provider.api.version>
-        <demo.cloud.commom.version>1.0.0.0-SNAPSHOT</demo.cloud.commom.version>
+        <demo.commom.starter.version>1.0.0.0-SNAPSHOT</demo.commom.starter.version>
     </properties>
 
     <dependencies>
@@ -28,8 +28,8 @@
 
         <dependency>
             <groupId>com.hundsun</groupId>
-            <artifactId>demo-commom-cloud</artifactId>
-            <version>${demo.cloud.commom.version}</version>
+            <artifactId>demo-common-starter</artifactId>
+            <version>${demo.commom.starter.version}</version>
         </dependency>
 
         <!--数据库相关-->
@@ -44,11 +44,6 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-        <!--逆向工程-->
-        <dependency>
-            <groupId>org.mybatis.generator</groupId>
-            <artifactId>mybatis-generator-core</artifactId>
         </dependency>
 
     </dependencies>
