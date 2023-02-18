@@ -1,11 +1,7 @@
 package com.hundsun.demo.dubbo.consumer.api.service;
 
 import com.hundsun.demo.commom.core.model.dto.ResultDTO;
-import com.hundsun.demo.dubbo.provider.api.model.request.UserSelectReqDTO;
-import com.hundsun.demo.dubbo.provider.api.model.request.UserRequestDTO;
 import org.springframework.validation.annotation.Validated;
-
-import javax.validation.Valid;
 
 /**
  * @ProductName: Hundsun amust
@@ -19,40 +15,9 @@ import javax.validation.Valid;
 public interface SimpleService {
 
     /**
-     * 从服务端获取一个简单的字符串
+     * simple rpc invoke
      *
-     * @param testString
-     * @return
+     * @return ?
      */
-    ResultDTO<?> getHelloWorld(String testString);
-
-    /**
-     * 通过服务端向数据库插入一个简单的数据
-     *
-     * @param userRequestDTO
-     * @return
-     */
-    ResultDTO<?> addUser(UserRequestDTO userRequestDTO);
-
-    /**
-     * 往redis里插入一个简单的数据
-     *
-     * @param userRequestDTO
-     */
-    ResultDTO<?> addRedisInfo(@Valid UserRequestDTO userRequestDTO);
-
-    /**
-     * 查询用户信息
-     *
-     * @param req req
-     * @return result
-     */
-    ResultDTO<?> selectUser(UserSelectReqDTO req);
-
-    /**
-     * 测试本地锁
-     */
-    ResultDTO<?> testLock();
-
-    ResultDTO<?> redisson();
+    ResultDTO<?> simpleRpcInvoke();
 }

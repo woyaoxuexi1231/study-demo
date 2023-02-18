@@ -13,5 +13,10 @@ import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 
 public interface RabbitMqService {
 
-    ResultDTO sentSampleMsg();
+    /**
+     * use rabbiMQ to send a simple message
+     *
+     * @return ?
+     */
+    ResultDTO<?> sentSampleMsg();
 }

@@ -13,15 +13,4 @@ import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 
 public interface LocalLockService {
 
-    /**
-     * 操作共享资源
-     */
-    void decreaseSharedResource();
-
-    /**
-     * 获取共享资源
-     *
-     * @return
-     */
-    ResultDTO getSharedResource();
 }

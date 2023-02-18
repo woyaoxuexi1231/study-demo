@@ -3,12 +3,8 @@ package com.hundsun.demo.dubbo.consumer.service.impl;
 import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
 import com.hundsun.demo.dubbo.consumer.service.RabbitMqService;
-
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.AmqpException;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessagePostProcessor;
-import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,21 +25,22 @@ public class RabbitMqServiceImpl implements RabbitMqService {
     private RabbitTemplate rabbitTemplate;
 
     @Override
-    public ResultDTO sentSampleMsg() {
+    public ResultDTO<?> sentSampleMsg() {
 
-        MessageProperties messageProperties = new MessageProperties();
-        messageProperties.setExpiration("30000");
-        MessagePostProcessor messagePostProcessor = new MessagePostProcessor() {
-            @Override
-            public Message postProcessMessage(Message message) throws AmqpException {
+        try {
+            String routingKey = "simple_helloMsg";
+            String msg = "hello rabbitmq!";
+            MessagePostProcessor messagePostProcessor = message -> {
+                // 设置消息的过期时间
                 message.getMessageProperties().setExpiration("30000");
                 return message;
-            }
-        };
-        String msg = "hello";
-        log.info("sent the msg 'hello'");
-        rabbitTemplate.convertAndSend("notice_queue", (Object) msg,messagePostProcessor);
+            };
+            rabbitTemplate.convertAndSend(routingKey, (Object) msg, messagePostProcessor);
+        } catch (Exception e) {
+            log.error("消息发送异常!", e);
+            return ResultDTOBuild.resultErrorBuild("消息发送异常!");
+        }
         return ResultDTOBuild.resultDefaultBuild();
     }
-    
+
 }
