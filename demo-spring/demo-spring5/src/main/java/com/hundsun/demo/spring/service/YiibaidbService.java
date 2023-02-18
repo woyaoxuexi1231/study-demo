@@ -22,4 +22,8 @@ public interface YiibaidbService {
      */
     List<CustomerDO> jdbcTemplateQuery();
 
+    /**
+     * JdbcTemplate + Spring 事务管理小 demo
+     */
+    void jdbcTemplateUpdate();
 }

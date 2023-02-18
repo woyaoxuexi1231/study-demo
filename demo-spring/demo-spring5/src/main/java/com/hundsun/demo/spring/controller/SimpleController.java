@@ -2,6 +2,7 @@ package com.hundsun.demo.spring.controller;
 
 import com.hundsun.demo.spring.model.pojo.CustomerDO;
 import com.hundsun.demo.spring.service.YiibaidbService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -18,11 +19,17 @@ import java.util.List;
  * @createDate: 2022/11/16 23:00
  */
 
+@Slf4j
 public class SimpleController extends AbstractController {
 
-
+    /**
+     * yiibaidbService
+     */
     private YiibaidbService yiibaidbService;
 
+    /**
+     * viewName
+     */
     private String viewName;
 
     @Override
@@ -32,7 +39,13 @@ public class SimpleController extends AbstractController {
 
         List<CustomerDO> students = yiibaidbService.jdbcTemplateQuery();
 
-        // mav.addObject("depts", depts);
+        mav.addObject("data", students);
+
+        try {
+            yiibaidbService.jdbcTemplateUpdate();
+        } catch (Exception e) {
+            log.error("更新出现异常! ", e);
+        }
 
         return mav;
     }

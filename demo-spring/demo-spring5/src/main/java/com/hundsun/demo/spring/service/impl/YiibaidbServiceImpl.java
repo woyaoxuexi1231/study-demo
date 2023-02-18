@@ -33,8 +33,15 @@ public class YiibaidbServiceImpl implements YiibaidbService, ApplicationContextA
 
     @Override
     public List<CustomerDO> jdbcTemplateQuery() {
-        JdbcTemplate jdbcTemplate = (JdbcTemplate) applicationContext.getBean("jdbcTemplate1");
+        JdbcTemplate jdbcTemplate = (JdbcTemplate) applicationContext.getBean("jdbcTemplate");
         return jdbcTemplate.query("select * from customers limit 0,10", new BeanPropertyRowMapper<>(CustomerDO.class));
+    }
+
+    @Override
+    public void jdbcTemplateUpdate() {
+        JdbcTemplate jdbcTemplate = (JdbcTemplate) applicationContext.getBean("jdbcTemplate");
+        jdbcTemplate.execute("update customers set phone = '40.32.2554' where customerNumber = '103'");
+        throw new RuntimeException("更新失败, 准备回滚...");
     }
 
 }

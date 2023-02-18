@@ -11,5 +11,6 @@
     <title>Title</title>
 </head>
 <body>
+${data}
 </body>
 </html>
