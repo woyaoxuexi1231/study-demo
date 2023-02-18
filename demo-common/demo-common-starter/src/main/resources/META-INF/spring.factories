@@ -1,4 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.hundsun.demo.common.autoconfigure.commom.DoneTimeAutoConfiguration,\
-com.hundsun.demo.common.autoconfigure.commom.ResultAspectAutoConfiguration,\
 com.hundsun.demo.common.autoconfigure.curator.CuratorAutoConfiguration
