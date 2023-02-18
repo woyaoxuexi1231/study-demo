@@ -93,6 +93,8 @@ public class YiibaidbServiceImpl implements YiibaidbService, ApplicationContextA
 
         System.out.println();
         System.out.println("-------------------------------------- Spring + Mybatis --------------------------------------");
+
+        // todo Mybatis 是如何去拿这个动态数据源的信息的?? - 2023/02/18
         DataSourceTypeManager.set(dataSourceType);
         System.out.println("当前绑定的数据源为 " + dataSourceType + " - 执行 " + myBatisOperationType + " 操作");
         // select
