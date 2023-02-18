@@ -26,7 +26,8 @@
     <bean class="com.hundsun.demo.spring.init.listener.SimpleListener"/>
 
     <!-- Spring通过三级缓存来解决循环依赖的问题 -->
-    <!-- todo 不过三级缓存确实可以解决循环依赖的问题, 但是我无法回答的是为什么要用三级缓存, 因为看上去二级缓存就可以解决问题了, 三级缓存似乎有点多余, 它肯定有更多的用途... 2023-2-10 -->
+    <!-- Q1: 不过三级缓存确实可以解决循环依赖的问题, 但是我无法回答的是为什么要用三级缓存, 因为看上去二级缓存就可以解决问题了, 三级缓存似乎有点多余, 它肯定有更多的用途... 2023-2-10 -->
+    <!-- A1: 二级缓存确实可以解决循环依赖的问题, 但是如果我们加入 Spring AOP 的话, 二级缓存就无法解决了, 三级缓存解决了代理对象的注入问题 -->
     <bean name="positiveBean" class="com.hundsun.demo.spring.init.circle.PositiveBean">
         <property name="negativeBean" ref="negativeBean"/>
     </bean>
