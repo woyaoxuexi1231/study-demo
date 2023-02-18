@@ -1,6 +1,8 @@
 package com.hundsun.demo.spring;
 
+import com.hundsun.demo.spring.init.listener.MybatisEvent;
 import com.hundsun.demo.spring.init.listener.SimpleEvent;
+import com.hundsun.demo.spring.mybatis.MyBatisOperationType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
@@ -44,6 +46,13 @@ public class SpringDemoApplication {
         // } catch (Exception e) {
         //     log.error("多数据源更新异常, 执行回滚操作. ", e);
         // }
+
+        // mybatis 事务小测试
+        try {
+            applicationContext.publishEvent(new MybatisEvent(MyBatisOperationType.UPDATE));
+        } catch (Exception e) {
+            log.error("Mybatis更新数据异常, 已执行回滚. ", e);
+        }
 
     }
 

@@ -3,6 +3,7 @@ package com.hundsun.demo.spring.mybatis;
 import com.github.pagehelper.PageHelper;
 import com.hundsun.demo.spring.init.listener.MybatisEvent;
 import com.hundsun.demo.spring.model.pojo.CustomerDO;
+import com.hundsun.demo.spring.service.YiibaidbService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.io.Resources;
@@ -23,46 +24,18 @@ import java.util.List;
  * @author: h1123
  * @createDate: 2023/2/7 21:59
  */
+
 @Data
 @Slf4j
 public class MyBatisTest implements ApplicationListener<MybatisEvent> {
 
-    /**
-     * 自动注入 Mybatis生成的 mapperBean
-     */
-    private CustomerMapper customerMapper;
+    private YiibaidbService yiibaidbService;
 
     @Override
     public void onApplicationEvent(MybatisEvent event) {
 
-        System.out.println();
-        System.out.println("-------------------------------------- Spring + Mybatis --------------------------------------");
-        /*
-        pageHelper
-        pageSizeZero 参数 - pageSize 为 0 的时候会查出所有数据而不进行分页, 在稍低版本中 pageNum 为 0 不会影响这个参数的使用, 稍新版本中 pageNum 为 0 不会查数据(这里使用 5.2.0 版本)
-         */
-        try {
-
-            // select
-            if (event.getMyBatisOperationType().equals(MyBatisOperationType.SELECT)) {
-                PageHelper.startPage(1, 10);
-                // 通过 spring Bean 的方式使用 Mybatis
-                List<CustomerDO> customerDOS = customerMapper.selectAll();
-                // customerDOS.forEach(System.out::println);
-            }
-
-            // update
-            if (event.getMyBatisOperationType().equals(MyBatisOperationType.UPDATE)) {
-                CustomerDO customerDO = new CustomerDO();
-                customerDO.setCustomernumber(103);
-                customerDO.setPhone("40.32.25541");
-            }
-        } finally {
-            System.out.println("-------------------------------------- Spring + Mybatis --------------------------------------");
-            System.out.println();
-        }
+        this.yiibaidbService.mybatisSpringTransaction(event.getMyBatisOperationType());
     }
-
 
     private static void staticInvoke() {
 

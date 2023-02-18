@@ -2,6 +2,7 @@ package com.hundsun.demo.spring.service;
 
 import com.hundsun.demo.spring.jdbc.DataSourceType;
 import com.hundsun.demo.spring.model.pojo.CustomerDO;
+import com.hundsun.demo.spring.mybatis.MyBatisOperationType;
 
 import java.util.List;
 
@@ -30,11 +31,22 @@ public interface YiibaidbService {
 
     /**
      * Spring 多数据源小 demo
+     *
+     * @param dataSourceType dataSourceType
      */
     void multipleDataSource(DataSourceType dataSourceType);
 
     /**
      * Spring 多数据源 + 事务
+     *
+     * @param dataSourceType dataSourceType
      */
     void multipleDataSourceTransaction(DataSourceType dataSourceType);
+
+    /**
+     * Mybatis + Spring 整合, 事务
+     *
+     * @param myBatisOperationType myBatisOperationType
+     */
+    void mybatisSpringTransaction(MyBatisOperationType myBatisOperationType);
 }

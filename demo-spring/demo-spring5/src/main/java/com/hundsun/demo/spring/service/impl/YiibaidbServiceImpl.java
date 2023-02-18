@@ -1,10 +1,14 @@
 package com.hundsun.demo.spring.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.hundsun.demo.spring.jdbc.DataSourceType;
 import com.hundsun.demo.spring.jdbc.DataSourceTypeManager;
 import com.hundsun.demo.spring.model.pojo.CustomerDO;
 import com.hundsun.demo.spring.model.pojo.ProductsDO;
+import com.hundsun.demo.spring.mybatis.CustomerMapper;
+import com.hundsun.demo.spring.mybatis.MyBatisOperationType;
 import com.hundsun.demo.spring.service.YiibaidbService;
+import lombok.Data;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -22,6 +26,7 @@ import java.util.List;
  * @Date: 2023-01-13 16:01
  */
 
+@Data
 public class YiibaidbServiceImpl implements YiibaidbService, ApplicationContextAware {
 
     /**
@@ -79,6 +84,47 @@ public class YiibaidbServiceImpl implements YiibaidbService, ApplicationContextA
             }
         } finally {
             System.out.println("-------------------------------------- Spring多数据源 + 事务 --------------------------------------");
+            System.out.println();
+        }
+    }
+
+    /**
+     * 自动注入 Mybatis生成的 mapperBean
+     */
+    private CustomerMapper customerMapper;
+
+    @Override
+    public void mybatisSpringTransaction(MyBatisOperationType myBatisOperationType) {
+
+        System.out.println();
+        System.out.println("-------------------------------------- Spring + Mybatis --------------------------------------");
+        /*
+        pageHelper
+        pageSizeZero 参数 - pageSize 为 0 的时候会查出所有数据而不进行分页, 在稍低版本中 pageNum 为 0 不会影响这个参数的使用, 稍新版本中 pageNum 为 0 不会查数据(这里使用 5.2.0 版本)
+         */
+        try {
+
+            System.out.println("执行 " + myBatisOperationType + " 操作");
+
+            // select
+            if (myBatisOperationType.equals(MyBatisOperationType.SELECT)) {
+                PageHelper.startPage(1, 10);
+                // 通过 spring Bean 的方式使用 Mybatis
+                List<CustomerDO> customerDOS = customerMapper.selectAll();
+                // customerDOS.forEach(System.out::println);
+            }
+
+            // update
+            if (myBatisOperationType.equals(MyBatisOperationType.UPDATE)) {
+                CustomerDO customerDO = new CustomerDO();
+                customerDO.setCustomernumber(103);
+                customerDO.setPhone("40.32.2541");
+                customerMapper.updateOne(customerDO);
+                throw new RuntimeException("更新出错!");
+            }
+
+        } finally {
+            System.out.println("-------------------------------------- Spring + Mybatis --------------------------------------");
             System.out.println();
         }
     }

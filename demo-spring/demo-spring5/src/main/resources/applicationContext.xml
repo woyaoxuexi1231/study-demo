@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
+    <aop:aspectj-autoproxy/>
     <!-- <context:component-scan base-package="com.hundsun.demo.spring"></context:com> -->
 
     <!-- BeanFactoryPostProcessor -->
@@ -72,7 +80,8 @@
     <bean id="multipleDataSourceJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <property name="dataSource" ref="dataSource"/>
     </bean>
-    <bean name="yiibaidbServiceTarget" class="com.hundsun.demo.spring.service.impl.YiibaidbServiceImpl"/>
+    <bean name="yiibaidbServiceTarget" class="com.hundsun.demo.spring.service.impl.YiibaidbServiceImpl"
+          autowire="byName"/>
     <!-- 测试多数据源的监听器 -->
     <bean class="com.hundsun.demo.spring.init.listener.MultipleDataSourceTestListener">
         <property name="yiibaidbService" ref="yiibaidbService"/>
@@ -117,9 +126,22 @@
     <!--配置 Mybatis 接口扫描, Mybatis 通过这种方式帮我们把 mapper 接口做成实现类, 并注册成 bean-->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="com.hundsun.demo.spring.mybatis"/>
-        <property name="sqlSessionFactoryBeanName" value="sessionFactory"/>
     </bean>
     <bean class="com.hundsun.demo.spring.mybatis.MyBatisTest" autowire="byName"/>
-
+    <!-- mybatis 整合进 spring 之后, 事务的管理权就交给了 spring, 所以如果我们要使用事务, 那就必须按规矩办事, 好好的声明 spring 事务吧! -->
+    <bean id="mybatisTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="singleDataSource"/>
+    </bean>
+    <tx:advice id="txAdvice" transaction-manager="mybatisTransactionManager">
+        <tx:attributes>
+            <tx:method name="mybatisSpringTransaction" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception"/>
+        </tx:attributes>
+    </tx:advice>
+    <!-- 这里使用面向 aop 的命名空间 -->
+    <aop:config>
+        <aop:pointcut id="mybatisMethods"
+                      expression="execution(* com.hundsun.demo.spring.service.YiibaidbService.mybatisSpringTransaction(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="mybatisMethods"/>
+    </aop:config>
 
 </beans>
