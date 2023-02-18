@@ -12,6 +12,9 @@
     plugins?,
     environments?, databaseIdProvider?, mappers?
     -->
+    <settings>
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+    </settings>
     <plugins>
         <!-- PageHelper 插件-->
         <plugin interceptor="com.github.pagehelper.PageInterceptor">
@@ -19,18 +22,18 @@
             <property name="autoRuntimeDialect" value="true"/>
         </plugin>
     </plugins>
-    <!--    <environments default="development">-->
-    <!--        <environment id="development">-->
-    <!--            <transactionManager type="JDBC"/>-->
-    <!--            <dataSource type="POOLED">-->
-    <!--                <property name="driver" value="com.mysql.jdbc.Driver"/>-->
-    <!--                <property name="url"-->
-    <!--                          value="jdbc:mysql://192.168.175.128:3306/yiibaidb?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>-->
-    <!--                <property name="username" value="root"/>-->
-    <!--                <property name="password" value="123456"/>-->
-    <!--            </dataSource>-->
-    <!--        </environment>-->
-    <!--    </environments>-->
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.jdbc.Driver"/>
+                <property name="url"
+                          value="jdbc:mysql://192.168.175.128:3306/yiibaidb?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>
+                <property name="username" value="root"/>
+                <property name="password" value="123456"/>
+            </dataSource>
+        </environment>
+    </environments>
     <mappers>
         <mapper resource="mapper/CustomerMapper.xml"/>
     </mappers>
