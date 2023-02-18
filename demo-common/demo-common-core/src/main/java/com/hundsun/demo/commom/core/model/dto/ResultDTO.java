@@ -19,7 +19,7 @@ public class ResultDTO<E> implements Serializable {
     /**
      * 状态码
      */
-    private Integer code;
+    private int code;
 
     /**
      * 状态信息

@@ -23,7 +23,7 @@ public class ResultAdvice implements MethodInterceptor {
             return methodInvocation.proceed();
         } catch (Exception e) {
             log.error(e.getMessage(),e);
-            return ResultDTOBuild.resultErrorBuild("failed", e.getMessage());
+            return ResultDTOBuild.resultErrorBuild("failed");
         }
     }
 }
