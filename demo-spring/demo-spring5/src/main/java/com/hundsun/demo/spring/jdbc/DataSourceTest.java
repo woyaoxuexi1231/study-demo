@@ -80,6 +80,15 @@ public class DataSourceTest {
 
     /**
      * 通过 spring 的 DriverManagerDataSource + JdbcTemplate 访问
+     * <p>
+     * 常见的 DataSource 实现类有:
+     * org.apache.common.dbcp.BasicDataSource
+     * org.springframework.jdbc.datasource.DriverManagerDataSource - 每次都获取都返回一个新的数据库连接, 没有提供缓冲池的功能, 在某些情况下应该避免将其应用于生产环境
+     * org.springframework.jdbc.datasource.SingleConnectionDataSource - 每次都返回同一个数据库连接
+     * <p>
+     * 下面是拥有缓冲池功能的 DataSource:
+     * HikariDataSource
+     * alibaba Druid
      */
     public static void springDataSource() {
 
@@ -87,6 +96,7 @@ public class DataSourceTest {
         dataSource.setDriverClassName(MYSQL_DRIVER);
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
+        // JdbcTemplate 内部会通过 DataSourceUtils 来获取连接
         List<CustomerDO> customerDOS = jdbcTemplate.query(MYSQL_SQL, new BeanPropertyRowMapper<>(CustomerDO.class));
         System.out.println(customerDOS);
     }
