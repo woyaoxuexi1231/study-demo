@@ -2,6 +2,7 @@ package com.hundsun.demo.spring;
 
 import com.hundsun.demo.spring.init.listener.MybatisEvent;
 import com.hundsun.demo.spring.init.listener.SimpleEvent;
+import com.hundsun.demo.spring.jdbc.DataSourceType;
 import com.hundsun.demo.spring.mybatis.MyBatisOperationType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
@@ -49,7 +50,8 @@ public class SpringDemoApplication {
 
         // mybatis 事务小测试
         try {
-            applicationContext.publishEvent(new MybatisEvent(MyBatisOperationType.UPDATE));
+            applicationContext.publishEvent(new MybatisEvent(MyBatisOperationType.UPDATE, DataSourceType.MASTER));
+            applicationContext.publishEvent(new MybatisEvent(MyBatisOperationType.UPDATE, DataSourceType.SECOND));
         } catch (Exception e) {
             log.error("Mybatis更新数据异常, 已执行回滚. ", e);
         }

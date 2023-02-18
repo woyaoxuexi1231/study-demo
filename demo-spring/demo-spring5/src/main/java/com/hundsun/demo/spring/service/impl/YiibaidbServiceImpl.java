@@ -62,8 +62,6 @@ public class YiibaidbServiceImpl implements YiibaidbService, ApplicationContextA
         System.out.println("当前绑定的数据源为 " + dataSourceType);
         List<ProductsDO> productsDOS = jdbcTemplate.query("select * from products limit 0,10", new BeanPropertyRowMapper<>(ProductsDO.class));
         productsDOS.forEach(System.out::println);
-        System.out.println("-------------------------------------- Spring多数据源 --------------------------------------");
-        System.out.println();
     }
 
     @Override
@@ -74,18 +72,15 @@ public class YiibaidbServiceImpl implements YiibaidbService, ApplicationContextA
         // 使用指定数据源更新数据
         DataSourceTypeManager.set(dataSourceType);
         System.out.println("当前绑定的数据源为 " + dataSourceType);
-        try {
-            if (dataSourceType.equals(DataSourceType.MASTER)) {
-                jdbcTemplate.execute("update customers set phone = '40.32.2554' where customerNumber = '103'");
-            }
-            if (dataSourceType.equals(DataSourceType.SECOND)) {
-                jdbcTemplate.execute("update customers set phone = '40.32.2552' where customerNumber = '103'");
-                throw new RuntimeException("从SECOND数据源更新出现问题! 正准备回滚...");
-            }
-        } finally {
-            System.out.println("-------------------------------------- Spring多数据源 + 事务 --------------------------------------");
-            System.out.println();
+
+        if (dataSourceType.equals(DataSourceType.MASTER)) {
+            jdbcTemplate.execute("update customers set phone = '40.32.2554' where customerNumber = '103'");
         }
+        if (dataSourceType.equals(DataSourceType.SECOND)) {
+            jdbcTemplate.execute("update customers set phone = '40.32.2552' where customerNumber = '103'");
+            throw new RuntimeException("从SECOND数据源更新出现问题! 正准备回滚...");
+        }
+
     }
 
     /**
@@ -94,39 +89,35 @@ public class YiibaidbServiceImpl implements YiibaidbService, ApplicationContextA
     private CustomerMapper customerMapper;
 
     @Override
-    public void mybatisSpringTransaction(MyBatisOperationType myBatisOperationType) {
+    public void mybatisSpringTransaction(MyBatisOperationType myBatisOperationType, DataSourceType dataSourceType) {
 
         System.out.println();
         System.out.println("-------------------------------------- Spring + Mybatis --------------------------------------");
-        /*
-        pageHelper
-        pageSizeZero 参数 - pageSize 为 0 的时候会查出所有数据而不进行分页, 在稍低版本中 pageNum 为 0 不会影响这个参数的使用, 稍新版本中 pageNum 为 0 不会查数据(这里使用 5.2.0 版本)
-         */
-        try {
-
-            System.out.println("执行 " + myBatisOperationType + " 操作");
-
-            // select
-            if (myBatisOperationType.equals(MyBatisOperationType.SELECT)) {
-                PageHelper.startPage(1, 10);
-                // 通过 spring Bean 的方式使用 Mybatis
-                List<CustomerDO> customerDOS = customerMapper.selectAll();
-                // customerDOS.forEach(System.out::println);
-            }
-
-            // update
-            if (myBatisOperationType.equals(MyBatisOperationType.UPDATE)) {
-                CustomerDO customerDO = new CustomerDO();
-                customerDO.setCustomernumber(103);
-                customerDO.setPhone("40.32.2541");
-                customerMapper.updateOne(customerDO);
-                throw new RuntimeException("更新出错!");
-            }
-
-        } finally {
-            System.out.println("-------------------------------------- Spring + Mybatis --------------------------------------");
-            System.out.println();
+        DataSourceTypeManager.set(dataSourceType);
+        System.out.println("当前绑定的数据源为 " + dataSourceType + " - 执行 " + myBatisOperationType + " 操作");
+        // select
+        if (myBatisOperationType.equals(MyBatisOperationType.SELECT)) {
+                /*
+                pageHelper
+                pageSizeZero 参数 - pageSize 为 0 的时候会查出所有数据而不进行分页, 在稍低版本中 pageNum 为 0 不会影响这个参数的使用, 稍新版本中 pageNum 为 0 不会查数据(这里使用 5.2.0 版本)
+                 */
+            PageHelper.startPage(1, 10);
+            // 通过 spring Bean 的方式使用 Mybatis
+            List<CustomerDO> customerDOS = customerMapper.selectAll();
+            // customerDOS.forEach(System.out::println);
         }
+
+        // update
+        if (myBatisOperationType.equals(MyBatisOperationType.UPDATE)) {
+            CustomerDO customerDO = new CustomerDO();
+            customerDO.setCustomernumber(103);
+            customerDO.setPhone("40.32.100");
+            customerMapper.updateOne(customerDO);
+            if (dataSourceType.equals(DataSourceType.SECOND)) {
+                throw new RuntimeException("数据源 SECOND 更新出错!");
+            }
+        }
+
     }
 
 }

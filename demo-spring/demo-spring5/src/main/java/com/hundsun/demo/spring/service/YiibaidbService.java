@@ -47,6 +47,7 @@ public interface YiibaidbService {
      * Mybatis + Spring 整合, 事务
      *
      * @param myBatisOperationType myBatisOperationType
+     * @param dataSourceType       dataSourceType
      */
-    void mybatisSpringTransaction(MyBatisOperationType myBatisOperationType);
+    void mybatisSpringTransaction(MyBatisOperationType myBatisOperationType, DataSourceType dataSourceType);
 }

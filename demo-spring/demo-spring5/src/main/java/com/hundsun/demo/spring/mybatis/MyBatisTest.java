@@ -34,7 +34,7 @@ public class MyBatisTest implements ApplicationListener<MybatisEvent> {
     @Override
     public void onApplicationEvent(MybatisEvent event) {
 
-        this.yiibaidbService.mybatisSpringTransaction(event.getMyBatisOperationType());
+        this.yiibaidbService.mybatisSpringTransaction(event.getMyBatisOperationType(), event.getDataSourceType());
     }
 
     private static void staticInvoke() {

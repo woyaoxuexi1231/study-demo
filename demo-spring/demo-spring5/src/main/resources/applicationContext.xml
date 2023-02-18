@@ -119,7 +119,7 @@
         <property name="password" value="123456"/>
     </bean>
     <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-        <property name="dataSource" ref="singleDataSource"/>
+        <property name="dataSource" ref="dataSource"/>
         <property name="configLocation" value="spring-mybatis-config.xml"/>
         <property name="mapperLocations" value="mapper/*.xml"/>
     </bean>
@@ -130,11 +130,12 @@
     <bean class="com.hundsun.demo.spring.mybatis.MyBatisTest" autowire="byName"/>
     <!-- mybatis 整合进 spring 之后, 事务的管理权就交给了 spring, 所以如果我们要使用事务, 那就必须按规矩办事, 好好的声明 spring 事务吧! -->
     <bean id="mybatisTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="singleDataSource"/>
+        <property name="dataSource" ref="dataSource"/>
     </bean>
     <tx:advice id="txAdvice" transaction-manager="mybatisTransactionManager">
         <tx:attributes>
-            <tx:method name="mybatisSpringTransaction" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception"/>
+            <tx:method name="mybatisSpringTransaction" propagation="REQUIRED" read-only="false"
+                       rollback-for="java.lang.Exception"/>
         </tx:attributes>
     </tx:advice>
     <!-- 这里使用面向 aop 的命名空间 -->
