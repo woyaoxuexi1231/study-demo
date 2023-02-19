@@ -2,7 +2,7 @@ package com.hundsun.demo.dubbo.consumer.service.impl;
 
 import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import com.hundsun.demo.dubbo.consumer.api.service.SimpleService;
-import com.hundsun.demo.dubbo.consumer.service.LocalLockService;
+import com.hundsun.demo.dubbo.consumer.api.service.LocalLockService;
 import com.hundsun.demo.dubbo.provider.api.service.SimpleProviderService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;

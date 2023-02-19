@@ -2,7 +2,7 @@ package com.hundsun.demo.dubbo.consumer.controller;
 
 import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import com.hundsun.demo.dubbo.consumer.api.service.SimpleService;
-import com.hundsun.demo.dubbo.consumer.service.RabbitMqService;
+import com.hundsun.demo.dubbo.consumer.api.service.RabbitMqService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;

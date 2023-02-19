@@ -1,4 +1,4 @@
-package com.hundsun.demo.dubbo.consumer.service;
+package com.hundsun.demo.dubbo.consumer.api.service;
 
 import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 
