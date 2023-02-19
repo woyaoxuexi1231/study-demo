@@ -4,7 +4,6 @@ import cn.hutool.core.thread.ThreadFactoryBuilder;
 import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
 import com.hundsun.demo.dubbo.provider.api.service.SimpleProviderService;
-import com.hundsun.demo.dubbo.provider.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.amqp.rabbit.annotation.Queue;
@@ -13,7 +12,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import javax.annotation.Resource;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -29,9 +27,6 @@ import java.util.concurrent.TimeUnit;
 @DubboService
 @Slf4j
 public class SimpleProviderServiceImpl implements SimpleProviderService {
-
-    @Resource
-    UserMapper userMapper;
 
     @Autowired
     JdbcTemplate jdbcTemplate;
