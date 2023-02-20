@@ -1,7 +1,6 @@
 package com.hundsun.demo.java.redis;
 
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPubSub;
 
 /**
  * @projectName: study-demo
@@ -47,7 +46,10 @@ public class RedisTest {
     Redis事务
         WATCH, MULTI, EXEC
 
-
+    Redis的应用
+        1. 作为注册中心
+        2. 分布式锁
+        3. 消息队列
      */
 
 
@@ -61,27 +63,8 @@ public class RedisTest {
          */
 
         // 使用 jedis 连接 redis
-
-        new Thread(()->{
-            Jedis jedis = new Jedis(REDIS_ADDRESS, REDIS_PORT);
-            jedis.auth(PASSWORD);
-            for (int i = 0; i < 1000; i++) {
-                jedis.incr("int2");
-            }
-
-            jedis.close();
-        }).start();
-
-        new Thread(()->{
-            Jedis jedis = new Jedis(REDIS_ADDRESS, REDIS_PORT);
-            jedis.auth(PASSWORD);
-            for (int i = 0; i < 1000; i++) {
-                jedis.incr("int2");
-            }
-            jedis.close();
-        }).start();
-
-
-
+        Jedis jedis = new Jedis(REDIS_ADDRESS, REDIS_PORT);
+        jedis.auth(PASSWORD);
+        jedis.close();
     }
 }
