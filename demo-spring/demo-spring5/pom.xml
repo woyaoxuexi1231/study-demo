@@ -107,6 +107,12 @@
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
 
+        <!-- redis -->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+        </dependency>
+
     </dependencies>
 
     <profiles>
