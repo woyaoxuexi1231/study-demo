@@ -1,6 +1,14 @@
 package com.hundsun.demo.java.redis;
 
+import io.lettuce.core.RedisClient;
+import io.lettuce.core.RedisURI;
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.Transaction;
 
 /**
  * @projectName: study-demo
@@ -44,7 +52,8 @@ public class RedisTest {
             1. 发送快照
             2. 设置新的主服务器
     Redis事务
-        WATCH, MULTI, EXEC
+        1. WATCH, MULTI, EXEC, UNWATCH
+        2. SETNX
 
     Redis的应用
         1. 作为注册中心
@@ -56,15 +65,87 @@ public class RedisTest {
     private final static String REDIS_ADDRESS = "192.168.175.128";
     private final static int REDIS_PORT = 6379;
     private final static String PASSWORD = "123456";
+    private final static Integer TIMEOUT = 60 * 1000;
 
-    public static void main(String[] args) {
+    private final static Jedis JEDIS;
+    private final static JedisPool JEDIS_POOL;
+    private final static RedissonClient REDISSON_CLIENT;
+    private final static RedisClient LETTUCE_CLIENT;
+
+    static {
         /*
         Java 中一般有三种连接 redis 的客户端, Jedis, Redisson, Lettuce
          */
 
-        // 使用 jedis 连接 redis
-        Jedis jedis = new Jedis(REDIS_ADDRESS, REDIS_PORT);
-        jedis.auth(PASSWORD);
-        jedis.close();
+        // 1. 使用 Jedis 或者 JedisPool 连接
+        JEDIS = new Jedis(REDIS_ADDRESS, REDIS_PORT);
+        JEDIS.auth(PASSWORD);
+        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+        jedisPoolConfig.setMaxTotal(10);
+        JEDIS_POOL = new JedisPool(jedisPoolConfig, REDIS_ADDRESS, REDIS_PORT, TIMEOUT, PASSWORD);
+
+        // 2. 使用 Redisson
+        Config redissonConfig = new Config();
+        redissonConfig.useSingleServer()
+                .setAddress("redis://" + REDIS_ADDRESS + ":" + REDIS_PORT)
+                .setPassword(PASSWORD);
+        REDISSON_CLIENT = Redisson.create(redissonConfig);
+
+        // 3. 使用 Lettuce
+        RedisURI redisURI = RedisURI.builder()
+                .withHost(REDIS_ADDRESS)
+                .withPort(REDIS_PORT)
+                .withPassword(PASSWORD)
+                .build();
+        LETTUCE_CLIENT = RedisClient.create(redisURI);
+    }
+
+    private static void closeResources() {
+        JEDIS.close();
+        JEDIS_POOL.close();
+        REDISSON_CLIENT.shutdown();
+    }
+
+    public static void main(String[] args) {
+
+        transaction();
+        setnxLock();
+        closeResources();
+    }
+
+    /**
+     * 使用 WATCH, MULTI, EXEC, UNWATCH 的 Redis 事务
+     * 这种方式是乐观锁, 乐观的认为在整个事务期间不会有其他事务来修改我们 WATCH 的值
+     * 如果在 EXEC 时, 我们检测到 WATCH 的值被改变了, 那么会回滚提交
+     */
+    public static void transaction() {
+        // 监视指定键
+        JEDIS.watch("JEDIS::TRANSACTION::LOCK");
+        if (JEDIS.get("JEDIS::TRANSACTION::KEY") != null && JEDIS.get("JEDIS::TRANSACTION::KEY").equals("PASS")) {
+            // 判断一下是否满足条件, 如果满足条件的话可以使用 UNWATCH 不执行事务了
+            JEDIS.unwatch();
+            return;
+        }
+        // 开启事务
+        Transaction transaction = JEDIS.multi();
+        transaction.set("JEDIS::TRANSACTION::LOCK", "LOCKED");
+        transaction.set("JEDIS::TRANSACTION::KEY", "VALUE");
+        // 提交事务
+        transaction.exec();
+    }
+
+    /**
+     * 使用 setnx 来保证 Redis 事务
+     */
+    public static void setnxLock() {
+
+        if (JEDIS.setnx("JEDIS::TRANSACTION::SETNXLOCK", "LOCKED") == 0) {
+            // 上锁失败
+            return;
+        }
+        // 加个超时时间, 避免死锁
+        JEDIS.expire("JEDIS::TRANSACTION::SETNXLOCK", 30);
+        // 用完释放锁
+        JEDIS.del("JEDIS::TRANSACTION::SETNXLOCK");
     }
 }
