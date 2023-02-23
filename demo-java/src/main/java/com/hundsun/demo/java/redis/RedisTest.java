@@ -1,5 +1,6 @@
 package com.hundsun.demo.java.redis;
 
+import cn.hutool.core.collection.CollectionUtil;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import org.redisson.Redisson;
@@ -54,11 +55,13 @@ public class RedisTest {
     Redis事务
         1. WATCH, MULTI, EXEC, UNWATCH
         2. SETNX
+        3. Lua 脚本
 
     Redis的应用
         1. 作为注册中心
         2. 分布式锁
-        3. 消息队列
+        3. 信号量
+        4. 消息队列
      */
 
 
@@ -108,8 +111,10 @@ public class RedisTest {
 
     public static void main(String[] args) {
 
-        transaction();
-        setnxLock();
+        // transaction();
+        // setnxLock();
+        luaLock();
+
         closeResources();
     }
 
@@ -147,5 +152,45 @@ public class RedisTest {
         JEDIS.expire("JEDIS::TRANSACTION::SETNXLOCK", 30);
         // 用完释放锁
         JEDIS.del("JEDIS::TRANSACTION::SETNXLOCK");
+    }
+
+    /**
+     * 使用 Lua 脚本来保证 Redis 事务
+     */
+    public static void luaLock() {
+
+        /*
+        EVAL 和 EVALSHA 使用 Lua 解释器执行脚本
+        EVAL 执行的脚本不从缓存里拿, 而 EVALSHA 执行的脚本从缓存里拿, 根据 sha1 校验码从服务器缓存里拿
+        EVAL script numkeys key [key ...] arg [arg ...]
+            script - 参数是一段 Lua 5.1 脚本程序, 在 redis 服务器上下文执行, 脚本不必(也不应该)定义为一个 Lua 函数
+            numkeys - 用于指定键名参数的个数
+            key [key ...] - 从 EVAL 的第三个参数开始算起, 表示在脚本中所用到的那些 Redis 键(key), 这些键名参数可以在 Lua 中通过全局变量 KEYS 数组, 用 1 为基址的形式访问( KEYS[1], KEYS[2], 以此类推)
+            arg [arg ...] - 附加参数, 在 Lua 中通过全局变量 ARGV 数组访问, 访问的形式和 KEYS 变量类似( ARGV[1], ARGV[2], 诸如此类)
+
+            eval "return {KEYS[1],KEYS[2],ARGV[1],ARGV[2]}" 2 key1 key2 first second
+            "return {KEYS[1],KEYS[2],ARGV[1],ARGV[2]}" - script
+            2 - numkeys
+            key1 key2 - key
+            first second - arg
+        在 lua 脚本里, 可以使用两个不同的函数来执行 redis 的命令
+            redis.call() - 将会抛出错误给 eval 命令的调用者
+            redis.pcall() - 会捕获异常错误, 并返回 Lua table 表示错误
+            eval "return redis.call('set', KEYS[1], 'bar')" 1 foo - 把 foo 的值设为 bar
+
+        lua 脚本实现的锁比直接使用 setnx 快
+            单个客户端 -  快 40%
+            两个客户端 - 快 87%
+            五个或者是个 - 快一倍以上
+         */
+
+        String uuid = "luaLock";
+        String lockName = "JEDIS::TRANSACTION::LUALOCK";
+        String timeout = "30";
+        String lua = "if redis.call('exists', KEYS[1]) == 0 then return redis.call('setex', KEYS[1], ARGV[1], ARGV[2]) end";
+        String unpackLua = "if redis.call('exists', KEYS[1]) == 0 then return redis.call('setex', KEYS[1], unpack(ARGV)) end";
+
+        Object result = JEDIS.eval(lua, CollectionUtil.newArrayList(lockName), CollectionUtil.newArrayList(timeout, uuid));
+        System.out.println(result);
     }
 }
