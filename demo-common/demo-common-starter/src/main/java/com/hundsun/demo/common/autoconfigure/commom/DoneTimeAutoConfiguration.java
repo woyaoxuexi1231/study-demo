@@ -2,8 +2,9 @@ package com.hundsun.demo.common.autoconfigure.commom;
 
 
 import com.hundsun.demo.commom.core.aop.DoneTimeAspect;
-import org.springframework.context.annotation.Bean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 /**
  * @ProductName: Hundsun amust
@@ -14,12 +15,8 @@ import org.springframework.context.annotation.Configuration;
  * @Date: 2022-05-23 17:41
  */
 
+@ConditionalOnProperty(value = {"done.time.enable"}, havingValue = "true")
 @Configuration
+@Import({DoneTimeAspect.class})
 public class DoneTimeAutoConfiguration {
-
-    @Bean
-    public DoneTimeAspect doneTimeAspect() {
-        return new DoneTimeAspect();
-    }
-
 }

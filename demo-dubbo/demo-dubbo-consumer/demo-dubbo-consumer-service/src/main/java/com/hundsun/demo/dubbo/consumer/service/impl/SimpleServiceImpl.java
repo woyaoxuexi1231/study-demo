@@ -1,5 +1,6 @@
 package com.hundsun.demo.dubbo.consumer.service.impl;
 
+import com.hundsun.demo.commom.core.annotation.DoneTime;
 import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import com.hundsun.demo.dubbo.consumer.api.service.SimpleService;
 import com.hundsun.demo.dubbo.consumer.api.service.LocalLockService;
@@ -42,6 +43,7 @@ public class SimpleServiceImpl implements SimpleService {
     LocalLockService localLockService;
 
     @Override
+    @DoneTime
     public ResultDTO<?> simpleRpcInvoke() {
         return simpleProviderService.RpcSimpleInvoke();
     }
