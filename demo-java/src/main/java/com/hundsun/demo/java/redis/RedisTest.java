@@ -111,8 +111,8 @@ public class RedisTest {
 
     public static void main(String[] args) {
 
-        // transaction();
-        // setnxLock();
+        transaction();
+        setnxLock();
         luaLock();
 
         closeResources();
@@ -150,8 +150,10 @@ public class RedisTest {
         }
         // 加个超时时间, 避免死锁
         JEDIS.expire("JEDIS::TRANSACTION::SETNXLOCK", 30);
+        // 或者直接使用 setex
+        // JEDIS.setex("JEDIS::TRANSACTION::SETNXLOCK", 30, "LOCKED");
         // 用完释放锁
-        JEDIS.del("JEDIS::TRANSACTION::SETNXLOCK");
+        // JEDIS.del("JEDIS::TRANSACTION::SETNXLOCK");
     }
 
     /**
@@ -190,7 +192,7 @@ public class RedisTest {
         String lua = "if redis.call('exists', KEYS[1]) == 0 then return redis.call('setex', KEYS[1], ARGV[1], ARGV[2]) end";
         String unpackLua = "if redis.call('exists', KEYS[1]) == 0 then return redis.call('setex', KEYS[1], unpack(ARGV)) end";
 
+        // 成功返回 OK, 失败返回 null
         Object result = JEDIS.eval(lua, CollectionUtil.newArrayList(lockName), CollectionUtil.newArrayList(timeout, uuid));
-        System.out.println(result);
     }
 }
