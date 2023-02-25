@@ -110,19 +110,21 @@ public class DynamicDataSourceTransactionTest {
         1. 如果多数据源的方式是通过声明多个数据源来实现的, 那么多数据源的事务也按照声明多个 DataSourceTransactionManager 来解决就行了
         2. 如果通过 AbstractRoutingDataSource 来实现多数据源的事务
             AbstractRoutingDataSource 说白了就是对第一点进行了一些巧妙的封装, 我们可以通过特定的类型来获得特定的数据库访问资源
+            使用这种方式的下的事务完全由 spring 来掌控, 不管是什么框架, 比如 spring 的 JdbcTemplate, 或者是 Mybatis 的方式来访问数据库
+            最终访问数据库的方式都会落到具体数据库给的 jdbc 驱动上, 都会通过 javax.sql.DataSource$getConnection() 方法来获取数据库连接, 而事务的提交也最终都会在 connect 的基础上进行
+            所以在 AbstractRoutingDataSource 的源码中我们可以看到, AbstractRoutingDataSource 重写的 getConnection 方法会根据我们给的数据库类型, 帮我们找到对应的数据源然后返回
+            最终事务会基于这个 connect 进行操作
+            // todo 2023/02/25 需要看源码
 
 
-
-    Springboot的多数据源+事务
-    // todo 一些前提知识
-    1. DataSourceAutoConfiguration - 这是 springboot 的数据源自动配置
-    2. dynamic-datasource-spring-boot-starter框架
-    spring的动态多数据源 //todo
-    使用 AbstractRoutingDataSource 类来根据运行时的条件切换不同的数据源
-    使用 ChainedTransactionManager 类来处理多个数据源的分布式事务
-    使用 @Qualifier 注解和 @Transactional 注解来指定不同的事务管理器
-
-
+    7. Springboot的多数据源+事务
+        // todo 一些前提知识
+        1. DataSourceAutoConfiguration - 这是 springboot 的数据源自动配置
+        2. dynamic-datasource-spring-boot-starter框架
+        spring的动态多数据源 //todo
+        使用 AbstractRoutingDataSource 类来根据运行时的条件切换不同的数据源
+        使用 ChainedTransactionManager 类来处理多个数据源的分布式事务
+        使用 @Qualifier 注解和 @Transactional 注解来指定不同的事务管理器
      */
 
 
