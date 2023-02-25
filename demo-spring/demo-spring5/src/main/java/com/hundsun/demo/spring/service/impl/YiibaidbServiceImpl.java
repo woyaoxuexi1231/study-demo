@@ -1,8 +1,8 @@
 package com.hundsun.demo.spring.service.impl;
 
 import com.github.pagehelper.PageHelper;
-import com.hundsun.demo.spring.jdbc.DataSourceType;
-import com.hundsun.demo.spring.jdbc.DataSourceTypeManager;
+import com.hundsun.demo.spring.jdbc.DynamicDataSourceType;
+import com.hundsun.demo.spring.jdbc.DynamicDataSourceTypeManager;
 import com.hundsun.demo.spring.model.pojo.CustomerDO;
 import com.hundsun.demo.spring.model.pojo.ProductsDO;
 import com.hundsun.demo.spring.mybatis.CustomerMapper;
@@ -53,30 +53,30 @@ public class YiibaidbServiceImpl implements YiibaidbService, ApplicationContextA
     }
 
     @Override
-    public void multipleDataSource(DataSourceType dataSourceType) {
+    public void multipleDataSource(DynamicDataSourceType dynamicDataSourceType) {
         System.out.println();
         System.out.println("-------------------------------------- Spring多数据源 --------------------------------------");
         JdbcTemplate jdbcTemplate = (JdbcTemplate) applicationContext.getBean("multipleDataSourceJdbcTemplate");
         // 使用指定数据源查询数据
-        DataSourceTypeManager.set(dataSourceType);
-        System.out.println("当前绑定的数据源为 " + dataSourceType);
+        DynamicDataSourceTypeManager.set(dynamicDataSourceType);
+        System.out.println("当前绑定的数据源为 " + dynamicDataSourceType);
         List<ProductsDO> productsDOS = jdbcTemplate.query("select * from products limit 0,10", new BeanPropertyRowMapper<>(ProductsDO.class));
         productsDOS.forEach(System.out::println);
     }
 
     @Override
-    public void multipleDataSourceTransaction(DataSourceType dataSourceType) {
+    public void multipleDataSourceTransaction(DynamicDataSourceType dynamicDataSourceType) {
         System.out.println();
         System.out.println("-------------------------------------- Spring多数据源 + 事务 --------------------------------------");
         JdbcTemplate jdbcTemplate = (JdbcTemplate) applicationContext.getBean("multipleDataSourceJdbcTemplate");
         // 使用指定数据源更新数据
-        DataSourceTypeManager.set(dataSourceType);
-        System.out.println("当前绑定的数据源为 " + dataSourceType);
+        DynamicDataSourceTypeManager.set(dynamicDataSourceType);
+        System.out.println("当前绑定的数据源为 " + dynamicDataSourceType);
 
-        if (dataSourceType.equals(DataSourceType.MASTER)) {
+        if (dynamicDataSourceType.equals(DynamicDataSourceType.MASTER)) {
             jdbcTemplate.execute("update customers set phone = '40.32.2554' where customerNumber = '103'");
         }
-        if (dataSourceType.equals(DataSourceType.SECOND)) {
+        if (dynamicDataSourceType.equals(DynamicDataSourceType.SECOND)) {
             jdbcTemplate.execute("update customers set phone = '40.32.2552' where customerNumber = '103'");
             throw new RuntimeException("从SECOND数据源更新出现问题! 正准备回滚...");
         }
@@ -89,14 +89,14 @@ public class YiibaidbServiceImpl implements YiibaidbService, ApplicationContextA
     private CustomerMapper customerMapper;
 
     @Override
-    public void mybatisSpringTransaction(MyBatisOperationType myBatisOperationType, DataSourceType dataSourceType) {
+    public void mybatisSpringTransaction(MyBatisOperationType myBatisOperationType, DynamicDataSourceType dynamicDataSourceType) {
 
         System.out.println();
         System.out.println("-------------------------------------- Spring + Mybatis --------------------------------------");
 
         // todo Mybatis 是如何去拿这个动态数据源的信息的?? - 2023/02/18
-        DataSourceTypeManager.set(dataSourceType);
-        System.out.println("当前绑定的数据源为 " + dataSourceType + " - 执行 " + myBatisOperationType + " 操作");
+        DynamicDataSourceTypeManager.set(dynamicDataSourceType);
+        System.out.println("当前绑定的数据源为 " + dynamicDataSourceType + " - 执行 " + myBatisOperationType + " 操作");
         // select
         if (myBatisOperationType.equals(MyBatisOperationType.SELECT)) {
                 /*
@@ -115,7 +115,7 @@ public class YiibaidbServiceImpl implements YiibaidbService, ApplicationContextA
             customerDO.setCustomernumber(103);
             customerDO.setPhone("40.32.100");
             customerMapper.updateOne(customerDO);
-            if (dataSourceType.equals(DataSourceType.SECOND)) {
+            if (dynamicDataSourceType.equals(DynamicDataSourceType.SECOND)) {
                 throw new RuntimeException("数据源 SECOND 更新出错!");
             }
         }

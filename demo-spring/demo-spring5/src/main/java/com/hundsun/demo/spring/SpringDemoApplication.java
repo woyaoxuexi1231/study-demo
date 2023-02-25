@@ -1,9 +1,8 @@
 package com.hundsun.demo.spring;
 
-import com.hundsun.demo.spring.init.listener.MybatisEvent;
+import com.hundsun.demo.spring.init.listener.MultipleDataSourceTestEvent;
 import com.hundsun.demo.spring.init.listener.SimpleEvent;
-import com.hundsun.demo.spring.jdbc.DataSourceType;
-import com.hundsun.demo.spring.mybatis.MyBatisOperationType;
+import com.hundsun.demo.spring.jdbc.DynamicDataSourceType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
@@ -41,20 +40,20 @@ public class SpringDemoApplication {
         applicationContext.publishEvent(new SimpleEvent("Application Started"));
 
         // 测试多数据源切换
-        // try {
-        //     applicationContext.publishEvent(new MultipleDataSourceTestEvent(DataSourceType.MASTER));
-        //     applicationContext.publishEvent(new MultipleDataSourceTestEvent(DataSourceType.SECOND));
-        // } catch (Exception e) {
-        //     log.error("多数据源更新异常, 执行回滚操作. ", e);
-        // }
+        try {
+            applicationContext.publishEvent(new MultipleDataSourceTestEvent(DynamicDataSourceType.MASTER));
+            applicationContext.publishEvent(new MultipleDataSourceTestEvent(DynamicDataSourceType.SECOND));
+        } catch (Exception e) {
+            log.error("多数据源更新异常, 执行回滚操作. ", e);
+        }
 
         // mybatis 事务小测试
-        try {
-            applicationContext.publishEvent(new MybatisEvent(MyBatisOperationType.UPDATE, DataSourceType.MASTER));
-            applicationContext.publishEvent(new MybatisEvent(MyBatisOperationType.UPDATE, DataSourceType.SECOND));
-        } catch (Exception e) {
-            log.error("Mybatis更新数据异常, 已执行回滚. ", e);
-        }
+        // try {
+        //     applicationContext.publishEvent(new MybatisEvent(MyBatisOperationType.UPDATE, DataSourceType.MASTER));
+        //     applicationContext.publishEvent(new MybatisEvent(MyBatisOperationType.UPDATE, DataSourceType.SECOND));
+        // } catch (Exception e) {
+        //     log.error("Mybatis更新数据异常, 已执行回滚. ", e);
+        // }
 
     }
 

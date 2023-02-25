@@ -9,32 +9,32 @@ package com.hundsun.demo.spring.jdbc;
  * @createDate: 2023/2/18 16:07
  */
 
-public class DataSourceTypeManager {
+public class DynamicDataSourceTypeManager {
 
-    private static final ThreadLocal<DataSourceType> DATA_SOURCE_TYPE_THREAD_LOCAL = new ThreadLocal<DataSourceType>() {
+    private static final ThreadLocal<DynamicDataSourceType> DATA_SOURCE_TYPE_THREAD_LOCAL = new ThreadLocal<DynamicDataSourceType>() {
 
         /**
          * 初始化默认为 MASTER 标志的数据库
          * @return MASTER
          */
-        protected DataSourceType initialValue() {
-            return DataSourceType.MASTER;
+        protected DynamicDataSourceType initialValue() {
+            return DynamicDataSourceType.MASTER;
         }
     };
 
-    public static DataSourceType get() {
+    public static DynamicDataSourceType get() {
         return DATA_SOURCE_TYPE_THREAD_LOCAL.get();
     }
 
-    public static void set(DataSourceType dataSourceType) {
-        DATA_SOURCE_TYPE_THREAD_LOCAL.set(dataSourceType);
+    public static void set(DynamicDataSourceType dynamicDataSourceType) {
+        DATA_SOURCE_TYPE_THREAD_LOCAL.set(dynamicDataSourceType);
     }
 
     /**
      * 清楚标志, 默认绑定 MASTER
      */
     public static void reSet() {
-        DATA_SOURCE_TYPE_THREAD_LOCAL.set(DataSourceType.MASTER);
+        DATA_SOURCE_TYPE_THREAD_LOCAL.set(DynamicDataSourceType.MASTER);
     }
 
 }

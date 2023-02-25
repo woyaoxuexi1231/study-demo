@@ -1,6 +1,6 @@
 package com.hundsun.demo.spring.init.listener;
 
-import com.hundsun.demo.spring.jdbc.DataSourceType;
+import com.hundsun.demo.spring.jdbc.DynamicDataSourceType;
 import org.springframework.context.ApplicationEvent;
 
 /**
@@ -14,14 +14,14 @@ import org.springframework.context.ApplicationEvent;
 
 public class MultipleDataSourceTestEvent extends ApplicationEvent {
 
-    private final DataSourceType DATA_SOURCE_TYPE;
+    private final DynamicDataSourceType DATA_SOURCE_TYPE;
 
-    public MultipleDataSourceTestEvent(DataSourceType source) {
+    public MultipleDataSourceTestEvent(DynamicDataSourceType source) {
         super(source);
         DATA_SOURCE_TYPE = source;
     }
 
-    public DataSourceType getDataSourceType() {
+    public DynamicDataSourceType getDataSourceType() {
         return DATA_SOURCE_TYPE;
     }
 }

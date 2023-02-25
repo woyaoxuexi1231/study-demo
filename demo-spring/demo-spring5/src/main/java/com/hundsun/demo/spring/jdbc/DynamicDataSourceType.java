@@ -9,7 +9,7 @@ package com.hundsun.demo.spring.jdbc;
  * @createDate: 2023/2/18 16:05
  */
 
-public enum DataSourceType {
+public enum DynamicDataSourceType {
 
     MASTER,
     SECOND,

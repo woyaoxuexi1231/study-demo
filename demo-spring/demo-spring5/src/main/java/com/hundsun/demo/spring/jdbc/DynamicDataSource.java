@@ -11,10 +11,10 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
  * @createDate: 2023/2/18 16:20
  */
 
-public class ThreadLocalVariableRoutingDataSource extends AbstractRoutingDataSource {
+public class DynamicDataSource extends AbstractRoutingDataSource {
 
     @Override
     protected Object determineCurrentLookupKey() {
-        return DataSourceTypeManager.get();
+        return DynamicDataSourceTypeManager.get();
     }
 }
