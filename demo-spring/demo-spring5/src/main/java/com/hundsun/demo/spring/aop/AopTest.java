@@ -36,7 +36,7 @@ public class AopTest {
                 per-class 该类型的 Advice 可以在目标对象类的所有实例之间共享, 不会为目标对象类保存任何状态或者添加新的特性
                 per-instance 该类型不会在目标对象之间共享, 而且会为不同的实例对象保存他们各自的状态以及相关逻辑
         Aspect - spring 中也有一些默认的 Advisor(Aspect), 更多时候, 我们是自定义 Aspect
-        Ordered - 切面顺序, order值越低优先级越高, 即在最外圈
+        Ordered - 切面顺序, order值越低优先级越高, 即在最外圈, 如果一个切面没有配置 @order 注解或者配置了但是没有手动设置优先级, 那么切面将以最低优先级执行
         Weaving - 万事俱备, 只欠东风! 在 Spring 5 的源码中可以找到 ProxyFactory 和 AspectJProxyFactory 两个织入器
             AopProxy - 代理实现机制的顶层抽象接口, 生成代理类的方法由这个接口的子类实现, 主要有 CglibAopProxy 和 JdkDynamicAopProxy
             AopProxyFactory - 根据传入的 AdvisedSupport 实例提供的信息来决定生成什么类型的 AopProxy
