@@ -1,12 +1,14 @@
 package com.hundsun.demo.springboot.service.serviceimpl;
 
+import com.hundsun.demo.spring.jdbc.DynamicDataSourceType;
+import com.hundsun.demo.springboot.annotation.TargetDataSource;
 import com.hundsun.demo.springboot.mapper.EmployeeMapper;
 import com.hundsun.demo.springboot.model.pojo.EmployeeDO;
 import com.hundsun.demo.springboot.service.SimpleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -41,9 +43,13 @@ public class SimpleServiceImpl implements SimpleService {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    RedisTemplate<Object, Object> redisTemplate;
+
 
     @Override
     @Transactional
+    @TargetDataSource(dataSourceType = DynamicDataSourceType.MASTER)
     public void springTransaction() {
 
         EmployeeDO employeeDO = new EmployeeDO();
@@ -51,7 +57,17 @@ public class SimpleServiceImpl implements SimpleService {
         employeeDO.setLastName("Murph2");
         employeeMapper.updateByPrimaryKeySelective(employeeDO);
 
-        throw new RuntimeException("失败回滚...");
     }
 
+    @Override
+    @Transactional
+    @TargetDataSource(dataSourceType = DynamicDataSourceType.SECOND)
+    public void springRedis() {
+
+        EmployeeDO employeeDO = new EmployeeDO();
+        employeeDO.setEmployeeNumber(1002);
+        employeeDO.setLastName("Murph2");
+        employeeMapper.updateByPrimaryKeySelective(employeeDO);
+
+    }
 }

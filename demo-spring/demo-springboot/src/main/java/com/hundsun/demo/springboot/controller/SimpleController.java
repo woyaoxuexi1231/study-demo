@@ -23,7 +23,12 @@ public class SimpleController {
     SimpleService simpleService;
 
     @GetMapping("/springTransaction")
-    public void springTransaction(){
+    public void springTransaction() {
         simpleService.springTransaction();
+    }
+
+    @GetMapping("/SpringRedis")
+    public void SpringRedis() {
+        simpleService.springRedis();
     }
 }

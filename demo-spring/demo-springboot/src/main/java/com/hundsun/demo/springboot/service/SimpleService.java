@@ -15,4 +15,9 @@ public interface SimpleService {
      * spring事务的小 demo
      */
     void springTransaction();
+
+    /**
+     * springboot redis的一些使用方法
+     */
+    void springRedis();
 }
