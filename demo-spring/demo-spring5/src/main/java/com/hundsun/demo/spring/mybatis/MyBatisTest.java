@@ -2,6 +2,7 @@ package com.hundsun.demo.spring.mybatis;
 
 import com.github.pagehelper.PageHelper;
 import com.hundsun.demo.spring.init.listener.MybatisEvent;
+import com.hundsun.demo.spring.jdbc.DynamicDataSourceTypeManager;
 import com.hundsun.demo.spring.model.pojo.CustomerDO;
 import com.hundsun.demo.spring.service.YiibaidbService;
 import lombok.Data;
@@ -33,7 +34,8 @@ public class MyBatisTest implements ApplicationListener<MybatisEvent> {
 
     @Override
     public void onApplicationEvent(MybatisEvent event) {
-
+        // 切换数据源
+        DynamicDataSourceTypeManager.set(event.getDataSourceType());
         this.yiibaidbService.mybatisSpringTransaction(event.getMyBatisOperationType(), event.getDataSourceType());
     }
 
