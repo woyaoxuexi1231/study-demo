@@ -69,10 +69,7 @@ public class YiibaidbServiceImpl implements YiibaidbService, ApplicationContextA
         System.out.println();
         System.out.println("-------------------------------------- Spring多数据源 + 事务 --------------------------------------");
         JdbcTemplate jdbcTemplate = (JdbcTemplate) applicationContext.getBean("multipleDataSourceJdbcTemplate");
-        // 使用指定数据源更新数据
-        DynamicDataSourceTypeManager.set(dynamicDataSourceType);
         System.out.println("当前绑定的数据源为 " + dynamicDataSourceType);
-
         if (dynamicDataSourceType.equals(DynamicDataSourceType.MASTER)) {
             jdbcTemplate.execute("update customers set phone = '40.32.2554' where customerNumber = '103'");
         }
@@ -94,8 +91,10 @@ public class YiibaidbServiceImpl implements YiibaidbService, ApplicationContextA
         System.out.println();
         System.out.println("-------------------------------------- Spring + Mybatis --------------------------------------");
 
-        // todo Mybatis 是如何去拿这个动态数据源的信息的?? - 2023/02/18
-        DynamicDataSourceTypeManager.set(dynamicDataSourceType);
+        /*
+        Q1: Mybatis 是如何去拿这个动态数据源的信息的?? - 2023/02/18
+        A1: 不管啥框架, 只要在 Spring 里面, 最终都是通过 Spring 来获取 connect, 对于动态数据源来说, 既然我们自己定义了多数据源的获取方法, 那么 Spring 会通过我们定义的逻辑来获取对应的数据源 - 2023/02/26
+         */
         System.out.println("当前绑定的数据源为 " + dynamicDataSourceType + " - 执行 " + myBatisOperationType + " 操作");
         // select
         if (myBatisOperationType.equals(MyBatisOperationType.SELECT)) {
@@ -115,9 +114,9 @@ public class YiibaidbServiceImpl implements YiibaidbService, ApplicationContextA
             customerDO.setCustomernumber(103);
             customerDO.setPhone("40.32.100");
             customerMapper.updateOne(customerDO);
-            if (dynamicDataSourceType.equals(DynamicDataSourceType.SECOND)) {
-                throw new RuntimeException("数据源 SECOND 更新出错!");
-            }
+            // if (dynamicDataSourceType.equals(DynamicDataSourceType.SECOND)) {
+            //     throw new RuntimeException("数据源 SECOND 更新出错!");
+            // }
         }
 
     }
