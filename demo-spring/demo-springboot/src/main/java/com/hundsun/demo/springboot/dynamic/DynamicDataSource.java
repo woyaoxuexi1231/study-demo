@@ -20,8 +20,6 @@ import java.util.Map;
  * @createDate: 2023/2/25 17:44
  */
 
-@Component
-@Primary
 public class DynamicDataSource extends AbstractRoutingDataSource {
 
     @Resource

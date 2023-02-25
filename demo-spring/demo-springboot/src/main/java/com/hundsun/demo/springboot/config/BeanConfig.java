@@ -20,32 +20,9 @@ import javax.sql.DataSource;
 @Configuration
 public class BeanConfig {
 
-    @Autowired
-    HikariDataSourceFirstConfig hikariDataSourceFirstConfig;
-
-    @Autowired
-    HikariDataSourceSecondConfig hikariDataSourceSecondConfig;
-
     @Bean
     public DoneTimeAspect doneTimeAspect() {
         return new DoneTimeAspect();
     }
 
-    @Bean
-    public DataSource dataSourceFirst() {
-        HikariConfig config = new HikariDataSource();
-        config.setJdbcUrl(hikariDataSourceFirstConfig.getUrl());
-        config.setUsername(hikariDataSourceFirstConfig.getUsername());
-        config.setPassword(hikariDataSourceFirstConfig.getPassword());
-        return new HikariDataSource(config);
-    }
-
-    @Bean
-    public DataSource dataSourceSecond() {
-        HikariConfig config = new HikariDataSource();
-        config.setJdbcUrl(hikariDataSourceSecondConfig.getUrl());
-        config.setUsername(hikariDataSourceSecondConfig.getUsername());
-        config.setPassword(hikariDataSourceSecondConfig.getPassword());
-        return new HikariDataSource(config);
-    }
 }

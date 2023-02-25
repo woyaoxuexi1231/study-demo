@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
  * @author: h1123
  * @createDate: 2023/2/25 18:22
  */
+
 @ConfigurationProperties(prefix = "spring.datasource.second")
 @Component
 @Data
