@@ -115,7 +115,12 @@ public class DynamicDataSourceTransactionTest {
             所以在 AbstractRoutingDataSource 的源码中我们可以看到, AbstractRoutingDataSource 重写的 getConnection 方法会根据我们给的数据库类型, 帮我们找到对应的数据源然后返回
             最终事务会基于这个 connect 进行操作
             // todo 2023/02/25 需要看源码
-
+        3. 使用 AbstractRoutingDataSource + 自定义注解
+            使用这种方式特别需要注意的一点是, 我们自己自定义的切换数据源的切面的执行顺序一定要在 Spring 的事务切面之前执行, 不然会导致数据源的切换不成功
+            如果我们在 Spring 的事务切面之后执行, 这个时候 Spring 的事务切面已经去获取了一个　connect, 可想而知, 这个 connect 是从默认数据源那里获取的, 所以无论执行什么操作, 最终都是对默认数据源进行操作
+        在 TransactionAspectSupport$invokeWithinTransaction 方法中可以看到, 在事务开始前我们首先会去获取一个 connect, 然后把这个 connect 信息放入 TransactionSynchronizationManager
+        对于 Mybatis 来说, 它会通过它的 BaseExecutor$getConnection 方法在 TransactionSynchronizationManager 中拿到我们放入的 connect, 这样当 Mybatis 的语句执行完之后,
+        Spring 会通过它自己生成的 TransactionInfo 里包含的信息来提交或者回滚事务
 
     7. Springboot的多数据源+事务
         // todo 一些前提知识
