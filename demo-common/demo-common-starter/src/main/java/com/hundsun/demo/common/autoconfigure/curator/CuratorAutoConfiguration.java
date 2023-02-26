@@ -4,6 +4,7 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
  * @Date: 2022-06-27 13:39
  */
 @Configuration
+@ConditionalOnClass(value = CuratorFramework.class)
 @EnableConfigurationProperties({CuratorConfiguration.class})
 public class CuratorAutoConfiguration {
 
@@ -28,7 +30,6 @@ public class CuratorAutoConfiguration {
     CuratorConfiguration curatorConfig;
 
     @Bean(initMethod = "start")
-    @ConditionalOnMissingBean
     public CuratorFramework curatorFramework() {
 
         return CuratorFrameworkFactory.newClient(
