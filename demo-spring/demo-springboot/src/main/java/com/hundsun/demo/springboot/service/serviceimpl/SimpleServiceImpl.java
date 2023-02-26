@@ -1,7 +1,7 @@
 package com.hundsun.demo.springboot.service.serviceimpl;
 
-import com.hundsun.demo.spring.jdbc.DynamicDataSourceType;
 import com.hundsun.demo.springboot.annotation.TargetDataSource;
+import com.hundsun.demo.springboot.dynamic.DynamicDataSourceType;
 import com.hundsun.demo.springboot.mapper.EmployeeMapper;
 import com.hundsun.demo.springboot.model.pojo.EmployeeDO;
 import com.hundsun.demo.springboot.service.SimpleService;

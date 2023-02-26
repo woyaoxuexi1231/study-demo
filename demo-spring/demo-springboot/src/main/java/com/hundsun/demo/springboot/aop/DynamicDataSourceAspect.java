@@ -1,7 +1,7 @@
 package com.hundsun.demo.springboot.aop;
 
-import com.hundsun.demo.spring.jdbc.DynamicDataSourceTypeManager;
 import com.hundsun.demo.springboot.annotation.TargetDataSource;
+import com.hundsun.demo.springboot.dynamic.DynamicDataSourceTypeManager;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;

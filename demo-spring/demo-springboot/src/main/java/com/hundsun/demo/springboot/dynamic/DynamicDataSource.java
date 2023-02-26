@@ -1,10 +1,6 @@
 package com.hundsun.demo.springboot.dynamic;
 
-import com.hundsun.demo.spring.jdbc.DynamicDataSourceType;
-import com.hundsun.demo.spring.jdbc.DynamicDataSourceTypeManager;
-import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
