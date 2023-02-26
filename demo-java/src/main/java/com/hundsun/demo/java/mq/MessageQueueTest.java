@@ -1,4 +1,4 @@
-package com.hundsun.demo.spring.mq;
+package com.hundsun.demo.java.mq;
 
 /**
  * @projectName: study-demo
@@ -66,6 +66,11 @@ public class MessageQueueTest {
                 所有的消息必须有特定的格式来支持, 这部分就是在传输层中定义的
     4. RabbitMQ
         由 Erlang 语言开发的基于 AMQP 标准的开源实现
+        1. AMQP中的消息路由 - 生产者把消息发布到 Exchange 上, Binding 决定交换机上的消息最终被发送到哪个队列
+        2. 交换机类型 - 目前由四种类型的交换机
+            Direct - 如果消息中的路由键(Routing Key)和 Binding中绑定键(binding key)一致, 交换机就把消息发送到对应的队列中
+            Fanout - 不处理路由键, 只是简单的把队列绑定到交换机, 发送到交换机的每条消息都会被转发到与该交换机绑定的所有队列中, 此交换机转发消息是最快的
+            Topic - 通过模式匹配分配消息的路由键属性
 
      */
 }
