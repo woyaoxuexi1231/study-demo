@@ -43,9 +43,10 @@ public class RabbitMQTest {
 
     public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
 
-        new MessageProducer().start();
+        // new MessageProducer().start();
         // 确保消息先生产, 再被消费
         Thread.sleep(1000);
+        new MessageConsumer().start();
         new MessageConsumer().start();
 
     }
@@ -174,7 +175,7 @@ public class RabbitMQTest {
                 channel.queueDeclare(queueName, true, false, false, null).getQueue();
                 channel.queueBind(queueName, exchangeName, routingKey);
 
-                boolean autoAck = false;
+                boolean autoAck = true;
                 String consumerTag = "";
 
                 /*
@@ -192,9 +193,7 @@ public class RabbitMQTest {
                  this.basicConsume(queue, autoAck, consumerTag, false, false, (Map)null, callback);
                  */
 
-                Channel finalChannel = channel;
-                System.out.println(channel);
-                channel.basicConsume(queueName, autoAck, consumerTag, new MyDeliverCallback(count), new MyCancelCallback());
+                channel.basicConsume(queueName, autoAck, consumerTag, new MyDeliverCallback(channel, count, autoAck), new MyCancelCallback());
 
             } catch (Exception e) {
                 log.error("接收消息异常! ", e);
@@ -246,15 +245,22 @@ public class RabbitMQTest {
 
         private CountDownLatch count;
 
-        public MyDeliverCallback(CountDownLatch count) {
+        private Channel channel;
+
+        private boolean autoAck;
+
+        public MyDeliverCallback(Channel channel, CountDownLatch count, boolean autoAck) {
             this.count = count;
+            this.channel = channel;
+            this.autoAck = autoAck;
         }
 
         @Override
         public void handle(String s, Delivery delivery) throws IOException {
-            System.out.println("消息体的内容: ");
-            System.out.println(s);
-            System.out.println(new String(delivery.getBody(), "UTF-8"));
+            System.out.println("消息体的内容: " + new String(delivery.getBody(), "UTF-8"));
+            if (!autoAck) {
+                channel.basicAck(delivery.getEnvelope().getDeliveryTag(), true);
+            }
             count.countDown();
         }
     }
