@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @projectName: study-demo
@@ -46,6 +47,9 @@ public class SimpleServiceImpl implements SimpleService {
     @Autowired
     RedisTemplate<Object, Object> redisTemplate;
 
+    @Autowired
+    RedisTemplate<String, String> stringRedisTemplate;
+
 
     @Override
     @Transactional
@@ -60,14 +64,7 @@ public class SimpleServiceImpl implements SimpleService {
     }
 
     @Override
-    @Transactional
-    @TargetDataSource(dataSourceType = DynamicDataSourceType.SECOND)
     public void springRedis() {
-
-        EmployeeDO employeeDO = new EmployeeDO();
-        employeeDO.setEmployeeNumber(1002);
-        employeeDO.setLastName("Murph2");
-        employeeMapper.updateByPrimaryKeySelective(employeeDO);
-
+        stringRedisTemplate.opsForValue().set("spring::redis", String.valueOf(System.currentTimeMillis()), 30, TimeUnit.SECONDS);
     }
 }
