@@ -67,6 +67,11 @@
             <artifactId>lettuce-core</artifactId>
             <optional>true</optional>
         </dependency>
+        <!--RabbitMQ-->
+        <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+        </dependency>
 
 
         <!-- 测试 -->
