@@ -21,16 +21,47 @@
 
     <dependencies>
 
+        <!--内部-->
         <dependency>
             <groupId>com.hundsun</groupId>
             <artifactId>demo-dubbo-consumer-api</artifactId>
             <version>${demo.dubbo.consumer.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.hundsun</groupId>
             <artifactId>demo-common-starter</artifactId>
             <version>${demo.commom.starter.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hundsun</groupId>
+            <artifactId>demo-common-curator-starter</artifactId>
+            <version>1.0.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <!--Springboot-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+
+        <!-- Dubbo 的 Springboot Starter依赖 -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- aspectJ -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
         </dependency>
 
     </dependencies>

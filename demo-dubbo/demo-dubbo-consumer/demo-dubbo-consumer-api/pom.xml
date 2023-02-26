@@ -20,21 +20,27 @@
 
     <dependencies>
 
+        <!-- 内部 -->
         <dependency>
             <groupId>com.hundsun</groupId>
             <artifactId>demo-common-core</artifactId>
             <version>${common.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.hundsun</groupId>
             <artifactId>demo-dubbo-provider-api</artifactId>
             <version>${dubbo.demo.provider.api.version}</version>
         </dependency>
 
+        <!-- JPA -->
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+        <!-- 使用了包内的 Validated 注解 -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
         </dependency>
 
     </dependencies>

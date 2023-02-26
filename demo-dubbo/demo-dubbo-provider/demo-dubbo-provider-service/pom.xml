@@ -14,22 +14,30 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <common.version>1.0.0.0-SNAPSHOT</common.version>
         <demo.dubbo.provider.api.version>1.0.0.0-SNAPSHOT</demo.dubbo.provider.api.version>
         <demo.commom.starter.version>1.0.0.0-SNAPSHOT</demo.commom.starter.version>
     </properties>
 
     <dependencies>
 
+        <!--内部-->
         <dependency>
             <groupId>com.hundsun</groupId>
             <artifactId>demo-dubbo-provider-api</artifactId>
             <version>${demo.dubbo.provider.api.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.hundsun</groupId>
             <artifactId>demo-common-starter</artifactId>
             <version>${demo.commom.starter.version}</version>
+        </dependency>
+
+        <!--Springboot-->
+        <!--mq-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
 
         <!--数据库相关-->
@@ -44,6 +52,12 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <!--Dubbo-->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
         </dependency>
 
     </dependencies>
