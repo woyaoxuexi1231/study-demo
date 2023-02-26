@@ -14,9 +14,7 @@
     <modules>
         <module>demo-common-core</module>
         <module>demo-common-starter</module>
-        <module>demo-common-curator</module>
-        <module>demo-commom-cloud</module>
-        <module>demo-common-jdbc</module>
+        <module>demo-common-curator-starter</module>
     </modules>
 
     <properties>
