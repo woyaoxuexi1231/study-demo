@@ -1,4 +1,4 @@
-package com.hundsun.demo.common.curator.config;
+package com.hundsun.demo.common.autoconfigure.curator;
 
 import org.springframework.context.annotation.Configuration;
 
