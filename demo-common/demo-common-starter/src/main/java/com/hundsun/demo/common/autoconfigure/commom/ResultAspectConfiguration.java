@@ -1,7 +1,6 @@
 package com.hundsun.demo.common.autoconfigure.commom;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
@@ -23,7 +22,7 @@ public class ResultAspectConfiguration {
     private Properties properties = new Properties();
 
     public String getScanRange() {
-        return  properties.getProperty("scanRange");
+        return properties.getProperty("scanRange");
     }
 
     public void setScanRange(String scanRange) {
