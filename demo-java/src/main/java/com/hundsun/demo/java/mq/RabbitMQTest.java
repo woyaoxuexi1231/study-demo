@@ -2,10 +2,13 @@ package com.hundsun.demo.java.mq;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.BuiltinExchangeType;
+import com.rabbitmq.client.CancelCallback;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DefaultConsumer;
+import com.rabbitmq.client.DeliverCallback;
+import com.rabbitmq.client.Delivery;
 import com.rabbitmq.client.Envelope;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,7 +44,7 @@ public class RabbitMQTest {
     public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
 
         new MessageProducer().start();
-        // 确保消息被生产
+        // 确保消息先生产, 再被消费
         Thread.sleep(1000);
         new MessageConsumer().start();
 
@@ -183,7 +186,7 @@ public class RabbitMQTest {
                  * exclusive 是否排他
                  * arguments 消费者的参数
                  * DeliverCallback 当一个消息发送过来后的回调
-                 * CancelCallback 当一个消费者取消订阅时的回调接口
+                 * CancelCallback 当一个消费者取消订阅时的回调接口, 消费消息被中断
                  * Consumer 消费者对象的回调接口
 
                  this.basicConsume(queue, autoAck, consumerTag, false, false, (Map)null, callback);
@@ -191,22 +194,7 @@ public class RabbitMQTest {
 
                 Channel finalChannel = channel;
                 System.out.println(channel);
-                channel.basicConsume(queueName, autoAck, consumerTag, new DefaultConsumer(finalChannel) {
-
-                    @Override
-                    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                        System.out.println("路由键: " + envelope.getRoutingKey());
-                        System.out.println("内容类型: " + properties.getContentType());
-                        // false只确认当前一个消息收到, true确认所有 consumer 获得的消息（成功消费，消息从队列中删除）
-                        finalChannel.basicAck(envelope.getDeliveryTag(), false);
-                        System.out.println("消息体的内容: ");
-                        System.out.println(new String(body, "UTF-8"));
-                        System.out.println(finalChannel);
-                        count.countDown();
-                    }
-
-
-                });
+                channel.basicConsume(queueName, autoAck, consumerTag, new MyDeliverCallback(count), new MyCancelCallback());
 
             } catch (Exception e) {
                 log.error("接收消息异常! ", e);
@@ -223,6 +211,63 @@ public class RabbitMQTest {
                     log.error("连接关闭异常! ", e);
                 }
             }
+        }
+    }
+
+    static class MyConsumer extends DefaultConsumer {
+
+        public MyConsumer(Channel channel, CountDownLatch count) {
+            super(channel);
+            this.count = count;
+        }
+
+        private CountDownLatch count;
+
+        /*
+         消费方法
+         * consumerTag - 消费者的标签, 在channel.basicConsume()去指定
+         * envelope - 消息包的内容, 可从中获取消息id, 消息RoutingKey, 交换机, 消息和重传标志(收到消息失败后是否需要重新发送)
+         * properties - 消息的属性
+         * body - 消息的内容
+         */
+        @Override
+        public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+            System.out.println("路由键: " + envelope.getRoutingKey());
+            System.out.println("内容类型: " + properties.getContentType());
+            // false只确认当前一个消息收到, true确认所有 consumer 获得的消息（成功消费，消息从队列中删除）
+            this.getChannel().basicAck(envelope.getDeliveryTag(), false);
+            System.out.println("消息体的内容: ");
+            System.out.println(new String(body, "UTF-8"));
+            count.countDown();
+        }
+    }
+
+    static class MyDeliverCallback implements DeliverCallback {
+
+        private CountDownLatch count;
+
+        public MyDeliverCallback(CountDownLatch count) {
+            this.count = count;
+        }
+
+        @Override
+        public void handle(String s, Delivery delivery) throws IOException {
+            System.out.println("消息体的内容: ");
+            System.out.println(s);
+            System.out.println(new String(delivery.getBody(), "UTF-8"));
+            count.countDown();
+        }
+    }
+
+    /**
+     * 消费消息被中断时触发
+     * 当一个消费者取消订阅时的回调接口;取消消费者订阅队列时除了使用{@link Channel#basicCancel}之外的所有方式都会调用该回调方法
+     */
+    static class MyCancelCallback implements CancelCallback {
+
+        @Override
+        public void handle(String s) throws IOException {
+            System.out.println("消费消息被中断");
         }
     }
 }
