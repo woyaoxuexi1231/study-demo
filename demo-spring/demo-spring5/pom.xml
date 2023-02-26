@@ -21,47 +21,51 @@
 
     <dependencies>
 
+        <!-- 内部 -->
         <dependency>
             <groupId>com.hundsun</groupId>
             <artifactId>demo-java</artifactId>
             <version>1.0.0.0-SNAPSHOT</version>
         </dependency>
-
         <dependency>
             <groupId>com.hundsun</groupId>
             <artifactId>demo-common-core</artifactId>
             <version>1.0.0.0-SNAPSHOT</version>
         </dependency>
 
+        <!-- Spring官方 -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
         </dependency>
+        <!-- 这个在 Spring Data 项目下-->
+        <!-- 可以看到 Spring 官方提供了 jedis 或者是 lettuce 两种客户端的支持 -->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+        </dependency>
+
+        <!-- JDBC的一些驱动包 -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -74,6 +78,8 @@
             <groupId>com.oracle.database.nls</groupId>
             <artifactId>orai18n</artifactId>
         </dependency>
+
+        <!-- Mybatis -->
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
@@ -83,34 +89,19 @@
             <artifactId>mybatis-spring</artifactId>
         </dependency>
         <dependency>
-            <groupId>jakarta.persistence</groupId>
-            <artifactId>jakarta.persistence-api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper</artifactId>
         </dependency>
 
+        <!-- JPA的持久层规范 -->
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-
-        <!--java servlet-->
+        <!-- Java Servlet是Java企业平台的基础web规范。 -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-        </dependency>
-
-        <!-- redis -->
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-redis</artifactId>
         </dependency>
 
     </dependencies>
