@@ -18,51 +18,55 @@
     </properties>
 
     <dependencies>
+
         <dependency>
             <groupId>com.hundsun</groupId>
             <artifactId>demo-common-core</artifactId>
             <version>1.0.0.0-SNAPSHOT</version>
+            <optional>true</optional>
         </dependency>
 
+        <!-- 一些好用的工具包 -->
+        <!-- 这里引入是为了写一些工作的便利小工具 -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
+            <optional>true</optional>
         </dependency>
-
+        <!-- 学习动态代理 -->
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
+            <optional>true</optional>
         </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-
-        <!-- servlet -->
+        <!-- 学习servlet -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
+            <optional>true</optional>
         </dependency>
-
+        <!-- mybatis -->
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
+            <optional>true</optional>
         </dependency>
-
+        <!-- Redis的客户端 -->
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.lettuce</groupId>
             <artifactId>lettuce-core</artifactId>
+            <optional>true</optional>
         </dependency>
-
 
     </dependencies>
 
