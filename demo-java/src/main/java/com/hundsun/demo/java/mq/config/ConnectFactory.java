@@ -6,6 +6,9 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import lombok.SneakyThrows;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @projectName: study-demo
  * @package: com.hundsun.demo.java.mq.config
@@ -63,8 +66,22 @@ public class ConnectFactory {
          这里使用一个默认配置
          this.queueDeclare("", false, true, true, (Map)null);
          */
-        channel.queueDeclare(MQConfig.QUEUE_NAME, true, false, false, null).getQueue();
+        // 设置一些其他参数
+        Map<String, Object> arguments = new HashMap<>();
+        // 设置死信交换机
+        arguments.put("x-dead-letter-exchange", MQConfig.DEAD_EXCHANGE_TYPE);
+        // 设置死信 RoutingKey
+        arguments.put("x-dead-letter-routing-key", "");
+        // 设置队列长度
+        // arguments.put("x-max-length", 6);
+
+        channel.queueDeclare(MQConfig.QUEUE_NAME, true, false, false, arguments).getQueue();
         channel.queueBind(MQConfig.QUEUE_NAME, MQConfig.EXCHANGE_NAME, MQConfig.ROUTE_KEY);
+
+        // 创建死信队列
+        channel.exchangeDeclare(MQConfig.DEAD_EXCHANGE_TYPE, BuiltinExchangeType.DIRECT);
+        channel.queueDeclare(MQConfig.DEAD_QUEUE_NAME, true, false, false, null).getQueue();
+        channel.queueBind(MQConfig.DEAD_QUEUE_NAME, MQConfig.DEAD_EXCHANGE_TYPE, "");
 
         channel.close();
         connection.close();

@@ -20,4 +20,13 @@ public class MQConfig {
     public static final String EXCHANGE_NAME = "hello-exchange";
     public static final String ROUTE_KEY = "testRoutingKey";
     public static final String QUEUE_NAME = "hello-consumer";
+
+    /*
+    死信队列
+    1. 消息过期
+    2. 达到队列最大长度
+    3. 消息被拒
+     */
+    public static final String DEAD_EXCHANGE_TYPE = "dead-exchange";
+    public static final String DEAD_QUEUE_NAME = "dead-queue";
 }
