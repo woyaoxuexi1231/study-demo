@@ -7,8 +7,6 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.CountDownLatch;
-
 /**
  * @projectName: study-demo
  * @package: com.hundsun.demo.java.mq
@@ -35,7 +33,13 @@ public class MsgConsumerB extends Thread {
 
             Channel channel = connection.createChannel();
             boolean autoAck = false;
-            channel.basicConsume(MQConfig.QUEUE_NAME, autoAck, "", new MsgDeliverCallbackB(channel,autoAck), new MyCancelCallback());
+            channel.basicQos(2);
+            channel.basicConsume(
+                    MQConfig.QUEUE_NAME,
+                    autoAck,
+                    "",
+                    new MsgDeliverCallbackB(channel, autoAck),
+                    new MyCancelCallback());
 
         } catch (Exception e) {
             log.error("接收消息异常! ", e);

@@ -37,6 +37,13 @@ public class MsgConsumerA extends Thread {
             boolean autoAck = false;
 
             /*
+            basicQos(int prefetchSize, int prefetchCount, boolean global)
+            prefetchSize - 服务器将提供的最大内容量(以八位字节为单位), 如果无限制, 则为 0, 消息大小限制, 一般设置为 0, 消费端不做限制
+            prefetchCount - 服务器将传递的最大邮件数, 如果无限制, 则为 0, 告诉 rabbitmq 不要一次性给消费者推送大于 N 个消息, 即一旦有 N 个消息还没有 ack, 则该 consumer 将 block(阻塞), 直到有消息ack
+            global - 是否将上面的设置应用于整个通道
+             */
+            channel.basicQos(1);
+            /*
              开始获取消息，push模式
              * queue
              * autoAck, 上面开启了手动应答basicAck，所以这里是false；当没basicAck一般为true
@@ -50,7 +57,12 @@ public class MsgConsumerA extends Thread {
 
              this.basicConsume(queue, autoAck, consumerTag, false, false, (Map)null, callback);
              */
-            channel.basicConsume(MQConfig.QUEUE_NAME, autoAck, "", new MsgDeliverCallbackA(channel, autoAck), new MyCancelCallback());
+            channel.basicConsume(
+                    MQConfig.QUEUE_NAME,
+                    autoAck,
+                    "",
+                    new MsgDeliverCallbackA(channel, autoAck),
+                    new MyCancelCallback());
 
         } catch (Exception e) {
             log.error("接收消息异常! ", e);
