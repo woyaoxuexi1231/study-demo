@@ -32,6 +32,12 @@ public class MsgDeliverCallbackB implements DeliverCallback {
     public void handle(String s, Delivery delivery) throws IOException {
 
         log.info("收到消息: {}", new String(delivery.getBody(), "UTF-8"));
+
+        try {
+            Thread.sleep(0 * 1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         if (!autoAck) {
             /*
             消费者确认 autoAck = false/true
