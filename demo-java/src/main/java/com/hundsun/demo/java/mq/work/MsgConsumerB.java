@@ -38,7 +38,7 @@ public class MsgConsumerB extends Thread {
                     MQConfig.QUEUE_NAME,
                     autoAck,
                     "",
-                    new MsgDeliverCallbackB(channel, autoAck),
+                    new MsgDeliverCallbackB(channel),
                     new MyCancelCallback());
 
         } catch (Exception e) {
