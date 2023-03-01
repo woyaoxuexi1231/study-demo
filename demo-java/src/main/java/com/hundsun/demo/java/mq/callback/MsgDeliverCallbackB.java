@@ -21,11 +21,8 @@ public class MsgDeliverCallbackB implements DeliverCallback {
 
     private final Channel channel;
 
-    private final boolean autoAck;
-
-    public MsgDeliverCallbackB(Channel channel, boolean autoAck) {
+    public MsgDeliverCallbackB(Channel channel) {
         this.channel = channel;
-        this.autoAck = autoAck;
     }
 
     @Override
@@ -38,15 +35,15 @@ public class MsgDeliverCallbackB implements DeliverCallback {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        if (!autoAck) {
-            /*
-            消费者确认 autoAck = false/true
-            肯定确认 - BasicAck
-            否定确认 - BasicNack、BasicReject, basicNack可以批量拒绝多条消息, 而 basicReject一次只能拒绝一条消息
-            multiple - false 表示只确认 DelivertTag 这条消息, true 表示确认 小于等于 DelivertTag 的所有消息(批量确认)
-             */
-            channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
-        }
+
+        /*
+        消费者确认 autoAck = false/true
+        肯定确认 - BasicAck
+        否定确认 - BasicNack、BasicReject, basicNack可以批量拒绝多条消息, 而 basicReject一次只能拒绝一条消息
+        multiple - false 表示只确认 DelivertTag 这条消息, true 表示确认 小于等于 DelivertTag 的所有消息(批量确认)
+         */
+        channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+
     }
 }
 
