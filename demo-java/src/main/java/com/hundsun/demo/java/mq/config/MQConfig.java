@@ -1,4 +1,4 @@
-package com.hundsun.demo.java.mq;
+package com.hundsun.demo.java.mq.config;
 
 /**
  * @projectName: study-demo
@@ -16,4 +16,8 @@ public class MQConfig {
     public static final String RABBITMQ_PASSWORD = "rabbitmq";
     public static final String RABBITMQ_HOST = "192.168.175.128";
     public static final Integer RABBITMQ_PORT = 5672;
+
+    public static final String EXCHANGE_NAME = "hello-exchange";
+    public static final String ROUTE_KEY = "testRoutingKey";
+    public static final String QUEUE_NAME = "hello-consumer";
 }

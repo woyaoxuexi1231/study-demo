@@ -1,4 +1,4 @@
-package com.hundsun.demo.java.mq;
+package com.hundsun.demo.java.mq.callback;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
