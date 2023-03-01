@@ -1,5 +1,7 @@
 package com.hundsun.demo.java.mq.work;
 
+import com.hundsun.demo.java.mq.callback.MsgConfirmFailedCallBack;
+import com.hundsun.demo.java.mq.callback.MsgConfirmSuccessCallBack;
 import com.hundsun.demo.java.mq.config.MQConfig;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
@@ -84,7 +86,8 @@ public class MsgProducer extends Thread {
              */
             channel.basicPublish(MQConfig.EXCHANGE_NAME, MQConfig.ROUTE_KEY, basicProperties, msg.getBytes());
             // 等待确认
-            boolean isConfirm = channel.waitForConfirms();
+            // boolean isConfirm = channel.waitForConfirms();
+            channel.addConfirmListener(new MsgConfirmSuccessCallBack(), new MsgConfirmFailedCallBack());
 
         } catch (Exception e) {
             log.error("发送消息异常! ", e);
