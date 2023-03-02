@@ -16,15 +16,15 @@ import org.springframework.context.annotation.Configuration;
  * @Author: hulei42031
  * @Date: 2022-06-10 16:22
  */
-@Configuration
-@EnableConfigurationProperties(ResultAspectConfiguration.class)
+// @Configuration
+// @EnableConfigurationProperties(ResultAspectConfiguration.class)
 public class ResultAspectAutoConfiguration {
 
-    @Autowired
+    // @Autowired
     ResultAspectConfiguration resultAspectConfiguration;
 
-    @Bean
-    @ConditionalOnMissingBean
+    // @Bean
+    // @ConditionalOnMissingBean
     AspectJExpressionPointcutAdvisor aspectJExpressionPointcutAdvisor(){
         AspectJExpressionPointcutAdvisor advisor = new AspectJExpressionPointcutAdvisor();
         advisor.setExpression(resultAspectConfiguration.getScanRange());

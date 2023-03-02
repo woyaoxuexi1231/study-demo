@@ -1,11 +1,7 @@
 package com.hundsun.demo.common.autoconfigure.commom;
 
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Properties;
-
-import static java.nio.charset.StandardCharsets.ISO_8859_1;
 
 /**
  * @ProductName: Hundsun amust
@@ -16,16 +12,12 @@ import static java.nio.charset.StandardCharsets.ISO_8859_1;
  * @Date: 2022-06-10 17:14
  */
 
-@ConfigurationProperties(prefix = "result")
+@Data
+// @ConfigurationProperties(prefix = "result")
 public class ResultAspectConfiguration {
 
-    private Properties properties = new Properties();
-
-    public String getScanRange() {
-        return properties.getProperty("scanRange");
-    }
-
-    public void setScanRange(String scanRange) {
-        properties.setProperty("scanRange", new String(scanRange.getBytes(ISO_8859_1), StandardCharsets.UTF_8));
-    }
+    /**
+     * 统一结果处理扫描范围
+     */
+    private String scanRange;
 }
