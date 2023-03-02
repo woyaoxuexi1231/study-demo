@@ -2,7 +2,6 @@ package com.hundsun.demo.java.mq.work;
 
 import com.hundsun.demo.java.mq.callback.MsgDeliverCallbackA;
 import com.hundsun.demo.java.mq.callback.MyCancelCallback;
-import com.hundsun.demo.java.mq.config.MQConfig;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import lombok.extern.slf4j.Slf4j;
@@ -21,13 +20,15 @@ public class MsgConsumerA extends Thread {
 
     private final Connection connection;
 
-    public MsgConsumerA(Connection connection) {
+    private final String queueName;
+
+    public MsgConsumerA(Connection connection, String queueName) {
         this.connection = connection;
+        this.queueName = queueName;
     }
 
     @Override
     public void run() {
-
 
         try {
 
@@ -58,7 +59,7 @@ public class MsgConsumerA extends Thread {
              this.basicConsume(queue, autoAck, consumerTag, false, false, (Map)null, callback);
              */
             channel.basicConsume(
-                    MQConfig.QUEUE_NAME,
+                    queueName,
                     autoAck,
                     "",
                     new MsgDeliverCallbackA(channel),

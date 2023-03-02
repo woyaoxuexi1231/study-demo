@@ -17,6 +17,6 @@ public class MsgConfirmSuccessCallBack implements ConfirmCallback {
 
     @Override
     public void handle(long deliveryTag, boolean multiple) throws IOException {
-
+        System.out.println("消息发送成功! ");
     }
 }

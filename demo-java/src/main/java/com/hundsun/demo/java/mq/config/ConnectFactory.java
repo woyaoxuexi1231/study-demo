@@ -53,7 +53,7 @@ public class ConnectFactory {
          * boolean autoDelete, 自动删除
          * Map<String,Object> arguments，交换机其他属性，如x-message-ttl，x-max-length
          */
-        channel.exchangeDeclare(MQConfig.EXCHANGE_NAME, BuiltinExchangeType.TOPIC, true, false, null);
+        channel.exchangeDeclare(MQConfig.TOPIC_EXCHANGE_NAME, BuiltinExchangeType.TOPIC, true, false, null);
 
         /*
          声明队列
@@ -69,19 +69,20 @@ public class ConnectFactory {
         // 设置一些其他参数
         Map<String, Object> arguments = new HashMap<>();
         // 设置死信交换机
-        arguments.put("x-dead-letter-exchange", MQConfig.DEAD_EXCHANGE_TYPE);
+        arguments.put("x-dead-letter-exchange", MQConfig.DEAD_EXCHANGE_NAME);
         // 设置死信 RoutingKey
         arguments.put("x-dead-letter-routing-key", "");
         // 设置队列长度
         // arguments.put("x-max-length", 6);
-
-        channel.queueDeclare(MQConfig.QUEUE_NAME, true, false, false, arguments).getQueue();
-        channel.queueBind(MQConfig.QUEUE_NAME, MQConfig.EXCHANGE_NAME, MQConfig.ROUTE_KEY);
+        channel.queueDeclare(MQConfig.TOPIC_MASTER_QUEUE, true, false, false, arguments);
+        channel.queueDeclare(MQConfig.TOPIC_SLAVE_QUEUE, true, false, false, arguments);
+        channel.queueBind(MQConfig.TOPIC_MASTER_QUEUE, MQConfig.TOPIC_EXCHANGE_NAME, MQConfig.TOPIC_MASTER_ROUTE_KEY);
+        channel.queueBind(MQConfig.TOPIC_SLAVE_QUEUE, MQConfig.TOPIC_EXCHANGE_NAME, MQConfig.TOPIC_SLAVE_ROUTE_KEY);
 
         // 创建死信队列
-        channel.exchangeDeclare(MQConfig.DEAD_EXCHANGE_TYPE, BuiltinExchangeType.DIRECT);
+        channel.exchangeDeclare(MQConfig.DEAD_EXCHANGE_NAME, BuiltinExchangeType.DIRECT);
         channel.queueDeclare(MQConfig.DEAD_QUEUE_NAME, true, false, false, null).getQueue();
-        channel.queueBind(MQConfig.DEAD_QUEUE_NAME, MQConfig.DEAD_EXCHANGE_TYPE, "");
+        channel.queueBind(MQConfig.DEAD_QUEUE_NAME, MQConfig.DEAD_EXCHANGE_NAME, "");
 
         channel.close();
         connection.close();

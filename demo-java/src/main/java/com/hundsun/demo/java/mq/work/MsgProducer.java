@@ -2,11 +2,13 @@ package com.hundsun.demo.java.mq.work;
 
 import com.hundsun.demo.java.mq.callback.MsgConfirmFailedCallBack;
 import com.hundsun.demo.java.mq.callback.MsgConfirmSuccessCallBack;
-import com.hundsun.demo.java.mq.config.MQConfig;
+import com.hundsun.demo.java.mq.config.ConnectFactory;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
 
 /**
  * @projectName: study-demo
@@ -18,25 +20,28 @@ import lombok.extern.slf4j.Slf4j;
  */
 
 @Slf4j
-public class MsgProducer extends Thread {
+public class MsgProducer {
 
-    private final Connection connection;
+    private static Connection connection;
 
-    private final String msg;
+    private static Channel channel;
 
-    public MsgProducer(Connection connection, String msg) {
-        this.connection = connection;
-        this.msg = msg;
+    static {
+        connection = ConnectFactory.getConnect();
+        try {
+            channel = connection.createChannel();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @Override
-    public void run() {
-
-        Channel channel = null;
+    public static void postMsg(String exchangeName, String routingKey, String msg) {
 
         try {
 
-            channel = connection.createChannel();
+            if (channel == null) {
+                channel = connection.createChannel();
+            }
 
             /*
             开启发布确认
@@ -69,14 +74,14 @@ public class MsgProducer extends Thread {
                     0,
                     null,
                     null,
-                    5 * 1000 + "",
+                    null,
                     null,
                     null,
                     null,
                     null,
                     null,
                     null);
-
+            channel.addConfirmListener(new MsgConfirmSuccessCallBack(), new MsgConfirmFailedCallBack());
             /*
              发送消息 basicPublish
              * String exchange, 交换机
@@ -84,24 +89,12 @@ public class MsgProducer extends Thread {
              * BasicProperties props, 消息属性（需要单独声明）
              * byte[] body，消息体
              */
-            channel.basicPublish(MQConfig.EXCHANGE_NAME, MQConfig.ROUTE_KEY, basicProperties, msg.getBytes());
+            channel.basicPublish(exchangeName, routingKey, basicProperties, msg.getBytes());
             // 等待确认
             // boolean isConfirm = channel.waitForConfirms();
-            channel.addConfirmListener(new MsgConfirmSuccessCallBack(), new MsgConfirmFailedCallBack());
 
         } catch (Exception e) {
             log.error("发送消息异常! ", e);
-        } finally {
-            try {
-                if (channel != null) {
-                    channel.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (Exception e) {
-                log.error("连接关闭异常! ", e);
-            }
         }
     }
 }

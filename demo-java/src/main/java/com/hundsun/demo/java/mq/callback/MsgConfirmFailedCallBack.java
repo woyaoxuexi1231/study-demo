@@ -18,5 +18,6 @@ public class MsgConfirmFailedCallBack implements ConfirmCallback {
     @Override
     public void handle(long deliveryTag, boolean multiple) throws IOException {
         // 失败消息入列, 重新发送
+        System.out.println("消息发送失败! ");
     }
 }

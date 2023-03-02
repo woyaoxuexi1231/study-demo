@@ -1,6 +1,7 @@
 package com.hundsun.demo.java.mq;
 
 import com.hundsun.demo.java.mq.config.ConnectFactory;
+import com.hundsun.demo.java.mq.config.MQConfig;
 import com.hundsun.demo.java.mq.work.MsgConsumerA;
 import com.hundsun.demo.java.mq.work.MsgConsumerB;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +24,8 @@ public class ConsumerStart {
     public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
 
         log.info("准备接收消息... ");
-        new MsgConsumerA(ConnectFactory.getConnect()).start();
-        new MsgConsumerB(ConnectFactory.getConnect()).start();
+        new MsgConsumerA(ConnectFactory.getConnect(), MQConfig.TOPIC_MASTER_QUEUE).start();
+        new MsgConsumerB(ConnectFactory.getConnect(), MQConfig.TOPIC_SLAVE_QUEUE).start();
     }
 
 }
