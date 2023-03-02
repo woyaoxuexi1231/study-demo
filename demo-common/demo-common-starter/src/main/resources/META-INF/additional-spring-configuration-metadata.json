@@ -1,0 +1,40 @@
+{
+  "properties": [
+    {
+      "name": "done.time.enable",
+      "description": "Whether the timer is enabled.",
+      "type": "java.lang.Boolean",
+      "defaultValue": false
+    },
+    {
+      "name": "curator.connect-string",
+      "type": "java.lang.String",
+      "sourceType": "com.hundsun.demo.common.autoconfigure.curator.CuratorConfiguration",
+      "description": "connectString - 连接信息."
+    },
+    {
+      "name": "curator.connection-timeout-ms",
+      "type": "java.lang.String",
+      "sourceType": "com.hundsun.demo.common.autoconfigure.curator.CuratorConfiguration",
+      "description": "connection timeout - if null, default 10 * 1000 ms."
+    },
+    {
+      "name": "curator.session-timeout-ms",
+      "type": "java.lang.String",
+      "sourceType": "com.hundsun.demo.common.autoconfigure.curator.CuratorConfiguration",
+      "description": "session timeout - 默认 60 * 1000 ms."
+    },
+    {
+      "name": "curator.elapsed-time-ms",
+      "type": "java.lang.String",
+      "sourceType": "com.hundsun.demo.common.autoconfigure.curator.CuratorConfiguration",
+      "description": "curator 重试间隔时间."
+    },
+    {
+      "name": "curator.retry-count",
+      "type": "java.lang.String",
+      "sourceType": "com.hundsun.demo.common.autoconfigure.curator.CuratorConfiguration",
+      "description": "curator 重连次数, 默认 4."
+    }
+  ]
+}
