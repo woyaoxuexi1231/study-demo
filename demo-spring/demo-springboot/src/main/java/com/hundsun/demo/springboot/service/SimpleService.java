@@ -33,8 +33,7 @@ public interface SimpleService {
      */
     void selectFromSlave(List<EmployeeDO> employeeDOS, Semaphore masterSemaphore, Semaphore slaveSemaphore, AtomicBoolean isFinished);
 
-    /**
-     * springboot redis的一些使用方法
-     */
-    void springRedis();
+    void mysqlSelect();
+
+    void mysqlUpdate();
 }

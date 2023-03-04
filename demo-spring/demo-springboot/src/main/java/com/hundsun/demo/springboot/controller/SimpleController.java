@@ -30,8 +30,13 @@ public class SimpleController {
         return simpleService.multiDataSourceSingleTransaction();
     }
 
-    @GetMapping("/SpringRedis")
-    public void SpringRedis() {
-        simpleService.springRedis();
+    @GetMapping("/mysqlSelect")
+    public void mysqlSelect() {
+        simpleService.mysqlSelect();
+    }
+
+    @GetMapping("/mysqlUpdate")
+    public void mysqlUpdate() {
+        simpleService.mysqlUpdate();
     }
 }
