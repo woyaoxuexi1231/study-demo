@@ -3,13 +3,18 @@ package com.hundsun.demo.java.redis;
 import cn.hutool.core.collection.CollectionUtil;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
+import io.lettuce.core.api.async.RedisAsyncCommands;
+import lombok.SneakyThrows;
 import org.redisson.Redisson;
+import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Transaction;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @projectName: study-demo
@@ -107,6 +112,7 @@ public class RedisTest {
         JEDIS.close();
         JEDIS_POOL.close();
         REDISSON_CLIENT.shutdown();
+        LETTUCE_CLIENT.getResources().shutdown();
     }
 
     public static void main(String[] args) {
@@ -114,6 +120,8 @@ public class RedisTest {
         transaction();
         setnxLock();
         luaLock();
+        lettuce();
+        redisson();
 
         closeResources();
     }
@@ -194,5 +202,24 @@ public class RedisTest {
 
         // 成功返回 OK, 失败返回 null
         Object result = JEDIS.eval(lua, CollectionUtil.newArrayList(lockName), CollectionUtil.newArrayList(timeout, uuid));
+    }
+
+    /**
+     * lettuce 客户端
+     */
+    public static void lettuce() {
+        RedisAsyncCommands<String, String> async = LETTUCE_CLIENT.connect().async();
+        async.set("lettuce", "hello, redis!");
+    }
+
+    /**
+     * redisson 客户端
+     */
+    @SneakyThrows
+    public static void redisson() {
+        RLock rLock = REDISSON_CLIENT.getLock("redisson::lock");
+        rLock.lock();
+        Thread.sleep(20 * 1000);
+        rLock.unlock();
     }
 }
