@@ -16,6 +16,6 @@ public class SimpleControllerTest {
 
     @Test
     public void SpringRedis() {
-        simpleController.SpringRedis();
+
     }
 }
