@@ -1,5 +1,12 @@
 package com.hundsun.demo.springboot.service;
 
+import com.hundsun.demo.commom.core.model.dto.ResultDTO;
+import com.hundsun.demo.springboot.model.pojo.EmployeeDO;
+
+import java.util.List;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * @projectName: study-demo
  * @package: com.hundsun.demo.springboot.service
@@ -12,9 +19,19 @@ package com.hundsun.demo.springboot.service;
 public interface SimpleService {
 
     /**
-     * spring事务的小 demo
+     * 双数据源不使用分布式事务如何保证事务
      */
-    void springTransaction();
+    ResultDTO<?> multiDataSourceSingleTransaction();
+
+    /**
+     * 主数据源的更改操作
+     */
+    void copySlaveToMaster(List<EmployeeDO> employeeDOS, Semaphore masterSemaphore, Semaphore slaveSemaphore, AtomicBoolean isFinished);
+
+    /**
+     * 从数据源的更改操作
+     */
+    void selectFromSlave(List<EmployeeDO> employeeDOS, Semaphore masterSemaphore, Semaphore slaveSemaphore, AtomicBoolean isFinished);
 
     /**
      * springboot redis的一些使用方法

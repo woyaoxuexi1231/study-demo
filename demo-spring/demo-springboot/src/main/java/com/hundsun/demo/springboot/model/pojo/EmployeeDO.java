@@ -3,6 +3,7 @@ package com.hundsun.demo.springboot.model.pojo;
 import lombok.Data;
 
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -22,7 +23,6 @@ public class EmployeeDO {
     /**
      *
      */
-    @Id
     @Column(name = "employeeNumber")
     private Integer employeeNumber;
     /**
