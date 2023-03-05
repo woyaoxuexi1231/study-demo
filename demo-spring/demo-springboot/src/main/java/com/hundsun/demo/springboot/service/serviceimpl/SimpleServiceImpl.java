@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CountDownLatch;
@@ -270,55 +269,40 @@ public class SimpleServiceImpl implements SimpleService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     @SneakyThrows
     public void mysqlSelect() {
 
         /*
-        MVCC - 多版本并发控制
-        快照读 - 普通的 select查询 SQL语句
-        当前读 - 执行 insert, update, delete, select for update, select lock in share mode时进行读取数据的方式
-
-        ReadView - 快照读sql 执行时 mvcc提取数据的依据, 就是在执行查询 sql的时候一个事务表, 通过事务表和数据保存的事务信息, 来判断当前的 sql应该获取哪个时刻的数据才是安全的
-            m_ids - 当前活跃的事务编号, 还没有被提交的事务
-            min_trx_id - 最小活跃事务编号
-            max_trx_id - 预分配事务编号, 当前最大的事务编号 + 1
-            creator_trx_id - ReadView创建者的事务编号
-        可重复读和读提交 - 基于 undo_log 的版本链, 在表内会额外的增加两个字段 trx_id(这数据属于哪个事务编号, 修改操作的事务编号), db_roll_ptr(指向上一个进行版本变化时的数据镜像)
-            1. 判断当前事务编号是否等于 creator_trx_id, 成立说明是当前事务更改的, 直接返回 - 也就是说, 第一步判断当前数据库的数据是不是当前事务所修改的, 自己修改的数据自己肯定可以访问的
-            2. 判断 trx_id < min_trx_id, 成立说明数据已经提交, 可以返回 - 这个说明我们的 ReadView 最小的事务都要比这个数据的事务小, 对于当前的我们来说, 这个数据百分百安全
-            3. 判断 trx_id > max_trx_id, 成立则说明事务是在 ReadView 生成之后才开启的, 不允许访问数据 - 当前数据库里的数据, 是在我们的 ReadView 生成之后才被提交过, 我们不能在过去查看未来的数据, 所以是不可以用这个数据的
-            4. 判断 min_trx_id <= trx_id <= max_trx_id, 成立则在 m_ids 对比, 如果不存在数据则代表是已提交的, 可以访问 - 这个数据如果是在最小事务和最大事务之间修改的, 就是说这个数据是在这个 ReadView 被创建的期间被改的, 如果不在活跃事务里, 就说明数据对于当前的 ReadView 来说安全, 当然可以访问
-            读提交(RC)每次都会生成 ReadView 来获取数据, 也就意味着, 在同一个事务内, 会出现不可重复读
-            可重复读(RR)仅在第一次会生成 ReadView, 之后都会复用这个 ReadView, 所以这意味着避免了不可重复读和幻读
-                但是有特例, 在同一个事务内, 两次快照读中间穿插一次当前读会导致幻读, 这种情况, 会在第二次快照读的时候重新创建 ReadView
-                案例: 在第一次查询的时候创建 ReadView, 然后事务二新插入了一条数据并提交成功, 事务一更新全表数据的某个字段, 然后执行查询操作这时就产生了幻读
+        select for update
+        如果查询条件用了索引/主键，那么select … for update就会进行行锁。
+        如果是普通字段(没有索引/主键)，那么select … for update就会进行锁表。
          */
-
-        // for (int i = 0; i < 2; i++) {
-        System.out.println("----------------------" + new Date() + "----------------------");
-        List<EmployeeDO> employeeDOS = jdbcTemplate.query("select * from employees where lastName like '%M%' for update", new BeanPropertyRowMapper<>(EmployeeDO.class));
-        employeeDOS.forEach(System.out::println);
+        // List<EmployeeDO> employeeDOS = jdbcTemplate.query("select * from employees where lastName like '%M%' for update ", new BeanPropertyRowMapper<>(EmployeeDO.class));
+        List<EmployeeDO> employeeDOS = jdbcTemplate.query("select * from employees where employeeNumber < 1600 for update", new BeanPropertyRowMapper<>(EmployeeDO.class));
+        employeeDOS.forEach(i -> log.info(i.toString()));
         System.out.println("--------------------------------------------");
-        // Thread.sleep(5 * 1000);
-        // }
-        // jdbcTemplate.execute("insert into employees (employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle)  values (1003,'M','D','x6789','222@qq.com','1',1002,'sss')");
-        jdbcTemplate.execute("delete from employees where employeeNumber = 1003");
-        Thread.sleep(5 * 1000);
-        System.out.println("----------------------" + new Date() + "----------------------");
-        List<EmployeeDO> employeeDOS2 = jdbcTemplate.query("select * from employees where lastName like '%M%' for update", new BeanPropertyRowMapper<>(EmployeeDO.class));
-        employeeDOS2.forEach(System.out::println);
+        // jdbcTemplate.execute("update employees set lastName = 'Murph4' where employeeNumber = 1003");
+
+        Thread.sleep(60 * 1000);
+        List<EmployeeDO> employeeDOS2 = jdbcTemplate.query("select * from employees where employeeNumber < 1600", new BeanPropertyRowMapper<>(EmployeeDO.class));
+        employeeDOS2.forEach(i -> log.info(i.toString()));
         System.out.println("--------------------------------------------");
 
     }
 
     @Override
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     @SneakyThrows
     public void mysqlUpdate() {
-        // jdbcTemplate.execute("update employees set lastName = 'Murph4' where employeeNumber = 1002");
+        log.info("开始更新...");
+        // jdbcTemplate.execute("update employees set lastName = 'Murph3' where employeeNumber = 1003");
         // jdbcTemplate.execute("insert into employees (employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle)  values (1003,'M','D','x6789','222@qq.com','1',1002,'sss')");
-        jdbcTemplate.execute("insert into employees (employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle)  values (1800,'M','D','x6789','222@qq.com','1',1002,'sss')");
+        // jdbcTemplate.execute("insert into employees (employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle)  values (1800,'M','D','x6789','222@qq.com','1',1002,'sss')");
+        List<EmployeeDO> employeeDOS2 = jdbcTemplate.query("select * from employees where employeeNumber < 1600", new BeanPropertyRowMapper<>(EmployeeDO.class));
+        employeeDOS2.forEach(i -> log.info(i.toString()));
+        System.out.println("--------------------------------------------");
+        log.info("更新完成! ");
         // Thread.sleep(10 * 1000);
         // throw new RuntimeException("提交报错");
     }
