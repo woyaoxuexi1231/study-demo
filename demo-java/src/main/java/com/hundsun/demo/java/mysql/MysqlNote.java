@@ -73,7 +73,26 @@ public class MysqlNote {
                 但是有特例, 在同一个事务内, 两次快照读中间穿插一次当前读会导致幻读, 这种情况, 会在第二次快照读的时候重新创建 ReadView
                 案例: 在第一次查询的时候创建 ReadView, 然后事务二新插入了一条数据并提交成功, 事务一更新全表数据的某个字段, 然后执行查询操作这时就产生了幻读
 
+        自增长与锁
+            innodb 中对每个含有自增长值的表都有一个自增长计数器, 当对含有自增长的计数器的表进行插入操作的时候, 这个计数器会被初始化:
+                select max(auto_inc_col) from t for update
+                插入操作会依据这个自增长的计数器值加 1 赋予自增长列, 这个实现方式叫做 AUTO-INC Locking
+            innodb_autoinc_lock_mode 参数
+                0 - 对于所有的 insert 都采用 AUTO-INC Locking, 会持有锁一直到语句结束
+                1 - 对于 simple insert 采用 mutex 对计数器进行访问, 拿到释放锁, 这个对于复制来说是安全的, 可以一次性拿到确定数目的自增 ID
+                2 - 对于所有类型的 insert 都采用 mutex 来, 性能最好, 但是不安全, 对于同一个 insert 来说, 得到的 auto_increment 可能不是连续的
+        外键与锁
+            todo
 
+         锁的算法
+            Record Lock - 单个行记录上的锁, 会锁定索引记录
+            Gap Lock - 间隙锁, 锁定一个范围, 但不包含记录本身
+                间隙锁的目的是为了防止幻读，其主要通过两个方面实现这个目的：
+                （1）防止间隙内有新数据被插入
+                （2）防止已存在的数据，更新成间隙内的数据
+            Next-Key Lock - Record Lock + Gap Lock, 锁定一个范围, 并且锁定记录本身
+            mysql 默认使用 Next-Key Lock 算法
+            当有唯一索引的时候, innodb 引擎会自动把 Next-Key Lock 降级为 Record Lock
 
      */
 
