@@ -36,4 +36,9 @@ public interface SimpleService {
     void mysqlSelect();
 
     void mysqlUpdate();
+
+    /**
+     * mybatis 的两种填值方式
+     */
+    void mybatis();
 }

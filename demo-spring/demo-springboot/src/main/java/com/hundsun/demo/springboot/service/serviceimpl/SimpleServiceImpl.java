@@ -306,4 +306,29 @@ public class SimpleServiceImpl implements SimpleService {
         // Thread.sleep(10 * 1000);
         // throw new RuntimeException("提交报错");
     }
+
+    @Override
+    public void mybatis() {
+
+        /*
+        $ 和 # 号的区别
+        我们都知道 #号可以防止 SQL 注入
+        原理其实就是 #号占位符把位置解析成 ?, 填值的时候对特殊字符进行转移, 外加一些必要的符号, 字符串自动加单引号, 使用 PreparedStatement
+        而 $ 符号不做任何处理直接写入, 这使得拥有更大的灵活性, 但是却引入了 SQL 注入
+         */
+        // insert into ${tableName}
+        // values ( ${employeeNumber}, ${lastName}, ${firstName}, ${extension}, ${email}, ${officeCode}, ${reportsTo}, ${jobTitle})
+        // values ( #{employeeNumber}, #{lastName}, #{firstName}, #{extension}, #{email}, #{officeCode}, #{reportsTo}, #{jobTitle})
+        EmployeeDO employeeDO = new EmployeeDO();
+        // employeeDO.setTableName("employees");
+        employeeDO.setEmployeeNumber(2001);
+        employeeDO.setLastName("'mybatis'");
+        employeeDO.setFirstName("'dollar'");
+        employeeDO.setExtension("'?'");
+        employeeDO.setEmail("'?'");
+        employeeDO.setOfficeCode("'?'");
+        employeeDO.setReportsTo(1002);
+        employeeDO.setJobTitle("'?'");
+        employeeMapper.insertWithDollar(employeeDO);
+    }
 }

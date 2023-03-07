@@ -15,4 +15,8 @@ import tk.mybatis.mapper.common.MySqlMapper;
  */
 
 public interface EmployeeMapper extends BaseMapper<EmployeeDO>, ConditionMapper<EmployeeDO>, MySqlMapper<EmployeeDO> {
+    /**
+     * mybatis 使用 $符号
+     */
+    void insertWithDollar(EmployeeDO employeeDO);
 }

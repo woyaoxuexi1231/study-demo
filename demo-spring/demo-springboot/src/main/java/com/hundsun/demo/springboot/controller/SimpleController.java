@@ -39,4 +39,9 @@ public class SimpleController {
     public void mysqlUpdate() {
         simpleService.mysqlUpdate();
     }
+
+    @GetMapping("/mybatis")
+    public void mybatis(){
+        simpleService.mybatis();
+    }
 }
