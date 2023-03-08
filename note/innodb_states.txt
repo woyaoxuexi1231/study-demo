@@ -143,13 +143,16 @@ Hash table size 34679, node heap has 1 buffer(s)
 ---
 LOG
 ---
+- 当前的LSN
 Log sequence number          25326006
 Log buffer assigned up to    25326006
 Log buffer completed up to   25326006
 Log written up to            25326006
+- 刷新到重做日志文件的LSN
 Log flushed up to            25326006
 Added dirty pages up to      25326006
 Pages flushed up to          25326006
+- 表示刷新到磁盘的LSN
 Last checkpoint at           25326006
 Log minimum file id is       0
 Log maximum file id is       0
