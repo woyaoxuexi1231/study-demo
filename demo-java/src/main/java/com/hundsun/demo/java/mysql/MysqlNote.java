@@ -76,7 +76,10 @@ public class MysqlNote {
         I - isolation, 隔离性, 事务之间是隔离的, 一个事务提交前对其他事务不可见
         D - durability, 持久性, 事务一旦提交, 那么就以为着这个结果是永久性的, 不管发生什么, 只要事务提交, 那么就意味着这个结果必须永久存在数据库中
 
-    undo日志 - 可以保证事务的原子性和持久性, 但是磁盘 I/O 有点大
+    undo日志
+        undo 存放在数据库内部的一个特殊段(segment), 这个段称为 undo 段(undo segment), undo 段位于共享表空间内
+        undo 日志其实并非把数据库状态恢复到事务之前的状态, 而是通过其他方式来恢复, 对于每个 insert, 都完成一个 delete, 对于每个 delete, 都完成一个 insert
+        可以保证事务的原子性和持久性, 但是磁盘 I/O 有点大
         首先把数据备份到 undo_log, 然后进行数据的修改, 如果出现错误或者用户执行了 rollback 语句, 系统可以利用 undo_log 中的备份把数据恢复到事务开始之前的状态
             假如有两个数据 A=1, B=2
             1. 事务开始
@@ -88,6 +91,23 @@ public class MysqlNote {
             7. 将数据写到磁盘
             8. 事务提交 - 也就是说在事务一旦提交成功, 那就必然数据已经持久化了
             如果在 7-8 之间宕机, 开机后在 undo_log 读取数据进行回滚, 在 7 之前宕机没关系, 数据都是在内存中的
+        undo log 会产生 redo log
+
+        undo 存储管理
+            rollback segment -> undo log segment -> undo 页
+            innodb在事务提交时会做两件事情
+                1. 将 undo log 放入列表中, 以供之后的 purge 操作
+                2. 判断 undo log 所在的页是否可以重用, 若可以分配给下个事务使用
+        undo log 格式
+            分为 insert undo log 和 update undo log
+        purge
+            delete 和 update 操作可能并不直接删除原有的数据, 最终的删除操作被延迟到了 purge
+            这样做的目的是 innodb 支持 MVCC,
+        group commit
+            两阶段提交
+            1. 修改内存中事务对应的信息, 并且将日志写入重做日志缓冲
+            2. 调用 fsync 将确保日志都从重做日志缓冲写入磁盘
+
     redo_log(重做日志)
         保证事务的持久性, 即在我们得知事务提交之后, 那么 redo 来保证我们的操作必须永久性的被保存在数据库中
         记录新数据的备份, 在事务提交前只持久化 redo_log, 不持久化数据, 减少 I/O 的次数
