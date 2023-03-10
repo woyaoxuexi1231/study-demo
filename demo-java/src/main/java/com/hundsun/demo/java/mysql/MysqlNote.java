@@ -103,10 +103,25 @@ public class MysqlNote {
         purge
             delete 和 update 操作可能并不直接删除原有的数据, 最终的删除操作被延迟到了 purge
             这样做的目的是 innodb 支持 MVCC,
-        group commit
+        group commit // todo
             两阶段提交
             1. 修改内存中事务对应的信息, 并且将日志写入重做日志缓冲
             2. 调用 fsync 将确保日志都从重做日志缓冲写入磁盘
+            两阶段事务 - 这个是在开启二进制日志后, 为了保证事务和二进制日志的一致性而开启的
+            1. 当事务提交时 innodb 进行 prepare 操作
+            2. MySQL 数据库上层写入二进制日志
+            3. innodb 将日志写入 redo log file
+                a. 修改内存中事务对应的信息, 并且将日志写入 redo log buffer
+                b. 调用 fsync 将确保日志都从 redo log buffer 写入磁盘
+
+            BLGC binary log group commit
+        隐式提交的 sql - DDL, 修改 mysql 架构的操作(新增用户, 删除用户), 管理语句
+        事务的隔离级别
+        分布式事务
+            XA
+                两阶段提交
+                    1. 所有参与全局事务的结点都开始准备
+                    2. 事务管理器告诉资源管理器执行 rollback 还是 commit
 
     redo_log(重做日志)
         保证事务的持久性, 即在我们得知事务提交之后, 那么 redo 来保证我们的操作必须永久性的被保存在数据库中
@@ -149,5 +164,6 @@ public class MysqlNote {
             对于重做日志(物理日志)来说, 他是幂等的, 而对于二进制日志, 是不幂等的, 比如二进制文件的 insert 操作
 
      */
+
 
 }
