@@ -13,6 +13,25 @@ import com.hundsun.demo.java.pattern.creational.Car;
 
 public class SingletonCar extends Car {
 
+    /*
+    内部类 -
+        成员内部类
+        局部内部类 - 定义在一个方法或者一个作用域内的类, 和成员内部类基本相同
+        匿名内部类 - 一个没有名字的类
+        静态内部类 - 用 static 修饰的内部类, 也叫做嵌套内部类
+    Q1: 内部类能做什么
+        1. 成员内部类可以直接访问外部类中的所有成员变量和成员方法
+    Q2: 为什么要使用内部类
+        1. 封装性, 我们可以在 HashMap 源码中看到, 有一个 EntrySet 的 final 成员内部类
+        2. 实现多继承, 同样的就 HashMap 而言, HashMap 继承自 AbstractMap, EntrySet 继承自 AbstractSet
+
+    匿名内部类与 lambda
+        匿名内部类可以写成 lambda 表达式的形式
+        lambda 表达式可以捕捉 静态变量(被 static修饰的成员变量), 实例变量(成员变量), 本地变量(方法内定义的变量, 包括入参)
+        Q: 为什么在 lambda 表达式里面的值必须被修饰成 final 类型
+            1. 作用域问题 // todo
+     */
+
     /**
      * 使用静态内部类实现单例模式 - IoDH Initialization on Demand Holder
      * <p>
