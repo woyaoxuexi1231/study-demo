@@ -9,7 +9,7 @@ package com.hundsun.demo.spring.jdbc;
  * @createDate: 2023/2/13 21:50
  */
 
-public class DynamicDataSourceTransactionTest {
+public class DynamicDataSourceTransactionNote {
 
     /*
     Java 事务
