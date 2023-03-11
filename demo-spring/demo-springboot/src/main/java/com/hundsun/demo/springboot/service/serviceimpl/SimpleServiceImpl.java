@@ -17,9 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -291,20 +294,42 @@ public class SimpleServiceImpl implements SimpleService {
 
     }
 
+    @Autowired
+    private DataSourceTransactionManager transactionManager;
+
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED)
+    // @Transactional(isolation = Isolation.READ_COMMITTED)
     @SneakyThrows
     public void mysqlUpdate() {
-        log.info("开始更新...");
-        // jdbcTemplate.execute("update employees set lastName = 'Murph3' where employeeNumber = 1003");
-        // jdbcTemplate.execute("insert into employees (employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle)  values (1003,'M','D','x6789','222@qq.com','1',1002,'sss')");
-        // jdbcTemplate.execute("insert into employees (employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle)  values (1800,'M','D','x6789','222@qq.com','1',1002,'sss')");
-        List<EmployeeDO> employeeDOS2 = jdbcTemplate.query("select * from employees where employeeNumber < 1600", new BeanPropertyRowMapper<>(EmployeeDO.class));
-        employeeDOS2.forEach(i -> log.info(i.toString()));
-        System.out.println("--------------------------------------------");
-        log.info("更新完成! ");
-        // Thread.sleep(10 * 1000);
-        // throw new RuntimeException("提交报错");
+
+        // 手动开启事务
+        DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
+        TransactionStatus status = transactionManager.getTransaction(definition);
+
+        try {
+            log.info("开始更新...");
+            jdbcTemplate.execute("update employees set lastName = 'Murph3' where employeeNumber = 1003");
+            // jdbcTemplate.execute("insert into employees (employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle)  values (1003,'M','D','x6789','222@qq.com','1',1002,'sss')");
+            // jdbcTemplate.execute("insert into employees (employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle)  values (1800,'M','D','x6789','222@qq.com','1',1002,'sss')");
+            // List<EmployeeDO> employeeDOS2 = jdbcTemplate.query("select * from employees where employeeNumber < 1600", new BeanPropertyRowMapper<>(EmployeeDO.class));
+            // employeeDOS2.forEach(i -> log.info(i.toString()));
+            // System.out.println("--------------------------------------------");
+            log.info("更新完成! ");
+            // Thread.sleep(10 * 1000);
+            throw new RuntimeException("提交报错");
+        } catch (Exception e) {
+            log.error("更新异常! ", e);
+            status.setRollbackOnly();
+        }
+
+        if (status.isRollbackOnly()) {
+            transactionManager.rollback(status);
+            log.info("回滚完成! ");
+        } else {
+            transactionManager.commit(status);
+            log.info("提交完成! ");
+        }
+
     }
 
     @Override
