@@ -47,6 +47,8 @@ public class SimpleController extends AbstractController {
             log.error("更新出现异常! ", e);
         }
 
+        yiibaidbService.handleTransaction();
+
         return mav;
     }
 

@@ -30,6 +30,11 @@ public interface YiibaidbService {
     void jdbcTemplateUpdate();
 
     /**
+     * spring 手动提交事务
+     */
+    void handleTransaction();
+
+    /**
      * Spring 多数据源小 demo
      *
      * @param dynamicDataSourceType dataSourceType
