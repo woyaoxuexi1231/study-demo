@@ -41,4 +41,9 @@ public interface SimpleService {
      * mybatis 的两种填值方式
      */
     void mybatis();
+
+    /**
+     * 测试主从复制的复制模式
+     */
+    void testMysqlAutoKey();
 }

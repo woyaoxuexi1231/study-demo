@@ -41,7 +41,12 @@ public class SimpleController {
     }
 
     @GetMapping("/mybatis")
-    public void mybatis(){
+    public void mybatis() {
         simpleService.mybatis();
+    }
+
+    @GetMapping("/testMysqlAutoKey")
+    public void testMysqlAutoKey() {
+        simpleService.testMysqlAutoKey();
     }
 }

@@ -6,9 +6,12 @@ import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
 import com.hundsun.demo.springboot.annotation.TargetDataSource;
 import com.hundsun.demo.springboot.dynamic.DynamicDataSourceType;
+import com.hundsun.demo.springboot.dynamic.DynamicDataSourceTypeManager;
+import com.hundsun.demo.springboot.mapper.AutoKeyTestMapper;
 import com.hundsun.demo.springboot.mapper.EmployeeMapper;
 import com.hundsun.demo.springboot.model.pojo.EmployeeDO;
 import com.hundsun.demo.springboot.service.SimpleService;
+import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
@@ -25,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.annotation.Resource;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -355,5 +359,50 @@ public class SimpleServiceImpl implements SimpleService {
         employeeDO.setReportsTo(1002);
         employeeDO.setJobTitle("'?'");
         employeeMapper.insertWithDollar(employeeDO);
+    }
+
+    @Override
+    public void testMysqlAutoKey() {
+        // 主库插入一千条数据
+        // 每次插入100条, 插入10次
+        /*
+        数据库的 binlog_format=row, 是基于行复制的, 这里并没有出现主从复制不一致的情况
+
+        我这里测试在从库删除一条数据之后, 是否还会进行同步, 如果操作的数据不包含主从不一致的数据对于主从复制是不影响的
+        但是如果包含从库没有的数据, 那么会报错, 并停止主从同步
+        通过 show slave status \G; 和 select * from performance_schema.replication_applier_status_by_worker\G;
+        可以看到报错信息显示
+        Coordinator stopped because there were error(s) in the worker(s). The most recent failure being: Worker 1 failed executing transaction 'ANONYMOUS' at master log mysql-bin.000025, end_log_pos 2204. See error log and/or performance_schema.replication_applier_status_by_worker table for more details about this failure or others, if any.
+        Worker 1 failed executing transaction 'ANONYMOUS' at master log mysql-bin.000025, end_log_pos 2204; Could not execute Update_rows event on table test.autokeytest; Can't find record in 'autokeytest', Error_code: 1032; handler error HA_ERR_KEY_NOT_FOUND; the event's master log mysql-bin.000025, end_log_pos 2204
+        主库要更新的数据在对应的表内从库是没有的
+        通过 set global sql_slave_skip_counter=1; 提过这条错误, 但是主库依旧不做任何修改, 然后主从复制可以恢复, 但是如果继续操作那一条被从库删除的数据依旧会让主从复制停止
+         */
+        for (int i = 1; i <= 10; i++) {
+
+            List<AutoKeyTest> list = new ArrayList<>();
+
+            for (int j = 1; j < 100; j++) {
+                AutoKeyTest autoKeyTest = new AutoKeyTest();
+                autoKeyTest.setA(i + "," + j);
+                autoKeyTest.setB(i + "," + j);
+                list.add(autoKeyTest);
+            }
+
+            new Thread(() -> {
+                DynamicDataSourceTypeManager.set(DynamicDataSourceType.SECOND);
+                autoKeyTestMapper.insertList(list);
+            }).start();
+
+        }
+    }
+
+    @Resource
+    AutoKeyTestMapper autoKeyTestMapper;
+
+    @Table(name = "autokeytest")
+    @Data
+    public static class AutoKeyTest {
+        private String a;
+        private String b;
     }
 }
