@@ -59,6 +59,7 @@
 
         <!--第三方依赖-->
         <!--一些工具组件-->
+        <jpa.version>1.0</jpa.version>
         <hutool.core.version>5.6.1</hutool.core.version>
         <guava.version>21.0</guava.version>
         <cglib.version>3.2.10</cglib.version>
@@ -287,6 +288,11 @@
                 <version>${guava.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>javax.persistence</groupId>
+                <artifactId>persistence-api</artifactId>
+                <version>${jpa.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.springframework.boot</groupId>
