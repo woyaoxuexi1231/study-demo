@@ -8,6 +8,7 @@ import com.hundsun.demo.dubbo.provider.api.service.RabbitMqService;
 import com.hundsun.demo.java.mq.config.MQConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.MessagePostProcessor;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,8 @@ public class RabbitMqServiceImpl implements RabbitMqService {
         try {
 
             MQIdempotency idempotency = new MQIdempotency();
-            idempotency.setUuid(uuid == null ? UUID.randomUUID().toString() : uuid);
+            uuid = uuid == null ? UUID.randomUUID().toString() : uuid;
+            idempotency.setUuid(uuid);
             idempotency.setMsg("hello rabbitmq!");
 
 
@@ -53,7 +55,14 @@ public class RabbitMqServiceImpl implements RabbitMqService {
                 correlationData – correlation data (can be null).
             convertAndSend(…) - 使用此方法, 交换机会马上把所有的信息都交给所有的消费者, 消费者再自行处理, 不会因为消费者处理慢而阻塞线程。
              */
-            rabbitTemplate.convertAndSend(MQConfig.TOPIC_EXCHANGE_NAME, MQConfig.TOPIC_MASTER_ROUTE_KEY, JSONObject.toJSON(idempotency).toString(), messagePostProcessor);
+            CorrelationData correlationData = new CorrelationData();
+            correlationData.setId(uuid);
+            rabbitTemplate.convertAndSend(
+                    MQConfig.TOPIC_EXCHANGE_NAME,
+                    MQConfig.TOPIC_MASTER_ROUTE_KEY,
+                    JSONObject.toJSON(idempotency).toString(),
+                    messagePostProcessor,
+                    correlationData);
             // rabbitTemplate.convertSendAndReceive()
         } catch (Exception e) {
             log.error("消息发送异常!", e);
