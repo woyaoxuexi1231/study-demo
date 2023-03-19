@@ -281,7 +281,13 @@ public class RabbiMQListener {
                     durable = "true"),
             key = MQConfig.TOPIC_SLAVE_ROUTE_KEY
     ))
-    public void receiveMsg2(String msg) {
+    public void receiveMsg2(Message msg, Channel channel) {
         log.info("im receive " + msg + "too");
+        try {
+            channel.basicAck(msg.getMessageProperties().getDeliveryTag(), false);
+        } catch (Exception e) {
+            log.error("应答失败!", e);
+        }
+
     }
 }
