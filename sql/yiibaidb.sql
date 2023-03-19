@@ -4107,3 +4107,20 @@ CREATE TABLE `tokens` (
 -- Records of tokens
 -- ----------------------------
 INSERT INTO `tokens` VALUES ('abcdef');
+
+DROP TABLE IF EXISTS `autokeytest`;
+CREATE TABLE `autokeytest` (
+                               `id` int NOT NULL AUTO_INCREMENT,
+                               `a` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+                               `b` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+                               PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `rabbitmq_test`;
+CREATE TABLE `rabbitmq_test` (
+                                 `uuid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+                                 `msg` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+                                 `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                 `status` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+                                 PRIMARY KEY (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
