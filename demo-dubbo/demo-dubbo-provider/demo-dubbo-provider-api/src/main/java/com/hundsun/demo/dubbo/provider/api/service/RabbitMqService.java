@@ -1,4 +1,4 @@
-package com.hundsun.demo.dubbo.consumer.api.service;
+package com.hundsun.demo.dubbo.provider.api.service;
 
 import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 
@@ -18,5 +18,5 @@ public interface RabbitMqService {
      *
      * @return ?
      */
-    ResultDTO<?> sentSampleMsg();
+    ResultDTO<?> sentSampleMsg(String uuid);
 }

@@ -2,10 +2,7 @@ package com.hundsun.demo.dubbo.provider.config;
 
 import com.hundsun.demo.java.mq.config.MQConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Exchange;
-import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -14,8 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @projectName: study-demo
@@ -29,7 +24,7 @@ import java.util.Map;
 @Slf4j
 public class InitConfig {
 
-    //
+
     // @Bean
     // public Queue masterQueue() {
     //
@@ -66,4 +61,30 @@ public class InitConfig {
     //     );
     //     return queue;
     // }
+
+
+    @Autowired
+    RabbitAdmin rabbitAdmin;
+
+    @PostConstruct
+    public void init() {
+        // 声明交换机
+        rabbitAdmin.declareExchange(exchange());
+        log.info("创建交换机 {} 成功! ", exchange());
+    }
+
+    @Bean
+    public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
+        RabbitAdmin rabbitAdmin = new RabbitAdmin(connectionFactory);
+        rabbitAdmin.setAutoStartup(true);
+        return rabbitAdmin;
+    }
+
+    public Exchange exchange() {
+        return new TopicExchange(
+                MQConfig.TOPIC_EXCHANGE_NAME,
+                true,
+                false,
+                null);
+    }
 }

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import tk.mybatis.spring.annotation.MapperScan;
 
 /**
  * @ProductName: Hundsun amust
@@ -16,6 +17,7 @@ import org.springframework.context.ApplicationContext;
 
 @SpringBootApplication
 @Slf4j
+@MapperScan(basePackages = {"com.hundsun.demo.dubbo.consumer.mapper"})
 public class ConsumerApplication {
 
     public static void main(String[] args) {

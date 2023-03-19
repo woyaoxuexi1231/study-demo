@@ -58,26 +58,4 @@ public class InitConfig implements ApplicationRunner {
         }
     }
 
-    @Autowired
-    RabbitAdmin rabbitAdmin;
-
-    @PostConstruct
-    public void init() {
-        rabbitAdmin.declareExchange(exchange());
-        log.info("创建交换机 {} 成功! ", exchange());
-    }
-
-    @Bean
-    public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
-        RabbitAdmin rabbitAdmin = new RabbitAdmin(connectionFactory);
-        rabbitAdmin.setAutoStartup(true);
-        return rabbitAdmin;
-    }
-
-    public Exchange exchange() {
-        return new TopicExchange(
-                MQConfig.TOPIC_EXCHANGE_NAME,
-                true,
-                false);
-    }
 }

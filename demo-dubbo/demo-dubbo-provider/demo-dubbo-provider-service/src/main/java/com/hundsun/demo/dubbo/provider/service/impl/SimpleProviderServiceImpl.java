@@ -47,41 +47,4 @@ public class SimpleProviderServiceImpl implements SimpleProviderService {
             TimeUnit.SECONDS, new ArrayBlockingQueue<>(150), new ThreadFactoryBuilder()
             .setNamePrefix("RedissonServiceImpl-thread-").build(), new ThreadPoolExecutor.CallerRunsPolicy());
 
-    @RabbitHandler
-    @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(
-                    name = MQConfig.TOPIC_MASTER_QUEUE,
-                    durable = "false",
-                    autoDelete = "true"
-                    // arguments = {@Argument(name = "x-dead-letter-exchange", value = MQConfig.DEAD_EXCHANGE_NAME)}),
-            ),
-            exchange = @Exchange(
-                    value = MQConfig.TOPIC_EXCHANGE_NAME,
-                    type = ExchangeTypes.TOPIC,
-                    autoDelete = "true",
-                    durable = "false"),
-            key = MQConfig.TOPIC_MASTER_ROUTE_KEY
-    ))
-    public void receiveMsg(String msg) {
-        log.info("im receive " + msg);
-    }
-
-    @RabbitHandler
-    @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(
-                    name = MQConfig.TOPIC_SLAVE_QUEUE,
-                    durable = "false",
-                    autoDelete = "true"
-                    // arguments = {@Argument(name = "x-dead-letter-exchange", value = MQConfig.DEAD_EXCHANGE_NAME)}),
-            ),
-            exchange = @Exchange(
-                    value = MQConfig.TOPIC_EXCHANGE_NAME,
-                    type = ExchangeTypes.TOPIC,
-                    autoDelete = "true",
-                    durable = "false"),
-            key = MQConfig.TOPIC_SLAVE_ROUTE_KEY
-    ))
-    public void receiveMsg2(String msg) {
-        log.info("im receive " + msg + "too");
-    }
 }

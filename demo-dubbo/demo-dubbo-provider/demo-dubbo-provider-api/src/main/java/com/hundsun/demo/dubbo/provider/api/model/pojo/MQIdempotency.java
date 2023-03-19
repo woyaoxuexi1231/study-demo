@@ -1,0 +1,41 @@
+package com.hundsun.demo.dubbo.provider.api.model.pojo;
+
+import lombok.Data;
+
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+/**
+ * @projectName: study-demo
+ * @package: com.hundsun.demo.dubbo.consumer.api.model
+ * @className: MQIdempotency
+ * @description:
+ * @author: h1123
+ * @createDate: 2023/3/18 22:38
+ */
+
+@Data
+@Table(name = "rabbitmq_test")
+public class MQIdempotency {
+
+    /**
+     * uuid
+     */
+    @Id
+    private String uuid;
+
+    /**
+     * 消息体
+     */
+    private String msg;
+
+    /**
+     * 消息发生的时间
+     */
+    private String time;
+
+    /**
+     * 消费状态
+     */
+    private String status;
+}

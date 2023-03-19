@@ -1,14 +1,18 @@
-package com.hundsun.demo.dubbo.consumer.service.impl;
+package com.hundsun.demo.dubbo.provider.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
-import com.hundsun.demo.dubbo.consumer.api.service.RabbitMqService;
+import com.hundsun.demo.dubbo.provider.api.model.pojo.MQIdempotency;
+import com.hundsun.demo.dubbo.provider.api.service.RabbitMqService;
 import com.hundsun.demo.java.mq.config.MQConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 /**
  * @ProductName: Hundsun amust
@@ -26,13 +30,18 @@ public class RabbitMqServiceImpl implements RabbitMqService {
     private RabbitTemplate rabbitTemplate;
 
     @Override
-    public ResultDTO<?> sentSampleMsg() {
+    public ResultDTO<?> sentSampleMsg(String uuid) {
 
         try {
-            String msg = "hello rabbitmq!";
+
+            MQIdempotency idempotency = new MQIdempotency();
+            idempotency.setUuid(uuid == null ? UUID.randomUUID().toString() : uuid);
+            idempotency.setMsg("hello rabbitmq!");
+
+
             MessagePostProcessor messagePostProcessor = message -> {
                 // 设置消息的过期时间
-                message.getMessageProperties().setExpiration("30000");
+                // message.getMessageProperties().setExpiration("30000");
                 return message;
             };
             /*
@@ -44,7 +53,8 @@ public class RabbitMqServiceImpl implements RabbitMqService {
                 correlationData – correlation data (can be null).
             convertAndSend(…) - 使用此方法, 交换机会马上把所有的信息都交给所有的消费者, 消费者再自行处理, 不会因为消费者处理慢而阻塞线程。
              */
-            rabbitTemplate.convertAndSend(MQConfig.TOPIC_EXCHANGE_NAME, (Object) msg, messagePostProcessor);
+            rabbitTemplate.convertAndSend(MQConfig.TOPIC_EXCHANGE_NAME, MQConfig.TOPIC_MASTER_ROUTE_KEY, JSONObject.toJSON(idempotency).toString(), messagePostProcessor);
+            // rabbitTemplate.convertSendAndReceive()
         } catch (Exception e) {
             log.error("消息发送异常!", e);
             return ResultDTOBuild.resultErrorBuild("消息发送异常!");
