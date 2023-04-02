@@ -14,8 +14,6 @@ import com.hundsun.demo.springboot.service.SimpleService;
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -32,7 +30,6 @@ import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -66,8 +63,8 @@ public class SimpleServiceImpl implements SimpleService {
     @Autowired
     RedisTemplate<String, String> stringRedisTemplate;
 
-    @Autowired
-    RedissonClient redissonClient;
+    // @Autowired
+    // RedissonClient redissonClient;
 
     ThreadPoolExecutor SINGLE_TRANSACTION_POOL = new ThreadPoolExecutor(
             10,
@@ -120,57 +117,57 @@ public class SimpleServiceImpl implements SimpleService {
         */
 
         // 1. 确保单个服务同时已有一个线程在执行, 且不阻塞
-        singlepool.execute(() -> {
-
-            log.info("尝试获取分布式锁...");
-            RLock rLock = redissonClient.getLock("multidatasource::singletransaction::lock");
-
-            // 2. 确保多个服务同时只有一个能获取锁
-            if (rLock.tryLock()) {
-
-                // 这里同时只会有一个线程操作, 判断状态
-                if (stringRedisTemplate.opsForValue().get("multidatasource::singletransaction::state") != null) {
-                    // 直接释放锁
-                    log.info("60s内已完成, 请稍后再试! ");
-                    rLock.unlock();
-                    return;
-                }
-
-                // 锁释放的计时器
-                CountDownLatch count = new CountDownLatch(2);
-
-                // 需要插入的数据
-                List<EmployeeDO> employeeDOS = new ArrayList<>();
-                // 控制主数据源流程
-                Semaphore masterSemaphore = new Semaphore(0);
-                // 控制从数据源流程
-                Semaphore slaveSemaphore = new Semaphore(1);
-                // 整个流程是否结束
-                AtomicBoolean isFinished = new AtomicBoolean(false);
-                log.info("获取分布式锁成功, 开始执行流程. ");
-
-                // 从数据源操作
-                SINGLE_TRANSACTION_POOL.execute(() -> {
-                    simpleService.selectFromSlave(employeeDOS, masterSemaphore, slaveSemaphore, isFinished);
-                    count.countDown();
-                });
-
-                // 主数据源操作
-                SINGLE_TRANSACTION_POOL.execute(() -> {
-                    simpleService.copySlaveToMaster(employeeDOS, masterSemaphore, slaveSemaphore, isFinished);
-                    count.countDown();
-                });
-
-                try {
-                    count.await();
-                    stringRedisTemplate.opsForValue().set("multidatasource::singletransaction::state", "Initializing", 60, TimeUnit.SECONDS);
-                    rLock.unlock();
-                    log.info("释放分布式锁完成. ");
-                } catch (Exception e) {
-                    log.error("释放分布式锁出现异常! ", e);
-                }
-            }
-        });
+        // singlepool.execute(() -> {
+        //
+        //     log.info("尝试获取分布式锁...");
+        //     RLock rLock = redissonClient.getLock("multidatasource::singletransaction::lock");
+        //
+        //     // 2. 确保多个服务同时只有一个能获取锁
+        //     if (rLock.tryLock()) {
+        //
+        //         // 这里同时只会有一个线程操作, 判断状态
+        //         if (stringRedisTemplate.opsForValue().get("multidatasource::singletransaction::state") != null) {
+        //             // 直接释放锁
+        //             log.info("60s内已完成, 请稍后再试! ");
+        //             rLock.unlock();
+        //             return;
+        //         }
+        //
+        //         // 锁释放的计时器
+        //         CountDownLatch count = new CountDownLatch(2);
+        //
+        //         // 需要插入的数据
+        //         List<EmployeeDO> employeeDOS = new ArrayList<>();
+        //         // 控制主数据源流程
+        //         Semaphore masterSemaphore = new Semaphore(0);
+        //         // 控制从数据源流程
+        //         Semaphore slaveSemaphore = new Semaphore(1);
+        //         // 整个流程是否结束
+        //         AtomicBoolean isFinished = new AtomicBoolean(false);
+        //         log.info("获取分布式锁成功, 开始执行流程. ");
+        //
+        //         // 从数据源操作
+        //         SINGLE_TRANSACTION_POOL.execute(() -> {
+        //             simpleService.selectFromSlave(employeeDOS, masterSemaphore, slaveSemaphore, isFinished);
+        //             count.countDown();
+        //         });
+        //
+        //         // 主数据源操作
+        //         SINGLE_TRANSACTION_POOL.execute(() -> {
+        //             simpleService.copySlaveToMaster(employeeDOS, masterSemaphore, slaveSemaphore, isFinished);
+        //             count.countDown();
+        //         });
+        //
+        //         try {
+        //             count.await();
+        //             stringRedisTemplate.opsForValue().set("multidatasource::singletransaction::state", "Initializing", 60, TimeUnit.SECONDS);
+        //             rLock.unlock();
+        //             log.info("释放分布式锁完成. ");
+        //         } catch (Exception e) {
+        //             log.error("释放分布式锁出现异常! ", e);
+        //         }
+        //     }
+        // });
 
         return ResultDTOBuild.resultDefaultBuild();
     }

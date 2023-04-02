@@ -1,13 +1,10 @@
 package com.hundsun.demo.springboot.config;
 
 import com.hundsun.demo.commom.core.aop.DoneTimeAspect;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.hundsun.demo.springboot.servlet.SimpleHttpSessionListener;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.sql.DataSource;
 
 /**
  * @projectName: study-demo
@@ -25,4 +22,10 @@ public class BeanConfig {
         return new DoneTimeAspect();
     }
 
+    @Bean
+    public ServletListenerRegistrationBean servletListenerRegistrationBean(SimpleHttpSessionListener simpleHttpSessionListener) {
+        ServletListenerRegistrationBean servletListenerRegistrationBean = new ServletListenerRegistrationBean();
+        servletListenerRegistrationBean.setListener(simpleHttpSessionListener);
+        return servletListenerRegistrationBean;
+    }
 }

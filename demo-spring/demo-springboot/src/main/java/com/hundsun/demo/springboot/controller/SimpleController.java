@@ -49,4 +49,9 @@ public class SimpleController {
     public void testMysqlAutoKey() {
         simpleService.testMysqlAutoKey();
     }
+
+    @GetMapping("/index")
+    public String test(){
+        return "index";
+    }
 }
