@@ -19,7 +19,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 @SpringBootApplication
 @MapperScan(basePackages = {"com.hundsun.demo.springboot.mapper"})
 @Slf4j
-@ServletComponentScan
+// @ServletComponentScan
 public class SpringbootDemoApplication {
 
     public static void main(String[] args) {

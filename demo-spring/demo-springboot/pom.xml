@@ -58,28 +58,24 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.redisson</groupId>-->
-<!--            <artifactId>redisson-spring-boot-starter</artifactId>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.redisson</groupId>-->
+        <!--            <artifactId>redisson-spring-boot-starter</artifactId>-->
+        <!--        </dependency>-->
 
         <!-- jdbc -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.oracle.database.jdbc</groupId>-->
-<!--            <artifactId>ojdbc8</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.oracle.database.nls</groupId>-->
-<!--            <artifactId>orai18n</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.oracle.ojdbc</groupId>-->
-<!--            <artifactId>oraclepki</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.database.nls</groupId>
+            <artifactId>orai18n</artifactId>
+        </dependency>
 
 
         <dependency>
@@ -91,16 +87,26 @@
             <artifactId>pagehelper-spring-boot-starter</artifactId>
         </dependency>
 
-        <!-- 解析JSP -->
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-jasper</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-        </dependency>
+        <!-- 整合 JSP -->
+        <!-- 记得在 idea 设置的启动项里面编辑 working-directory 为 $MODULE_DIR$ -->
+        <!--        <dependency>-->
+        <!--            <groupId>org.apache.tomcat.embed</groupId>-->
+        <!--            <artifactId>tomcat-embed-jasper</artifactId>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>javax.servlet</groupId>-->
+        <!--            <artifactId>jstl</artifactId>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>javax.servlet</groupId>-->
+        <!--            <artifactId>javax.servlet-api</artifactId>-->
+        <!--        </dependency>-->
 
+        <!-- 整合 thymeleaf -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
 
         <!--测试-->
         <dependency>
@@ -111,6 +117,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -131,6 +138,17 @@
                 <finalName>${build.finalName}</finalName>
                 <plugins>
                     <plugin>
+                        <!--
+                        todo
+                        使用 2.2.6.RELEASE 版本 spring-boot-maven-plugin 进行打包的时候我发现 jsp 即使被打进包里也访问不了
+                        使用 1.4.2.RELEASE 版本的也不行
+                        打出来的包启动会报错
+                        Failed to scan [jar:file:/C:/Project/study-demo/demo-spring/demo-springboot/target/demo-springboot.jar!/BOOT-INF/lib/spring-webmvc-5.2.7.RELEASE.jar!/] from classloader hierarchy
+                        Caused by: java.lang.IllegalStateException: Not a file URL
+                        Failed to scan [jar:file:/C:/Project/study-demo/demo-spring/demo-springboot/target/demo-springboot.jar!/BOOT-INF/lib/jstl-1.2.jar!/] from classloader hierarchy
+                        Caused by: java.lang.IllegalStateException: Not a file URL
+                        这两个日志是 WARN 级别的, 不知道是什么原因
+                        -->
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-maven-plugin</artifactId>
                         <configuration>
@@ -167,7 +185,8 @@
                         <includes>
                             <include>**/**</include>
                         </includes>
-                        <targetPath>META-INF/resource</targetPath>
+                        <filtering>false</filtering>
+                        <!--                        <targetPath>META-INF/resource</targetPath>-->
                     </resource>
                 </resources>
             </build>
