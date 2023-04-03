@@ -22,7 +22,18 @@ public class DynamicProgramming {
         // log.info("?");
         // System.out.println(min2(6, new int[]{1, 3, 4}));
         // System.out.println(fib2(8));
-        System.out.println(coinRow2(new int[]{5, 1, 2, 10, 6, 2}));
+        // System.out.println(coinRow2(new int[]{5, 1, 2, 10, 6, 2}));
+        int[][] ints = new int[6][7];
+        ints[1][5] = 1;
+        ints[2][2] = 1;
+        ints[2][4] = 1;
+        ints[3][4] = 1;
+        ints[3][6] = 1;
+        ints[4][3] = 1;
+        ints[4][6] = 1;
+        ints[5][1] = 1;
+        ints[5][5] = 1;
+        System.out.println(RobotCoins(ints));
     }
 
     /**
@@ -158,5 +169,31 @@ public class DynamicProgramming {
             fn[i] += 1;
         }
         return fn[n];
+    }
+
+    public static int RobotCoins(int[][] c) {
+        /*
+        f(i,j) = max{f(i-1,j),f(i,j-1)}+cij
+        f(0,i) = 0, f(j,0) = 0
+        规定从 1,1开始
+        所有 0,j 或者 i,0 的全为 0
+         */
+
+        // 用这个数组记录 f[i][j]的最大硬币数
+        int[][] f = new int[c.length][c[0].length];
+
+        f[1][1] = c[1][1];
+        int n = c.length - 1;
+        int m = c[0].length - 1;
+        for (int i = 2; i <= m; i++) {
+            f[1][i] = f[1][i - 1] + c[1][i];
+        }
+        for (int i = 2; i <= n; i++) {
+            f[i][1] = f[i - 1][1] + c[i][1];
+            for (int j = 2; j <= m; j++) {
+                f[i][j] = Math.max(f[i - 1][j], f[i][j - 1]) + c[i][j];
+            }
+        }
+        return f[n][m];
     }
 }
