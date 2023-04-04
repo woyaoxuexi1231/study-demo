@@ -1,6 +1,8 @@
 package com.hundsun.demo.springboot.controller;
 
 import com.hundsun.demo.commom.core.model.dto.ResultDTO;
+import com.hundsun.demo.springboot.dynamic.DynamicDataSourceType;
+import com.hundsun.demo.springboot.dynamic.DynamicDataSourceTypeManager;
 import com.hundsun.demo.springboot.service.SimpleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,5 +50,11 @@ public class SimpleController {
     @GetMapping("/testMysqlAutoKey")
     public void testMysqlAutoKey() {
         simpleService.testMysqlAutoKey();
+    }
+
+    @GetMapping("/transactionInvalidation")
+    public void transactionInvalidation(){
+        DynamicDataSourceTypeManager.set(DynamicDataSourceType.SECOND);
+        simpleService.transactionInvalidation();
     }
 }

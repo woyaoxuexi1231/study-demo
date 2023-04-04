@@ -46,4 +46,9 @@ public interface SimpleService {
      * 测试主从复制的复制模式
      */
     void testMysqlAutoKey();
+
+    /**
+     * 测试事务失效
+     */
+    void transactionInvalidation();
 }

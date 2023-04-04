@@ -1,5 +1,7 @@
 package com.hundsun.demo.springboot.dynamic;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @projectName: study-demo
  * @package: com.hundsun.demo.spring.jdbc
@@ -8,7 +10,7 @@ package com.hundsun.demo.springboot.dynamic;
  * @author: h1123
  * @createDate: 2023/2/18 16:07
  */
-
+@Slf4j
 public class DynamicDataSourceTypeManager {
 
     private static final ThreadLocal<DynamicDataSourceType> DATA_SOURCE_TYPE_THREAD_LOCAL = new ThreadLocal<DynamicDataSourceType>() {
@@ -27,6 +29,7 @@ public class DynamicDataSourceTypeManager {
     }
 
     public static void set(DynamicDataSourceType dynamicDataSourceType) {
+        log.info("切换到数据源为 {}", dynamicDataSourceType);
         DATA_SOURCE_TYPE_THREAD_LOCAL.set(dynamicDataSourceType);
     }
 

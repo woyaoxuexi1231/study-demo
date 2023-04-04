@@ -22,6 +22,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
@@ -52,7 +53,7 @@ public class SimpleServiceImpl implements SimpleService {
     EmployeeMapper employeeMapper;
 
     @Autowired
-    SimpleService simpleService;
+    SimpleServiceImpl simpleService;
 
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -401,5 +402,36 @@ public class SimpleServiceImpl implements SimpleService {
     public static class AutoKeyTest {
         private String a;
         private String b;
+    }
+
+    @Override
+    @Transactional
+    public void transactionInvalidation() {
+        /*
+        在事务开启之前, 切换了一次数据源, 这个是没有问题的
+        在以下情况下会导致事务失效
+        1. 切换数据源在事务开启之后, 这时已经拿到连接, 数据源的 ThreadLocal已经失效
+        2. 没有使用 REQUIRES_NEW 传播级别来开启新的事务, 这会导致不会重新获取新连接, 切换数据源是不生效的
+        3. 没有使用 Bean 的方法, 而直接使用内部方法来调用, 这会直接导致事务失效(即没有通过代理对象来开启事务)
+         */
+        EmployeeDO employeeDO = new EmployeeDO();
+        employeeDO.setEmployeeNumber(1002);
+        System.out.println(employeeMapper.selectOne(employeeDO));
+        DynamicDataSourceTypeManager.set(DynamicDataSourceType.MASTER);
+        simpleService.getOneEmployeeDO();
+        /*
+        这个地方切换与否其实不重要, 因为上一个查询语句结束之后, 在这里 spring 会恢复挂起的事务, 拿到之前的连接来执行查询语句, 即使不切换, 也不影响查询
+        但是如果后续还有其他数据源的查询需要自行切换
+         */
+        DynamicDataSourceTypeManager.set(DynamicDataSourceType.SECOND);
+        employeeDO.setEmployeeNumber(1002);
+        System.out.println(employeeMapper.selectOne(employeeDO));
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void getOneEmployeeDO(){
+        EmployeeDO employeeDO = new EmployeeDO();
+        employeeDO.setEmployeeNumber(1002);
+        System.out.println(employeeMapper.selectOne(employeeDO));
     }
 }
