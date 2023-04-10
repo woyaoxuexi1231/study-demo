@@ -9,8 +9,23 @@
 <html>
 <head>
     <title>Title</title>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/jquery-3.6.4.min.js"></script>
 </head>
 <body>
-<a href="test.do">点我</a>
+<a href="mvc?name=hello,world">点我</a>
+<p>${data}</p>
+<a href="javascript:void(0)" id="returnJson" onclick="getSimpleJson()">点我</a>
+<script type="text/javascript">
+    function getSimpleJson() {
+        var url = "/simpleJS";
+        var args = {};
+        $.post(url, args, function (data) {
+            console.log(data);
+        })
+    }
+</script>
+<form>
+
+</form>
 </body>
 </html>

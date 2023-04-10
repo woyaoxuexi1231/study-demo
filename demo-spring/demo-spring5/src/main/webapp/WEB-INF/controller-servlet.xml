@@ -1,19 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <bean id="handlerMapping"
-          class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>
+    <!-- HandlerMapping, DispatcherServlet 用这个处理器映射来确定请求将给到哪一个 Controller 来处理 -->
+    <!-- Spring提供了多种映射器, 在没有配置的情况下, 默认会选择 BeanNameUrlHandlerMapping -->
+    <!--    <bean id="handlerMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>-->
 
+    <!-- 配置视图解析器, 将控制器方法返回的逻辑视图解析为物理视图, DispatcherServlet 用这个来确定将控制器返回的逻辑视图名称转换成渲染结果的实际视图 -->
     <bean id="viewResolver"
           class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/WEB-INF/jsp/"/>
-        <property name="suffix" value=".jsp"/>
+        <!--        <property name="prefix" value="/WEB-INF/jsp/"/>-->
+        <!--        <property name="suffix" value=".jsp"/>-->
     </bean>
 
-    <bean name="/test.do" class="com.hundsun.demo.spring.controller.SimpleController">
-        <property name="viewName" value="SimpleMVC"/>
-        <property name="yiibaidbService" ref="yiibaidbService"/>
-    </bean>
+    <!-- 配置 controller, 映射为 /simple -->
+    <!--    <bean name="/simple" class="com.hundsun.demo.spring.controller.SimpleController">-->
+    <!--        <property name="viewName" value="SimpleMVC"/>-->
+    <!--        <property name="yiibaidbService" ref="yiibaidbService"/>-->
+    <!--    </bean>-->
+
+    <!-- 基于注解的形式的控制器 -->
+    <!-- 配置自动扫描包 -->
+    <context:component-scan base-package="com.hundsun.demo.spring"/>
+    <!--    <mvc:resources mapping="/script/**" location="/script/"/>-->
+    <!--<mvc:default-servlet-handler/>-->
 </beans>

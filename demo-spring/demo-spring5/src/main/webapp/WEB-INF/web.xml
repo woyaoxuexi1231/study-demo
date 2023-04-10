@@ -6,48 +6,51 @@
     <!--Tomcat 控制台如果乱码可以在 Tomcat的启动参数中设置 -Dfile.encoding=utf-8, 保持编码统一以解决乱码问题-->
 
     <!--
-    这里的web.xml供Servlet容器访问, Servlet容器在加载和启动的时候JavaWeb应用的时候会读取web.xml配置文件
+    这里的 web.xml 供 Servlet 容器访问, Servlet 容器在加载和启动的时候 JavaWeb 应用的时候会读取 web.xml 配置文件
     主要配置信息:
-    1.Servlet的定义
-    2.Servlet的初始化参数
-    3.Servlet以及JSP的映射
-    4.安全域配置参数
-    5.welcome文件清单
-    6.资源引用
-    7.环境变量的定义
+    1. Servlet 的定义
+    2. Servlet 的初始化参数
+    3. Servlet以及JSP的映射
+    4. 安全域配置参数
+    5. welcome 文件清单
+    6. 资源引用
+    7. 环境变量的定义
     -->
 
-    <!--可以考虑使用这种配置方式来配置多个配置文件-->
+    <!-- 可以考虑使用这种配置方式来配置多个配置文件 -->
     <!--    <context-param>-->
     <!--        <param-name>contextConfigLocation</param-name>-->
     <!--        <param-value>**.xml,**.xml</param-value>-->
     <!--    </context-param>-->
 
     <!--
-    它将为整个Web应用程序加载顶层的WebApplicationContext
-    加载的WebApplicationContext的默认配置文件路径为/WEB-INF/applicationContext.xml
-    后续可以使用org.springframework.web.context.support.WebApplicationContextUtils来获取我们绑定的WebApplicationContext
+    它将为整个 Web 应用程序加载顶层的 WebApplicationContext
+    加载的 WebApplicationContext 的默认配置文件路径为 /WEB-INF/applicationContext.xml
+    后续可以使用 org.springframework.web.context.support.WebApplicationContextUtils 来获取我们绑定的 WebApplicationContext
     WebApplicationContextUtils.getWebApplicationContext(getServletContext());
     -->
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
 
-    <!--为Servlet类定义名字-->
+    <!-- 为 Servlet 类定义名字 -->
     <servlet>
         <servlet-name>controller</servlet-name>
+        <!-- 配置 Spring MVC 的前端控制器 DispatcherServlet -->
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <!-- 初始化参数, 配置 Spring MVC 配置文件的位置和名称 -->
         <init-param>
             <param-name>contextConfigLocation</param-name>
             <param-value>/WEB-INF/controller-servlet.xml</param-value>
         </init-param>
-        <load-on-startup>2</load-on-startup>
+        <load-on-startup>1</load-on-startup>
     </servlet>
 
-    <!--为Servlet映射一个URL-->
+    <!-- 为 Servlet 映射一个 URL -->
     <servlet-mapping>
         <servlet-name>controller</servlet-name>
-        <url-pattern>*.do</url-pattern>
+        <!--        <url-pattern>*.do</url-pattern>-->
+        <url-pattern>/</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>
