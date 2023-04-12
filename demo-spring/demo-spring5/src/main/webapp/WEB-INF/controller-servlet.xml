@@ -27,10 +27,23 @@
     <!-- 基于注解的形式的控制器 -->
     <!-- 配置自动扫描包 -->
     <context:component-scan base-package="com.hundsun.demo.spring"/>
-    <!-- 该标签会注册 DefaultAnnotationHandlerMapping 与 AnnotationMethodHandlerAdapter 两个 Bean -->
-    <!-- 通过这两个 Bean 来完成对 @Controller 和 @RequestMapping 等注解的支持 -->
-    <!-- 其实不加, 对与 @Controller 和 @RequestMapping 没有影响 -->
+    <!-- 1. 该标签会注册 DefaultAnnotationHandlerMapping 与 AnnotationMethodHandlerAdapter 两个 Bean -->
+    <!--    通过这两个 Bean 来完成对 @Controller 和 @RequestMapping 等注解的支持 -->
+    <!-- *2. Spring MVC 类型转换, 数据格式化和数据校验 -->
+    <!--  -->
     <mvc:annotation-driven/>
     <!--    <mvc:resources mapping="/script/**" location="/script/"/>-->
+    <!-- 该元素将在 Spring MVC 上下文定义一个 DefaultServletHttpRequestHandler -->
+    <!-- 这个 handler 会对进入 DispatcherServlet 的请求进行筛选, 如果发现是没有经过映射的请求, 会把这个请求交给 Web 服务器默认的 Servlet 处理 -->
     <mvc:default-servlet-handler/>
+    <!-- 配置拦截器 -->
+    <mvc:interceptors>
+        <bean class="com.hundsun.demo.spring.mvc.filter.SimpleFilter"/>
+        <!-- 定义在  <mvc:interceptor> 内部的拦截器, 表示对匹配路径请求才进行拦截, 顺序执行-->
+        <!--        <mvc:interceptor>-->
+        <!--            <mvc:mapping path="/**"/>-->
+        <!--            <mvc:exclude-mapping path=""/>-->
+        <!--            <bean />-->
+        <!--        </mvc:interceptor>-->
+    </mvc:interceptors>
 </beans>
