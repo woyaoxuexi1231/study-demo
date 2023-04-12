@@ -27,6 +27,10 @@
     <!-- 基于注解的形式的控制器 -->
     <!-- 配置自动扫描包 -->
     <context:component-scan base-package="com.hundsun.demo.spring"/>
+    <!-- 该标签会注册 DefaultAnnotationHandlerMapping 与 AnnotationMethodHandlerAdapter 两个 Bean -->
+    <!-- 通过这两个 Bean 来完成对 @Controller 和 @RequestMapping 等注解的支持 -->
+    <!-- 其实不加, 对与 @Controller 和 @RequestMapping 没有影响 -->
+    <mvc:annotation-driven/>
     <!--    <mvc:resources mapping="/script/**" location="/script/"/>-->
-    <!--<mvc:default-servlet-handler/>-->
+    <mvc:default-servlet-handler/>
 </beans>

@@ -1,7 +1,9 @@
-package com.hundsun.demo.spring.controller;
+package com.hundsun.demo.spring.mvc.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
@@ -27,10 +29,11 @@ public class ComponentController {
         return mv;
     }
 
-    @RequestMapping("/simpleJS")
-    public Map<String, String> simpleJS() {
+    @RequestMapping(value = "/simpleJS")
+    @ResponseBody
+    public String simpleJS() {
         Map<String, String> map = new HashMap<>();
         map.put("hello", ", world");
-        return map;
+        return JSONObject.toJSONString(map);
     }
 }
