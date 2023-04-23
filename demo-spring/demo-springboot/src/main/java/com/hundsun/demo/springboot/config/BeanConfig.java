@@ -3,6 +3,7 @@ package com.hundsun.demo.springboot.config;
 import com.hundsun.demo.commom.core.aop.DoneTimeAspect;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * @projectName: study-demo
@@ -26,4 +27,9 @@ public class BeanConfig {
     //     servletListenerRegistrationBean.setListener(simpleHttpSessionListener);
     //     return servletListenerRegistrationBean;
     // }
+
+    @Bean
+    public RestTemplate restTemplate(){
+        return new RestTemplate();
+    }
 }
