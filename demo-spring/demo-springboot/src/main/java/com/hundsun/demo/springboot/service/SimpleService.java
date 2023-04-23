@@ -51,4 +51,6 @@ public interface SimpleService {
      * 测试事务失效
      */
     void transactionInvalidation();
+
+    void pageHelper();
 }

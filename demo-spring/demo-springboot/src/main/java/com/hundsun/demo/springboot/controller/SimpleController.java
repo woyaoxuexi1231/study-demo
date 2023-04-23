@@ -57,4 +57,11 @@ public class SimpleController {
         DynamicDataSourceTypeManager.set(DynamicDataSourceType.SECOND);
         simpleService.transactionInvalidation();
     }
+
+    @GetMapping("/pageHelper")
+    public void pageHelper(){
+        simpleService.pageHelper();
+        DynamicDataSourceTypeManager.set(DynamicDataSourceType.SECOND);
+        simpleService.pageHelper();
+    }
 }

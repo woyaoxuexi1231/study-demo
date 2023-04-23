@@ -1,6 +1,5 @@
 package com.hundsun.demo.springboot.service.serviceimpl;
 
-import cn.hutool.core.thread.ThreadFactoryBuilder;
 import com.github.pagehelper.PageHelper;
 import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
@@ -30,10 +29,7 @@ import javax.annotation.Resource;
 import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -66,26 +62,6 @@ public class SimpleServiceImpl implements SimpleService {
 
     // @Autowired
     // RedissonClient redissonClient;
-
-    ThreadPoolExecutor SINGLE_TRANSACTION_POOL = new ThreadPoolExecutor(
-            10,
-            10,
-            60,
-            TimeUnit.SECONDS,
-            new ArrayBlockingQueue<>(50),
-            new ThreadFactoryBuilder().setNamePrefix("SINGLE-TRANSACTION-POOL-").build(),
-            new ThreadPoolExecutor.CallerRunsPolicy()
-    );
-
-    ThreadPoolExecutor singlepool = new ThreadPoolExecutor(
-            1,
-            1,
-            60,
-            TimeUnit.SECONDS,
-            new ArrayBlockingQueue<>(50),
-            new ThreadFactoryBuilder().setNamePrefix("singlepool-").build(),
-            new ThreadPoolExecutor.CallerRunsPolicy()
-    );
 
     @Override
     public ResultDTO<?> multiDataSourceSingleTransaction() {
@@ -429,9 +405,20 @@ public class SimpleServiceImpl implements SimpleService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void getOneEmployeeDO(){
+    public void getOneEmployeeDO() {
         EmployeeDO employeeDO = new EmployeeDO();
         employeeDO.setEmployeeNumber(1002);
         System.out.println(employeeMapper.selectOne(employeeDO));
+    }
+
+    @Override
+    public void pageHelper() {
+        /*
+        pagehelper.auto-runtime-dialect=true 每次查询通过连接信息获取对应的数据源信息, 这个连接用完后关闭
+        开启后, 每一次分页都会去获取连接, 根据这个连接的具体信息来开启不同的分页上下文
+        PageAutoDialect.getDialect()
+         */
+        PageHelper.startPage(1, 10);
+        employeeMapper.selectAll();
     }
 }
