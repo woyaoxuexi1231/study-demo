@@ -16,6 +16,7 @@
     <modules>
         <module>demo-spring5</module>
         <module>demo-springboot</module>
+        <module>demo-springcloud</module>
     </modules>
 
     <properties>
