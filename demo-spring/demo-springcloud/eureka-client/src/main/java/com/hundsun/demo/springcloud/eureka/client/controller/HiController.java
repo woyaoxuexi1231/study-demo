@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * @projectName: study-demo
  * @package: com.hundsun.demo.springcloud.eureka.client.controller
@@ -20,7 +23,7 @@ public class HiController {
     private String port;
 
     @GetMapping("/hi")
-    public String hi() {
-        return "here is " + port;
+    public String hi(HttpServletRequest req, HttpServletResponse rsp) {
+        return "here is " + port + " and your ip is " + req.getRemoteAddr();
     }
 }
