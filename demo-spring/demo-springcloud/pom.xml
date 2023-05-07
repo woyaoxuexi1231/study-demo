@@ -18,6 +18,7 @@
         <module>eureka-feign-client</module>
         <module>eureka-monitor-client</module>
         <module>eureka-zuul-client</module>
+        <module>gateway</module>
     </modules>
 
     <properties>
@@ -59,11 +60,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
     </dependencies>
 
 </project>
