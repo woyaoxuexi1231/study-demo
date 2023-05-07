@@ -17,6 +17,7 @@
         <module>eureka-ribbon-client</module>
         <module>eureka-feign-client</module>
         <module>eureka-monitor-client</module>
+        <module>eureka-zuul-client</module>
     </modules>
 
     <properties>
