@@ -3,6 +3,7 @@ package com.hundsun.demo.springcloud.eureka.ribbon.client;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 
 /**
  * @projectName: study-demo
@@ -13,6 +14,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
  * @createDate: 2023/5/5 20:44
  */
 
+@EnableHystrix
 @EnableEurekaClient
 @SpringBootApplication
 public class EurekaRibbonClientApplication {
