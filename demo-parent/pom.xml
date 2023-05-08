@@ -84,6 +84,8 @@
 
         <apache.curator.x.discovery>2.13.0</apache.curator.x.discovery>
 
+        <thymeleaf-extras-springsecurity4.version>2.1.3.RELEASE</thymeleaf-extras-springsecurity4.version>
+
         <!--插件版本-->
         <spring.boot.maven.plugin.version>2.2.6.RELEASE</spring.boot.maven.plugin.version>
         <maven.jar.plugin.version>3.2.0</maven.jar.plugin.version>
@@ -304,6 +306,13 @@
                 <groupId>com.oracle.database.nls</groupId>
                 <artifactId>orai18n</artifactId>
                 <version>${orai18n.version}</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>org.thymeleaf.extras</groupId>
+                <artifactId>thymeleaf-extras-springsecurity4</artifactId>
+                <version>${thymeleaf-extras-springsecurity4.version}</version>
             </dependency>
 
             <!--google提供的工具包-->
