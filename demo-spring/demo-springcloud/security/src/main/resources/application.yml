@@ -1,0 +1,9 @@
+server:
+  port: 9170
+spring:
+  application:
+    name: security
+  thymeleaf:
+    mode: HTML5
+    encoding: UTF-8
+    cache: false
