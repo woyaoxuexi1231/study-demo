@@ -1,0 +1,51 @@
+#spring:
+#  application:
+#    name: config-client
+#  cloud:
+#    config:
+#      uri: http://localhost:9160
+#      fail-fast: true
+#
+
+
+spring:
+  application:
+    name: config-client
+  # cloud config
+  cloud:
+    config:
+      fail-fast: true
+      discovery:
+        enabled: true
+        service-id: config-server
+    bus:
+      trace:
+        enabled: true
+      enabled: true
+  # active other config
+  profiles:
+    active: dev
+  # rabbit mq
+  rabbitmq:
+    host: 192.168.175.128
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+    virtual-host: /
+
+# eureka config
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9100/eureka/
+
+# server
+server:
+  port: 9161
+management:
+  server:
+    port: 9161
+  endpoints:
+    web:
+      exposure:
+        include: "*"

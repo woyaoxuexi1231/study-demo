@@ -1,8 +1,7 @@
-package com.hundsun.demo.springcloud.config;
+package com.hundsun.demo.springcloud.config.client;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.config.server.EnableConfigServer;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 /**
@@ -15,9 +14,8 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
  */
 
 @EnableEurekaClient
-@EnableConfigServer
 @SpringBootApplication
-public class ConfigServerApplication {
+public class ConfigClientApplication {
 
     public static void main(String[] args) {
 
@@ -25,6 +23,6 @@ public class ConfigServerApplication {
         DiscoveryClient_EUREKA-CLIENT/LAPTOP-HGITO649:eureka-client:9101 - registration status: 204
         注册成功
          */
-        SpringApplication.run(ConfigServerApplication.class, args);
+        SpringApplication.run(ConfigClientApplication.class, args);
     }
 }
