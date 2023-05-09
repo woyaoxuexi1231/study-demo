@@ -7,3 +7,12 @@ spring:
     mode: HTML5
     encoding: UTF-8
     cache: false
+  datasource:
+    url: jdbc:mysql://192.168.175.128:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+
+mybatis:
+  mapper-locations: "classpath:mapper/*.xml"
+  configuration:
+    log-impl: "org.apache.ibatis.logging.stdout.StdOutImpl"
