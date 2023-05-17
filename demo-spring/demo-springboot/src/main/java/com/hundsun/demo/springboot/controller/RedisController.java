@@ -5,6 +5,7 @@ import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -37,6 +38,9 @@ public class RedisController {
     @Autowired
     RestTemplate restTemplate;
 
+    @Autowired
+    RedisTemplate redisTemplate;
+
     @GetMapping("/test")
     public void test() {
         single.execute(() -> {
@@ -44,6 +48,9 @@ public class RedisController {
             if (rLock.tryLock()) {
                 try {
                     log.info("lock success! ");
+                    if (rLock.tryLock()) {
+                        log.info("lock again");
+                    }
                     Thread.sleep(2 * 1000);
                 } catch (Exception e) {
                     log.error("", e);
@@ -66,4 +73,9 @@ public class RedisController {
         }
     }
 
+    @GetMapping("/circle")
+    public String circle() {
+        log.info("circle");
+        return restTemplate.getForObject("http://localhost:9094/circle", String.class);
+    }
 }
