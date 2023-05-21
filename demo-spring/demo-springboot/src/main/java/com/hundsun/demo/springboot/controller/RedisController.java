@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
@@ -40,6 +43,9 @@ public class RedisController {
 
     @Autowired
     RedisTemplate redisTemplate;
+
+    @Autowired
+    RedisTemplate<String, String> StringRedisTemplate;
 
     @GetMapping("/test")
     public void test() {
@@ -77,5 +83,16 @@ public class RedisController {
     public String circle() {
         log.info("circle");
         return restTemplate.getForObject("http://localhost:9094/circle", String.class);
+    }
+
+    @GetMapping("redisTemplate")
+    public void redisTemplate() {
+        // redisTemplate.opsForValue().set("hello", "redis");
+        // Boolean map = redisTemplate.opsForHash().putIfAbsent("map", "1", UUID.randomUUID().toString());
+        // Boolean map = StringRedisTemplate.opsForHash().putIfAbsent("map", "1", UUID.randomUUID().toString());
+        // System.out.println(map);
+        StringRedisTemplate.opsForValue().set("hello","redis");
+
+
     }
 }
