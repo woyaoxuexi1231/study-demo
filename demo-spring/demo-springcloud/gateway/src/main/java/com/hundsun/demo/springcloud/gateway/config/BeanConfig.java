@@ -29,12 +29,12 @@ public class BeanConfig {
     public RouteLocator customerRouteLocator(RouteLocatorBuilder builder) {
 
         return builder.routes()
-                .route(r -> r.path("/get")
-                        .filters(f -> f.filter(new RequestTimeFilter())
-                                .addResponseHeader("X-Response-Default-Foo", "Default-Bar"))
-                        .uri("http://httpbin.org:80")
-                        .order(0)
-                        .id("customer_filter_router")
+                .route( // 创建新路由
+                        r -> r.path("/get") // 检查请求路径是否与给定模式匹配的谓词
+                                .filters(f -> f.filter(new RequestTimeFilter()).addResponseHeader("X-Response-Default-Foo", "Default-Bar")) // 向路由定义添加筛选器。
+                                .uri("http://httpbin.org:80") // 设置路由的 URI。
+                                .order(0)
+                                .id("customer_filter_router")
                 )
                 .build();
 
@@ -46,7 +46,7 @@ public class BeanConfig {
 //    }
 
 
-    @Bean
+    // @Bean
     public RequestTimeGatewayFilterFactory elapsedGatewayFilterFactory() {
         return new RequestTimeGatewayFilterFactory();
     }

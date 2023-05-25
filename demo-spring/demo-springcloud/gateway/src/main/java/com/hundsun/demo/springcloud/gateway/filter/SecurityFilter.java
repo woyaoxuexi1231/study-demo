@@ -3,23 +3,36 @@ package com.hundsun.demo.springcloud.gateway.filter;
 import com.alibaba.fastjson.JSON;
 import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
 import com.hundsun.demo.springcloud.gateway.config.IgnoreWhiteProperties;
+import io.netty.buffer.ByteBufAllocator;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
+import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.core.io.buffer.NettyDataBufferFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpCookie;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.util.UriComponentsBuilder;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.net.URI;
+import java.nio.CharBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
 /**
@@ -43,6 +56,13 @@ public class SecurityFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+
+        ServerHttpRequest request = exchange.getRequest();
+        URI uri = request.getURI();
+        String url = uri.getPath();
+        String host = uri.getHost();
+
+
         // 登录请求不验证 token
         if (ignoreWhiteProperties.getLoginUrl().equals(exchange.getRequest().getPath().value())) {
             return chain.filter(exchange);
@@ -55,11 +75,38 @@ public class SecurityFilter implements GlobalFilter, Ordered {
         } else {
             HttpCookie tokenCookie = exchange.getRequest().getCookies().getFirst("token");
             String token = tokenCookie == null ? " " : tokenCookie.getValue();
-            String userId = stringRedisTemplate.opsForValue().get("weibo::security::token::" + token);
+            // String userId = stringRedisTemplate.opsForValue().get("weibo::security::token::" + token);
+            String userId = "1";
             if (userId != null) {
                 // 续约 token
                 stringRedisTemplate.opsForValue().set("weibo::security::token::" + token, userId, 10 * 60 * 1000, TimeUnit.MILLISECONDS);
+                if (exchange.getRequest().getMethod() == HttpMethod.GET) {
+                    // get请求 处理参数
+                    // 将现在的request，添加当前身份信息
+                    ServerHttpRequest.Builder builder = request.mutate();
+                    return addParameterForGetMethod(exchange, chain, uri, builder);
+                } else if (exchange.getRequest().getMethod() == HttpMethod.POST) {
+                    Flux<DataBuffer> body = request.getBody();
+                    AtomicReference<String> bodyRef = new AtomicReference<>();
+                    body.subscribe(dataBuffer -> {
+                        CharBuffer charBuffer = StandardCharsets.UTF_8.decode(dataBuffer.asByteBuffer());
+                        DataBufferUtils.release(dataBuffer);
+                        bodyRef.set(charBuffer.toString());
+                    });//读取request body到缓存
+                    String bodyStr = bodyRef.get();//获取request body
+                    System.out.println(bodyStr);//这里是我们需要做的操作
+                    DataBuffer bodyDataBuffer = stringBuffer(bodyStr);
+                    Flux<DataBuffer> bodyFlux = Flux.just(bodyDataBuffer);
 
+                    request = new ServerHttpRequestDecorator(request) {
+                        @Override
+                        public Flux<DataBuffer> getBody() {
+                            return bodyFlux;
+                        }
+                    };
+                    //封装我们的request
+                    return chain.filter(exchange.mutate().request(request).build());
+                }
                 // todo 这里想在这里塞入参数, 卡住了
                 return chain.filter(exchange);
             } else {
@@ -92,7 +139,7 @@ public class SecurityFilter implements GlobalFilter, Ordered {
             }
             String[] regexPieces = whiteUrl.split("/");
             StringBuilder regex = new StringBuilder();
-            if (regexPieces.length == 1 && StringUtils.isBlank(regexPieces[0])) {
+            if (regexPieces.length == 1 && org.apache.commons.lang3.StringUtils.isBlank(regexPieces[0])) {
                 regex.append(".*");
             } else {
                 for (String regexPiece : regexPieces) {
@@ -119,4 +166,48 @@ public class SecurityFilter implements GlobalFilter, Ordered {
 
         System.out.println(Pattern.matches("/server/.*/123", "/server/getSearchResult/123"));
     }
+
+    /**
+     * get请求，添加参数
+     *
+     * @param exchange
+     * @param chain
+     * @param uri
+     * @param builder
+     * @return
+     */
+    private Mono<Void> addParameterForGetMethod(ServerWebExchange exchange, GatewayFilterChain chain, URI uri, ServerHttpRequest.Builder builder) {
+        StringBuilder query = new StringBuilder();
+
+        String originalQuery = uri.getQuery();
+        if (StringUtils.hasText(originalQuery)) {
+            query.append(originalQuery);
+            if (originalQuery.charAt(originalQuery.length() - 1) != '&') {
+                query.append('&');
+            }
+        }
+
+        query.append("req2").append("=").append(2);
+        ;
+
+        try {
+            URI newUri = UriComponentsBuilder.fromUri(uri).replaceQuery(query.toString()).build().encode().toUri();
+            ServerHttpRequest request = exchange.getRequest().mutate().uri(newUri).build();
+            return chain.filter(exchange.mutate().request(request).build());
+        } catch (Exception e) {
+            log.error("Invalid URI query: " + query.toString(), e);
+            // 当前过滤器filter执行结束
+            return chain.filter(exchange.mutate().request(builder.build()).build());
+        }
+    }
+
+    protected DataBuffer stringBuffer(String value) {
+        byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
+
+        NettyDataBufferFactory nettyDataBufferFactory = new NettyDataBufferFactory(ByteBufAllocator.DEFAULT);
+        DataBuffer buffer = nettyDataBufferFactory.allocateBuffer(bytes.length);
+        buffer.write(bytes);
+        return buffer;
+    }
+
 }

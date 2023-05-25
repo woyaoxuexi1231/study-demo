@@ -6,6 +6,8 @@ import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,8 +42,8 @@ public class HiController {
      * @return
      */
     @GetMapping("/hi2")
-    public ResultDTO<?> hi2(@RequestParam(required = false, name = "req") String req) {
-        return ResultDTOBuild.resultSuccessBuild("OK, im receive the msg : " + req);
+    public ResultDTO<?> hi2(@RequestParam(required = false, name = "req") String req, @RequestParam(required = false, name = "req2") String req2) {
+        return ResultDTOBuild.resultSuccessBuild("OK, im receive the msg : " + req + " + " + req2);
     }
 
     /**
@@ -65,6 +67,11 @@ public class HiController {
      */
     @GetMapping("/hi4")
     public ResultDTO<?> hi4(SimpleReqDTO req) {
+        return ResultDTOBuild.resultSuccessBuild("OK, im receive the msg : " + req.toString());
+    }
+
+    @PostMapping("/hi5")
+    public ResultDTO<?> hi5(@RequestBody(required = false) SimpleReqDTO req) {
         return ResultDTOBuild.resultSuccessBuild("OK, im receive the msg : " + req.toString());
     }
 }
