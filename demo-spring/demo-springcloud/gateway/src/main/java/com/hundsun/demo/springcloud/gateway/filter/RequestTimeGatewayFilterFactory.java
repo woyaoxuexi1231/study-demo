@@ -1,9 +1,13 @@
 package com.hundsun.demo.springcloud.gateway.filter;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
@@ -18,6 +22,7 @@ import java.util.List;
  * @createDate: 2023/5/25 0:36
  */
 
+@Component
 public class RequestTimeGatewayFilterFactory extends AbstractGatewayFilterFactory<RequestTimeGatewayFilterFactory.Config> {
 
 
@@ -61,6 +66,9 @@ public class RequestTimeGatewayFilterFactory extends AbstractGatewayFilterFactor
 
 
 
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class Config {
 
         private boolean withParams;

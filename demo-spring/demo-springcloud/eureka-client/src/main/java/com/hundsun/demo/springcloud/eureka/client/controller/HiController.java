@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * @projectName: study-demo
@@ -71,7 +73,13 @@ public class HiController {
     }
 
     @PostMapping("/hi5")
-    public ResultDTO<?> hi5(@RequestBody(required = false) SimpleReqDTO req) {
-        return ResultDTOBuild.resultSuccessBuild("OK, im receive the msg : " + req.toString());
+    public ResultDTO<?> hi5(String req) {
+        return ResultDTOBuild.resultSuccessBuild("OK, im receive the msg : " + req);
+    }
+
+    @PostMapping("/change")
+    public Map<String, Object> change(@RequestBody Map<String, Object> map) {
+        map.put("response-tag", new Date());
+        return map;
     }
 }

@@ -8,10 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.cloud.gateway.filter.factory.rewrite.ModifyRequestBodyGatewayFilterFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
-import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.core.io.buffer.NettyDataBufferFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpCookie;
@@ -19,20 +19,16 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.util.UriComponentsBuilder;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
 /**
@@ -45,7 +41,7 @@ import java.util.regex.Pattern;
  */
 
 @Slf4j
-@Component
+// @Component
 public class SecurityFilter implements GlobalFilter, Ordered {
 
     @Autowired
@@ -53,6 +49,12 @@ public class SecurityFilter implements GlobalFilter, Ordered {
 
     @Autowired
     IgnoreWhiteProperties ignoreWhiteProperties;
+
+    @Autowired
+    ModifyRequestBodyGatewayFilterFactory modifyRequestBodyGatewayFilterFactory;
+
+    @Autowired
+    LogReqGatewayFilterFactory logReqGatewayFilterFactory;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -86,28 +88,14 @@ public class SecurityFilter implements GlobalFilter, Ordered {
                     ServerHttpRequest.Builder builder = request.mutate();
                     return addParameterForGetMethod(exchange, chain, uri, builder);
                 } else if (exchange.getRequest().getMethod() == HttpMethod.POST) {
-                    Flux<DataBuffer> body = request.getBody();
-                    AtomicReference<String> bodyRef = new AtomicReference<>();
-                    body.subscribe(dataBuffer -> {
-                        CharBuffer charBuffer = StandardCharsets.UTF_8.decode(dataBuffer.asByteBuffer());
-                        DataBufferUtils.release(dataBuffer);
-                        bodyRef.set(charBuffer.toString());
-                    });//读取request body到缓存
-                    String bodyStr = bodyRef.get();//获取request body
-                    System.out.println(bodyStr);//这里是我们需要做的操作
-                    DataBuffer bodyDataBuffer = stringBuffer(bodyStr);
-                    Flux<DataBuffer> bodyFlux = Flux.just(bodyDataBuffer);
-
-                    request = new ServerHttpRequestDecorator(request) {
-                        @Override
-                        public Flux<DataBuffer> getBody() {
-                            return bodyFlux;
-                        }
-                    };
                     //封装我们的request
-                    return chain.filter(exchange.mutate().request(request).build());
+                    return chain.filter(exchange);
                 }
                 // todo 这里想在这里塞入参数, 卡住了
+                /*
+                这篇文章解决了这个问题
+                https://programming.vip/docs/the-spring-cloud-gateway-modifies-the-content-of-the-request-and-response-body.html
+                */
                 return chain.filter(exchange);
             } else {
                 // 白名单
