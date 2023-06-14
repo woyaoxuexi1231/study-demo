@@ -78,12 +78,9 @@
         <mybatis.spring.verison>2.0.5</mybatis.spring.verison>
         <pagehelper.spring.boot.starter.version>1.3.0</pagehelper.spring.boot.starter.version>
         <mybatis.generator.core.version>1.3.2</mybatis.generator.core.version>
-
         <javax.servlet.jsp.version>2.2.1</javax.servlet.jsp.version>
         <apache.dubbo.springboot.starter.version>2.7.8</apache.dubbo.springboot.starter.version>
-
         <apache.curator.x.discovery>2.13.0</apache.curator.x.discovery>
-
         <thymeleaf-extras-springsecurity4.version>2.1.3.RELEASE</thymeleaf-extras-springsecurity4.version>
 
         <!--插件版本-->
@@ -102,7 +99,9 @@
 
         <dependencies>
 
-            <!--把springboot的依赖管理过来，版本可控了-->
+            <!--......................................................................................................-->
+            <!--............................................依赖版本控制.................................................-->
+            <!--.............................................................. .......................................-->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -157,23 +156,15 @@
                 <version>${spring.boot.starter.version}</version>
             </dependency>
 
+            <!--......................................................................................................-->
+            <!--...............................................框架....................................................-->
+            <!--......................................................................................................-->
             <!--dubbo-->
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-spring-boot-starter</artifactId>
                 <version>${apache.dubbo.springboot.starter.version}</version>
             </dependency>
-
-            <!--Fastjson 是一个 Java 库，可以将 Java 对象转换为 JSON 格式，当然它也可以将 JSON 字符串转换为 Java 对象。-->
-            <!--Fastjson 可以操作任何 Java 对象，即使是一些预先存在的没有源码的对象。-->
-            <!--Fastjson 源码地址：https://github.com/alibaba/fastjson-->
-            <!--Fastjson 中文 Wiki：https://github.com/alibaba/fastjson/wiki/Quick-Start-CN-->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
-                <version>${alibaba.fastjson.version}</version>
-            </dependency>
-
             <!--Curator是Netflix公司开源的一套zookeeper客户端框架，解决了很多Zookeeper客户端非常底层的细节开发工作，包括连接重连、反复注册Watcher和NodeExistsException异常等等。-->
             <!--1.curator-framework对zookeeper的底层api的一些封装-->
             <dependency>
@@ -199,38 +190,6 @@
                 <artifactId>curator-x-discovery</artifactId>
                 <version>${apache.curator.x.discovery}</version>
             </dependency>
-
-
-            <!--poi工具包（apache用于处理文档的工具包）-->
-            <!--<dependency>-->
-            <!--    <groupId>org.apache.poi</groupId>-->
-            <!--    <artifactId>poi</artifactId>-->
-            <!--    <version>${apache.poi.version}</version>-->
-            <!--</dependency>-->
-            <!--用于 Microsoft Documents 的 Java API-->
-            <!--解决xlsx的文件(包含了org.apache.poi工具包)-->
-            <dependency>
-                <groupId>org.apache.poi</groupId>
-                <artifactId>poi-ooxml</artifactId>
-                <version>${apache.poi.ooxml.version}</version>
-            </dependency>
-
-            <!--Apache Commons IO is a library of utilities to assist with developing IO functionality(用于帮助开发IO功能).-->
-            <!--官网：https://commons.apache.org/proper/commons-io/-->
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${commons.io.version}</version>
-            </dependency>
-
-
-            <!--MyBatis Generator （MBG） 是 MyBatis MyBatis 的代码生成器。-->
-            <dependency>
-                <groupId>org.mybatis.generator</groupId>
-                <artifactId>mybatis-generator-core</artifactId>
-                <version>${mybatis.generator.core.version}</version>
-            </dependency>
-
             <!-- 通用Mapper(包含了mybatis和mybatis spring两个包) -->
             <!--https://mapperhelper.github.io/docs/-->
             <dependency>
@@ -238,7 +197,6 @@
                 <artifactId>mapper-spring-boot-starter</artifactId>
                 <version>${mapper.spring.boot.starter.version}</version>
             </dependency>
-
             <!--mybatis 的入门依赖-->
             <dependency>
                 <groupId>org.mybatis</groupId>
@@ -250,7 +208,6 @@
                 <artifactId>mybatis-spring</artifactId>
                 <version>${mybatis.spring.verison}</version>
             </dependency>
-
             <!--Spring版本的PageHelper分页插件-->
             <!--使用这个依赖，springboot会自动装配，不需要再配置文件配置也可以使用-->
             <!--使用tkmybatis包含了mybatis和mybatis spring两个包，这里移除-->
@@ -264,24 +221,23 @@
                 <artifactId>pagehelper</artifactId>
                 <version>${pagehelper.version}</version>
             </dependency>
-
-            <!--Hutool是一个小而全的Java工具类库，通过静态方法封装，降低相关API的学习成本，提高工作效率，使Java拥有函数式语言般的优雅，让Java语言也可以“甜甜的”。-->
-            <!--https://gitee.com/dromara/hutool-->
+            <!-- security 整合 thymeleaf -->
             <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-core</artifactId>
-                <version>${hutool.core.version}</version>
+                <groupId>org.thymeleaf.extras</groupId>
+                <artifactId>thymeleaf-extras-springsecurity4</artifactId>
+                <version>${thymeleaf-extras-springsecurity4.version}</version>
+            </dependency>
+            <!-- JPA规范包 -->
+            <dependency>
+                <groupId>javax.persistence</groupId>
+                <artifactId>persistence-api</artifactId>
+                <version>${jpa.version}</version>
             </dependency>
 
-            <!--CGLIB是一个强大的、高性能的代码生成库。其被广泛应用于AOP框架（Spring、dynaop）中，用以提供方法拦截操作。-->
-            <!--Hibernate作为一个比较受欢迎的ORM框架，同样使用CGLIB来代理单端（多对一和一对一）关联（延迟提取集合使用的另一种机制）。-->
-            <!--CGLIB作为一个开源项目，其代码托管在github，地址为：https://github.com/cglib/cglib-->
-            <dependency>
-                <groupId>cglib</groupId>
-                <artifactId>cglib</artifactId>
-                <version>${cglib.version}</version>
-            </dependency>
 
+            <!--......................................................................................................-->
+            <!--...............................................组件包...................................................-->
+            <!--......................................................................................................-->
             <!-- redisson. 这里使用的版本是 3.13.6, 没找到与 2.3.1.RELEASE 匹配的 redisson starter -->
             <dependency>
                 <groupId>org.redisson</groupId>
@@ -293,14 +249,12 @@
                 <artifactId>redisson-spring-boot-starter</artifactId>
                 <version>${redisson.spring.boot.starter.verison}</version>
             </dependency>
-
             <!--oracle的驱动包-->
             <dependency>
                 <groupId>com.oracle.database.jdbc</groupId>
                 <artifactId>ojdbc8</artifactId>
                 <version>${ojdbc8.version}</version>
             </dependency>
-
             <!--解决springboot连接oracle的报错(不支持的字符集 (在类路径中添加 orai18n.jar):ZHS16GBK)-->
             <dependency>
                 <groupId>com.oracle.database.nls</groupId>
@@ -309,12 +263,18 @@
             </dependency>
 
 
+            <!--......................................................................................................-->
+            <!--...............................................工具包....................................................-->
+            <!--......................................................................................................-->
+            <!--Fastjson 是一个 Java 库，可以将 Java 对象转换为 JSON 格式，当然它也可以将 JSON 字符串转换为 Java 对象。-->
+            <!--Fastjson 可以操作任何 Java 对象，即使是一些预先存在的没有源码的对象。-->
+            <!--Fastjson 源码地址：https://github.com/alibaba/fastjson-->
+            <!--Fastjson 中文 Wiki：https://github.com/alibaba/fastjson/wiki/Quick-Start-CN-->
             <dependency>
-                <groupId>org.thymeleaf.extras</groupId>
-                <artifactId>thymeleaf-extras-springsecurity4</artifactId>
-                <version>${thymeleaf-extras-springsecurity4.version}</version>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${alibaba.fastjson.version}</version>
             </dependency>
-
             <!--google提供的工具包-->
             <!-- 集合 [collections] 、缓存 [caching] 、原生类型支持 [primitives support] 、并发库 [concurrency libraries] 、通用注解 [common annotations] 、字符串处理 [string processing] 、I/O 等等 -->
             <dependency>
@@ -322,13 +282,52 @@
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
             </dependency>
-
+            <!--poi工具包（apache用于处理文档的工具包）-->
+            <!--<dependency>-->
+            <!--    <groupId>org.apache.poi</groupId>-->
+            <!--    <artifactId>poi</artifactId>-->
+            <!--    <version>${apache.poi.version}</version>-->
+            <!--</dependency>-->
+            <!--用于 Microsoft Documents 的 Java API-->
+            <!--解决xlsx的文件(包含了org.apache.poi工具包)-->
             <dependency>
-                <groupId>javax.persistence</groupId>
-                <artifactId>persistence-api</artifactId>
-                <version>${jpa.version}</version>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${apache.poi.ooxml.version}</version>
+            </dependency>
+            <!--Apache Commons IO is a library of utilities to assist with developing IO functionality(用于帮助开发IO功能).-->
+            <!--官网：https://commons.apache.org/proper/commons-io/-->
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons.io.version}</version>
+            </dependency>
+            <!--Hutool是一个小而全的Java工具类库，通过静态方法封装，降低相关API的学习成本，提高工作效率，使Java拥有函数式语言般的优雅，让Java语言也可以“甜甜的”。-->
+            <!--https://gitee.com/dromara/hutool-->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-core</artifactId>
+                <version>${hutool.core.version}</version>
+            </dependency>
+            <!--MyBatis Generator （MBG） 是 MyBatis MyBatis 的代码生成器。-->
+            <dependency>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-core</artifactId>
+                <version>${mybatis.generator.core.version}</version>
+            </dependency>
+            <!--CGLIB是一个强大的、高性能的代码生成库。其被广泛应用于AOP框架（Spring、dynaop）中，用以提供方法拦截操作。-->
+            <!--Hibernate作为一个比较受欢迎的ORM框架，同样使用CGLIB来代理单端（多对一和一对一）关联（延迟提取集合使用的另一种机制）。-->
+            <!--CGLIB作为一个开源项目，其代码托管在github，地址为：https://github.com/cglib/cglib-->
+            <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib</artifactId>
+                <version>${cglib.version}</version>
             </dependency>
 
+
+            <!--......................................................................................................-->
+            <!--...............................................插件....................................................-->
+            <!--......................................................................................................-->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
