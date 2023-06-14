@@ -3,7 +3,7 @@ package com.hundsun.demo.dubbo.consumer.listener;
 import com.alibaba.fastjson.JSONObject;
 import com.hundsun.demo.dubbo.consumer.mapper.MQIdempotencyMapper;
 import com.hundsun.demo.dubbo.provider.api.model.pojo.MQIdempotency;
-import com.hundsun.demo.java.mq.config.MQConfig;
+import com.hundsun.demo.java.mq.rabbit.config.MQConfig;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.ExchangeTypes;

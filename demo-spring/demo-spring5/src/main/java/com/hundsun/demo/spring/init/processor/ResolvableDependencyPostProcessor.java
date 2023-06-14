@@ -1,6 +1,6 @@
 package com.hundsun.demo.spring.init.processor;
 
-import com.hundsun.demo.java.pattern.structural.proxy.MySQLService;
+import com.hundsun.demo.java.jdk.pattern.structural.proxy.MySQLService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;

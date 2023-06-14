@@ -1,6 +1,6 @@
 package com.hundsun.demo.dubbo.provider.config;
 
-import com.hundsun.demo.java.mq.config.MQConfig;
+import com.hundsun.demo.java.mq.rabbit.config.MQConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Exchange;
 import org.springframework.amqp.core.TopicExchange;

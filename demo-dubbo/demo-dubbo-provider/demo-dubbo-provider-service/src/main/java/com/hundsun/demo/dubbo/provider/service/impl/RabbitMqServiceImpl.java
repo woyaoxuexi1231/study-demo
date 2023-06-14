@@ -5,7 +5,7 @@ import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
 import com.hundsun.demo.dubbo.provider.api.model.pojo.MQIdempotency;
 import com.hundsun.demo.dubbo.provider.api.service.RabbitMqService;
-import com.hundsun.demo.java.mq.config.MQConfig;
+import com.hundsun.demo.java.mq.rabbit.config.MQConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.connection.CorrelationData;

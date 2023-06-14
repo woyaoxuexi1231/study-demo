@@ -17,8 +17,8 @@
     <bean class="com.hundsun.demo.spring.init.processor.IgnoreBeanFactoryPostProcessor"/>
     <bean class="com.hundsun.demo.spring.init.processor.ResolvableDependencyPostProcessor"/>
     <bean class="com.hundsun.demo.spring.service.impl.IgnoreBean"/>
-    <bean name="mySQLServiceImpl" class="com.hundsun.demo.java.pattern.structural.proxy.MySQLServiceImpl"/>
-    <bean name="mySQLServiceProxy" class="com.hundsun.demo.java.pattern.structural.proxy.normal.MySQLServiceProxy">
+    <bean name="mySQLServiceImpl" class="com.hundsun.demo.java.jdk.pattern.structural.proxy.MySQLServiceImpl"/>
+    <bean name="mySQLServiceProxy" class="com.hundsun.demo.java.jdk.pattern.structural.proxy.normal.MySQLServiceProxy">
         <property name="mySqlService" ref="mySQLServiceImpl"/>
     </bean>
 
@@ -49,21 +49,21 @@
     <bean id="masterDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url"
-                  value="jdbc:mysql://192.168.175.128:3306/yiibaidb?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>
+                  value="jdbc:mysql://192.168.80.128:3306/yiibaidb?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>
         <property name="username" value="root"/>
         <property name="password" value="123456"/>
     </bean>
     <bean id="secondDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url"
-                  value="jdbc:mysql://192.168.175.128:3306/test?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>
+                  value="jdbc:mysql://192.168.80.128:3306/test?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>
         <property name="username" value="root"/>
         <property name="password" value="123456"/>
     </bean>
     <bean id="thirdDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url"
-                  value="jdbc:mysql://192.168.175.128:3306/test?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>
+                  value="jdbc:mysql://192.168.80.128:3306/test?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>
         <property name="username" value="root"/>
         <property name="password" value="123456"/>
     </bean>
@@ -115,7 +115,7 @@
     <bean id="singleDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url"
-                  value="jdbc:mysql://192.168.175.128:3306/yiibaidb?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>
+                  value="jdbc:mysql://192.168.80.128:3306/yiibaidb?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>
         <property name="username" value="root"/>
         <property name="password" value="123456"/>
     </bean>
