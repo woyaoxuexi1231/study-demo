@@ -1,5 +1,9 @@
 package com.hundsun.demo.springboot.controller;
 
+import com.github.pagehelper.PageHelper;
+import com.hundsun.demo.springboot.config.BeanConfig;
+import com.hundsun.demo.springboot.mapper.EmployeeMapper;
+import com.hundsun.demo.springboot.model.pojo.EmployeeDO;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -13,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Resource;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
@@ -95,4 +100,18 @@ public class RedisController {
 
 
     }
+
+    @Resource
+    EmployeeMapper employeeMapper;
+
+    @GetMapping("/testE")
+    public void testE() {
+        beanConfig.restTemplate();
+        System.out.println(1);
+    }
+
+    @Autowired
+    BeanConfig beanConfig;
+
+
 }

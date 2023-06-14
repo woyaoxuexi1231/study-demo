@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -32,7 +33,7 @@ public class BeanConfig {
     // }
 
     @Bean
-    public RestTemplate restTemplate(){
+    public RestTemplate restTemplate() {
         return new RestTemplate();
     }
 
@@ -47,5 +48,16 @@ public class BeanConfig {
         redisTemplate.setValueSerializer(RedisSerializer.json());
         redisTemplate.setHashKeySerializer(RedisSerializer.string());
         redisTemplate.setHashValueSerializer(RedisSerializer.json());
+    }
+
+    @Autowired
+    public void initRedisTemplate(RedisTemplate redisTemplate) {
+        // redisTemplate.setKeySerializer(RedisSerializer.json());
+        redisTemplate.setKeySerializer(RedisSerializer.string());
+    }
+
+    @Scheduled(cron = "* * * * * ?")
+    public void schedule() {
+        System.out.println("111");
     }
 }
