@@ -27,6 +27,7 @@ public class ProxyTest {
 
     public static void main(String[] args) {
 
+        System.getProperties().put("sun.misc.ProxyGenerator.saveGeneratedFiles", "true");
         // 这是一个需要被代理的对象
         MySQLService mySqlService = new MySQLServiceImpl();
 
@@ -37,10 +38,10 @@ public class ProxyTest {
         MySQLService jdkProxy = new MySQLServiceInvocation(mySqlService).getProxy();
 
         // 3. 通过cglib的方式代理该对象
-        MySQLService cglibProxy = new MySQLServiceCglibProxy(mySqlService).getProxyInstance();
+        // MySQLService cglibProxy = new MySQLServiceCglibProxy(mySqlService).getProxyInstance();
 
         staticProxy.update("static");
         jdkProxy.update("jdk");
-        cglibProxy.update("cglib");
+        // cglibProxy.update("cglib");
     }
 }

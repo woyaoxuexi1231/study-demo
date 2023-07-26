@@ -50,7 +50,8 @@ public class MySQLServiceInvocation implements InvocationHandler {
      * @return 代理对象
      */
     public MySQLService getProxy() {
-        System.getProperties().put("sun.misc.ProxyGenerator.saveGeneratedFiles", "true");
+        // System.getProperties().put("sun.misc.ProxyGenerator.saveGeneratedFiles", "true");
+        // System.getProperties().put("jdk.proxy.ProxyGenerator.saveGeneratedFiles", "true");
         return (MySQLService) Proxy.newProxyInstance(
                 target.getClass().getClassLoader(),
                 target.getClass().getInterfaces(),
