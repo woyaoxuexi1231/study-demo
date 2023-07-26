@@ -126,7 +126,7 @@ public class DynamicDataSourceTransactionNote {
         // todo 一些前提知识
         1. DataSourceAutoConfiguration - 这是 springboot 的数据源自动配置
         2. dynamic-datasource-spring-boot-starter框架
-        spring的动态多数据源 //todo
+        spring的动态多数据源
         使用 AbstractRoutingDataSource 类来根据运行时的条件切换不同的数据源
         使用 ChainedTransactionManager 类来处理多个数据源的分布式事务
         使用 @Qualifier 注解和 @Transactional 注解来指定不同的事务管理器

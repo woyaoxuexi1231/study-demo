@@ -139,7 +139,6 @@
                 <plugins>
                     <plugin>
                         <!--
-                        todo
                         使用 2.2.6.RELEASE 版本 spring-boot-maven-plugin 进行打包的时候我发现 jsp 即使被打进包里也访问不了
                         使用 1.4.2.RELEASE 版本的也不行
                         打出来的包启动会报错
