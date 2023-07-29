@@ -1,4 +1,8 @@
+import com.hundsun.demo.java.jdk.pattern.structural.proxy.MySQLServiceImpl;
+import lombok.SneakyThrows;
 import org.junit.Test;
+
+import java.lang.reflect.Method;
 
 import static org.junit.Assert.assertEquals;
 
@@ -18,5 +22,11 @@ public class JunitTest {
     @Test
     public void testEquals() {
         assertEquals("test", test);
+    }
+
+    @SneakyThrows
+    public static void main(String[] args) {
+        MySQLServiceImpl mySQLService = new MySQLServiceImpl();
+        Method method = mySQLService.getClass().getMethod("update", String.class);
     }
 }
