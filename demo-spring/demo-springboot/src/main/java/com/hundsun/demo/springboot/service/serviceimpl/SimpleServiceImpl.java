@@ -324,7 +324,7 @@ public class SimpleServiceImpl implements SimpleService {
         // values ( #{employeeNumber}, #{lastName}, #{firstName}, #{extension}, #{email}, #{officeCode}, #{reportsTo}, #{jobTitle})
         EmployeeDO employeeDO = new EmployeeDO();
         // employeeDO.setTableName("employees");
-        employeeDO.setEmployeeNumber(2001);
+        employeeDO.setEmployeeNumber(2001L);
         employeeDO.setLastName("'mybatis'");
         employeeDO.setFirstName("'dollar'");
         employeeDO.setExtension("'?'");
@@ -391,7 +391,7 @@ public class SimpleServiceImpl implements SimpleService {
         3. 没有使用 Bean 的方法, 而直接使用内部方法来调用, 这会直接导致事务失效(即没有通过代理对象来开启事务)
          */
         EmployeeDO employeeDO = new EmployeeDO();
-        employeeDO.setEmployeeNumber(1002);
+        employeeDO.setEmployeeNumber(1002L);
         System.out.println(employeeMapper.selectOne(employeeDO));
         DynamicDataSourceTypeManager.set(DynamicDataSourceType.MASTER);
         simpleService.getOneEmployeeDO();
@@ -400,14 +400,14 @@ public class SimpleServiceImpl implements SimpleService {
         但是如果后续还有其他数据源的查询需要自行切换
          */
         DynamicDataSourceTypeManager.set(DynamicDataSourceType.SECOND);
-        employeeDO.setEmployeeNumber(1002);
+        employeeDO.setEmployeeNumber(1002L);
         System.out.println(employeeMapper.selectOne(employeeDO));
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void getOneEmployeeDO() {
         EmployeeDO employeeDO = new EmployeeDO();
-        employeeDO.setEmployeeNumber(1002);
+        employeeDO.setEmployeeNumber(1002L);
         System.out.println(employeeMapper.selectOne(employeeDO));
     }
 
