@@ -61,7 +61,7 @@ public class SimpleController {
     @GetMapping("/pageHelper")
     public void pageHelper(){
         simpleService.pageHelper();
-        DynamicDataSourceTypeManager.set(DynamicDataSourceType.SECOND);
-        simpleService.pageHelper();
+        // DynamicDataSourceTypeManager.set(DynamicDataSourceType.SECOND);
+        // simpleService.pageHelper();
     }
 }

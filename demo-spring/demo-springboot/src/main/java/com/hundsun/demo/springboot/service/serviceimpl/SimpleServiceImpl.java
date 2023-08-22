@@ -419,6 +419,6 @@ public class SimpleServiceImpl implements SimpleService {
         PageAutoDialect.getDialect()
          */
         PageHelper.startPage(1, 10);
-        employeeMapper.selectAll();
+        employeeMapper.selectAll2();
     }
 }
