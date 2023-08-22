@@ -24,8 +24,8 @@ import java.util.List;
 public class DataSourceTest {
 
 
-    private static final String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
-    private static final String MYSQL_URL = "jdbc:mysql://192.168.175.128:3306/yiibaidb?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai";
+    private static final String MYSQL_DRIVER = "com.mysql.cj.jdbc.Driver";
+    private static final String MYSQL_URL = "jdbc:mysql://192.168.80.128:3306/yiibaidb?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai";
     private static final String MYSQL_USER = "root";
     private static final String MYSQL_PASS = "123456";
 
