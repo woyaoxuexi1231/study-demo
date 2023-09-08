@@ -25,7 +25,7 @@ public class CuratorConfiguration {
     /**
      * dubbo 注册地址
      */
-    @Value("${dubbo.registry.address}")
+    @Value("${dubbo.registry.address:127.0.0.1:2181}")
     private String appRegistryAddress;
 
     /**
