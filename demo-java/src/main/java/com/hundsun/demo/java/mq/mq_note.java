@@ -1,4 +1,4 @@
-package com.hundsun.demo.java.mq.rabbit;
+package com.hundsun.demo.java.mq;
 
 /**
  * @projectName: study-demo
@@ -9,7 +9,7 @@ package com.hundsun.demo.java.mq.rabbit;
  * @createDate: 2023/2/26 16:33
  */
 
-public class MessageQueueTest {
+public class mq_note {
 
     /*
     系统间通信技术
@@ -53,7 +53,7 @@ public class MessageQueueTest {
                 Routing Key - 路由规则, 虚拟机可以用它来去顶如何路由一个特定的消息
                 Queue - 消息队列, 用来保存消息直接发送给消费者. 它是消息的容器, 也是消息的终点, 一个消息可被投入一个或者多个队列中, 消息一直在队列里面, 等待消费者连接到这个队列将其取走
                 Connection - 连接, 可以理解成客户端和消息队列服务器之间的一个 TCP 连接
-                Channel - 信道, 仅仅当创建了连接后, 若客户端还是不能发送消息, 则需要为连接创建一个信道, 信道是一条独立的双向数据流通道, 它是建立在真实的 TCP 连接内的虚拟连接, AMQP 命令都是通过星岛发出去的
+                Channel - 信道, 仅仅当创建了连接后, 若客户端还是不能发送消息, 则需要为连接创建一个信道, 信道是一条独立的双向数据流通道, 它是建立在真实的 TCP 连接内的虚拟连接, AMQP 命令都是通过信道发出去的
                 Consumer - 消息消费者, 表示一个从消息队列中去的消息的客户端应用程序
             核心组件的生命周期
                 消息的生命周期 : Publisher -> Broker -> Exchange -> Routing Key -> Queue -> Consumer
