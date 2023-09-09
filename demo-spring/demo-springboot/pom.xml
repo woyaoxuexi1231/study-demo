@@ -86,6 +86,11 @@
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper-spring-boot-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+        </dependency>
+
 
         <!-- 整合 JSP -->
         <!-- 记得在 idea 设置的启动项里面编辑 working-directory 为 $MODULE_DIR$ -->

@@ -23,8 +23,9 @@ public class EmployeeDO {
     /**
      *
      */
+    @Id
     @Column(name = "employeeNumber")
-    private Integer employeeNumber;
+    private Long employeeNumber;
     /**
      *
      */

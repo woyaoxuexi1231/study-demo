@@ -5,6 +5,8 @@ import tk.mybatis.mapper.common.BaseMapper;
 import tk.mybatis.mapper.common.ConditionMapper;
 import tk.mybatis.mapper.common.MySqlMapper;
 
+import java.util.List;
+
 /**
  * @projectName: study-demo
  * @package: com.hundsun.demo.springboot.mapper
@@ -19,4 +21,6 @@ public interface EmployeeMapper extends BaseMapper<EmployeeDO>, ConditionMapper<
      * mybatis 使用 $符号
      */
     void insertWithDollar(EmployeeDO employeeDO);
+
+    List<EmployeeDO> selectAll2();
 }
