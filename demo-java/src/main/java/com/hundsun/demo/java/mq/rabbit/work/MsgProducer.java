@@ -22,13 +22,15 @@ import java.io.IOException;
 @Slf4j
 public class MsgProducer {
 
-    private static Connection connection;
+    private static final Connection connection;
 
     private static Channel channel;
 
     static {
+        // 通过连接工厂获取连接, 连接工厂已经配置好了连接 mq 的配置信息
         connection = ConnectFactory.getConnect();
         try {
+            // 创建信道
             channel = connection.createChannel();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -40,11 +42,12 @@ public class MsgProducer {
         try {
 
             if (channel == null) {
+                // 发消息之前校验一下是否信道已经开启了, 发消息是需要通过信道发送的, 只有连接是不行的
                 channel = connection.createChannel();
             }
 
             /*
-            开启发布确认
+            开启发布确认,
              */
             channel.confirmSelect();
 

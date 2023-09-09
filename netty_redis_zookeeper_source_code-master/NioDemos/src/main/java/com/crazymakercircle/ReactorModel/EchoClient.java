@@ -8,12 +8,12 @@ import lombok.Data;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -22,6 +22,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * create by 尼恩 @ 疯狂创客圈
  **/
 public class EchoClient {
+
+    static SocketAddress localAddress;
+    static SocketAddress remoteAddress;
 
     public void start() throws IOException {
 
@@ -41,6 +44,8 @@ public class EchoClient {
 
         }
         Logger.tcfo("客户端启动成功！");
+        localAddress = socketChannel.getLocalAddress();
+        remoteAddress = socketChannel.getRemoteAddress();
 
         // 启动接受线程
         Processor processor = new Processor(socketChannel);
@@ -74,7 +79,7 @@ public class EchoClient {
                     // 读取键入内容
                     String next = scanner.next();
                     // 塞入发送缓冲
-                    buffer.put((Dateutil.getNow() + " >>" + next).getBytes());
+                    buffer.put((Dateutil.getNow() + " >>" + next + localAddress.toString() + " " + remoteAddress.toString()).getBytes());
                     // 设置当前为有数据状态
                     processor.hasData.set(true);
                 }

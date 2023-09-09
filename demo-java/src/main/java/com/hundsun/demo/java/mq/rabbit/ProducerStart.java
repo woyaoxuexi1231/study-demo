@@ -27,6 +27,7 @@ public class ProducerStart {
             String routingKey = scanner.nextLine();
             System.out.print("消息: ");
             String msg = scanner.nextLine();
+            // 封装了一个专门发消息的工具类来发消息
             MsgProducer.postMsg(exchange, routingKey, msg);
         }
     }
