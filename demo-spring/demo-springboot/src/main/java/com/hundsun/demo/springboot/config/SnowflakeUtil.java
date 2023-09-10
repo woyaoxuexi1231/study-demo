@@ -25,11 +25,11 @@ public class SnowflakeUtil {
     private long dataCenterId = 1;//数据中心ID
     private Snowflake snowflake = IdUtil.createSnowflake(workerId, dataCenterId);
 
-    @PostConstruct
-    public void init() {
-        workerId = NetUtil.ipv4ToLong(NetUtil.getLocalhostStr());
-        System.out.println("当前获取的工作id为：" + workerId);
-    }
+    // @PostConstruct
+    // public void init() {
+    //     workerId = NetUtil.ipv4ToLong(NetUtil.getLocalhostStr());
+    //     System.out.println("当前获取的工作id为：" + workerId);
+    // }
 
     public synchronized String snowflakeId() {
         return String.valueOf(snowflake.nextId());
@@ -38,5 +38,9 @@ public class SnowflakeUtil {
     public synchronized long snowflakeId(long workerId, long dataCenterId) {
         Snowflake snowflake = IdUtil.createSnowflake(workerId, dataCenterId);
         return snowflake.nextId();
+    }
+
+    public static void main(String[] args) {
+        System.out.println(System.currentTimeMillis());
     }
 }
