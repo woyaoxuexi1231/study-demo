@@ -11,6 +11,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.util.NettyRuntime;
+import io.netty.util.internal.SystemPropertyUtil;
 
 /**
  * create by 尼恩 @ 疯狂创客圈
@@ -25,14 +27,15 @@ public class NettyEchoServer {
     }
 
     public void runServer() {
-        //创建reactor 线程组
+        //创建 reactor 线程组
+        // nThreads = 0, 和 jvm 的可用的 processors 有关
         EventLoopGroup bossLoopGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerLoopGroup = new NioEventLoopGroup();
 
         try {
-            //1 设置reactor 线程组
+            //1 设置 reactor 线程组
             b.group(bossLoopGroup, workerLoopGroup);
-            //2 设置nio类型的channel
+            //2 设置 nio 类型的 channel
             b.channel(NioServerSocketChannel.class);
             //3 设置监听端口
             b.localAddress(serverPort);
@@ -45,8 +48,8 @@ public class NettyEchoServer {
             b.childHandler(new ChannelInitializer<SocketChannel>() {
                 //有连接到达时会创建一个channel
                 protected void initChannel(SocketChannel ch) throws Exception {
-                    // pipeline管理子通道channel中的Handler
-                    // 向子channel流水线添加一个handler处理器
+                    // pipeline 管理子通道 channel 中的 Handler
+                    // 向子 channel 流水线添加一个 handler 处理器
                     ch.pipeline().addLast(NettyEchoServerHandler.INSTANCE);
                 }
             });
@@ -74,5 +77,6 @@ public class NettyEchoServer {
     public static void main(String[] args) throws InterruptedException {
         int port = NettyDemoConfig.SOCKET_SERVER_PORT;
         new NettyEchoServer(port).runServer();
+        // System.out.println(Math.max(1, SystemPropertyUtil.getInt("io.netty.eventLoopThreads", NettyRuntime.availableProcessors() * 2)));
     }
 }
