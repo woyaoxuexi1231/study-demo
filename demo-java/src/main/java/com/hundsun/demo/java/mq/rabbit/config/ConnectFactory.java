@@ -23,14 +23,17 @@ public class ConnectFactory {
     private static final ConnectionFactory FACTORY;
 
     static {
+        // 初始化连接工厂
         FACTORY = new ConnectionFactory();
+        // 设置用户名密码
         FACTORY.setUsername(MQConfig.RABBITMQ_USERNAME);
         FACTORY.setPassword(MQConfig.RABBITMQ_PASSWORD);
-        // 地址
+        // 设置 ip 和 port
         FACTORY.setHost(MQConfig.RABBITMQ_HOST);
         FACTORY.setPort(MQConfig.RABBITMQ_PORT);
+        // 设置虚拟机路径
         FACTORY.setVirtualHost("/");
-
+        // 调用初始化方法, 这个方法放在 static 代码块中保证启动时只会运行一次
         init();
     }
 
@@ -41,12 +44,14 @@ public class ConnectFactory {
 
     @SneakyThrows
     public static void init() {
-
+        // 建立代理服务器的连接
         Connection connection = FACTORY.newConnection();
+        // 创建信道
         Channel channel = connection.createChannel();
 
         /*
-         声明交换机
+         声明交换机, 调用这个方法后会直接在 mq 上创建交换机, 按理说创建交换机的工作应该交给生产者, 而消费者只负责创建队列
+         这里我的消费者测试类和生产者测试类都用了这个连接工厂, 没有分开处理了
          * String exchange, 交换机
          * String type, 交换机类型（direct，topic，fanout）
          * boolean durable, 是否持久化。代表交换机在服务器重启后是否还存在
@@ -68,22 +73,27 @@ public class ConnectFactory {
          */
         // 设置一些其他参数
         Map<String, Object> arguments = new HashMap<>();
-        // 设置死信交换机
+        // 设置死信交换机, 这里设置的是, 如果这个队列内的消息出现问题, 消息应该往哪个死信队列发
         arguments.put("x-dead-letter-exchange", MQConfig.DEAD_EXCHANGE_NAME);
         // 设置死信 RoutingKey
         arguments.put("x-dead-letter-routing-key", "");
         // 设置队列长度
         // arguments.put("x-max-length", 6);
+        // 声明队列, 这里执行这个方法之后就会创建相应的队列, 但是只是创建了队列
         channel.queueDeclare(MQConfig.TOPIC_MASTER_QUEUE, true, false, false, arguments);
         channel.queueDeclare(MQConfig.TOPIC_SLAVE_QUEUE, true, false, false, arguments);
+        // 这里在创建队列之后用 routing key 与 交换机进行绑定
         channel.queueBind(MQConfig.TOPIC_MASTER_QUEUE, MQConfig.TOPIC_EXCHANGE_NAME, MQConfig.TOPIC_MASTER_ROUTE_KEY);
         channel.queueBind(MQConfig.TOPIC_SLAVE_QUEUE, MQConfig.TOPIC_EXCHANGE_NAME, MQConfig.TOPIC_SLAVE_ROUTE_KEY);
 
-        // 创建死信队列
+        // 创建死信交换机
         channel.exchangeDeclare(MQConfig.DEAD_EXCHANGE_NAME, BuiltinExchangeType.DIRECT);
+        // 创建死信队列
         channel.queueDeclare(MQConfig.DEAD_QUEUE_NAME, true, false, false, null).getQueue();
+        // 把死信队列和死信交换机进行绑定
         channel.queueBind(MQConfig.DEAD_QUEUE_NAME, MQConfig.DEAD_EXCHANGE_NAME, "");
 
+        // 初始化工作完成, 关闭连接
         channel.close();
         connection.close();
     }

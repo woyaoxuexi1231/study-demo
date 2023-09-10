@@ -15,7 +15,7 @@ public class NettyDiscardHandler extends ChannelInboundHandlerAdapter {
 
         ByteBuf in = (ByteBuf) msg;
         try {
-            Logger.info("收到消息,丢弃如下:");
+            Logger.info("收到消息, 丢弃如下: 当前ip 为: ");
             while (in.isReadable()) {
                 System.out.print((char) in.readByte());
             }

@@ -12,6 +12,9 @@ import java.util.List;
 public class IntegerAddDecoder
         extends ReplayingDecoder<IntegerAddDecoder.Status> {
 
+    /*
+     * 这是一个整数相加的解码器, 作用就是解析两个数字, 并把两数之和作为最终结果传给下一个入站处理器
+     */
     enum Status {
         PARSE_1, PARSE_2
     }
@@ -34,7 +37,7 @@ public class IntegerAddDecoder
                 //从装饰器ByteBuf 中读取数据
                 first = in.readInt();
                 //第一步解析成功，
-                // 进入第二步，并且设置“读指针断点”为当前的读取位置
+                // 进入第二步，并且设置 '读指针断点' 为当前的读取位置, 作用是为了下一次读取的时候缓冲区内可读的二进制数据不够而导致的报错, 使其能够回复到上一次读取的缓冲区读指针
                 checkpoint(Status.PARSE_2);
                 break;
             case PARSE_2:

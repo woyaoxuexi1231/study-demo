@@ -16,7 +16,7 @@ public class InHandlerDemoTester {
     public void testInHandlerLifeCircle() {
         final InHandlerDemo inHandler = new InHandlerDemo();
         //初始化处理器
-        ChannelInitializer i = new ChannelInitializer<EmbeddedChannel>() {
+        ChannelInitializer<?> i = new ChannelInitializer<EmbeddedChannel>() {
             protected void initChannel(EmbeddedChannel ch) {
                 ch.pipeline().addLast(inHandler);
             }

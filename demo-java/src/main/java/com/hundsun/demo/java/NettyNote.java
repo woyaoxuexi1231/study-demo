@@ -33,11 +33,21 @@ public class NettyNote {
      *
      * Reactor模式
      * 1. 单线程 Reactor模式
+     *  多线程OIO, 每一个新连接都创建一个新的线程, 高并发场景下, 伴随着大量线程的创建, 销毁, 切换, 性能会大打折扣
+     *  Reactor 模式分为两部分, 1.分发 2.处理
+     *  Reactor负责查询 IO 事件, 当有新的事件发生的时候, 发送给 IO 事件对应的 Handler
+     *  Handler与 IO 事件绑定, 完成连接建立和逻辑处理
+     *  单线程 Reactor 把请求的建立和请求的处理放在同一个线程内, 当某一个 Handler 阻塞的时候, 会导致其他的 Handler 阻塞
      * 2. 多线程 Reactor模式
+     *  多线程 Reactor 把请求的建立和请求的处理分成两个线程
      * 3. Reactor模式的优缺点
      *
      * Netty核心原理
      * 1. Netty里的 Reactor模式
+     *  Netty 对 Reactor 模式进行了微调, 把 IO 事件的处理分为了四步, 1.通道注册 2.查询事件 3.事件内部分发, 数据读取和发射 4.流水线传播和业务处理
+     *  netty 设计了自己的 Reactor角色, 叫做 EventLoop, 负责通道注册
+     *  EventLoop 需要做的事情有很多, 不仅要负责 channel 的注册, 还要负责事件的查询, 甚至还要负责事件的分发, 数据的读取和发射
+     *  EventLoopGroup 内部包含多个 Thread 和多个 EventLoop.
      * 2. bootstrap
      * 3. channel
      * 4. handler
@@ -45,5 +55,7 @@ public class NettyNote {
      * 6. bytebuf
      * 7. netty的零拷贝
      *
+     * Decoder和 Encoder
+     * 1. 粘包和拆包
      * */
 }
