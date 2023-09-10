@@ -249,6 +249,9 @@ public class SimpleServiceImpl implements SimpleService {
         }
     }
 
+    /**
+     * select … for update 测试
+     */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     @SneakyThrows
@@ -275,6 +278,9 @@ public class SimpleServiceImpl implements SimpleService {
     @Autowired
     private DataSourceTransactionManager transactionManager;
 
+    /**
+     * spring手动事务测试
+     */
     @Override
     // @Transactional(isolation = Isolation.READ_COMMITTED)
     @SneakyThrows
@@ -310,6 +316,9 @@ public class SimpleServiceImpl implements SimpleService {
 
     }
 
+    /**
+     * mybatis占位符测试
+     */
     @Override
     public void mybatis() {
 
@@ -380,6 +389,9 @@ public class SimpleServiceImpl implements SimpleService {
         private String b;
     }
 
+    /**
+     * 多数据源手动切换测试
+     */
     @Override
     @Transactional
     public void transactionInvalidation() {
@@ -404,6 +416,9 @@ public class SimpleServiceImpl implements SimpleService {
         System.out.println(employeeMapper.selectOne(employeeDO));
     }
 
+    /**
+     * 多数据源手动切换测试
+     */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void getOneEmployeeDO() {
         EmployeeDO employeeDO = new EmployeeDO();
@@ -411,6 +426,9 @@ public class SimpleServiceImpl implements SimpleService {
         System.out.println(employeeMapper.selectOne(employeeDO));
     }
 
+    /**
+     * 分页参数 startPage 的两个参数测试
+     */
     @Override
     public void pageHelper() {
         /*
