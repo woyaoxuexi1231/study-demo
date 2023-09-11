@@ -7,6 +7,9 @@ import com.hundsun.demo.springboot.mapper.EmployeeMapper;
 import com.hundsun.demo.springboot.mapper.SequenceMapper;
 import com.hundsun.demo.springboot.model.pojo.EmployeeDO;
 import com.hundsun.demo.springboot.service.SimpleService;
+import com.hundsun.demo.springboot.utils.segmentid.GenResult;
+import com.hundsun.demo.springboot.utils.segmentid.GenResultEnum;
+import com.hundsun.demo.springboot.utils.segmentid.SegmentIdGenerator;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.mapping.Environment;
@@ -20,13 +23,17 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
+import java.text.NumberFormat;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @projectName: study-demo
@@ -123,7 +130,8 @@ public class SimpleController implements ApplicationContextAware {
              * 2. 在可重复读的事务隔离界别下, 进程 A执行 update之后(200), 不影响进程B的查询结果(即进程B查到的依旧是快照的数据, 即 100),
              *  当进程B执行了 update语句后再查询结果就是300了
              * 3. 在读提交的事务隔离级别下, 跟上述结果一致
-             * 
+             * ?
+             *
              *
              * 那也就是说在这里 只要使用的 innodb 存储引擎, 无论如何都不会有问题
              * 1. 进程A在更新的时候, 进程B会被卡住, 进程B既更新不了也查询不了
@@ -151,8 +159,63 @@ public class SimpleController implements ApplicationContextAware {
         }
     }
 
+    @Autowired
+    SegmentIdGenerator segmentIdGenerator;
+
+    @SneakyThrows
     @GetMapping("/testSql2")
     public void testSql2() {
-        seqSession();
+        StopWatch sw = new StopWatch("1000个线程同时并发获取ID,并插入数据库耗时测试.");
+        sw.start();
+        CountDownLatch countDownLatch = new CountDownLatch(3);
+        AtomicInteger atomicInteger = new AtomicInteger(0);
+        for (int i = 0; i < 3; i++) {
+            commonPool.execute(() -> {
+                for (int i1 = 0; i1 < 10000; i1++) {
+                    GenResult t1 = segmentIdGenerator.getId("t1");
+                    if (GenResultEnum.NOT_READY.getId() == t1.getId()) {
+                        atomicInteger.incrementAndGet();
+                    } else {
+                        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+                            sqlSession.insert("com.hundsun.demo.springboot.mapper.SequenceMapper.insert", t1.getId());
+                            sqlSession.commit();
+                        }
+                    }
+                }
+                countDownLatch.countDown();
+            });
+        }
+        countDownLatch.await();
+        sw.stop();
+        log.info("获取 ID 失败一共 {} 次", atomicInteger.get());
+        log.info(prettyPrintBySecond(sw));
+    }
+
+    private String prettyPrintBySecond(StopWatch stopWatch) {
+        StopWatch.TaskInfo[] taskInfos = stopWatch.getTaskInfo();
+        StringBuilder sb = new StringBuilder();
+        sb.append('\n');
+        sb.append("StopWatch '").append(stopWatch.getId()).append("': running time = ").append(stopWatch.getTotalTimeSeconds()).append(" s");
+        sb.append('\n');
+        if (taskInfos.length < 1) {
+            sb.append("No task info kept");
+        } else {
+            sb.append("---------------------------------------------\n");
+            sb.append("s         %     Task name\n");
+            sb.append("---------------------------------------------\n");
+            NumberFormat nf = NumberFormat.getNumberInstance();
+            nf.setMinimumFractionDigits(3);
+            nf.setGroupingUsed(false);
+            NumberFormat pf = NumberFormat.getPercentInstance();
+            pf.setMinimumIntegerDigits(2);
+            pf.setMinimumFractionDigits(2);
+            pf.setGroupingUsed(false);
+            for (StopWatch.TaskInfo task : taskInfos) {
+                sb.append(nf.format(task.getTimeSeconds())).append("  ");
+                sb.append(pf.format((double) task.getTimeNanos() / stopWatch.getTotalTimeNanos())).append("  ");
+                sb.append(task.getTaskName()).append("\n");
+            }
+        }
+        return sb.toString();
     }
 }

@@ -1,7 +1,7 @@
 package com.hundsun.demo.springboot.utils.segmentid;
 
 import cn.hutool.core.collection.CollectionUtil;
-import lombok.Data;
+import com.hundsun.demo.springboot.mapper.SequenceMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
@@ -12,7 +12,6 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
@@ -26,7 +25,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -50,7 +48,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * Copyright 2023 Hundsun Technologies Inc. All Rights Reserved
  */
 
-@ConditionalOnProperty(value = {"ast.id.generate.strategy"}, havingValue = "segment")
+// @ConditionalOnProperty(value = {"ast.id.generate.strategy"}, havingValue = "segment")
 @Component
 @Slf4j
 public class SegmentIdGenerator implements ApplicationContextAware {
@@ -66,7 +64,7 @@ public class SegmentIdGenerator implements ApplicationContextAware {
     /**
      * SeqIdUtils
      */
-    private final SeqIdUtils seqIdUtils = new SeqIdUtils();
+    // private final SeqIdUtils seqIdUtils = new SeqIdUtils();
 
     /**
      * 默认步长, 也是最小步长
@@ -114,7 +112,7 @@ public class SegmentIdGenerator implements ApplicationContextAware {
             // 第一次更新缓存
             this.updateCacheFromDb();
             this.initOk = true;
-            // this.updateCacheFromDbAtEveryMinute();
+            this.updateCacheFromDbAtEveryMinute();
         } catch (Exception e) {
             log.error("SegmentIdGenerateUtil-分段式ID生成器初始化失败", e);
         }
@@ -137,10 +135,10 @@ public class SegmentIdGenerator implements ApplicationContextAware {
         TransactionFactory transactionFactory = new JdbcTransactionFactory();
         Environment environment = new Environment("development", transactionFactory, dataSource);
         Configuration configuration = new Configuration(environment);
-        configuration.addMapper(TabSeqMapper.class);
+        configuration.addMapper(SequenceMapper.class);
         this.sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
         sw.stop();
-        sw.prettyPrint();
+        log.info(sw.prettyPrint());
     }
 
     /**
@@ -150,7 +148,7 @@ public class SegmentIdGenerator implements ApplicationContextAware {
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(r -> {
             Thread t = new Thread(r);
             t.setName("check-idCache-thread");
-            // t.setDaemon(true);
+            t.setDaemon(true);
             return t;
         });
         scheduledExecutorService.scheduleWithFixedDelay(SegmentIdGenerator.this::updateCacheFromDb, 60L, 60L, TimeUnit.SECONDS);
@@ -196,21 +194,30 @@ public class SegmentIdGenerator implements ApplicationContextAware {
             log.warn("更新缓存异常", e);
         } finally {
             sw.stop();
+            log.info(sw.prettyPrint());
         }
     }
 
 
     public GenResult getId(String key) {
+        // 当前 buffer 尚未初始化完成
         if (!this.initOk) {
             return new GenResult(GenResultEnum.INIT_NOT_COMPLETE.getId(), GenResultEnum.INIT_NOT_COMPLETE.getResult());
         }
+        // 当前缓存内没有找到相关的表
         if (!this.cache.containsKey(key)) {
             return new GenResult(GenResultEnum.KEY_NOT_FOUND.getId(), GenResultEnum.KEY_NOT_FOUND.getResult());
         }
+
+        /*
+         * 其实上面两种情况出现比较少, 一般都不会出现, 那么会直接到这个流程
+         * 这是一个初始化的流程, 每一个 buffer都必经的一个过程
+         */
         SegmentBuffer buffer = this.cache.get(key);
         if (!buffer.isInitOk()) {
             synchronized (buffer) {
                 if (!buffer.isInitOk()) {
+                    // 双重锁检查
                     try {
                         // 更新步长之类的
                         this.updateSegmentFromDb(key, buffer.getCurrent());
@@ -228,6 +235,7 @@ public class SegmentIdGenerator implements ApplicationContextAware {
 
     private GenResult getIdFromSegmentBuffer(SegmentBuffer buffer) {
 
+        int spin = 0;
         while (true) {
 
             // 加个读锁
@@ -243,13 +251,12 @@ public class SegmentIdGenerator implements ApplicationContextAware {
                     segment = buffer.getCurrent();
                     if (!buffer.isNextReady()
                             && segment.getIdle() < 0.9 * segment.getStep()
-                            && buffer.getThreadRunning().compareAndSet(false, true)
-                    ) {
+                            && buffer.getThreadRunning().compareAndSet(false, true)) {
                         /*
                          * 进入这里需要满足三个条件
-                         * 1. 当前的 buffer 下一次已不可读
-                         * 2. 最大值-当前value < 0.9倍步长
-                         * 3. 当前是否有线程正在计算步长
+                         * 1. 当前的 buffer 下一次已不可读(1.初始化后, buffer下一个是不可用的, 因为还没准备好. 2.buffer切换segment的时候下一个是不可用的, 因为被用完的 segment到下一位去了)
+                         * 2. 最大值-当前value < 0.9倍步长(这就是一个阈值判断, 如果当前的 segment 用了 10% 了, 就尝试准备下一个 segment)
+                         * 3. 当前是否有线程正在计算步长(并发控制, 仅允许一个线程来更新这个 buffer的状态)
                          * 这三个提交意味着 当前的 segment 已经快要不可用了, 急需切换一个 segment
                          */
                         this.readyNext(buffer);
@@ -259,27 +266,32 @@ public class SegmentIdGenerator implements ApplicationContextAware {
                     // 直接尝试从当前 segment 获取分布式 ID
                     value = segment.getValue().getAndIncrement();
                     if (value >= segment.getMax()) {
-                        // 但是拿到的 ID 已经超过了最大值, 这里不能拿了, 要在下面的流程去等待
+                        // 当前 segment 能到的 ID 已经不符合要求了, 退出这个流程, 执行二阶段获取 ID
                         break label;
                     }
                     // 成功拿到一个可用的分布式 ID
-                    log.info("阶段1成功获得id,{}, 当前是第 {} 个 segment", value, buffer.getCurrentPos());
+                    // log.info("一阶段成功获得id, {}, 当前是第 {} 个 segment", value, buffer.getCurrentPos());
                     return new GenResult(value, "success");
                 } finally {
+                    // 释放读锁, 在一阶段获取 ID 的线程互不影响
                     buffer.getLock().readLock().unlock();
                 }
             }
 
 
-            // 二阶段获取 ID - 所有在一阶段获取 ID失败的线程都将进行这个阶段
-            // this.waitAndSleep(buffer);
+            // 二阶段获取 ID - 只有在一阶段获取 ID 失败的线程才会进行二阶段
+            // todo 这里有必要等吗? 在并发量特别大的情况下, 大量的线程在一阶段获取 ID会失败, 都会在这里尝试等待
+            // 在这里等待一下其实是有必要的, 为了让一阶段的线程更容易获取锁的使用权
+            this.waitAndSleep(buffer);
             /*
              * 更新已经完成, 再次尝试获取分布式 ID
              * 这里的写锁是为什么?
              * 1. 会进行 segment 的切换
              * 2. 这里获取 ID 的优先级优于 第一阶段, 避免因为 第一阶段获取 ID 太快, 导致这里获取不到可以用的 ID 而报错
              *
-             * todo 这里和一阶段获取ID互斥, 和 readyNext()互斥
+             * todo
+             * 1. 这里和一阶段获取 ID 互斥, 和 readyNext()互斥(即和一阶段所有操作互斥)
+             * 2. 二阶段的所有线程会互相互斥
              */
             buffer.getLock().writeLock().lock();
             try {
@@ -287,11 +299,18 @@ public class SegmentIdGenerator implements ApplicationContextAware {
                  * 获取当前可用的 segment
                  * Q:这里有必要吗?如果到了这个阶段, 那这里在当前的 segment必然获取不到 ID了
                  * A:不是的, 高并发下, 这里挤压了很多获取ID的请求, 当第一个进来的会进行切换 segment 的操作, 挤压的请求在这里获取 ID
+                 *
+                 * 大量积压的请求在这里获取 ID, 但是只有一部分能够成功获取
+                 * 并且二阶段的所有的线程会和一阶段的读操作和一阶段的 readyNext()抢锁
+                 * 1. 也就是说二阶段和一阶段会同时在当前的 segment 内获取 ID
+                 * 2. 当 segment 拿不到 ID的时候, 二阶段的线程尝试切换 segment, 以便于二阶段剩余的线程能够拿到 ID,
+                 *      但是如果一阶段的 readyNext()没抢到锁去准备好第二个segment, 那么二阶段的线程会一直报错(两个segment都不可用)
+                 *      todo 这里是否可以考虑阻塞一下? 二阶段的报错线程集体阻塞, 那么一阶段的线程更容易准备好下一个 segment
                  */
                 segment = buffer.getCurrent();
                 value = segment.getValue().getAndIncrement();
                 if (value < segment.getMax()) {
-                    log.info("阶段2成功获得id,{} , 当前是第 {} 个 segment", value, buffer.getCurrentPos());
+                    // log.info("二阶段成功获得id, {} , 当前是第 {} 个 segment", value, buffer.getCurrentPos());
                     return new GenResult(value, "success");
                 }
                 // value >= 最大值 && buffer.isNextReady() = true 代表当前当前的 segment 不可用, 并且下一个 segment 已经准备好
@@ -313,7 +332,11 @@ public class SegmentIdGenerator implements ApplicationContextAware {
                 }
                 // value >= 最大值 && buffer.isNextReady() = false 代表着不仅当前的 segment 不可用, 并且下一个 segment 还没有准备好
                 log.error("用于生成分布式ID的两个 segment 都不可用!继续获取 ID");
-                // return new GenResult(GenResultEnum.NOT_READY.getId(), GenResultEnum.NOT_READY.getResult());
+                if (spin++ < 3) {
+                    continue;
+                }
+                // 自旋三次不再自旋, 抛出异常
+                return new GenResult(GenResultEnum.NOT_READY.getId(), GenResultEnum.NOT_READY.getResult());
             } finally {
                 buffer.getLock().writeLock().unlock();
             }
@@ -365,7 +388,7 @@ public class SegmentIdGenerator implements ApplicationContextAware {
             if (roll > 10000) {
                 try {
                     log.info("开始等待...");
-                    TimeUnit.SECONDS.sleep(10L);
+                    TimeUnit.MICROSECONDS.sleep(100);
                 } catch (InterruptedException e) {
                     log.warn("等待 SegmentBuffer 更新的过程中被异常中断!", e);
                 }
@@ -383,68 +406,75 @@ public class SegmentIdGenerator implements ApplicationContextAware {
      * @param segment 当前的 segment
      */
     private void updateSegmentFromDb(String key, Segment segment) {
+        // 开始计时
         StopWatch sw = new StopWatch("updateSegmentFromDb");
         sw.start();
+
+        // 获取当前 segment 对应的 buffer
         SegmentBuffer buffer = segment.getBuffer();
+
         LeafAlloc leafAlloc = new LeafAlloc();
         leafAlloc.setKey(key);
         leafAlloc.setStep(defaultStep);
-        long duration;
 
-
-        if (!buffer.isInitOk()) { // 还没有初始化完成
+        /*
+         * 根据不同的情况更新 buffer
+         * 1. 初始化更新 buffer
+         * 2. 首次更新 buffer
+         * 3. 根据时间力度跟新 buffer
+         */
+        if (!buffer.isInitOk()) {
             // 更新数据库的最大 ID, 然后得到设置的这个最大 ID 值
             long maxId = this.updateIdAndGetId(leafAlloc);
             leafAlloc.setMaxId(maxId);
             // 设置步长
             buffer.setStep(leafAlloc.getStep());
-            // 这里使用配置的最小步长
+            // 这里使用配置的最小步长, 这里其实只用在这里设置, 毕竟步长没变, 没必要设置, 可以少两行代码
             buffer.setMinStep(leafAlloc.getStep());
+            // todo ? 初始化的时候为什么不设置 buffer 的时间呢?
         } else if (buffer.getUpdateTimeStamp() == 0L) {
-            // 这里会从 166行进来 , 同样的操作, 只是设置了一个时间
             long maxId = this.updateIdAndGetId(leafAlloc);
             leafAlloc.setMaxId(maxId);
-            // todo 这个时间是啥意思呢 ?, 很明显上面一次不会设置时间, 那么初始化好之后第一次肯定会走这里
+            /*
+             * todo 这个时间是啥意思呢 ?, 很明显上面一次不会设置时间, 那么初始化好之后第一次肯定会走这里
+             * 两个 segment 的前两次更新都会走这里相当于省去计算步长的操作
+             */
             buffer.setUpdateTimeStamp(System.currentTimeMillis());
             buffer.setStep(leafAlloc.getStep());
             buffer.setMinStep(leafAlloc.getStep());
         } else {
-            // 距离上一次更新过去了多久
-            // duration = System.currentTimeMillis() - buffer.getUpdateTimeStamp();
-            // int nextStep = buffer.getStep();
-            // if (duration < 900000L) { // 离上次更新时间小于 900秒(15分钟)
-            //     if (nextStep * 2 <= 1000000) { // 如果当前步长*2小于一百万, 那么下一次步长为 当前步长*2
-            //         nextStep *= 2;
-            //     }
-            // } else if (duration > 1800000L) { // 离上一次更新已经过去了 30分钟
-            //     // 当前步长/2 大于等于最小步长那么就 /2, 否则不变
-            //     nextStep = nextStep / 2 >= buffer.getMinStep() ? nextStep / 2 : nextStep;
-            // }
+            /*
+             * 根据时间来确定下一次的步长
+             * 1. 离上一次更新 segment 的时间小于 900秒(15分钟), 那么步长可以 *2
+             * 2. 离上一次更新 segment 的时间大于 1800秒(30分钟), 那么步长可以 /2
+             */
+            long duration = System.currentTimeMillis() - buffer.getUpdateTimeStamp();
+            int nextStep = buffer.getStep();
+            if (duration < 900000L) {
+                nextStep = nextStep * 2 <= 10000 ? nextStep * 2 : nextStep;
+            } else if (duration > 1800000L) {
+                nextStep = nextStep / 2 >= buffer.getMinStep() ? nextStep / 2 : nextStep;
+            }
 
-            LeafAlloc temp = new LeafAlloc();
-            temp.setKey(key);
-            // 计算出来的下一次步长
-            temp.setStep(leafAlloc.getStep());
-            // 根据这个计算出来的步长来更新最大 ID
-            long id = this.updateIdAndGetId(temp);
+            // 根据最新步长更新数据库的最大 ID
+            long id = this.updateIdAndGetId(LeafAlloc.builder().key(key).step(nextStep).build());
             leafAlloc.setMaxId(id);
             // 更新 buffer 的时间
             buffer.setUpdateTimeStamp(System.currentTimeMillis());
             // 下一次的步长
-            buffer.setStep(leafAlloc.getStep());
+            buffer.setStep(nextStep);
             // 最小步长永远都是预先设定的步长
             buffer.setMinStep(leafAlloc.getStep());
         }
 
-        // 这里拿到当前 id的起始值, 并设置这个 id
-        duration = leafAlloc.getMaxId() - buffer.getStep();
-        segment.getValue().set(duration);
+        // 设置当前 segment 的起始值
+        segment.getValue().set(leafAlloc.getMaxId() - buffer.getStep());
         // 设置当前这个 segment 这一次能够生成的最大的 id
         segment.setMax(leafAlloc.getMaxId());
         // 设置计算出来的下一次的新步长
         segment.setStep(buffer.getStep());
         sw.stop();
-        sw.prettyPrint();
+        log.info(sw.prettyPrint());
     }
 
     public List<?> getIdForList(String key, List<?> list) throws IllegalAccessException {
@@ -455,7 +485,8 @@ public class SegmentIdGenerator implements ApplicationContextAware {
                     ids.add(this.getId(key).getId());
                 }
                 log.info("tabName: {}, 批量申请id成功. beginId: {}", key, ids.get(0));
-                return seqIdUtils.conVertSeqIdList(list, ids);
+                // return seqIdUtils.conVertSeqIdList(list, ids);
+                return new ArrayList<>();
             } else {
                 log.warn("批量申请id, list为空, 不处理.");
                 return list;
@@ -470,7 +501,7 @@ public class SegmentIdGenerator implements ApplicationContextAware {
     private List<String> getAllTags() {
         List<String> tags = new ArrayList<>();
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            tags = sqlSession.selectList("com.hundsun.amust.web.mapper.TabSeqMapper.getAllTags");
+            tags = sqlSession.selectList("com.hundsun.demo.springboot.mapper.SequenceMapper.getAll");
         }
         return tags;
     }
@@ -479,8 +510,8 @@ public class SegmentIdGenerator implements ApplicationContextAware {
         long id;
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             log.info("更新步长({})", leafAlloc.getStep());
-            sqlSession.update("com.hundsun.amust.web.mapper.TabSeqMapper.updateIdByCustomStep", leafAlloc);
-            id = sqlSession.selectOne("com.hundsun.amust.web.mapper.TabSeqMapper.getIdByTag", leafAlloc.getKey());
+            sqlSession.update("com.hundsun.demo.springboot.mapper.SequenceMapper.update", leafAlloc);
+            id = sqlSession.selectOne("com.hundsun.demo.springboot.mapper.SequenceMapper.get", leafAlloc.getKey());
             sqlSession.commit();
         }
         return id;

@@ -23,13 +23,13 @@ public class ThreadPoolBeanConfig {
     @Bean
     public ThreadPoolExecutor commonPool() {
         return new ThreadPoolExecutor(
-                1000,
-                1000,
+                20,
+                20,
                 60,
                 TimeUnit.SECONDS,
-                new ArrayBlockingQueue<>(50),
+                new ArrayBlockingQueue<>(100),
                 new ThreadFactoryBuilder().setNamePrefix("SINGLE-TRANSACTION-POOL-").build(),
-                new ThreadPoolExecutor.CallerRunsPolicy());
+                new ThreadPoolExecutor.AbortPolicy());
     }
 
     @Bean

@@ -49,6 +49,6 @@ public class SegmentBuffer {
     }
 
     public void switchPos() {
-
+        this.currentPos = this.nextPos();
     }
 }

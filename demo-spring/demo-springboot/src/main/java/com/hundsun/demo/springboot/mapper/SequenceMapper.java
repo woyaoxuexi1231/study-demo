@@ -1,8 +1,11 @@
 package com.hundsun.demo.springboot.mapper;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+
+import java.util.List;
 
 /**
  * @ProductName: Hundsun amust
@@ -20,8 +23,14 @@ import org.apache.ibatis.annotations.Update;
 public interface SequenceMapper {
 
     @Update(value = {"update sequence t set value = t.value + t.step where t.key = #{key}"})
-    public void update(@Param("key") String key);
+    void update(@Param("key") String key);
 
     @Select(value = {"select t.value from sequence t where t.key = #{key}"})
-    public int get(@Param("key") String key);
+    Long get(@Param("key") String key);
+
+    @Select(value = {"select t.key from sequence t"})
+    List<String> getAll();
+
+    @Insert(value = {"insert into test(b) values (#{b})"})
+    void insert(@Param("b") Long value);
 }
