@@ -26,6 +26,16 @@ import tk.mybatis.spring.annotation.MapperScan;
 // @ServletComponentScan
 public class SpringbootDemoApplication {
 
+    /*
+     *
+     * Spring Boot内嵌 Tomcat 的实现原理主要涉及以下几个步骤:
+     * 1. 添加依赖: 在 Spring Boot 项目中, 我们通常会添加 spring-boot-starter-web 这个 starter, 它在 pom.xml 中包含了一些依赖, 包括 web、webmvc和 tomcat 等。
+     * 2. 自动配置: Spring Boot 会自动配置 Web服务器。在spring-boot-autoconfigure模块中，有处理关于 WebServer 的自动配置类 ServletWebServerFactoryAutoConfiguration。
+     *      这个自动配置类会导入嵌入式容器相关的自动配置类, 如 EmbeddedTomcat、EmbeddedJetty和 EmbeddedUndertow。
+     * 3. 创建 WebServer: 在刷新Spring上下文的过程中, Spring Boot会创建 WebServer。具体来说, 当 Spring Boot 应用启动时, 它会创建一个 ServletWebServerApplicationContext, 这个上下文会创建一个内嵌的 Servlet 容器
+     * 4. 启动 Tomcat: 在创建WebServer的过程中, Spring Boot 会根据你的 classpath 和你定义的配置来决定使用哪种 Servlet 容器(默认是Tomcat), 然后实例化这个容器, 并将其封装在一个 WebServer 接口的实现类中。
+     * 总的来说, Spring Boot内嵌 Tomcat 的过程实际上并不复杂, 就是在刷新 Spring 上下文的过程中将 Tomcat容器启动起来, 并且将当前应用绑定到一个 Context, 然后添加了 Host。
+     */
     public static void main(String[] args) {
         // System.setProperty("cglib.debugLocation","C:\\Project\\study-demo\\demo-spring\\demo-springboot\\target\\classes");
         ApplicationContext applicationContext = SpringApplication.run(SpringbootDemoApplication.class);
