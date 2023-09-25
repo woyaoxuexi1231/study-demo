@@ -1,6 +1,9 @@
 package com.hundsun.demo.springboot.mybatisplus;
 
-import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
@@ -13,8 +16,24 @@ import lombok.Data;
 @Data
 @TableName(value = "user")
 public class User {
+    /**
+     * primary key
+     */
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
+    /**
+     * 名字
+     */
+    @TableField(value = "name")
     private String name;
+    /**
+     * 年龄
+     */
+    @TableField(value = "age")
     private Integer age;
+    /**
+     * 邮箱
+     */
+    @TableField(value = "email")
     private String email;
 }
