@@ -2,6 +2,7 @@ package com.hundsun.demo.springboot.mybatisplus;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,6 +38,7 @@ public class UserTest extends ServiceImpl<UserMapper, User> {
     }
 
     @GetMapping("/mybatisplustest")
+    @Transactional
     public void mybatisplustest() {
         // User user = new User();
         // // insert 方法选择性插入, 没有的字段是不插入的, 但是如果一个字段都没有, 会报错
@@ -57,18 +59,25 @@ public class UserTest extends ServiceImpl<UserMapper, User> {
 
         // this.saveBatch(objects);
 
-        User update = new User();
-        update.setId(1L);
-        update.setName("Jone1");
-        update.setAge(21);
+        for (int i = 1; i <= 1000; i++) {
+            User build = User.builder().id((long) i).name(System.currentTimeMillis() + "").build();
+            // objects.add();
+            userMapper.updateById(build);
+        }
+        this.updateBatchById(objects);
+    }
 
-        User update2 = new User();
-        update2.setId(2L);
-        update2.setName("Jack1");
-        update2.setAge(22);
-        objects.add(update);
-        objects.add(update2);
 
+    @GetMapping("/mybatisplustest2")
+    @Transactional
+    public void mybatisplustest2() {
+
+        List<User> objects = new ArrayList<>();
+        for (int i = 1; i <= 1000; i++) {
+            objects.add(User.builder().id((long) i).name(System.currentTimeMillis() + "").build());
+        }
+        // this.updateBatchById(objects);
+        // objects.forEach(i -> i.setName(i.getName() + "a"));
         userMapper.updateBatch(objects);
     }
 }

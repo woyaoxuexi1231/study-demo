@@ -112,7 +112,7 @@ public class SegmentIdGenerator implements ApplicationContextAware {
             // 第一次更新缓存
             this.updateCacheFromDb();
             this.initOk = true;
-            this.updateCacheFromDbAtEveryMinute();
+            // this.updateCacheFromDbAtEveryMinute();
         } catch (Exception e) {
             log.error("SegmentIdGenerateUtil-分段式ID生成器初始化失败", e);
         }

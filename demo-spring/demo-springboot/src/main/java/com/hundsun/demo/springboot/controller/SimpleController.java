@@ -102,6 +102,7 @@ public class SimpleController implements ApplicationContextAware {
         simpleService.pageHelper();
         // DynamicDataSourceTypeManager.set(DynamicDataSourceType.SECOND);
         // simpleService.pageHelper();
+
     }
 
 
