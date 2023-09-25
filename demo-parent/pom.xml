@@ -78,12 +78,14 @@
         <mybatis.spring.verison>2.0.5</mybatis.spring.verison>
         <pagehelper.spring.boot.starter.version>1.3.0</pagehelper.spring.boot.starter.version>
         <mybatis.generator.core.version>1.3.2</mybatis.generator.core.version>
-        <mybatis.plus.boot.starter.version>2.3.1</mybatis.plus.boot.starter.version>
+        <mybatis.plus.boot.starter.version>3.3.1</mybatis.plus.boot.starter.version>
 
         <javax.servlet.jsp.version>2.2.1</javax.servlet.jsp.version>
         <apache.dubbo.springboot.starter.version>2.7.8</apache.dubbo.springboot.starter.version>
         <apache.curator.x.discovery>2.13.0</apache.curator.x.discovery>
         <thymeleaf-extras-springsecurity4.version>2.1.3.RELEASE</thymeleaf-extras-springsecurity4.version>
+        <apache.curator.client.version>2.13.0</apache.curator.client.version>
+        <zookeeper.version>3.4.8</zookeeper.version>
 
         <!--插件版本-->
         <spring.boot.maven.plugin.version>2.2.6.RELEASE</spring.boot.maven.plugin.version>
@@ -192,6 +194,17 @@
                 <artifactId>curator-x-discovery</artifactId>
                 <version>${apache.curator.x.discovery}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-client</artifactId>
+                <version>${apache.curator.client.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>${zookeeper.version}</version>
+            </dependency>
+
             <!-- 通用Mapper(包含了mybatis和mybatis spring两个包) -->
             <!--https://mapperhelper.github.io/docs/-->
             <dependency>
