@@ -51,6 +51,10 @@
             <artifactId>mybatis</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
         <!-- Redis的客户端 -->
         <dependency>
             <groupId>redis.clients</groupId>
