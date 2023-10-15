@@ -37,5 +37,14 @@ public class LogTest {
         slf4j+logback 不需要桥接包(都是 Ceki Gülcü 写的一套东西, 他自己的东西肯定不需要适配的)
         slf4j+log4j2 需要桥接包 log4j-slf4j-impl(和log4j2连接起来的桥接器)
         commons logging+log4j2 不需要桥接包
+
+    经常出现这样的报错
+    SLF4J: Class path contains multiple SLF4J bindings.
+    SLF4J: Found binding in [jar:file:/C:/Users/h1123/.m2/repository/org/apache/logging/log4j/log4j-slf4j-impl/2.13.3/log4j-slf4j-impl-2.13.3.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+    SLF4J: Found binding in [jar:file:/C:/Users/h1123/.m2/repository/org/slf4j/slf4j-log4j12/1.7.30/slf4j-log4j12-1.7.30.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+    SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+    SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+    这个是存在了多个 SLF4J 的具体实现, 删除一个
+
      */
 }
