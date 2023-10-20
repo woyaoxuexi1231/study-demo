@@ -14,7 +14,7 @@
             %msg：日志消息，%n是换行符
             %logger{36} 表示 Logger 名字最长36个字符
         -->
-        <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%-5level}[%thread] %style{%logger{36}}{cyan} : %msg%n" />
+        <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%-5level}[%thread] %style{%logger{36}}{cyan} - %msg%n" />
 
         <!-- 定义日志存储的路径, 不要配置相对路径 -->
         <property name="FILE_PATH" value="logs" />

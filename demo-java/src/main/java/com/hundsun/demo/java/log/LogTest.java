@@ -12,7 +12,7 @@ package com.hundsun.demo.java.log;
 public class LogTest {
 
     /*
-    日志框架的进化史 - log4j[Apache](1999) -> JUL[sun](2002) -> JCL(commons logging)(2002) -> slf4j&logback(2005,2006) -> log4j2[Apache](2014)
+    日志框架的进化史 - log4j[Apache](1999) -> JUL[sun](2002) -> JCL[Apache](commons logging)(2002) -> slf4j&logback[Ceki Gülcü](2005,2006) -> log4j2[Apache](2014)
 
     log4j 最早的日志框架, 是 apache 基金会一个项目, 由 Ceki Gülcü 创建.
     -> 随后apache想让sun公司把log4j并入jdk遭到了拒绝, sun又模仿log4j推出了JUL(java.util.logging)
@@ -46,5 +46,18 @@ public class LogTest {
     SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
     这个是存在了多个 SLF4J 的具体实现, 删除一个
 
+
+    JCL(Commons-Logging) & log4j
+    slf4j(Simple Logging Facade for Java) & logback
+    Spring Boot默认使用的日志框架是 Logback。
+    Spring Boot在所有内部日志中使用 Commons Logging，但是默认配置也提供了对常用日志的支持，如：Java Util Logging，Log4J, Log4J2和Logback1。
+
+    spring-boot-starter-logging依赖包括三个依赖
+    logback-classic(经典库, 提供了对 slf4j 的支持, 包含了 logback-core, slf4j-api)
+    log4j-to-slf4j(提供了 log4j 的日志消息到 SLF4j 的路由, 包含了 slf4j-api)
+    jul-to-slf4j(提供了 jul(java-util-logging) 到 slf4j 的支持, 依赖包含slf4j-api)
+
+    我们的方案是 slf4j+lof4j2, 所以我们要排除上面的所有包
+    log4j-slf4j-impl+log4j2
      */
 }

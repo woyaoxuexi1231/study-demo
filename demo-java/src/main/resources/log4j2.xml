@@ -1,29 +1,116 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--      Configuration后面的status，这个用于设置log4j2自身内部的信息输出，可以不设置，
-     当设置成trace时，可以看到log4j2内部各种详细输出
+
+<!--
+是的，从2.10版本开始，Log4j2默认关闭了Jansi¹²³。Jansi是一个支持输出ANSI颜色的类库¹²³。
+如果你想在控制台打印彩色日志，你需要在启动应用时设置`log4j.skipJansi`属性为`false`¹²³。
+例如，在IDEA中，你可以点击右上角的"Edit Configurations"，然后在"VM options"中添加`-Dlog4j.skipJansi=false`¹²³。这样，重新启动项目后，你就可以看到控制台的日志有颜色了¹²³。
+源: 与必应的对话， 2023/10/20
+(1) IDEA+Log4j2 设置控制台打印彩色日志 - CSDN博客. https://blog.csdn.net/qq_41673830/article/details/108984048.
+(2) Log4j2 idea控制台打印彩色日志 - Tzeao - 博客园. https://www.cnblogs.com/Tzeao/p/16078549.html.
+(3) Log4j2 idea控制台打印彩色日志 - Tzeao - 博客园. https://bing.com/search?q=Log4j2+%e9%bb%98%e8%ae%a4%e5%85%b3%e9%97%ad%e4%ba%86+Jansi.
+(4) IDEA+Log4j2 设置控制台打印彩色日志 - 空の彼方 - 博客园. https://www.cnblogs.com/darknebula/p/10009212.html.
+(5) undefined. https://blog.csdn.net/weixin_51444617/article/details/123330574.
+
+
+从Log4j2的2.10版本开始，Log4j2默认关闭了Jansi¹²³，Jansi是一个支持输出ANSI颜色的类库¹²³。这意味着从这个版本开始，Log4j2默认不再支持在控制台打印彩色日志¹²³。
+关闭Jansi的原因是，Jansi需要使用本地代码，这意味着Jansi只能被单个类加载器加载¹²。对于Web应用程序，这意味着Jansi jar必须在Web容器的类路径中¹²。为了避免给Web应用程序带来问题，从Log4j 2.10版本开始，Log4j将不再自动尝试加载Jansi，除非明确配置¹²。
+如果你想在控制台打印彩色日志，你需要在启动应用时设置`log4j.skipJansi`属性为`false`¹²³。例如，在IDEA中，你可以点击右上角的"Edit Configurations"，然后在"VM options"中添加`-Dlog4j.skipJansi=false`¹²³。这样，重新启动项目后，你就可以看到控制台的日志有颜色了¹²³。
+源: 与必应的对话， 2023/10/20
+(1) log4j2日志配置颜色_log4j颜色-CSDN博客. https://blog.csdn.net/u010999809/article/details/108772149.
+(2) IDEA,Myeclipse 不显示log4j2 彩色日志解决办法 - CSDN博客. https://blog.csdn.net/zzc199055/article/details/86706695.
+(3) 记-Log4j 设置控制台打印彩色日志_log4j彩色日志-CSDN博客. https://blog.csdn.net/ory001/article/details/120699468.
+(4) IDEA使用Log4j2后Console控制台日志打印没有彩色效果 _ 潘 .... https://www.panziye.com/java/3262.html.
+(5) undefined. https://logging.apache.org/log4j/2.x/manual/layouts.html.
+
+
+
+如果你在使用Log4j2的2.13.3版本时看到了颜色日志，但并没有设置`log4j.skipJansi=false`，那可能是因为你的IDE或者构建工具自动启用了Jansi¹²³⁴。例如，一些IDE和构建工具可能会检测到你的控制台支持ANSI颜色，并自动启用Jansi¹²³⁴。此外，某些操作系统和终端模拟器也可能默认支持ANSI颜色¹²³⁴。
+另一种可能性是，你的项目中可能包含其他的日志框架或者库，这些框架或者库可能会影响Log4j2的行为¹²³⁴。例如，如果你的项目中包含了SLF4J的Log4j2绑定，那么SLF4J可能会覆盖Log4j2的配置¹²³⁴。
+总的来说，如果你没有设置`log4j.skipJansi=false`，但仍然看到了颜色日志，那可能是因为你的环境或者其他的库启用了Jansi¹²³⁴。希望这个解释对你有所帮助！
+源: 与必应的对话， 2023/10/20
+(1) Log4j2 idea控制台打印彩色日志 - CSDN博客. https://blog.csdn.net/weixin_51444617/article/details/123331729.
+(2) 在log4j版本2.13.3或更高版本中，无法使用log4j2.properties .... https://cloud.tencent.com/developer/ask/sof/325199.
+(3) IDEA+Log4j2 设置控制台打印彩色日志_log4j pattern.color-CSDN .... https://blog.csdn.net/qq_41673830/article/details/108984048.
+(4) IDEA+Log4j2 设置控制台打印彩色日志 - 空の彼方 - 博客园. https://www.cnblogs.com/darknebula/p/10009212.html.
+ -->
+
+<!--
+在Log4j2中，`Configuration`标签是XML配置文件的根元素¹²³⁴。以下是一些关于`Configuration`标签的详细信息：
+- `status`：此属性用于设置Log4j2的状态级别，这有助于开发者找出配置文件中的错误，也可以检测到死循环的logger²。Log4j2定义了8个状态级别：ALL, TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF²。
+- `monitorInterval`：此属性用于设置Log4j2自动检测配置文件的时间间隔（单位：秒），最小间隔为5秒²。当Log4j2检测到配置文件有变化时，会重新配置自己²。
+- `Properties`：此标签用于定义一些属性，这些属性可以在配置文件的其他地方使用⁴。
+- `Appenders`：此标签用于定义Appender，Appender决定了日志信息将输出到哪里¹²³⁴。
+- `Loggers`：此标签用于定义Logger，Logger负责处理日志信息¹²³⁴。
+
+源: 与必应的对话， 2023/10/20
+(1) SpringBoot—整合log4j2入门和log4j2.xml配置详解 - Andya_net .... https://www.cnblogs.com/Andya/p/13641254.html.
+(2) log4j2.x配置文件中各标签详解_log4j2 logger标签-CSDN博客. https://blog.csdn.net/shiyong1949/article/details/54666992.
+(3) Log4j2.xml 配置文件详解 - 掘金. https://juejin.cn/post/6972538940855173151.
+(4) Log4j2常用标签及使用_log4j2 logger标签-CSDN博客. https://blog.csdn.net/qq_37436172/article/details/129780581.
+(5) Log4j2 XML Configuration: Log4j2.xml Example - HowToDoInJava. https://howtodoinjava.com/log4j2/log4j2-xml-configuration-example/.
 -->
 <!-- monitorInterval：Log4j能够自动检测修改配置 文件和重新配置本身，设置间隔秒数 -->
 <configuration monitorInterval="5">
+
     <!-- 日志级别以及优先级排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
 
+    <!--
+     在Log4j2中，`Properties`标签用于定义一些属性，这些属性可以在配置文件的其他地方使用⁵。
+     这种机制类似于Maven，允许你在配置中声明的变量（如`${name}`）被解析为在配置本身中声明的属性⁵。这就像定义了XML文件中的全局常量，一处定义，多处使用⁵。
+     -->
     <!-- 变量配置 -->
     <Properties>
         <!--
-            格式化输出：
-            %d表示日期，
-            %thread表示线程名，
-            %-5level：级别从左显示5个字符宽度
-            %msg：日志消息，%n是换行符
-            %logger{36} 表示 Logger 名字最长36个字符
-        -->
-        <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%-5level}[%thread] %style{%logger{36}}{cyan} : %msg%n" />
+         这是一个Log4j2的`PatternLayout`配置，用于定义日志的输出格式。下面是对这个配置的详细解释：
+        - `%d{yyyy-MM-dd HH:mm:ss.SSSS-SS}`：这是日期和时间的格式，输出的日期和时间将按照`yyyy-MM-dd HH:mm:ss.SSSS-SS`这个格式显示。
+        - `%highlight{%-5level}`：这是日志级别的格式，`%-5level`表示左对齐并且占用5个字符宽度。`%highlight{}`表示根据日志级别的不同，输出不同颜色的日志级别。
+        - `[%thread]`：这是线程名的格式，输出的线程名将被包含在方括号中。
+        - `%style{%logger{36}}{cyan}`：这是日志名称的格式，`%logger{36}`表示输出的日志名称最多占用36个字符宽度。`%style{}{cyan}`表示输出青色的日志名称。
+        - `- %msg%n`：这是日志信息的格式，`%msg`表示日志信息，`%n`表示换行。日志信息前面有一个短横线和一个空格。
+        所以，这个配置定义了如下的日志输出格式：日期和时间（按照特定格式），高亮的日志级别（左对齐并且占用5个字符宽度），线程名（被包含在方括号中），青色的日志名称（最多占用36个字符宽度），以及日志信息（前面有一个短横线和一个空格）。
+         -->
+        <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%-5level}[%thread] %style{%logger{36}}{cyan} - %msg%n"/>
 
         <!-- 定义日志存储的路径，不要配置相对路径 -->
-        <property name="FILE_PATH" value="logs" />
-        <property name="FILE_NAME" value="demo-java" />
+        <property name="FILE_PATH" value="logs"/>
+        <property name="FILE_NAME" value="demo-java"/>
     </Properties>
 
     <appenders>
+
+
+        <!--
+         在Log4j2中，你可以使用`PatternLayout`来格式化日志输出¹²。`PatternLayout`是一个灵活的布局，是最常用的日志格式配置¹²。它的目标是格式化一个日志事件并返回结果，结果的格式取决于转换模式¹²。
+        转换模式由称为转换说明符的文字文本和格式控制表达式组成¹²。每个转换说明符以百分号 (%)开头，后面是可选的格式修饰符和必填的转换字符¹²。
+        格式修饰符控制字段宽度、填充、左对齐和右对齐等内容¹²。转换字符指定数据的类型，例如日期、线程名、日志级别、日志名称等等¹²。
+
+        以下是一个简单的例子¹²：
+        ```xml
+        <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        ```
+        对应输出的日志信息：
+        ```
+        11:33:08.440 [main] FATAL org.apache.logging.log4j.Log4j2Test - fatal level log
+        ```
+        详细对应关系：
+        - 日期 `%d{HH:mm:ss.SSS}`：11:33:08.440
+        - 线程名 `%t`：main
+        - 日志级别 `%-5level`：FATAL
+        - 日志名称 `%logger{36}`：org.apache.logging.log4j.Log4j2Test
+        - 日志信息 `%msg`：fatal level log
+        - 换行 `%n`：日志结束换行
+
+        另外配置中的空白字符和 `[]-`等字符都是按照原样输出的¹²。希望这个解释对你有所帮助！
+
+        源: 与必应的对话， 2023/10/20
+        (1) Log4j2进阶使用(Pattern Layout详细设置) - 木木与呆呆 .... https://www.cnblogs.com/bugzeroman/p/12858115.html.
+        (2) Log4j2进阶使用(Pattern Layout详细设置) - 简书. https://www.jianshu.com/p/37ef7bc6d6eb.
+        (3) 【日志】Log4j2配置 - 简书. https://bing.com/search?q=Log4j2+%e6%a0%bc%e5%bc%8f%e5%8c%96%e8%be%93%e5%87%ba%e9%85%8d%e7%bd%ae.
+        (4) 一文带你彻底掌握Log4j2 - 蚂蚁小哥 - 博客园. https://www.cnblogs.com/antLaddie/p/15904895.html.
+        (5) log4j2配置详解(节点和输出格式)-CSDN博客. https://blog.csdn.net/Q176782/article/details/78288734.
+        (6) log4j输出格式详细设置-CSDN博客. https://blog.csdn.net/phoenix_cat/article/details/84151561.
+         -->
+
         <console name="Console" target="SYSTEM_OUT">
             <!--输出日志的格式-->
             <PatternLayout pattern="${LOG_PATTERN}" disableAnsi="false" noConsoleNoAnsi="false"/>
@@ -35,7 +122,8 @@
         　　这个会打印出所有的info及以下级别的信息，每次大小超过size，
         　　则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档
         -->
-        <RollingFile name="RollingFileInfo" fileName="${FILE_PATH}/${FILE_NAME}-info.log" filePattern="${FILE_PATH}/${FILE_NAME}-INFO-%d{yyyy-MM-dd}_%i.log.gz">
+        <RollingFile name="RollingFileInfo" fileName="${FILE_PATH}/${FILE_NAME}-info.log"
+                     filePattern="${FILE_PATH}/${FILE_NAME}-INFO-%d{yyyy-MM-dd}_%i.log.gz">
             <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
             <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
@@ -49,7 +137,8 @@
         </RollingFile>
 
         <!-- 这个会打印出所有的warn及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
-        <RollingFile name="RollingFileWarn" fileName="${FILE_PATH}/${FILE_NAME}-warn.log" filePattern="${FILE_PATH}/${FILE_NAME}-WARN-%d{yyyy-MM-dd}_%i.log.gz">
+        <RollingFile name="RollingFileWarn" fileName="${FILE_PATH}/${FILE_NAME}-warn.log"
+                     filePattern="${FILE_PATH}/${FILE_NAME}-WARN-%d{yyyy-MM-dd}_%i.log.gz">
             <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
             <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
@@ -63,7 +152,8 @@
         </RollingFile>
 
         <!-- 这个会打印出所有的error及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
-        <RollingFile name="RollingFileError" fileName="${FILE_PATH}/${FILE_NAME}-error.log" filePattern="${FILE_PATH}/${FILE_NAME}-ERROR-%d{yyyy-MM-dd}_%i.log.gz">
+        <RollingFile name="RollingFileError" fileName="${FILE_PATH}/${FILE_NAME}-error.log"
+                     filePattern="${FILE_PATH}/${FILE_NAME}-ERROR-%d{yyyy-MM-dd}_%i.log.gz">
             <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
             <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
