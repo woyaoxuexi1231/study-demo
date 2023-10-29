@@ -93,6 +93,12 @@
             <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+
 
         <!-- 整合 JSP -->
         <!-- 记得在 idea 设置的启动项里面编辑 working-directory 为 $MODULE_DIR$ -->
