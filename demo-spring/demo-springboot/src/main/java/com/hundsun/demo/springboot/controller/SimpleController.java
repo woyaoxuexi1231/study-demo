@@ -6,7 +6,10 @@ import com.hundsun.demo.springboot.dynamic.DynamicDataSourceTypeManager;
 import com.hundsun.demo.springboot.mapper.EmployeeMapper;
 import com.hundsun.demo.springboot.mapper.SequenceMapper;
 import com.hundsun.demo.springboot.model.pojo.EmployeeDO;
-import com.hundsun.demo.springboot.service.SimpleService;
+import com.hundsun.demo.springboot.mybatisplus.Event;
+import com.hundsun.demo.springboot.mybatisplus.EventMapper;
+import com.hundsun.demo.springboot.service.serviceimpl.SimpleServic3Impl;
+import com.hundsun.demo.springboot.service.serviceimpl.SimpleServiceImpl;
 import com.hundsun.demo.springboot.utils.segmentid.GenResult;
 import com.hundsun.demo.springboot.utils.segmentid.GenResultEnum;
 import com.hundsun.demo.springboot.utils.segmentid.SegmentIdGenerator;
@@ -31,6 +34,8 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.text.NumberFormat;
+import java.util.Calendar;
+import java.util.TimeZone;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -53,7 +58,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SimpleController implements ApplicationContextAware {
 
     @Autowired
-    SimpleService simpleService;
+    SimpleServiceImpl simpleServiceImpl;
+
+    @Autowired
+    SimpleServic3Impl simpleServic3;
 
     @Resource
     EmployeeMapper employeeMapper;
@@ -63,17 +71,17 @@ public class SimpleController implements ApplicationContextAware {
      */
     @GetMapping("/multiDataSourceSingleTransaction")
     public ResultDTO<?> multiDataSourceSingleTransaction() {
-        return simpleService.multiDataSourceSingleTransaction();
+        return simpleServiceImpl.multiDataSourceSingleTransaction();
     }
 
     @GetMapping("/mysqlSelect")
     public void mysqlSelect() {
-        simpleService.mysqlSelect();
+        simpleServiceImpl.mysqlSelect();
     }
 
     @GetMapping("/mysqlUpdate")
     public void mysqlUpdate() {
-        simpleService.mysqlUpdate();
+        simpleServiceImpl.mysqlUpdate();
     }
 
     @GetMapping("/mybatis")
@@ -88,21 +96,40 @@ public class SimpleController implements ApplicationContextAware {
 
     @GetMapping("/testMysqlAutoKey")
     public void testMysqlAutoKey() {
-        simpleService.testMysqlAutoKey();
+        simpleServiceImpl.testMysqlAutoKey();
     }
 
     @GetMapping("/transactionInvalidation")
     public void transactionInvalidation() {
         DynamicDataSourceTypeManager.set(DynamicDataSourceType.SECOND);
-        simpleService.transactionInvalidation();
+        simpleServiceImpl.transactionInvalidation();
     }
+
+    @Autowired
+    EventMapper eventMapper;
 
     @GetMapping("/pageHelper")
     public void pageHelper() {
-        simpleService.pageHelper();
+        // simpleServiceImpl.pageHelper();
+        // simpleServic3.pageHelper();
         // DynamicDataSourceTypeManager.set(DynamicDataSourceType.SECOND);
         // simpleService.pageHelper();
+        // Event event = new Event();
+        // event.setEventType(1);
+        // eventMapper.insert(event);
+        // PageHelper.startPage(0,0);
+        // QueryWrapper<Event> wrapper = new QueryWrapper<>();
+        // List<Event> eventList = eventMapper.selectList(wrapper);
+        // System.out.println(eventList.size());
+        long currentTimeMillis = System.currentTimeMillis();
+        Event event = new Event();
+        event.setEventType(1);
+        eventMapper.insert(event);
 
+        int[] ints = new int[10];
+        for (int anInt : ints) {
+
+        }
     }
 
 
@@ -178,7 +205,7 @@ public class SimpleController implements ApplicationContextAware {
         for (int i = 0; i < 3; i++) {
             commonPool.execute(() -> {
                 for (int i1 = 0; i1 < 10000; i1++) {
-                    GenResult t1 = segmentIdGenerator.getId("t1");
+                    GenResult t1 = segmentIdGenerator.getId("test");
                     if (GenResultEnum.NOT_READY.getId() == t1.getId()) {
                         atomicInteger.incrementAndGet();
                     } else {
@@ -249,4 +276,60 @@ public class SimpleController implements ApplicationContextAware {
 
         };
     }
+
+
+    private static Integer firstDayOfWeek(Integer business) {
+        Calendar instance = Calendar.getInstance();
+        // 设置时区
+        instance.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+        // 根据交易日设置时间
+        instance.set(business / 10000, getMonth(((business % 10000) / 100)), business % 100);
+        // 设置周一为一周的第一天
+        // instance.setFirstDayOfWeek(Calendar.MONDAY);
+        // 获取交易日是一周的第几天
+
+        boolean isFirstSunday = (instance.getFirstDayOfWeek() == Calendar.SUNDAY);
+
+        int dayOfWeek = instance.get(Calendar.DAY_OF_WEEK);
+
+        if (isFirstSunday) {
+            dayOfWeek = dayOfWeek - 1;
+            if (dayOfWeek == 0) {
+                dayOfWeek = 7;
+            }
+        }
+
+        instance.add(Calendar.DATE, -dayOfWeek + 1);
+        int startYear = instance.get(Calendar.YEAR);
+        int startMonth = instance.get(Calendar.MONTH) + 1;
+        int startDate = instance.get(Calendar.DATE);
+
+        System.out.println("时间: " + instance.getTime());
+        // System.out.println("一周第一天: " + instance.getFirstDayOfWeek());
+
+        return startYear * 10000 + startMonth * 100 + startDate;
+
+        // int weekOfYear = instance.get(Calendar.WEEK_OF_YEAR);
+        // // 小于当前交易日的数据, 查 dayOfWeek 条出来
+        // LambdaQueryWrapper<TradeDayDO> wrapper = new LambdaQueryWrapper<>();
+        // wrapper.lt(TradeDayDO::getTradeDate, business).orderByDesc(TradeDayDO::getTradeDate);
+        // PageHelper.startPage(1, dayOfWeek);
+        // List<TradeDayDO> tradeDayDOS = tradeDayMapper.selectList(wrapper);
+    }
+
+    private static int getMonth(Integer month) {
+        int[] calenderMonths = new int[]{
+                Calendar.JANUARY, Calendar.FEBRUARY, Calendar.MARCH,
+                Calendar.APRIL, Calendar.MAY, Calendar.JUNE,
+                Calendar.JULY, Calendar.AUGUST, Calendar.SEPTEMBER,
+                Calendar.OCTOBER, Calendar.NOVEMBER, Calendar.DECEMBER
+        };
+        for (int calenderMonth : calenderMonths) {
+            if (calenderMonth == month - 1) {
+                return calenderMonth;
+            }
+        }
+        return 12;
+    }
+
 }
