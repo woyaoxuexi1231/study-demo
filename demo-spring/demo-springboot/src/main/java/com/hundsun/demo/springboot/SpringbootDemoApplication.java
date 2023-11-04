@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import tk.mybatis.spring.annotation.MapperScan;
 
 /**
@@ -24,7 +25,21 @@ import tk.mybatis.spring.annotation.MapperScan;
 })
 @Slf4j
 // @ServletComponentScan
+@EnableScheduling
 public class SpringbootDemoApplication {
+
+/*
+Spring Boot 读取配置文件的顺序如下：
+
+1. 命令行参数：可以通过命令行参数的方式指定配置文件的路径。例如，使用 `java -jar myproject.jar --spring.config.location=file:/etc/myproject/application.yml` 指定配置文件路径。
+2. `SPRING_CONFIG_LOCATION` 环境变量：Spring Boot 会优先读取该环境变量所指定的配置文件路径。
+3. 项目根目录下的 `config/` 目录：Spring Boot 会读取项目根目录下的 `config/` 目录里的配置文件，包括 `application.properties`, `application.yml`, `application.yaml` 等文件。
+4. 项目根目录：Spring Boot 会读取项目根目录下的 `application.properties`, `application.yml`, `application.yaml` 等文件。
+5. `classpath:/config/` 目录：Spring Boot 会读取 `classpath:/config/` 目录里的配置文件，包括 `application.properties`, `application.yml`, `application.yaml` 等文件。
+6. `classpath:/` 目录：Spring Boot 会读取 `classpath:/` 目录下的 `application.properties`, `application.yml`, `application.yaml` 等文件。
+
+注：优先级从高到低排列。如果同一配置文件存在于多个位置，则优先级高的位置会覆盖优先级低的位置的配置。同时，高优先级的位置中的配置文件也可以包含低优先级位置中的配置文件。例如，项目根目录下的 `application.properties` 可以使用 `@PropertySource("classpath:custom.properties")` 引入 `custom.properties` 文件中的配置。
+ */
 
     /*
      *

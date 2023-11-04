@@ -26,6 +26,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,6 +36,7 @@ import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.text.NumberFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -277,6 +279,27 @@ public class SimpleController implements ApplicationContextAware {
         };
     }
 
+    private static Integer integer = 1;
+
+    @SneakyThrows
+    @Scheduled(cron = "* * * * * ?")
+    public void scheduled() {
+        integer++;
+        // if (integer == 3) {
+        //     throw new RuntimeException("error");
+        // }
+        log.info("{}", integer);
+    }
+
+    @SneakyThrows
+    @Scheduled(cron = "* * * * * ?")
+    public void schedule() {
+        log.info("{}", new Date());
+        // 这里会阻塞其他的定时任务执行
+        Thread.sleep(10000);
+        // 这里抛出异常, 这个定时任务不会被终止
+        throw new RuntimeException("error");
+    }
 
     private static Integer firstDayOfWeek(Integer business) {
         Calendar instance = Calendar.getInstance();
