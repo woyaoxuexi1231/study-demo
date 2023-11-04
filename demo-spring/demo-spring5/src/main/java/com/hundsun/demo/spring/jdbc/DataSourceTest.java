@@ -29,6 +29,41 @@ public class DataSourceTest {
     private static final String MYSQL_USER = "root";
     private static final String MYSQL_PASS = "123456";
 
+    /*
+    在 Java 中，连接 Oracle 数据库时可以使用 SID 或服务名作为连接标识，对应的 JDBC URL 格式如下：
+
+    1. 使用 SID 连接 Oracle 数据库的 JDBC URL 格式：
+       ```
+       jdbc:oracle:thin:@host:port:SID
+       ```
+       其中，`host` 是 Oracle 数据库服务器的主机名或 IP 地址，`port` 是 Oracle 数据库服务器监听的端口号（默认为 1521），`SID` 是数据库的系统标识符。
+
+    2. 使用服务名连接 Oracle 数据库的 JDBC URL 格式：
+       ```
+       jdbc:oracle:thin:@//host:port/serviceName
+       ```
+       其中，`host` 是 Oracle 数据库服务器的主机名或 IP 地址，`port` 是 Oracle 数据库服务器监听的端口号（默认为 1521），`serviceName` 是数据库的服务名。
+
+    请注意，在使用服务名连接数据库时，URL 的开头需要添加双斜杠（`//@`）。
+
+    以下是两种连接方式的示例代码：
+
+    使用 SID 连接的示例代码：
+    ```java
+    String jdbcUrl = "jdbc:oracle:thin:@host:port:SID";
+    String username = "your-username";
+    String password = "your-password";
+    ```
+
+    使用服务名连接的示例代码：
+    ```java
+    String jdbcUrl = "jdbc:oracle:thin:@//host:port/serviceName";
+    String username = "your-username";
+    String password = "your-password";
+    ```
+
+    你需要将示例代码中的 `host`、`port`、`SID/serviceName`、`username` 和 `password` 替换为你实际的连接信息和凭据。
+     */
     private static final String ORACLE_DRIVER = "oracle.jdbc.driver.OracleDriver";
     private static final String ORACLE_URL = "jdbc:oracle:thin:@localhost:1521:ORCL";
     private static final String ORACLE_USER = "SCOTT";

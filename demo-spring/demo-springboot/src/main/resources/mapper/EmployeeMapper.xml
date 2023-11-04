@@ -8,7 +8,8 @@
                , #{officeCode}, #{reportsTo}, #{jobTitle})
     </insert>
     <select id="selectAll2" resultType="com.hundsun.demo.springboot.model.pojo.EmployeeDO">
-        select * from {h-schema}employees
+--         select * from {h-schema}employees
+        select * from employees
     </select>
 
 </mapper>

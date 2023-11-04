@@ -1,14 +1,28 @@
 package com.hundsun.demo.springboot.mybatisplus;
 
+import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hundsun.demo.springboot.utils.BatchCommitUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.session.ExecutorType;
+import org.apache.ibatis.session.SqlSession;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @ProductName: Hundsun amust
@@ -36,6 +50,57 @@ public class UserTest extends ServiceImpl<UserMapper, User> {
     public void delete() {
         this.userMapper.deleteById(id);
     }
+
+    @GetMapping("/selectList")
+    public void selectList() {
+        IPage<User> pageFinder = new Page<>(1, 2);
+        System.out.println(("----- selectAll method test ------"));
+        userMapper.pageList(pageFinder);
+        // userList.forEach(System.out::println);
+    }
+
+    @GetMapping("/selectWrapper")
+    public void selectWrapper() {
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.select("userId", "userName").orderByAsc("userId");
+        List<User> users = userMapper.selectList(new QueryWrapper<>());
+        users.forEach(System.out::println);
+    }
+
+    @GetMapping("mybatisplus")
+    public void mybatisplus() {
+        userMapper.selectList(new QueryWrapper<>());
+    }
+
+    @Autowired
+    BatchCommitUtil batchCommitUtil;
+
+    @Autowired
+    private SqlSessionTemplate sqlSessionTemplate;
+
+    public <T extends List<R>, R> void exeBatch(T t, Consumer<R> consumer) {
+        //新获取一个模式为 BATCH, 自动提交为false的session
+        SqlSession sqlSession = sqlSessionTemplate.getSqlSessionFactory().openSession(ExecutorType.BATCH, false);
+        try {
+            for (int i = 0; i < 1000; i++) {
+                //或者使用
+                //sqlSession.insert("com.example.demo.db.dao.PersonModelMapper.insertSelective", new PersonModel());
+                //主意这时候不能正确返回影响条数了
+                consumer.accept(t.get(i));
+            }
+            sqlSession.flushStatements();
+
+            sqlSession.commit();
+            //清理缓存，防止溢出
+            //sqlSession.clearCache();
+        } catch (Exception e) {
+            //异常回滚
+            sqlSession.rollback();
+        } finally {
+            sqlSession.close();
+        }
+    }
+
 
     @GetMapping("/mybatisplustest")
     @Transactional
@@ -67,17 +132,44 @@ public class UserTest extends ServiceImpl<UserMapper, User> {
         this.updateBatchById(objects);
     }
 
+    @Autowired
+    EventMapper eventMapper;
 
-    @GetMapping("/mybatisplustest2")
+    @PostMapping("/mybatisplustest2")
     @Transactional
-    public void mybatisplustest2() {
+    public void mybatisplustest2(@RequestBody Event event) {
 
-        List<User> objects = new ArrayList<>();
-        for (int i = 1; i <= 1000; i++) {
-            objects.add(User.builder().id((long) i).name(System.currentTimeMillis() + "").build());
-        }
-        // this.updateBatchById(objects);
-        // objects.forEach(i -> i.setName(i.getName() + "a"));
-        userMapper.updateBatch(objects);
+        // List<User> objects = new ArrayList<>();
+        // for (int i = 1; i <= 1000; i++) {
+        //     objects.add(User.builder().id((long) i).name(System.currentTimeMillis() + "").build());
+        // }
+        // // this.updateBatchById(objects);
+        // // objects.forEach(i -> i.setName(i.getName() + "a"));
+        // userMapper.updateBatch(objects);
+        System.out.println(event.toString());
+        Date date = new Date();
+        /*
+         * CST 北京时间, China Standard Time,又名中国标准时间 Thu Sep 28 00:53:04 CST 2023
+         * GMT 格林尼治标准时间, Greenwich Mean Time Sun, 30 Aug 2020 15:09:23 GMT
+         * UTC 国际协调时间, Coordinated Universal Time
+         * ISO 标准时间
+         *
+         * 连接数据库的连接串不指定任何时区, 查出来的时间, 在 java 内存中与 mysql 实际的时间差了 13个小时
+         * 但是我发现中部夏令时间(CDT)与北京时间差了正好 13个小时. CDT之前也叫 CST
+         */
+
+        LambdaQueryWrapper<Event> wrapper = new LambdaQueryWrapper<>();
+        wrapper.gt(Event::getLastUpdateTime, event.getLastUpdateTime());
+        List<Event> eventList = eventMapper.selectList(wrapper);
+        eventList.forEach(i -> {
+            System.out.println(i);
+            System.out.println(JSON.toJSON(i));
+        });
+    }
+
+    public static void main(String[] args) {
+        String s = "11111111111111111111111111";
+        String substring = s.length() > 10 ? s.substring(0, 10) : s;
+        System.out.println(substring.length());
     }
 }

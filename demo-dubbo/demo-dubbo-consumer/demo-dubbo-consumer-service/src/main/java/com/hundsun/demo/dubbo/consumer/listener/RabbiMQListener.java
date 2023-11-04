@@ -279,7 +279,7 @@ public class RabbiMQListener {
                     type = ExchangeTypes.TOPIC,
                     autoDelete = "false",
                     durable = "true"),
-            key = MQConfig.TOPIC_SLAVE_ROUTE_KEY
+            key = {MQConfig.TOPIC_SLAVE_ROUTE_KEY, MQConfig.FANOUT_SLAVE_ROUTE_KEY}
     ))
     public void receiveMsg2(Message msg, Channel channel) {
         log.info("im receive " + msg + "too");
