@@ -1,12 +1,9 @@
 package com.hundsun.demo.springboot.mybatisplus;
 
-import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.hundsun.demo.springboot.utils.BatchCommitUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
@@ -38,7 +35,7 @@ import java.util.function.Consumer;
  */
 
 @Slf4j
-@RestController
+@RestController(value = "mybatisplus")
 public class UserTest extends ServiceImpl<UserMapper, User> {
 
     @Resource
@@ -72,8 +69,6 @@ public class UserTest extends ServiceImpl<UserMapper, User> {
         userMapper.selectList(new QueryWrapper<>());
     }
 
-    @Autowired
-    BatchCommitUtil batchCommitUtil;
 
     @Autowired
     private SqlSessionTemplate sqlSessionTemplate;
@@ -132,12 +127,9 @@ public class UserTest extends ServiceImpl<UserMapper, User> {
         this.updateBatchById(objects);
     }
 
-    @Autowired
-    EventMapper eventMapper;
-
     @PostMapping("/mybatisplustest2")
     @Transactional
-    public void mybatisplustest2(@RequestBody Event event) {
+    public void mybatisplustest2() {
 
         // List<User> objects = new ArrayList<>();
         // for (int i = 1; i <= 1000; i++) {
@@ -146,7 +138,6 @@ public class UserTest extends ServiceImpl<UserMapper, User> {
         // // this.updateBatchById(objects);
         // // objects.forEach(i -> i.setName(i.getName() + "a"));
         // userMapper.updateBatch(objects);
-        System.out.println(event.toString());
         Date date = new Date();
         /*
          * CST 北京时间, China Standard Time,又名中国标准时间 Thu Sep 28 00:53:04 CST 2023
@@ -157,19 +148,5 @@ public class UserTest extends ServiceImpl<UserMapper, User> {
          * 连接数据库的连接串不指定任何时区, 查出来的时间, 在 java 内存中与 mysql 实际的时间差了 13个小时
          * 但是我发现中部夏令时间(CDT)与北京时间差了正好 13个小时. CDT之前也叫 CST
          */
-
-        LambdaQueryWrapper<Event> wrapper = new LambdaQueryWrapper<>();
-        wrapper.gt(Event::getLastUpdateTime, event.getLastUpdateTime());
-        List<Event> eventList = eventMapper.selectList(wrapper);
-        eventList.forEach(i -> {
-            System.out.println(i);
-            System.out.println(JSON.toJSON(i));
-        });
-    }
-
-    public static void main(String[] args) {
-        String s = "11111111111111111111111111";
-        String substring = s.length() > 10 ? s.substring(0, 10) : s;
-        System.out.println(substring.length());
     }
 }
