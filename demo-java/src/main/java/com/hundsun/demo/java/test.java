@@ -10,4 +10,7 @@ package com.hundsun.demo.java;
  */
 
 public class test {
+    public void testBranch() {
+        System.out.println("这是 test 分支提交的代码");
+    }
 }
