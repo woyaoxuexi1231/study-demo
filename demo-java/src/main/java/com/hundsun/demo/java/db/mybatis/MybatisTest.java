@@ -1,5 +1,6 @@
 package com.hundsun.demo.java.db.mybatis;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -17,6 +18,7 @@ import java.io.Reader;
  * @createDate: 2023/10/15 19:14
  */
 
+@Slf4j
 public class MybatisTest {
 
     public static void main(String[] args) throws IOException {
@@ -31,7 +33,7 @@ public class MybatisTest {
             UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
             // 调用Mapper方法
             User user = userMapper.getUser(1);
-            System.out.println(user.getName());
+            log.info("{}", user);
         } finally {
             sqlSession.close();
 
