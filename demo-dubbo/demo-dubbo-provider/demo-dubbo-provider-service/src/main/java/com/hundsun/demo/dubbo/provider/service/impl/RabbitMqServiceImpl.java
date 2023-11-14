@@ -1,5 +1,6 @@
 package com.hundsun.demo.dubbo.provider.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
@@ -60,7 +61,7 @@ public class RabbitMqServiceImpl implements RabbitMqService {
             rabbitTemplate.convertAndSend(
                     MQConfig.TOPIC_EXCHANGE_NAME,
                     MQConfig.TOPIC_MASTER_ROUTE_KEY,
-                    JSONObject.toJSON(idempotency).toString(),
+                    JSON.toJSONString(idempotency),
                     messagePostProcessor,
                     correlationData);
             // rabbitTemplate.convertSendAndReceive()

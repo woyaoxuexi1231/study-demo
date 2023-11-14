@@ -86,6 +86,7 @@ public class RabbiMQListener {
         MQIdempotency validation = JSONObject.parseObject(new String(msg.getBody(), StandardCharsets.UTF_8), MQIdempotency.class);
         // handleMsgByMysql(validation);
         // ConsumerStatus status = handleMsgByMysqlOptimize(validation);
+        log.info("转换后的消息为: {}", validation);
         ConsumerStatus status = handleMsgByRedis(validation);
         boolean isAck = false;
 
