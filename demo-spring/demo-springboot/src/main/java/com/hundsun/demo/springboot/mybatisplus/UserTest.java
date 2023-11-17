@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -147,6 +146,25 @@ public class UserTest extends ServiceImpl<UserMapper, User> {
          *
          * 连接数据库的连接串不指定任何时区, 查出来的时间, 在 java 内存中与 mysql 实际的时间差了 13个小时
          * 但是我发现中部夏令时间(CDT)与北京时间差了正好 13个小时. CDT之前也叫 CST
+         */
+    }
+
+    @GetMapping("/testNoSqlXml")
+    public void testNoSqlXml() {
+        // 这是一个没有 sql 实现的空标签
+        userMapper.selectAll();
+        /*
+        ### Error querying database.  Cause: java.sql.SQLException: SQL String cannot be empty
+        ### The error may exist in file [D:\Project\github\study-demo\demo-spring\demo-springboot\target\classes\mapper\UserMapper.xml]
+        ### The error may involve com.hundsun.demo.springboot.mybatisplus.UserMapper.selectAll
+        ### The error occurred while executing a query
+        ### SQL:
+        ### Cause: java.sql.SQLException: SQL String cannot be empty
+
+        也就是说:
+        1. 没有 SQL 标签 -> Invalid bound statement (not found): com.hundsun.demo.springboot.mybatisplus.UserMapper.selectAll
+        2. 有 SQL 标签, 但是没有实现 -> java.sql.SQLException: SQL String cannot be empty
+        这两种情况都会报错
          */
     }
 }

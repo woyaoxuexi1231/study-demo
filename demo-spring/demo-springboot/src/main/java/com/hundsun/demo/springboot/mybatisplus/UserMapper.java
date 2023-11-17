@@ -32,4 +32,5 @@ public interface UserMapper extends BaseMapper<User> {
      */
     public void updateBatch(@Param("list") List<User> users);
 
+    public void selectAll();
 }
