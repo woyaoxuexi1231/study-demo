@@ -1,40 +1,11 @@
 package com.hundsun.demo.springboot.controller;
 
-import com.hundsun.demo.springboot.mapper.SequenceMapper;
-import com.hundsun.demo.springboot.utils.StopWatch;
-import com.hundsun.demo.springboot.utils.segmentid.GenResult;
-import com.hundsun.demo.springboot.utils.segmentid.GenResultEnum;
-import com.hundsun.demo.springboot.utils.segmentid.SegmentIdGenerator;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.mapping.Environment;
-import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.PostConstruct;
-import javax.sql.DataSource;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @projectName: study-demo
@@ -55,4 +26,38 @@ public class SimpleController implements ApplicationContextAware {
         this.applicationContext = applicationContext;
     }
 
+
+    public static void main(String[] args) {
+        String blank = "";
+        String space = "                ";
+        String nullStr = null;
+        String marble = " marble";
+        System.out.println("-------isNotBlank--------");
+        // StringUtils.isNotBlank 1. null 2.空字符串, 或字符串全部由空格组成 这两种情况军返回 false
+        System.out.println(StringUtils.isNotBlank(blank));
+        System.out.println(StringUtils.isNotBlank(space));
+        System.out.println(StringUtils.isNotBlank(nullStr));
+        System.out.println(StringUtils.isNotBlank(marble));
+        System.out.println("-------isNotBlank--------");
+        System.out.println("-------------------------");
+
+
+        System.out.println("-------isNoneBlank--------");
+        // StringUtils.isNoneBlank 此方法可以同时判断多个字符串, 判断的逻辑是 isNotBlank, 只要有一个不符合逻辑就 false
+        System.out.println(StringUtils.isNoneBlank(blank));
+        System.out.println(StringUtils.isNoneBlank(space));
+        System.out.println(StringUtils.isNoneBlank(nullStr));
+        System.out.println(StringUtils.isNoneBlank(marble));
+        System.out.println("-------isNoneBlank--------");
+        System.out.println("-------------------------");
+
+        System.out.println("-------isNotEmpty--------");
+        // StringUtils.isNotEmpty 1. 字符串为 null 2. 字符串的长度为 0 那么返回 true
+        System.out.println(StringUtils.isNotEmpty(blank));
+        System.out.println(StringUtils.isNotEmpty(space));
+        System.out.println(StringUtils.isNotEmpty(nullStr));
+        System.out.println(StringUtils.isNotEmpty(marble));
+        System.out.println("-------isNotEmpty--------");
+        System.out.println("-------------------------");
+    }
 }
