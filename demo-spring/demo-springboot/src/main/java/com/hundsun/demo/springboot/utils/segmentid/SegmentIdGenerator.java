@@ -138,7 +138,7 @@ public class SegmentIdGenerator implements ApplicationContextAware {
         configuration.addMapper(SequenceMapper.class);
         this.sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
         sw.stop();
-        log.info(sw.prettyPrint());
+        log.debug(sw.prettyPrint());
     }
 
     /**
@@ -194,7 +194,7 @@ public class SegmentIdGenerator implements ApplicationContextAware {
             log.warn("更新缓存异常", e);
         } finally {
             sw.stop();
-            log.info(sw.prettyPrint());
+            log.debug(sw.prettyPrint());
         }
     }
 
@@ -270,7 +270,7 @@ public class SegmentIdGenerator implements ApplicationContextAware {
                         break label;
                     }
                     // 成功拿到一个可用的分布式 ID
-                    // log.info("一阶段成功获得id, {}, 当前是第 {} 个 segment", value, buffer.getCurrentPos());
+                    log.info("一阶段成功获得id, {}, 当前是第 {} 个 segment", value, buffer.getCurrentPos());
                     return new GenResult(value, "success");
                 } finally {
                     // 释放读锁, 在一阶段获取 ID 的线程互不影响
@@ -310,7 +310,7 @@ public class SegmentIdGenerator implements ApplicationContextAware {
                 segment = buffer.getCurrent();
                 value = segment.getValue().getAndIncrement();
                 if (value < segment.getMax()) {
-                    // log.info("二阶段成功获得id, {} , 当前是第 {} 个 segment", value, buffer.getCurrentPos());
+                    log.info("二阶段成功获得id, {} , 当前是第 {} 个 segment", value, buffer.getCurrentPos());
                     return new GenResult(value, "success");
                 }
                 // value >= 最大值 && buffer.isNextReady() = true 代表当前当前的 segment 不可用, 并且下一个 segment 已经准备好
@@ -451,9 +451,13 @@ public class SegmentIdGenerator implements ApplicationContextAware {
             long duration = System.currentTimeMillis() - buffer.getUpdateTimeStamp();
             int nextStep = buffer.getStep();
             if (duration < 900000L) {
-                nextStep = nextStep * 2 <= 10000 ? nextStep * 2 : nextStep;
+                if (nextStep * 2 <= 10000) {
+                    nextStep *= 2;
+                }
             } else if (duration > 1800000L) {
-                nextStep = nextStep / 2 >= buffer.getMinStep() ? nextStep / 2 : nextStep;
+                if (nextStep / 2 >= buffer.getMinStep()) {
+                    nextStep /= 2;
+                }
             }
 
             // 根据最新步长更新数据库的最大 ID

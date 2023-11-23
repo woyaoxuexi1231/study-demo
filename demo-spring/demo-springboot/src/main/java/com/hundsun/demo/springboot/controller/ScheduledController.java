@@ -65,13 +65,13 @@ public class ScheduledController {
         // if (integer == 3) {
         //     throw new RuntimeException("error");
         // }
-        log.info("{}", integer);
+        // log.info("{}", integer);
     }
 
     @SneakyThrows
     @Scheduled(cron = "* * * * * ?")
     public void schedule() {
-        log.info("{}", new Date());
+        // log.info("{}", new Date());
         // 这里会阻塞其他的定时任务执行
         // Thread.sleep(10000);
         // 这里抛出异常, 这个定时任务不会被终止

@@ -1,5 +1,6 @@
 package com.hundsun.demo.springboot.mapper;
 
+import com.hundsun.demo.springboot.utils.segmentid.LeafAlloc;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -22,8 +23,8 @@ import java.util.List;
 
 public interface SequenceMapper {
 
-    @Update(value = {"update sequence t set value = t.value + t.step where t.key = #{key}"})
-    void update(@Param("key") String key);
+    @Update(value = {"update sequence t set value = t.value + #{step} where t.key = #{key}"})
+    void update(@Param("leafAlloc") LeafAlloc leafAlloc);
 
     @Select(value = {"select t.value from sequence t where t.key = #{key}"})
     Long get(@Param("key") String key);

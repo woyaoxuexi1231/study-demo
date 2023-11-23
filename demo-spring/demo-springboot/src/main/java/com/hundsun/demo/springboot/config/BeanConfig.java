@@ -56,8 +56,4 @@ public class BeanConfig {
         redisTemplate.setKeySerializer(RedisSerializer.string());
     }
 
-    @Scheduled(cron = "* * * * * ?")
-    public void schedule() {
-        System.out.println("111");
-    }
 }
