@@ -1,5 +1,6 @@
 package com.hundsun.demo.common.autoconfigure.curator;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
@@ -17,6 +18,8 @@ import org.springframework.context.annotation.Configuration;
  * @Author: hulei42031
  * @Date: 2022-06-27 13:39
  */
+
+@Slf4j
 @Configuration
 @ConditionalOnClass(value = CuratorFramework.class)
 @EnableConfigurationProperties({CuratorConfiguration.class})
@@ -60,6 +63,8 @@ public class CuratorAutoConfiguration {
                 * maxElapsedTimeMs 最大重试时间
                 * sleepMsBetweenRetries 每次重试间隔时间
          */
+        log.info("CuratorFrameworkFactory准备连接, 地址: {}", curatorConfig.getConnectString());
+
         return CuratorFrameworkFactory.newClient(
                 curatorConfig.getConnectString(),
                 Integer.parseInt(curatorConfig.getSessionTimeoutMs()),
