@@ -1,4 +1,4 @@
-package com.hundsun.demo.java.jdk;
+package com.hundsun.demo.java.jdk.generic;
 
 import com.google.common.reflect.TypeToken;
 
