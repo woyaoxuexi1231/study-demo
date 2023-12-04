@@ -18,7 +18,8 @@ public class RecursionTest {
 
     public static void main(String[] args) {
         int[] ints = new int[]{9355487, 8510115, 8};
-        System.out.println(sum(ints, 0));
+        // System.out.println(sum(ints, 0));
+        System.out.println(max(ints, 0));
     }
 
     public static int sum(int[] ints, int current) {
@@ -26,5 +27,12 @@ public class RecursionTest {
             return ints[current];
         }
         return ints[current] + sum(ints, ++current);
+    }
+
+    public static int max(int[] ints, int current) {
+        if (current == ints.length - 1) {
+            return ints[current];
+        }
+        return Math.max(ints[current], max(ints, ++current));
     }
 }
