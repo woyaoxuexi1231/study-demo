@@ -257,6 +257,23 @@ public class UserTest extends ServiceImpl<UserMapper, User> {
     @GetMapping("/testTransaction")
     public void testTransaction(String name) {
 
+        /*
+        `@Transactional` 注解可能会失效的一些场景包括：
+        1. 注解被忽略：如果未正确配置 Spring 容器或未启用事务管理，那么 `@Transactional` 注解将会被忽略，事务不会生效。请确保已正确配置 Spring 上下文，并在配置文件中开启事务支持。
+
+        2. 类不是由 Spring 容器管理：如果使用 `@Transactional` 注解的类没有被 Spring 容器管理，或类的实例是通过 `new` 操作符手动创建的，那么 `@Transactional` 注解也会失效。在使用 `@Transactional` 注解时，确保类被 Spring 容器扫描和实例化，或显式地将类定义为 Spring Bean。
+
+        3. 方法不是公共方法：`@Transactional` 注解默认只应用于公共方法。如果在一个非公共（如私有、受保护或默认）访问级别的方法上使用 `@Transactional` 注解，事务也会失效。
+
+        4. 异常未被正确捕获：默认情况下，`@Transactional` 注解只会回滚受检查异常（checked exception），对于未受检异常（unchecked exception）默认是不会回滚的。如果在事务中抛出了未受检异常（如 `RuntimeException`），但没有被正确捕获，那么事务将会失效。可以通过在 `@Transactional` 注解中使用 `rollbackFor` 或 `noRollbackFor` 属性来指定回滚的异常类型。
+
+        5. 注解作用于静态方法：`@Transactional` 注解通常应用于实例方法上，用于作用在实例级别的事务中。如果将 `@Transactional` 注解应用于静态方法上，并尝试在静态上下文中处理事务，那么事务将会失效。
+
+        6. 注解作用于非 final 类的 final 方法：`@Transactional` 注解不会应用于被 `final` 修饰的类的非 final 方法上。这是由于 Spring 在运行时使用代理类来实现事务管理，无法覆盖 `final` 方法。
+
+        请确保在正确的场景下使用 `@Transactional` 注解，并合理配置事务的传播行为、隔离级别和异常处理，以确保事务生效。
+         */
+
         CountDownLatch countDownLatch = new CountDownLatch(1);
         /**
          * 事务不会生效, 没有触发点
@@ -277,12 +294,14 @@ public class UserTest extends ServiceImpl<UserMapper, User> {
         });
 
         countDownLatch.await();
+        // 可以触发
         try {
             userTest.run(name);
         } catch (Exception e) {
             ;
         }
 
+        // 可以触发
         try {
             testService.run(name);
         } catch (Exception e) {
