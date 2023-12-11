@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hundsun.demo.springboot.config.ThreadPoolBeanConfig;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
@@ -19,6 +21,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
@@ -229,5 +232,70 @@ public class UserTest extends ServiceImpl<UserMapper, User> {
         2. 有 SQL 标签, 但是没有实现 -> java.sql.SQLException: SQL String cannot be empty
         这两种情况都会报错
          */
+    }
+
+    /**
+     * author: hulei42031
+     * date: 2023-12-11 19:43
+     */
+    @Autowired
+    ThreadPoolBeanConfig config;
+    /**
+     * author: hulei42031
+     * date: 2023-12-11 19:43
+     */
+    @Autowired
+    EmployeeMapperPlus employeeMapperPlus;
+
+    @Autowired
+    UserTest userTest;
+
+    @Autowired
+    TestServiceImpl testService;
+
+    @SneakyThrows
+    @GetMapping("/testTransaction")
+    public void testTransaction(String name) {
+
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        /**
+         * 事务不会生效, 没有触发点
+         */
+        config.commonPool().execute(new Runnable() {
+            @Transactional
+            @Override
+            public void run() {
+                // List<EmployeeDO> employeeDOS = employeeMapperPlus.selectList(new QueryWrapper<>());
+                // employeeDOS.forEach(i -> log.info(String.valueOf(i)));
+                EmployeeDO employeeDO = new EmployeeDO();
+                employeeDO.setEmployeeNumber(1002L);
+                employeeDO.setFirstName(name);
+                employeeMapperPlus.updateById(employeeDO);
+                countDownLatch.countDown();
+                throw new RuntimeException("error");
+            }
+        });
+
+        countDownLatch.await();
+        try {
+            userTest.run(name);
+        } catch (Exception e) {
+            ;
+        }
+
+        try {
+            testService.run(name);
+        } catch (Exception e) {
+            ;
+        }
+    }
+
+    @Transactional
+    public void run(String name) {
+        EmployeeDO employeeDO = new EmployeeDO();
+        employeeDO.setEmployeeNumber(1002L);
+        employeeDO.setFirstName(name + "run");
+        employeeMapperPlus.updateById(employeeDO);
+        throw new RuntimeException("error");
     }
 }
