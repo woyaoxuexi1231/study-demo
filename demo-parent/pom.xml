@@ -59,7 +59,7 @@
         <apache.curator.framework.version>2.13.0</apache.curator.framework.version>
         <apache.curator.recipes.version>2.13.0</apache.curator.recipes.version>
         <commons.io.version>2.6</commons.io.version>
-        <alibaba.fastjson.version>1.2.70</alibaba.fastjson.version>
+        <alibaba.fastjson.version>2.0.31</alibaba.fastjson.version>
         <ojdbc8.version>19.3.0.0</ojdbc8.version>
         <orai18n.version>19.3.0.0</orai18n.version>
 

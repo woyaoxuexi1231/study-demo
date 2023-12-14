@@ -13,7 +13,10 @@ import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.connection.RedisStringCommands;
 import org.springframework.data.redis.core.RedisCallback;
@@ -101,7 +104,7 @@ public class RabbiMQListener {
                 // 模拟一个比较长时间的消息处理时间
                 log.info("开始执行业务逻辑...");
                 try {
-                    Thread.sleep(30 * 1000);
+                    Thread.sleep(10 * 1000);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -291,4 +294,30 @@ public class RabbiMQListener {
         }
 
     }
+
+    /*
+    // 设置消费者每次只拉取一条消息
+    @RabbitListener(queues = "myQueue", containerFactory = "myContainerFactory")
+    public void handleMessage(String message) {
+        // 处理消息逻辑
+    }
+    @Bean
+    public SimpleRabbitListenerContainerFactory myContainerFactory(ConnectionFactory connectionFactory) {
+        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+        factory.setConnectionFactory(connectionFactory);
+        factory.setMessageConverter(jsonMessageConverter());
+        factory.setPrefetchCount(1); // 设置为 1，表示一次只接收一条未确认的消息
+        return factory;
+    }
+    对于队列阻塞, 只是相对于单个消费者而言, 多个消费者之间并不会互相影响
+    如果消费者 A 阻塞了，它不会直接导致消费者 B 无法接收到消息。当使用多个消费者共享同一个队列时，每个消费者都有机会获取队列中的消息进行处理。
+    具体来说，当有消息到达队列时，RabbitMQ 会按照一定的策略（如轮询或者优先级）将消息发送给可用的消费者。如果消费者 A 阻塞了，即无法及时消费消息，RabbitMQ 会将该消息发送给其他可用的消费者，如消费者 B。
+    但是，需要注意的是，如果消费者 A 阻塞的时间过长或者一直处于阻塞状态，队列中的消息可能会积压，导致整体处理速度变慢。如果积压的消息过多，可能会影响到其他消费者的消息处理速度，从而间接地影响到消费者 B 的消息接收。
+    因此，为了避免消息积压和消费者之间的影响，需要综合考虑以下几点：
+    1. 消费者的处理速度：确保消费者能够及时处理队列中的消息，避免长时间的阻塞。
+    2. 队列长度和缓冲策略：设置合适的队列长度，并根据实际情况选择适当的缓冲策略，如溢出策略或丢弃策略，以防止队列中消息过多导致的性能问题。
+    3. 并发控制：根据实际需求，合理配置消费者数量和并发性，避免过度消费或阻塞。
+    通过上述措施，可以在一定程度上避免因为某个消费者的阻塞而导致其他消费者无法接收到消息的情况。
+     */
+
 }

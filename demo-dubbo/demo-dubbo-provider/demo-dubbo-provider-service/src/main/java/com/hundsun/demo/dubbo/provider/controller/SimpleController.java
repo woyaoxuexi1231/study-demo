@@ -26,7 +26,10 @@ public class SimpleController {
 
     @RequestMapping("/sentSampleMsg")
     public ResultDTO<?> sentSampleMsg(String uuid) {
-        return rabbitMqService.sentSampleMsg(uuid);
+        for (int i = 0; i < 10; i++) {
+            rabbitMqService.sentSampleMsg(uuid);
+        }
+        return new ResultDTO<>();
     }
 
 }
