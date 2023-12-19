@@ -1,11 +1,15 @@
 package com.hundsun.demo.springboot.controller;
 
+import cn.hutool.core.collection.CollectionUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @projectName: study-demo
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author: h1123
  * @createDate: 2023/2/13 23:30
  */
+
 @RestController
 @Slf4j
 public class SimpleController implements ApplicationContextAware {
@@ -28,6 +33,9 @@ public class SimpleController implements ApplicationContextAware {
 
 
     public static void main(String[] args) {
-
+        List<Integer> integers = CollectionUtil.newArrayList(1,2);
+        List<Integer> collect = integers.stream().filter((i) -> i.equals(3)).collect(Collectors.toList());
+        log.info(String.valueOf(collect));
+        log.error("12312");
     }
 }
