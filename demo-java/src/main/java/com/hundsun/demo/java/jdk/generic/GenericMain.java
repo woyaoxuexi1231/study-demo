@@ -18,49 +18,7 @@ public class GenericMain {
 
     public static void main(String[] args) {
 
-        Generic<GenericImpl> generic = new Generic<>(new GenericImpl());
-        // Type parameter 'java.lang.Object' is not within its bound; should implement 'com.hundsun.demo.java.jdk.generic.GenericInterface'
-        // Generic<Object> objectGeneric = new Generic<>();
-
-        generic.print();
-        generic.getClass().getTypeParameters();
-
-        GenericObject genericObject = new GenericObject(new GenericImpl());
-        genericObject.print();
-
-        // 这个数组将无法添加任何对象, 因为编译器无法确定具体的子类型
-        List<? extends GenericInterface> interfaces = new ArrayList<>();
-
-
-        List<GenericInterface> interfaces1 = new ArrayList<>();
-        interfaces1.add(new GenericImpl());
-        interfaces1.add(new Other());
-
-
-        GenericImpl[] generics = new GenericImpl[2];
-        generics[0] = new GenericImpl();
-        generics[1] = new GenericImpl();
-        GenericInterface[] genericInterfaces = generics;
-        genericInterfaces[1] = new Other();
-        System.out.println(genericInterfaces);
     }
-
-    static class GenericImpl implements GenericInterface {
-
-        @Override
-        public void print() {
-            System.out.println("hello");
-        }
-    }
-
-    static class Other implements GenericInterface {
-
-        @Override
-        public void print() {
-            System.out.println("hello");
-        }
-    }
-
 
     public void animal(String[] args) {
         Dog[] dogs = new Dog[5];
@@ -126,63 +84,78 @@ public class GenericMain {
         return (req) -> null;
     }
 
-    public <Stand> void doMsgProcess() {
-        // Consumer<?> msgProcess = this.getMsgProcess();
-        Consumer<Stand> msgProcess = this.getMsgProcess();
-        Consumer<DataTransferReq<Stand>> msgProcess3 = this.getMsgProcess3();
-
-        /*
-        第一个情况中的强制类型转换是允许的，因为编译器认为任何Consumer<?>类型都可以被转换成Consumer<Stand>。
-        而在第二个情况中，编译器拒绝了赋值操作，因为Consumer<DataTransferReq<?>>和Consumer<DataTransferReq<Stand>>在Java泛型中不是兼容的类型。
-         */
-        Consumer<Stand> msgProcess4 = (Consumer<Stand>) this.getMsgProcess4();
-        // Consumer<DataTransferReq<Stand>> msgProcess2 = (Consumer<DataTransferReq<Stand>>) this.getMsgProcess2(); // compiler failed
-
-
-        /*
-        这里我的理解是 Consumer<?> 表示接受任意类型的Consumer
-        Consumer<Transfer> 表示接受Transfer类型的Consumer
-        ?可以代表任意类型,同样包括Transfer, 所以Consumer<?>可以推断为Consumer<Transfer>
-        我理解是因为这里Consumer<Transfer>没有做具体限定
-         */
-        this.singleDataProcess(this.getMsgProcess());
-        // 无法推断
-        // reason: Incompatible equality constraint: Transfer and ?
-        // this.singleDataProcess2(this.getMsgProcess2());
-        // 正常推断
-        this.singleDataProcess(this.getMsgProcess3());
+    public <Stand, Transfer> void doProcess2() {
+        this.singleDataProcess2(this.getSubProcess2());
     }
 
-    public <Stand> Consumer<Stand> getMsgProcess() {
-        return transfer -> {
+    public <Stand, Transfer extends DataTransfer<Stand>> void singleDataProcess2(Function<DataTransferReq<Stand>, Transfer> subProcess) {
 
-        };
     }
 
-
-    public Consumer<?> getMsgProcess4() {
-        return transfer -> {
-
-        };
-    }
-
-    public Consumer<DataTransferReq<?>> getMsgProcess2() {
-        return transfer -> {
-
-        };
-    }
-
-    public <Stand> Consumer<DataTransferReq<Stand>> getMsgProcess3() {
-        return transfer -> {
-
-        };
+    public <Stand, Transfer extends DataTransfer<Stand>> Function<DataTransferReq<Stand>, Transfer> getSubProcess2() {
+        return (req) -> null;
     }
 
     class DataTransferReq<T> {
 
     }
 
-    public <Transfer> void singleDataProcess(Consumer<Transfer> msgProcess) {
+    class DataTransfer<T> {
+
+    }
+
+    /* ************************************************************************************************************************* */
+    public <Stand> void doMsgProcess() {
+        // Consumer<?> msgProcess = this.getMsgProcess();
+        Consumer<Stand> msgProcess = this.getStandConsumer();
+        Consumer<DataTransferReq<Stand>> msgProcess3 = this.getExtendDataTransferReqWildcardConsumer();
+
+        /*
+        第一个情况中的强制类型转换是允许的，因为编译器认为任何Consumer<?>类型都可以被转换成Consumer<Stand>。
+        而在第二个情况中，编译器拒绝了赋值操作，因为Consumer<DataTransferReq<?>>和Consumer<DataTransferReq<Stand>>在Java泛型中不是兼容的类型。
+         */
+        Consumer<Stand> msgProcess4 = (Consumer<Stand>) this.getWildcardConsumer();
+        // Consumer<DataTransferReq<Stand>> msgProcess2 = (Consumer<DataTransferReq<Stand>>) this.getMsgProcess2(); // compiler failed
+
+        this.singleDataProcess(this.getStandConsumer());
+        // 无法推断
+        // reason: Incompatible equality constraint: Transfer and ?
+        // this.singleDataProcess2(this.getMsgProcess2());
+        // 正常推断
+        this.singleDataProcess(this.getExtendDataTransferReqWildcardConsumer());
+    }
+
+    public <Stand> Consumer<Stand> getStandConsumer() {
+        return transfer -> {
+
+        };
+    }
+
+    public Consumer<?> getWildcardConsumer() {
+        return transfer -> {
+
+        };
+    }
+
+    public Consumer<DataTransferReq<?>> getDataTransferReqWildcardConsumer() {
+        return transfer -> {
+
+        };
+    }
+
+    public <Stand, Transfer extends DataTransferReq<Stand>> Consumer<Transfer> getExtendDataTransferReqWildcardConsumer() {
+        return transfer -> {
+
+        };
+    }
+
+    public <Stand, Transfer extends DataTransferReq<Stand>> Consumer<Transfer> getMsgProcess4() {
+        return transfer -> {
+
+        };
+    }
+
+    public <Stand, Transfer extends DataTransferReq<Stand>> void singleDataProcess(Consumer<Transfer> msgProcess) {
     }
 
 /*
