@@ -2,12 +2,10 @@ package com.hundsun.demo.java.mq.rabbit;
 
 import com.hundsun.demo.java.mq.rabbit.config.ConnectFactory;
 import com.hundsun.demo.java.mq.rabbit.config.MQConfig;
-import com.hundsun.demo.java.mq.rabbit.work.MsgConsumerA;
-import com.hundsun.demo.java.mq.rabbit.work.MsgConsumerB;
+import com.hundsun.demo.java.mq.rabbit.work.MsgPullConsumer;
+import com.hundsun.demo.java.mq.rabbit.work.MsgPushConsumerA;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.IOException;
-import java.util.concurrent.TimeoutException;
 
 /**
  * @projectName: study-demo
@@ -21,11 +19,13 @@ import java.util.concurrent.TimeoutException;
 @Slf4j
 public class ConsumerStart {
 
-    public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
-
+    @SneakyThrows
+    public static void main(String[] args) {
         log.info("准备接收消息... ");
-        new MsgConsumerA(ConnectFactory.getConnect(), MQConfig.TOPIC_MASTER_QUEUE).start();
-        new MsgConsumerB(ConnectFactory.getConnect(), MQConfig.TOPIC_SLAVE_QUEUE).start();
+        new Thread(new MsgPushConsumerA(ConnectFactory.getConnect(), MQConfig.TOPIC_MASTER_QUEUE)).start();
+        log.info("消费A线程已启动");
+        new Thread(new MsgPullConsumer(ConnectFactory.getConnect(), MQConfig.TOPIC_SLAVE_QUEUE)).start();
+        log.info("消费B线程已启动");
     }
 
 }
