@@ -8,15 +8,13 @@ import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.annotation.Argument;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.connection.RedisStringCommands;
 import org.springframework.data.redis.core.RedisCallback;
@@ -67,8 +65,9 @@ public class RabbiMQListener {
             value = @Queue(
                     name = MQConfig.TOPIC_MASTER_QUEUE,
                     durable = "true",
-                    autoDelete = "false"
-                    // arguments = {@Argument(name = "x-dead-letter-exchange", value = MQConfig.DEAD_EXCHANGE_NAME)}),
+                    autoDelete = "false",
+                    exclusive = "false",
+                    arguments = {@Argument(name = "x-dead-letter-exchange", value = MQConfig.DEAD_EXCHANGE_NAME)}
             ),
             exchange = @Exchange(
                     value = MQConfig.TOPIC_EXCHANGE_NAME,
@@ -77,6 +76,7 @@ public class RabbiMQListener {
                     durable = "true"),
             key = MQConfig.TOPIC_MASTER_ROUTE_KEY
     ))
+
     public void receiveMsg(Message msg, Channel channel) {
 
         /*
