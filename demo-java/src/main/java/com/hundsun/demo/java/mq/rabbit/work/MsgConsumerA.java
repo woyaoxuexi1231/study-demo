@@ -1,10 +1,14 @@
 package com.hundsun.demo.java.mq.rabbit.work;
 
-import com.hundsun.demo.java.mq.rabbit.callback.MsgDeliverCallbackA;
-import com.hundsun.demo.java.mq.rabbit.callback.MyCancelCallback;
+import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.DefaultConsumer;
+import com.rabbitmq.client.Envelope;
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @projectName: study-demo
@@ -48,7 +52,7 @@ public class MsgConsumerA extends Thread {
              开始获取消息，push模式
              * queue
              * autoAck, 上面开启了手动应答basicAck，所以这里是false；当没basicAck一般为true
-             * consumerTag 消费者标签, 用来区分多个消费者
+             * consumerTag 消费者标签, 用来区分多个消费者, 如果你在订阅消息队列时将 consumerTag 设定为空，那么消息代理（如RabbitMQ）会为消费者生成一个唯一的 consumerTag，并将其返回给消费者应用程序。这个生成的 consumerTag 通常是一个唯一的字符串，用于标识特定的消费者，以便进行后续的消息交付和管理。
              * noLocal 设置为 true, 表示不能将同一个 Connection 中生产者发送的消息传递给这个 Connection 中的消费者
              * exclusive 是否排他
              * arguments 消费者的参数
@@ -58,12 +62,34 @@ public class MsgConsumerA extends Thread {
 
              this.basicConsume(queue, autoAck, consumerTag, false, false, (Map)null, callback);
              */
+            // channel.basicConsume(
+            //         queueName,
+            //         autoAck,
+            //         "",
+            //         new MsgDeliverCallbackA(channel),
+            //         new MyCancelCallback());
             channel.basicConsume(
                     queueName,
                     autoAck,
                     "",
-                    new MsgDeliverCallbackA(channel),
-                    new MyCancelCallback());
+                    new DefaultConsumer(channel) {
+                        /**
+                         *
+                         * @param consumerTag the <i>consumer tag</i> associated with the consumer
+                         * @param envelope packaging data for the message, envelope 参数是一个包含了消息的交付信息的对象
+                         * @param properties content header data for the message
+                         * @param body the message body (opaque, client-specific byte array)
+                         * @throws IOException
+                         */
+                        @Override
+                        public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                            log.info("consumerTag: {}", consumerTag);
+                            log.info("envelope: {}", envelope);
+                            log.info("properties: {}", properties);
+                            log.info("body: {}", new String(body, StandardCharsets.UTF_8));
+                            channel.basicAck(envelope.getDeliveryTag(), false);
+                        }
+                    });
 
         } catch (Exception e) {
             log.error("接收消息异常! ", e);

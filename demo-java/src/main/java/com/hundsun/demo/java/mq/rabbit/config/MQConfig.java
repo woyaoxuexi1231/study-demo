@@ -33,7 +33,7 @@ public class MQConfig {
     public static final String FANOUT_MASTER_QUEUE = "fanout-queue-master";
     public static final String FANOUT_SLAVE_ROUTE_KEY = "fanout.route.key.slave";
     public static final String FANOUT_SLAVE_QUEUE = "fanout-queue-slave";
-    public static final String TOPIC_EXCHANGE_NAME = "topic-exchange";
+    public static final String TOPIC_EXCHANGE_NAME = "exchange-test-topic";
     public static final String TOPIC_MASTER_ROUTE_KEY = "topic.route.key.*";
     public static final String TOPIC_MASTER_QUEUE = "topic-queue-master";
     public static final String TOPIC_SLAVE_ROUTE_KEY = "topic.route.key.slave";
@@ -51,7 +51,7 @@ public class MQConfig {
     2. 达到队列最大长度
     3. 消息被拒
      */
-    public static final String DEAD_EXCHANGE_NAME = "dead-exchange";
+    public static final String DEAD_EXCHANGE_NAME = "exchange-test-dead";
     public static final String DEAD_QUEUE_NAME = "dead-queue";
 
 
