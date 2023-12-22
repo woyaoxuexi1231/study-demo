@@ -38,14 +38,15 @@ public class MsgPushConsumerB extends MsgConsumer {
                         if (msg.equals("exit")) {
                             // requeue - 如果拒绝的消息应该重新排队而不是丢弃/死信, 则为 true
                             channel.basicReject(message.getEnvelope().getDeliveryTag(), false);
+                        }else {
+                            /*
+                            消费者确认 autoAck = false/true
+                            肯定确认 - BasicAck
+                            否定确认 - BasicNack、BasicReject, basicNack可以批量拒绝多条消息, 而 basicReject一次只能拒绝一条消息
+                            multiple - false 表示只确认 DelivertTag 这条消息, true 表示确认 小于等于 DelivertTag 的所有消息(批量确认)
+                             */
+                            channel.basicAck(message.getEnvelope().getDeliveryTag(), false);
                         }
-                        /*
-                        消费者确认 autoAck = false/true
-                        肯定确认 - BasicAck
-                        否定确认 - BasicNack、BasicReject, basicNack可以批量拒绝多条消息, 而 basicReject一次只能拒绝一条消息
-                        multiple - false 表示只确认 DelivertTag 这条消息, true 表示确认 小于等于 DelivertTag 的所有消息(批量确认)
-                         */
-                        channel.basicAck(message.getEnvelope().getDeliveryTag(), false);
                     },
                     consumerTag -> log.info("消费消息被中断!"),
                     (consumerTag, sig) -> log.error("consumerTag: {}, ShutdownSignalException: ", consumerTag, sig)
