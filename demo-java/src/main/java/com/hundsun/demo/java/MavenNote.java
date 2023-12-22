@@ -15,6 +15,7 @@ package com.hundsun.demo.java;
 
 public class MavenNote {
     /*
+    https://www.cnblogs.com/davidhhuan/p/17004656.html
     Since Maven 3.8.1 http repositories are blocked.
     把这个版本的maven全局配置里的配置改一下, 把配置里的这个给注释掉就行了
     <mirror>
