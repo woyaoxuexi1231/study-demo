@@ -8,7 +8,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @projectName: study-demo
@@ -29,16 +29,8 @@ public class MsgProducer {
     static {
         // 通过连接工厂获取连接, 连接工厂已经配置好了连接 mq 的配置信息
         connection = ConnectFactory.getConnect();
-        try {
-            // 创建信道
-            channel = connection.createChannel();
-            // 开启发布确认
-            channel.confirmSelect();
-            // 添加一个成功回调和一个失败的回调
-            channel.addConfirmListener(new MsgConfirmSuccessCallBack(), new MsgConfirmFailedCallBack());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        // 创建交换机
+        ConnectFactory.initExchange();
     }
 
     public static void postMsg(String exchangeName, String routingKey, String msg) {
@@ -71,8 +63,9 @@ public class MsgProducer {
                         应用程序可以根据返回事件的信息进行适当的处理，比如记录日志、重新发送消息、或者执行其他特定的逻辑。
                         总之，handleReturn 方法用于处理 RabbitMQ 返回（Return）事件，当消息无法被路由到目标队列时，该方法会被调用，开发人员可以在这个方法中编写逻辑来处理返回事件。
                          */
-                        (replyCode, replyText, exchange, routingKey1, properties, body) -> {
-
+                        (replyCode, replyText, exchange, rk, properties, body) -> {
+                            String replyString = new String(body, StandardCharsets.UTF_8);
+                            log.info("消息未找到指定的队列, exchange: {}, routingKey: {}, replyString: {}", exchange, rk, replyString);
                         });
             }
             /**
@@ -113,9 +106,10 @@ public class MsgProducer {
              * String routingKey, 路由键
              * BasicProperties props, 消息属性（需要单独声明）
              * mandatory true:交换机无法根据自身的类型和路由键找到一个符合条件的队列,那么会调用Basic.return命令将消息返回给生产者 false:出现上述情况,消息将直接被丢弃
+             * immediate 参数将判断队列中是否存在消费者,如果在所有满足条件的队列中都没有消费者,这条消息将被返回给生产者, 3.0之后这个参数被取消支持
              * byte[] body，消息体
              */
-            channel.basicPublish(exchangeName, routingKey, basicProperties, msg.getBytes());
+            channel.basicPublish(exchangeName, routingKey, true, basicProperties, msg.getBytes());
             // 等待确认
             // boolean isConfirm = channel.waitForConfirms();
 
