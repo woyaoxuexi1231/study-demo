@@ -22,6 +22,8 @@ public class ConsumerStart {
 
     @SneakyThrows
     public static void main(String[] args) {
+        log.info("创建队列");
+        ConnectFactory.consumerInit();
         log.info("准备接收消息... ");
         new Thread(new MsgPushConsumerA(ConnectFactory.getConnect(), MQConfig.TOPIC_MASTER_QUEUE)).start();
         log.info("消费A线程已启动");
