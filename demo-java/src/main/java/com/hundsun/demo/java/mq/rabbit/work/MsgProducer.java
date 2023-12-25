@@ -6,9 +6,13 @@ import com.hundsun.demo.java.mq.rabbit.config.ConnectFactory;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.DefaultConsumer;
+import com.rabbitmq.client.Envelope;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 /**
  * @projectName: study-demo
@@ -25,6 +29,10 @@ public class MsgProducer {
     private static final Connection connection;
 
     private static Channel channel;
+
+    private static String replyQueueName;
+
+    private static DefaultConsumer consumer;
 
     static {
         // 通过连接工厂获取连接, 连接工厂已经配置好了连接 mq 的配置信息
@@ -67,6 +75,16 @@ public class MsgProducer {
                             String replyString = new String(body, StandardCharsets.UTF_8);
                             log.info("消息未找到指定的队列, exchange: {}, routingKey: {}, replyString: {}", exchange, rk, replyString);
                         });
+                // rpc实现, 回复队列
+                replyQueueName = channel.queueDeclare().getQueue();
+                consumer = new DefaultConsumer(channel) {
+                    @Override
+                    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                        String reply = new String(body, StandardCharsets.UTF_8);
+                        log.info("收到回复的消息: {}", reply);
+                    }
+                };
+                channel.basicConsume(replyQueueName, true, consumer);
             }
             /**
              * BasicProperties属性笔记
@@ -85,14 +103,15 @@ public class MsgProducer {
              appId 应用程序的类型和版本号
              clusterId 集群 ID
              */
+            String correlationId = UUID.randomUUID().toString();
             AMQP.BasicProperties basicProperties = new AMQP.BasicProperties(
                     "application/octet-stream",
                     null,
                     null,
                     2,
                     0,
-                    null,
-                    null,
+                    correlationId,
+                    replyQueueName,
                     null,
                     null,
                     null,

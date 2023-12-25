@@ -101,6 +101,14 @@ public class MsgPushConsumerA extends MsgConsumer {
                             log.info("envelope: {}", envelope);
                             log.info("properties: {}", properties);
                             log.info("topic: {}, body: {}", envelope.getRoutingKey(), new String(body, StandardCharsets.UTF_8));
+                            log.info("replyTo: {}", properties.getReplyTo());
+                            log.info("correlationId: {}", properties.getCorrelationId());
+                            // 回复一个消息到指定的队列中去, rpc服务端的实现
+                            channel.basicPublish(
+                                    "",
+                                    properties.getReplyTo(),
+                                    new AMQP.BasicProperties().builder().correlationId(properties.getCorrelationId()).build(),
+                                    (envelope.getRoutingKey() + ", " + queueName + ", " + new String(body, StandardCharsets.UTF_8)).getBytes(StandardCharsets.UTF_8));
                             // deliveryTag 是用来唯一标识每条投递的消息的整数值。根据官方文档的描述，deliveryTag 是在每个 channel 上保持唯一性的，并且会在 channel 打开时从 1 开始递增。
                             channel.basicAck(envelope.getDeliveryTag(), false);
                         }
