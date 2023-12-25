@@ -1,10 +1,9 @@
 package com.hundsun.demo.java.mq.rabbit.work;
 
-import com.hundsun.demo.java.mq.rabbit.callback.MsgConfirmFailedCallBack;
-import com.hundsun.demo.java.mq.rabbit.callback.MsgConfirmSuccessCallBack;
 import com.hundsun.demo.java.mq.rabbit.config.ConnectFactory;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.ConfirmListener;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
@@ -48,10 +47,20 @@ public class MsgProducer {
             if (channel == null) {
                 // 发消息之前校验一下是否信道已经开启了, 发消息是需要通过信道发送的, 只有连接是不行的
                 channel = connection.createChannel();
-                // 开启发布确认
+                // 开启发布确认,
                 channel.confirmSelect();
                 // 添加一个成功回调和一个失败的回调
-                channel.addConfirmListener(new MsgConfirmSuccessCallBack(), new MsgConfirmFailedCallBack());
+                channel.addConfirmListener(new ConfirmListener() {
+                    @Override
+                    public void handleAck(long deliveryTag, boolean multiple) {
+                        log.info("message send success, deliveryTag: {}, multiple: {}", deliveryTag, multiple);
+                    }
+
+                    @Override
+                    public void handleNack(long deliveryTag, boolean multiple) {
+                        log.info("message send failed, deliveryTag: {}, multiple: {}", deliveryTag, multiple);
+                    }
+                });
                 channel.addReturnListener(
                         /*
                         用于处理当消息无法被路由到对应的队列时触发的返回（Return）事件。
@@ -129,9 +138,10 @@ public class MsgProducer {
              * byte[] body，消息体
              */
             channel.basicPublish(exchangeName, routingKey, true, basicProperties, msg.getBytes());
-            // 等待确认
-            // boolean isConfirm = channel.waitForConfirms();
-
+            // 等待确认(这是同步的方式等待确认, 已采用addConfirmListener的方式添加异步回调确认)
+            // if (!channel.waitForConfirms()) {
+            //     log.error("消息发送失败!");
+            // }
         } catch (Exception e) {
             log.error("发送消息异常! ", e);
         }
