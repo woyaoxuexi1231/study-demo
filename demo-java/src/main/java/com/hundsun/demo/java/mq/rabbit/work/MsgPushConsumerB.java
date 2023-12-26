@@ -38,8 +38,9 @@ public class MsgPushConsumerB extends MsgConsumer {
                         if (msg.equals("exit")) {
                             // requeue - 如果拒绝的消息应该重新排队而不是丢弃/死信, 则为 true
                             channel.basicReject(message.getEnvelope().getDeliveryTag(), false);
-                        }else {
+                        } else {
                             /*
+                            如果此队列只有一个消费者, 此处并不ack消息,prefetchCount=1, 那么rabbitmq将一直等待此消费者ack, 但却收不到, 最终导致一直阻塞
                             消费者确认 autoAck = false/true
                             肯定确认 - BasicAck
                             否定确认 - BasicNack、BasicReject, basicNack可以批量拒绝多条消息, 而 basicReject一次只能拒绝一条消息
