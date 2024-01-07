@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -170,19 +171,35 @@ public class Collection {
         ArrayList<Integer> integers = new ArrayList<>();
         // ArrayList内部有一个modCount来记录操作的次数, 在这种增强for循环中操作集合会抛错
         integers.add(1);
-        integers.add(1);
-        integers.add(1);
-        integers.add(1);
+        integers.add(2);
+        integers.add(3);
+        integers.add(4);
         for (Integer integer : integers) {
             log.info("integer : {}", integer);
             // integers.add(2);
         }
         log.info("1: {}", integers);
 
-        // 这里会死循环, 每次循环都加一个元素, i永远小于integers.size
+
         for (int i = 0; i < integers.size(); i++) {
-            integers.add(2);
+            // add操作会导致死循环, 每次循环都加一个元素, i永远小于integers.size
+            // integers.add(2);
+            // 虽然不会报错, 但是不推荐, 编译器警告Suspicious 'List.remove()' in loop
+            integers.remove(i);
         }
         log.info("2: {}", integers);
+
+        HashSet<Object> sets = new HashSet<>();
+        sets.add(1);
+        sets.add(2);
+        // 这里会抛出java.util.ConcurrentModificationException
+        // for (Object set : sets) {
+        //     log.info("循环了一次");
+        //     // sets.add(3);
+        //     sets.remove(1);
+        //     sets.remove(2);
+        // }
+        log.info("set: {}", sets);
+
     }
 }
