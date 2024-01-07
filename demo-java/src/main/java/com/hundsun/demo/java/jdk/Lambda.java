@@ -1,6 +1,8 @@
 package com.hundsun.demo.java.jdk;
 
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,6 +16,7 @@ import java.util.Map;
  * <p>
  */
 
+@Slf4j
 public class Lambda {
 
 
@@ -31,6 +34,30 @@ public class Lambda {
         Map<Integer, String> map = new HashMap<>();
         map.put(0, "hello lambda!");
         map.forEach((k, v) -> System.out.println("key : " + k + " - value : " + v));
+
+        // 内部类方法可以访问该类定义所在的作用域中的数据，包括私有的数据。
+        SimpleClass simpleClass = new SimpleClass(1);
+        SimpleClass.InnerClass innerClass = simpleClass.getInnerClass();
+        log.info("{}", innerClass.getId());
     }
 
+}
+
+
+class SimpleClass {
+    Integer id;
+
+    public SimpleClass(Integer id) {
+        this.id = id;
+    }
+
+    class InnerClass {
+        public Integer getId() {
+            return SimpleClass.this.id;
+        }
+    }
+
+    public InnerClass getInnerClass() {
+        return new InnerClass();
+    }
 }
