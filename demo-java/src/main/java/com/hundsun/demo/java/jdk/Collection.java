@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -179,14 +181,15 @@ public class Collection {
             // integers.add(2);
         }
         log.info("1: {}", integers);
+        // integers.sort();
 
 
-        for (int i = 0; i < integers.size(); i++) {
-            // add操作会导致死循环, 每次循环都加一个元素, i永远小于integers.size
-            // integers.add(2);
-            // 虽然不会报错, 但是不推荐, 编译器警告Suspicious 'List.remove()' in loop
-            integers.remove(i);
-        }
+        // for (int i = 0; i < integers.size(); i++) {
+        //     // add操作会导致死循环, 每次循环都加一个元素, i永远小于integers.size
+        //     // integers.add(2);
+        //     // 虽然不会报错, 但是不推荐, 编译器警告Suspicious 'List.remove()' in loop
+        //     // integers.remove(i);
+        // }
         log.info("2: {}", integers);
 
         HashSet<Object> sets = new HashSet<>();
@@ -201,5 +204,22 @@ public class Collection {
         // }
         log.info("set: {}", sets);
 
+        // 这个可以获得一个线程安全的数据 - SynchronizedCollection使用了装饰器模式
+        java.util.Collection<Object> synchronizedCollection = Collections.synchronizedCollection(new ArrayList<>());
+
+
+        Collections.addAll(sets, 4, 5);
+        log.info("set: {}", sets);
+
+        integers.sort(Collections.reverseOrder());
+        log.info("integers.sort(Collections.reverseOrder()): {}", integers);
+
+        Collections.reverse(integers);
+        log.info("Collections.reverse(integers): {}", integers);
+
+        Collections.fill(integers, 5);
+        log.info("Collections.fill(integers, 5): {}", integers);
+        // Collections.
+        // Arrays
     }
 }
