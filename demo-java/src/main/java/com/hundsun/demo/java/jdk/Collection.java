@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.TreeMap;
@@ -217,9 +218,25 @@ public class Collection {
         Collections.reverse(integers);
         log.info("Collections.reverse(integers): {}", integers);
 
-        Collections.fill(integers, 5);
-        log.info("Collections.fill(integers, 5): {}", integers);
+        // Collections.fill(integers, 5);
+        // log.info("Collections.fill(integers, 5): {}", integers);
         // Collections.
         // Arrays
+
+        List<Integer> asList = Arrays.asList(1);
+        // asList.add(1);
+        log.info("asList: {}", asList);
+
+        // 自定一个逆序排序规则
+        integers.sort((o1, o2) -> {
+            if (o1 < o2) {
+                return 1;
+            }
+            if (o1 > o2) {
+                return -1;
+            }
+            return 0;
+        });
+        log.info("integers.sort: {}", integers);
     }
 }
