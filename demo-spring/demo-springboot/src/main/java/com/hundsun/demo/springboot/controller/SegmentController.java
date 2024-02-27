@@ -1,9 +1,6 @@
 package com.hundsun.demo.springboot.controller;
 
 import com.hundsun.demo.springboot.mapper.SequenceMapper;
-import com.hundsun.demo.springboot.utils.StopWatch;
-import com.hundsun.demo.springboot.utils.segmentid.GenResult;
-import com.hundsun.demo.springboot.utils.segmentid.GenResultEnum;
 import com.hundsun.demo.springboot.utils.segmentid.SegmentIdGenerator;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
-import java.applet.AppletContext;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @projectName: study-demo
@@ -106,29 +100,10 @@ public class SegmentController implements ApplicationContextAware {
     @SneakyThrows
     @GetMapping("/testSql2")
     public void testSql2() {
-        StopWatch sw = new StopWatch("1000个线程同时并发获取ID,并插入数据库耗时测试.");
-        sw.start();
-        CountDownLatch countDownLatch = new CountDownLatch(3);
-        AtomicInteger atomicInteger = new AtomicInteger(0);
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 300; i++) {
             commonPool.execute(() -> {
-                for (int i1 = 0; i1 < 10000; i1++) {
-                    GenResult t1 = segmentIdGenerator.getId("test");
-                    if (GenResultEnum.NOT_READY.getId() == t1.getId()) {
-                        atomicInteger.incrementAndGet();
-                    } else {
-                        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-                            sqlSession.insert("com.hundsun.demo.springboot.mapper.SequenceMapper.insert", t1.getId());
-                            sqlSession.commit();
-                        }
-                    }
-                }
-                countDownLatch.countDown();
+                segmentIdGenerator.getId("test");
             });
         }
-        countDownLatch.await();
-        sw.stop();
-        log.info("获取 ID 失败一共 {} 次", atomicInteger.get());
-        log.info(sw.prettyPrint());
     }
 }

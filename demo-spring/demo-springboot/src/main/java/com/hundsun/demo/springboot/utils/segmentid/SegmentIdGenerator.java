@@ -131,11 +131,16 @@ public class SegmentIdGenerator implements ApplicationContextAware {
     private void initSqlSessionFactory() {
         StopWatch sw = new StopWatch("initSqlSessionFactory");
         sw.start();
+        // DataSource是jdk提供的一个标准的用于建立数据库连接的对象, springboot默认使用 HikariCP 作为数据库连接池, 其他还有Apache Commons DBCP,Druid等等
         DataSource dataSource = applicationContext.getBean(DataSource.class);
+        // TransactionFactory负责创建 Transaction 对象, 用来管理和维护数据库事务
         TransactionFactory transactionFactory = new JdbcTransactionFactory();
+        // 这是 MyBatis 中的一个配置容器，用来设置数据库运行环境的名称（在这里是 “development”）
         Environment environment = new Environment("development", transactionFactory, dataSource);
+        // 用刚才创建的 Environment 对象来实例化 MyBatis 的 Configuration 类。Configuration 类包含了所有 MyBatis 的配置信息，包括映射文件，结果映射，数据库环境等等。这个对象是 MyBatis 配置信息的集合，后面可以用它来构建 SqlSessionFactory。
         Configuration configuration = new Configuration(environment);
         configuration.addMapper(SequenceMapper.class);
+        // 这里得到一个用于操作id生成器的专属的数据库操作类.
         this.sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
         sw.stop();
         log.debug(sw.prettyPrint());
@@ -154,6 +159,11 @@ public class SegmentIdGenerator implements ApplicationContextAware {
         scheduledExecutorService.scheduleWithFixedDelay(SegmentIdGenerator.this::updateCacheFromDb, 60L, 60L, TimeUnit.SECONDS);
     }
 
+    /**
+     * 初始化cache, 需要不定时更新, 删除已经不存在的key, 初始化新增的key
+     * author: hulei42031
+     * date: 2024-02-27 10:59
+     */
     private void updateCacheFromDb() {
         StopWatch sw = new StopWatch("updateCacheFromDb");
         sw.start();
@@ -178,7 +188,7 @@ public class SegmentIdGenerator implements ApplicationContextAware {
                 buffer.setKey(insertTag);
                 // 获取当前的步长信息
                 Segment segment = buffer.getCurrent();
-
+                // 这里简单的初始化一个segment, 在后续会直接使用, 避免segment内部的值不符合预期
                 segment.setValue(new AtomicLong(0L));
                 segment.setMax(0L);
                 segment.setStep(0);
@@ -187,7 +197,7 @@ public class SegmentIdGenerator implements ApplicationContextAware {
             }
             // 移除 removeTags 在 db查出来的 tag的交际, 剩下的相当于在数据库已经没了, 需要在缓存中移除
             dbTags.forEach(removeTags::remove);
-            // 在 cache 中移除已经没有的 tag, todo 这样移除是否存在问题?
+            // 在 cache 中移除已经没有的 tag
             removeTags.forEach(cacheTags::remove);
 
         } catch (Exception e) {
@@ -200,7 +210,7 @@ public class SegmentIdGenerator implements ApplicationContextAware {
 
 
     public GenResult getId(String key) {
-        // 当前 buffer 尚未初始化完成
+        // 当前 buffer 尚未初始化完成 按理来说, 这里压根不会触发, 初始化未完成的阶段项目还在启动
         if (!this.initOk) {
             return new GenResult(GenResultEnum.INIT_NOT_COMPLETE.getId(), GenResultEnum.INIT_NOT_COMPLETE.getResult());
         }
@@ -214,14 +224,16 @@ public class SegmentIdGenerator implements ApplicationContextAware {
          * 这是一个初始化的流程, 每一个 buffer都必经的一个过程
          */
         SegmentBuffer buffer = this.cache.get(key);
+        // 双重检查锁定
         if (!buffer.isInitOk()) {
             synchronized (buffer) {
                 if (!buffer.isInitOk()) {
-                    // 双重锁检查
+                    // 正式开始初始化
                     try {
-                        // 更新步长之类的
+                        // 其实我不太理解为什么这里非要传一个 Segment 进去, 然后在里面又要获取这个 buffer
                         this.updateSegmentFromDb(key, buffer.getCurrent());
                         log.info("buffer初始化完成");
+                        // 只会在这里被设置一次, 即意味着 buffer 从此之后便初始化完成
                         buffer.setInitOk(true);
                     } catch (Exception e) {
                         log.warn("buffer初始化异常", e);
@@ -238,7 +250,7 @@ public class SegmentIdGenerator implements ApplicationContextAware {
         int spin = 0;
         while (true) {
 
-            // 加个读锁
+            // 当前buffer加读锁, 也就意味着, 多个线程可以同时获取同一个键的分布式id
             buffer.getLock().readLock().lock();
 
             long value;
@@ -247,24 +259,25 @@ public class SegmentIdGenerator implements ApplicationContextAware {
             label:
             {
                 try {
-                    // 1. 判断当前 segment 的状态, 并判断是否需要对 buffer 中的下一个 segment 进行更新
+                    // 获取当前的segment
                     segment = buffer.getCurrent();
+                    // 判断是否需要开始准备下一个segment
                     if (!buffer.isNextReady()
                             && segment.getIdle() < 0.9 * segment.getStep()
                             && buffer.getThreadRunning().compareAndSet(false, true)) {
                         /*
                          * 进入这里需要满足三个条件
-                         * 1. 当前的 buffer 下一次已不可读(1.初始化后, buffer下一个是不可用的, 因为还没准备好. 2.buffer切换segment的时候下一个是不可用的, 因为被用完的 segment到下一位去了)
+                         * 1. 下一个segment依旧不可用(1.初始化后, buffer下一个是不可用的, 因为还没准备好. 2.buffer切换segment的时候下一个是不可用的, 因为被用完的 segment到下一位去了)
                          * 2. 最大值-当前value < 0.9倍步长(这就是一个阈值判断, 如果当前的 segment 用了 10% 了, 就尝试准备下一个 segment)
                          * 3. 当前是否有线程正在计算步长(并发控制, 仅允许一个线程来更新这个 buffer的状态)
                          * 这三个提交意味着 当前的 segment 已经快要不可用了, 急需切换一个 segment
                          */
                         this.readyNext(buffer);
                     }
-
-                    // 到这里意味着第二个 segment 已经准备好 || 当前的 segment 使用空间还很充足 || 当前的 buffer 是否正在更新 segment
+                    // 此处意味着 已经完成了获取id前的准备操作, 不管下一个segment是不是可用, 都已经准备好了 可以随时切换使用
                     // 直接尝试从当前 segment 获取分布式 ID
                     value = segment.getValue().getAndIncrement();
+                    // 能够获取的最大id 不能 >= 数据库的最大 id
                     if (value >= segment.getMax()) {
                         // 当前 segment 能到的 ID 已经不符合要求了, 退出这个流程, 执行二阶段获取 ID
                         break label;
@@ -280,14 +293,13 @@ public class SegmentIdGenerator implements ApplicationContextAware {
 
 
             // 二阶段获取 ID - 只有在一阶段获取 ID 失败的线程才会进行二阶段
-            // todo 这里有必要等吗? 在并发量特别大的情况下, 大量的线程在一阶段获取 ID会失败, 都会在这里尝试等待
+            // 这里有必要等吗? 在并发量特别大的情况下, 大量的线程在一阶段获取 ID会失败, 都会在这里尝试等待
             // 在这里等待一下其实是有必要的, 为了让一阶段的线程更容易获取锁的使用权
             this.waitAndSleep(buffer);
             /*
              * 更新已经完成, 再次尝试获取分布式 ID
              * 这里的写锁是为什么?
-             * 1. 会进行 segment 的切换
-             * 2. 这里获取 ID 的优先级优于 第一阶段, 避免因为 第一阶段获取 ID 太快, 导致这里获取不到可以用的 ID 而报错
+             * 1. 如果一阶段依旧在准备segment, 那么将阻塞等待准备好
              *
              * todo
              * 1. 这里和一阶段获取 ID 互斥, 和 readyNext()互斥(即和一阶段所有操作互斥)
@@ -351,12 +363,11 @@ public class SegmentIdGenerator implements ApplicationContextAware {
      */
     private void readyNext(SegmentBuffer buffer) {
         this.service.execute(() -> {
-            // 写锁
+            // 加上当前buffer的写锁, 即意味着同一个buffer只能同时进行一个 readyNext 操作
             buffer.getLock().writeLock().lock();
             // 获取下一个 segment, 并进行更新操作
             Segment next = buffer.getSegments()[buffer.nextPos()];
             boolean updateOk = false;
-
             try {
                 // 更新当前的 segment 和 buffer
                 SegmentIdGenerator.this.updateSegmentFromDb(buffer.getKey(), next);
@@ -369,8 +380,9 @@ public class SegmentIdGenerator implements ApplicationContextAware {
                     // 这里意味着 buffer 已经设置好了三个参数, 1.更新时间 2.步长 3.最小步长, buffer 已经准备好了下一次获取 id 的操作
                     buffer.setNextReady(true);
                 }
-                // 当前的更新操作已经结束, 这里
+                // 当前的更新操作已经结束, 清除当前的线程执行标记
                 buffer.getThreadRunning().set(false);
+                // 解锁
                 buffer.getLock().writeLock().unlock();
             }
         });
@@ -382,6 +394,8 @@ public class SegmentIdGenerator implements ApplicationContextAware {
      * @param buffer 需要等待的 buffer
      */
     private void waitAndSleep(SegmentBuffer buffer) {
+
+        // 这是一个循环等待, 但却会消耗cpu资源
         int roll = 0;
         while (buffer.getThreadRunning().get()) {
             ++roll;
@@ -413,6 +427,7 @@ public class SegmentIdGenerator implements ApplicationContextAware {
         // 获取当前 segment 对应的 buffer
         SegmentBuffer buffer = segment.getBuffer();
 
+        // 这只是一个用于与数据库交互的实体
         LeafAlloc leafAlloc = new LeafAlloc();
         leafAlloc.setKey(key);
         leafAlloc.setStep(defaultStep);
@@ -424,21 +439,19 @@ public class SegmentIdGenerator implements ApplicationContextAware {
          * 3. 根据时间力度跟新 buffer
          */
         if (!buffer.isInitOk()) {
-            // 更新数据库的最大 ID, 然后得到设置的这个最大 ID 值
+            // **初始化buffer, 此方法只会执行一次
+            // 更新数据库的最大 ID, 然后得到设置的这个最大 ID 值(同一时间只会有一个buffer拿到这个值)
             long maxId = this.updateIdAndGetId(leafAlloc);
             leafAlloc.setMaxId(maxId);
             // 设置步长
             buffer.setStep(leafAlloc.getStep());
             // 这里使用配置的最小步长, 这里其实只用在这里设置, 毕竟步长没变, 没必要设置, 可以少两行代码
             buffer.setMinStep(leafAlloc.getStep());
-            // todo ? 初始化的时候为什么不设置 buffer 的时间呢?
         } else if (buffer.getUpdateTimeStamp() == 0L) {
+            // **初始化后使用第一个buffer一段时间后, 第一次更新第二个buffer会走这个逻辑
             long maxId = this.updateIdAndGetId(leafAlloc);
             leafAlloc.setMaxId(maxId);
-            /*
-             * todo 这个时间是啥意思呢 ?, 很明显上面一次不会设置时间, 那么初始化好之后第一次肯定会走这里
-             * 两个 segment 的前两次更新都会走这里相当于省去计算步长的操作
-             */
+            // 目的是知道当前已经完成了第一次的更新
             buffer.setUpdateTimeStamp(System.currentTimeMillis());
             buffer.setStep(leafAlloc.getStep());
             buffer.setMinStep(leafAlloc.getStep());
@@ -471,9 +484,9 @@ public class SegmentIdGenerator implements ApplicationContextAware {
             buffer.setMinStep(leafAlloc.getStep());
         }
 
-        // 设置当前 segment 的起始值
+        // 设置当前 segment 的起始值(数据库最大-步长)
         segment.getValue().set(leafAlloc.getMaxId() - buffer.getStep());
-        // 设置当前这个 segment 这一次能够生成的最大的 id
+        // 设置当前这个 segment 这一次能够生成的最大的 id (不能大于或者等于这个id)
         segment.setMax(leafAlloc.getMaxId());
         // 设置计算出来的下一次的新步长
         segment.setStep(buffer.getStep());
