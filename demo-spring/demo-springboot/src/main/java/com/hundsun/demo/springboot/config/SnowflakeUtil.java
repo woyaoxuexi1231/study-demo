@@ -1,12 +1,9 @@
 package com.hundsun.demo.springboot.config;
 
 import cn.hutool.core.lang.Snowflake;
-import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.IdUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
 
 /**
  * @ProductName: Hundsun amust

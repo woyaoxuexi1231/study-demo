@@ -23,8 +23,8 @@ public class ThreadPoolBeanConfig {
     @Bean
     public ThreadPoolExecutor commonPool() {
         return new ThreadPoolExecutor(
-                20,
-                20,
+                200,
+                200,
                 60,
                 TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(100),

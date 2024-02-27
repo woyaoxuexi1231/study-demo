@@ -1,6 +1,5 @@
 package com.hundsun.demo.springboot.mapper;
 
-import com.hundsun.demo.springboot.controller.SimpleController;
 import com.hundsun.demo.springboot.service.serviceimpl.SimpleServiceImpl;
 import tk.mybatis.mapper.common.special.InsertListMapper;
 

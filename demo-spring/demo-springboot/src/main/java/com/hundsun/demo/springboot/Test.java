@@ -7,7 +7,6 @@ import org.dom4j.io.SAXReader;
 import org.springframework.util.ResourceUtils;
 
 import java.io.File;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -41,7 +40,7 @@ public class Test {
             while (iterator1.hasNext()) {
                 Element stuChild = (Element) iterator1.next();
                 List<Attribute> attributeList = stuChild.attributes();
-                attributeList.forEach(i->{
+                attributeList.forEach(i -> {
                     System.out.print(i.getName());
                     System.out.print("-");
                     System.out.print(i.getValue());

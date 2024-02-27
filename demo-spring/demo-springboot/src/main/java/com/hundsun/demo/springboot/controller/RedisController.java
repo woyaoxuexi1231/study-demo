@@ -1,9 +1,7 @@
 package com.hundsun.demo.springboot.controller;
 
-import com.github.pagehelper.PageHelper;
 import com.hundsun.demo.springboot.config.BeanConfig;
 import com.hundsun.demo.springboot.mapper.EmployeeMapper;
-import com.hundsun.demo.springboot.model.pojo.EmployeeDO;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -14,9 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import javax.annotation.Resource;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -96,7 +91,7 @@ public class RedisController {
         // Boolean map = redisTemplate.opsForHash().putIfAbsent("map", "1", UUID.randomUUID().toString());
         // Boolean map = StringRedisTemplate.opsForHash().putIfAbsent("map", "1", UUID.randomUUID().toString());
         // System.out.println(map);
-        StringRedisTemplate.opsForValue().set("hello","redis");
+        StringRedisTemplate.opsForValue().set("hello", "redis");
 
 
     }

@@ -3,9 +3,8 @@ package com.hundsun.demo.springboot.utils.segmentid;
 public enum GenResultEnum {
 
     INIT_NOT_COMPLETE(-1L, "初始化尚未完成!"),
-    KEY_NOT_FOUND(-2L,"未找到需要生成id的key!"),
-    NOT_READY(-3L,"生成分布式ID的工具都尚未准备好!")
-    ;
+    KEY_NOT_FOUND(-2L, "未找到需要生成id的key!"),
+    NOT_READY(-3L, "生成分布式ID的工具都尚未准备好!");
 
     /**
      * id(这里也是错误码)
