@@ -7,7 +7,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -332,16 +331,31 @@ public class JUC {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
 
         // 创建线程的三种方式
-        MyThread myThread = new MyThread();
-        Thread thread = new Thread(new RunnableTask());
-        FutureTask<String> futureTask = new FutureTask<>(new CallerTask());
-        Thread thread2 = new Thread(futureTask);
-        myThread.start();
-        thread.start();
-        thread2.start();
-        System.out.println(futureTask.get());
+        // MyThread myThread = new MyThread();
+        // Thread thread = new Thread(new RunnableTask());
+        // FutureTask<String> futureTask = new FutureTask<>(new CallerTask());
+        // Thread thread2 = new Thread(futureTask);
+        // myThread.start();
+        // thread.start();
+        // thread2.start();
+        // System.out.println(futureTask.get());
 
-
+        // ThreadPoolExecutor 定义的一种线程状态, 使用了32为的高三位来表示线程状态 低位来表示线程池中有效线程的数量
+        int COUNT_BITS = Integer.SIZE - 3;
+        int RUNNING = -1 << COUNT_BITS;
+        int SHUTDOWN = 0 << COUNT_BITS;
+        int STOP = 1 << COUNT_BITS;
+        int TIDYING = 2 << COUNT_BITS;
+        int TERMINATED = 3 << COUNT_BITS;
+        System.out.println(String.format("%32s", Integer.toBinaryString(COUNT_BITS)).replace(' ', '0'));
+        System.out.println(String.format("%32s", Integer.toBinaryString(RUNNING)).replace(' ', '0'));
+        System.out.println(String.format("%32s", Integer.toBinaryString(SHUTDOWN)).replace(' ', '0'));
+        System.out.println(String.format("%32s", Integer.toBinaryString(STOP)).replace(' ', '0'));
+        System.out.println(String.format("%32s", Integer.toBinaryString(TIDYING)).replace(' ', '0'));
+        System.out.println(String.format("%32s", Integer.toBinaryString(TERMINATED)).replace(' ', '0'));
+        System.out.println(String.format("%32s", Integer.toBinaryString(RUNNING | 0)).replace(' ', '0'));
+        System.out.println(String.format("%32s", Integer.toBinaryString((1 << COUNT_BITS) - 1)).replace(' ', '0'));
+        System.out.println(String.format("%32s", Integer.toBinaryString((RUNNING | 0) & (1 << COUNT_BITS) - 1)).replace(' ', '0'));
     }
 
 
