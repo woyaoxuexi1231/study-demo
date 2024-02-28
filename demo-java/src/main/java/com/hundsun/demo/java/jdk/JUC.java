@@ -340,7 +340,7 @@ public class JUC {
         // thread2.start();
         // System.out.println(futureTask.get());
 
-        // ThreadPoolExecutor 定义的一种线程状态, 使用了32为的高三位来表示线程状态 低位来表示线程池中有效线程的数量
+        // ThreadPoolExecutor 定义为当前线程的状态
         int COUNT_BITS = Integer.SIZE - 3;
         int RUNNING = -1 << COUNT_BITS;
         int SHUTDOWN = 0 << COUNT_BITS;
@@ -357,6 +357,44 @@ public class JUC {
         System.out.println(String.format("%32s", Integer.toBinaryString((1 << COUNT_BITS) - 1)).replace(' ', '0'));
         System.out.println(String.format("%32s", Integer.toBinaryString((RUNNING | 0) & (1 << COUNT_BITS) - 1)).replace(' ', '0'));
     }
+
+    // ThreadPoolExecutor 通过worker队列+getTask()阻塞循环获取任务的方式来实现线程的复用
+    // protected Runnable getTask() {
+    //     boolean timedOut = false; // 标记上一次从队列获取是否超时
+    //
+    //     for (;;) { // 无限循环以保证线程可以反复获取任务
+    //         int c = ctl.get(); // 获取线程池的当前控制状态
+    //         int rs = runStateOf(c); // 提取当前的运行状态
+    //
+    //         // 如果线程池关闭且队列为空，或处于 STOP 状态，则不再接受新任务
+    //         if (rs >= SHUTDOWN && (rs >= STOP || workQueue.isEmpty())) {
+    //             decrementWorkerCount(); // 线程即将退出，减少工作线程计数
+    //             return null; // 返回 null 让工作者线程退出循环
+    //         }
+    //
+    //         int wc = workerCountOf(c); // 获取线程池的工作者线程数量
+    //         // 根据核心线程超时策略和当前线程数量来决定是否设置超时
+    //         boolean timed = allowCoreThreadTimeOut || wc > corePoolSize;
+    //
+    //         // 如果工作者线程数超过最大值或上次获取超时，并且存在多于一个工作者或队列为空，尝试减少线程
+    //         if ((wc > maximumPoolSize || (timed && timedOut)) && (wc > 1 || workQueue.isEmpty())) {
+    //             if (compareAndDecrementWorkerCount(c)) return null; // 如果成功减少计数则让线程退出
+    //             continue; // 如果未能减少，重新尝试
+    //         }
+    //
+    //         try {
+    //             // 根据超时设置从工作队列中获取任务，或等待直到有任务可获取
+    //             // 而避免CPU空转浪费资源就在于 workQueue.take(), 没有任务会阻塞获取
+    //             Runnable r = timed ? workQueue.poll(keepAliveTime, TimeUnit.NANOSECONDS) : workQueue.take();
+    //             if (r != null) {
+    //                 return r; // 成功获取到任务，返回该任务以供执行
+    //             }
+    //             timedOut = true; // 如果poll超时且没有获取到任务，则设置超时标志为真
+    //         } catch (InterruptedException retry) {
+    //             timedOut = false; // 如果在获取任务时被中断，重置超时标志
+    //         }
+    //     }
+    // }
 
 
 }
