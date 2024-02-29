@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -152,12 +153,12 @@ public class Collection {
      */
     private PriorityQueue<?> priorityQueue;
 
-
-    public static void main(String[] args) {
+    private static void foreach() {
         // 1. 增强for循环在编译后其实使用的是 Iterator(迭代器)来操作
         ArrayList<Object> objects = new ArrayList<>();
         for (Object object : objects) {
             log.info("{}", objects);
+            objects.remove(object);
         }
         /*
         编译后变成:
@@ -172,7 +173,7 @@ public class Collection {
 
         // 2. 在循环中操作元素
         ArrayList<Integer> integers = new ArrayList<>();
-        // ArrayList内部有一个modCount来记录操作的次数, 在这种增强for循环中操作集合会抛错
+        // ArrayList内部有一个modCount来记录操作的次数, 在这种增强for循环中操作集合会抛错(快速失败)
         integers.add(1);
         integers.add(2);
         integers.add(3);
@@ -205,38 +206,16 @@ public class Collection {
         // }
         log.info("set: {}", sets);
 
+    }
+
+    public static void main(String[] args) {
+        // 循环中操作数组
+        foreach();
         // 这个可以获得一个线程安全的数据 - SynchronizedCollection使用了装饰器模式
         java.util.Collection<Object> synchronizedCollection = Collections.synchronizedCollection(new ArrayList<>());
-
-
-        Collections.addAll(sets, 4, 5);
-        log.info("set: {}", sets);
-
-        integers.sort(Collections.reverseOrder());
-        log.info("integers.sort(Collections.reverseOrder()): {}", integers);
-
-        Collections.reverse(integers);
-        log.info("Collections.reverse(integers): {}", integers);
-
-        // Collections.fill(integers, 5);
-        // log.info("Collections.fill(integers, 5): {}", integers);
-        // Collections.
-        // Arrays
-
+        // Arrays.asList生成的数组为不可变数组, 数组内部为 final E[]
         List<Integer> asList = Arrays.asList(1);
-        // asList.add(1);
+        // asList.add(2); //这里会直接抛出异常 java.lang.UnsupportedOperationException
         log.info("asList: {}", asList);
-
-        // 自定一个逆序排序规则
-        integers.sort((o1, o2) -> {
-            if (o1 < o2) {
-                return 1;
-            }
-            if (o1 > o2) {
-                return -1;
-            }
-            return 0;
-        });
-        log.info("integers.sort: {}", integers);
     }
 }
