@@ -208,6 +208,33 @@ public class Collection {
 
     }
 
+    public static void testCopyOnWriteArrayList() {
+
+
+        CopyOnWriteArrayList<Integer> copy = new CopyOnWriteArrayList<>();
+        copy.add(1);
+
+
+        Thread one = new Thread(() -> {
+            // 这一步结束后, 迭代器将获得数组的快照版本
+            Iterator<Integer> iterator = copy.iterator();
+            while (iterator.hasNext()) {
+                System.out.println(String.format("iterator.next: %s", iterator.next()));
+            }
+        });
+
+        Thread two = new Thread(() -> {
+            System.out.println(String.format("copy.remove: %b", copy.remove(Integer.valueOf(1))));
+            // System.out.println(copy.get(0));
+        });
+
+        one.start();
+        two.start();
+
+        // 在上述情况中, 不论如何都不会产生报错, 创建迭代器的时候获得数组的快照版本
+        // 之所以叫快照版本, 是因为CopyOnWriteArrayList是写时复制, 在修改或者删除元素时, 并不会直接操作之前的数组, 而是深克隆之前的数组, 然后操作克隆后的数组 非常巧妙
+    }
+
     public static void main(String[] args) {
         // 循环中操作数组
         foreach();
@@ -217,5 +244,7 @@ public class Collection {
         List<Integer> asList = Arrays.asList(1);
         // asList.add(2); //这里会直接抛出异常 java.lang.UnsupportedOperationException
         log.info("asList: {}", asList);
+
+        testCopyOnWriteArrayList();
     }
 }
