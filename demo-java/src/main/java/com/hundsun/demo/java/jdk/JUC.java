@@ -434,7 +434,7 @@ public class JUC {
     private static void blockQueue() {
         ArrayBlockingQueue<Integer> queue = new ArrayBlockingQueue<>(5);
         Thread one = new Thread(() -> {
-            for (int i = 0; i < 50; i++) {
+            for (int i = 0; i < 10; i++) {
                 try {
                     System.out.printf("queue正在放入第 %d 个元素%n", i);
                     queue.put(i);
@@ -446,7 +446,7 @@ public class JUC {
 
         Thread two = new Thread(() -> {
             try {
-                for (int i = 0; i < 50; i++) {
+                for (int i = 0; i < 10; i++) {
                     Integer take = queue.take();
                     System.out.printf("queue获取元素成功, %d%n", take);
                 }
@@ -460,11 +460,39 @@ public class JUC {
         two.start();
     }
 
+    private static void synchronizedTest() {
+
+        JUC juc = new JUC();
+
+        Thread one = new Thread(() -> {
+            synchronized (JUC.class) {
+                System.out.println("当前线程持有了 JUC.class 的锁");
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                System.out.println("准备释放 JUC.class 的锁");
+            }
+        });
+
+        Thread two = new Thread(() -> {
+            synchronized (juc) {
+                // 类锁和类实例的锁可以被同时持有, 他们是两种不同的锁
+                System.out.println("当前线程只有了 JUC.class 对象实例的锁");
+            }
+        });
+
+        one.start();
+        two.start();
+    }
+
     public static void main(String[] args) {
         createThread();
         threadPoolExecutorStatus();
         waitAndNotify();
         blockQueue();
+        synchronizedTest();
     }
 
 }
