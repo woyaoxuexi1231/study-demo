@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.LockSupport;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @projectName: study-demo
@@ -211,17 +212,12 @@ public class JUC {
 
     /**
      * AbstractQueuedSynchronizer - AQS, 实现同步器的基础组件, 锁底层使用 AQS 实现
-     * <p>
-     * FIFO 双向队列, Node 用来存放 thread 变量, 然后放入 ASQ 队列中, 主要通过 state 状态值来对线程的同步进行操作
-     * <p>
-     * AQS 中的条件变量 condition, condition 包括 await 和 signal, 类似与 wait 和 notify, 用来配合锁来达到与后者差不多的效果
-     * <p>
-     * acquire(int arg) 和 release(int arg) 用来获取独占资源和释放资源, 由具体子类实现
-     * <p>
-     * <p>
-     * AQS 如何入队?? 1. 先初始化 head 和 tail 节点 2. 入队的 node 都插入到队列的末尾与上一个 tail 节点形成双向链表
-     * <p>
-     * <p>
+     1. 状态管理：AQS允许同步器定义和管理一个整数状态，用于表示共享资源的状态或可用性。同步器可以通过获取、释放和修改状态来控制对共享资源的访问。
+     2. 线程排队与阻塞：AQS支持将等待线程以FIFO（先进先出）的顺序排队，这样可以确保公平性。当一个线程尝试获取锁或资源时，如果条件不满足，它会被阻塞并加入到同步队列中等待条件满足。
+     3. 同步状态的获取与释放：AQS提供了acquire和release等方法，用于获取和释放同步状态。具体来说，通过调用acquire方法可以尝试获取同步状态，如果未成功则会将调用线程阻塞；而调用release方法将释放已持有的同步状态。
+     4. 实现锁和同步器：AQS是实现各种锁（如ReentrantLock、ReadWriteLock）和同步器（如CountDownLatch、Semaphore）的基础框架。开发者可以通过继承AQS类来自定义同步器，实现特定的同步策略。
+     5. 可重入性支持：AQS提供了内置的支持来实现可重入锁，允许同一线程重复获取同步状态而不会造成死锁。
+     6. 条件变量的支持：AQS提供了Condition条件变量的支持，用于实现更复杂的线程协作机制。
      * ReentrantLock 可重入独占锁, Java常见的锁
      * ReentrantReadWriteLock 读写分离的锁, 分写锁和读锁
      * JDK8新增的 StampedLock
@@ -326,6 +322,11 @@ public class JUC {
      * release() - 调用该方法的线程会使 Semaphore 的信号量递增
      */
     Semaphore semaphore;
+
+    /**
+     * 通过 CAS 和 AQS 实现的可重复锁
+     */
+    ReentrantLock reentrantLock;
 
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
