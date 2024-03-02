@@ -287,12 +287,12 @@ public class JUC {
      * <p>
      * 4、DiscardPolicy策略(会丢弃任务)：该策略会默默丢弃无法处理的任务，不予任何处理。当然使用此策略，业务场景中需允许任务的丢失
      */
-    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
-            1,
-            2,
+    private static final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
+            10,
+            10,
             20,
             TimeUnit.SECONDS,
-            new ArrayBlockingQueue<>(5),
+            new ArrayBlockingQueue<>(200),
             new ThreadFactoryBuilder().setNamePrefix("juc-threadPoolExecutor").build(),
             new ThreadPoolExecutor.CallerRunsPolicy());
 
@@ -487,12 +487,38 @@ public class JUC {
         two.start();
     }
 
+    // private static volatile int count = 0;
+    private static int count = 0;
+    private static boolean flag = false;
+
+    @SneakyThrows
+    private static void volatileTest() {
+        Thread readerThread = new Thread(() -> {
+            while (!flag) {
+                // 空循环等待flag变为true
+            }
+            System.out.println("Count: " + count);
+        });
+
+        Thread writerThread = new Thread(() -> {
+            for (int i = 0; i < 100000; i++) {
+                count++;
+            }
+            System.out.println("已结束");
+            flag = true; // 修改flag为true
+        });
+
+        readerThread.start();
+        writerThread.start();
+    }
+
     public static void main(String[] args) {
-        createThread();
-        threadPoolExecutorStatus();
-        waitAndNotify();
-        blockQueue();
-        synchronizedTest();
+        // createThread();
+        // threadPoolExecutorStatus();
+        // waitAndNotify();
+        // blockQueue();
+        // synchronizedTest();
+        volatileTest();
     }
 
 }
