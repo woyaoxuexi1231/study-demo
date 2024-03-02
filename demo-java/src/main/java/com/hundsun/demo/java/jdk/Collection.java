@@ -65,7 +65,9 @@ public class Collection {
     /**
      * 线程安全的集合
      * 相当于ArrayList,只是在所有方法上都加上了synchronized关键字
+     * 性能低下, 已有ArrayList这样的替代品而导致不在推荐使用
      */
+    @Deprecated
     private Vector<?> vector;
 
     /**
@@ -126,9 +128,11 @@ public class Collection {
     private Set<?> set;
 
     /**
-     * 线程安全的 HashMap
+     * 线程安全的 HashMap(数组+链表)
      * 实现方法很粗造, 几乎所有方法加上 synchronized 关键字来保证线程安全, 这导致效率低下
+     * 线程安全开销(性能低下), 不支持迭代器快速失败, 有替代品而导致也不再推荐使用
      */
+    @Deprecated
     private Hashtable<?, ?> hashtable;
 
     /**
