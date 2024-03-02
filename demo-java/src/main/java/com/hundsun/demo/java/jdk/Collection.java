@@ -244,6 +244,9 @@ public class Collection {
         foreach();
         // 这个可以获得一个线程安全的数据 - SynchronizedCollection使用了装饰器模式
         java.util.Collection<Object> synchronizedCollection = Collections.synchronizedCollection(new ArrayList<>());
+        // 同样的此方法返回一个只读集合, 使用了装饰器模式
+        java.util.Collection<Object> unmodifiableCollection = Collections.unmodifiableCollection(new ArrayList<>());
+
         // Arrays.asList生成的数组为不可变数组, 数组内部为 final E[]
         List<Integer> asList = Arrays.asList(1);
         // asList.add(2); //这里会直接抛出异常 java.lang.UnsupportedOperationException
