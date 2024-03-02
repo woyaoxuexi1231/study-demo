@@ -1,6 +1,9 @@
 package com.hundsun.demo.java.jdk.pattern.creational;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @projectName: study-demo
@@ -11,6 +14,9 @@ import lombok.Data;
  * @createDate: 2023/2/5 17:36
  */
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class Car {
 
