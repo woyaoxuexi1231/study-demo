@@ -430,10 +430,41 @@ public class JUC {
         two.start();
     }
 
+    @SneakyThrows
+    private static void blockQueue() {
+        ArrayBlockingQueue<Integer> queue = new ArrayBlockingQueue<>(5);
+        Thread one = new Thread(() -> {
+            for (int i = 0; i < 50; i++) {
+                try {
+                    System.out.printf("queue正在放入第 %d 个元素%n", i);
+                    queue.put(i);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        Thread two = new Thread(() -> {
+            try {
+                for (int i = 0; i < 50; i++) {
+                    Integer take = queue.take();
+                    System.out.printf("queue获取元素成功, %d%n", take);
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        one.start();
+        Thread.sleep(2000);
+        two.start();
+    }
+
     public static void main(String[] args) {
         createThread();
         threadPoolExecutorStatus();
         waitAndNotify();
+        blockQueue();
     }
 
 }
