@@ -36,5 +36,9 @@ public class FactoryTest {
          */
         Car benz = BenzCarAbsFactory.getCar();
 
+        /*
+        类似于像Boolean.valueOf这样的方法同样也是工厂模式的实现, 它通过静态工厂方法返回 Boolean 类的实例对象
+        工厂模式是一种创建型设计模式，其主要目的是封装对象的创建过程，并提供一个统一的接口来创建对象，从而隐藏对象的具体实现细节。
+         */
     }
 }
