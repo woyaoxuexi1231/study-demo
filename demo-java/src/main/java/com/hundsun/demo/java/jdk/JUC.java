@@ -1,12 +1,13 @@
 package com.hundsun.demo.java.jdk;
 
 import cn.hutool.core.thread.ThreadFactoryBuilder;
+import lombok.SneakyThrows;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -212,12 +213,12 @@ public class JUC {
 
     /**
      * AbstractQueuedSynchronizer - AQS, 实现同步器的基础组件, 锁底层使用 AQS 实现
-     1. 状态管理：AQS允许同步器定义和管理一个整数状态，用于表示共享资源的状态或可用性。同步器可以通过获取、释放和修改状态来控制对共享资源的访问。
-     2. 线程排队与阻塞：AQS支持将等待线程以FIFO（先进先出）的顺序排队，这样可以确保公平性。当一个线程尝试获取锁或资源时，如果条件不满足，它会被阻塞并加入到同步队列中等待条件满足。
-     3. 同步状态的获取与释放：AQS提供了acquire和release等方法，用于获取和释放同步状态。具体来说，通过调用acquire方法可以尝试获取同步状态，如果未成功则会将调用线程阻塞；而调用release方法将释放已持有的同步状态。
-     4. 实现锁和同步器：AQS是实现各种锁（如ReentrantLock、ReadWriteLock）和同步器（如CountDownLatch、Semaphore）的基础框架。开发者可以通过继承AQS类来自定义同步器，实现特定的同步策略。
-     5. 可重入性支持：AQS提供了内置的支持来实现可重入锁，允许同一线程重复获取同步状态而不会造成死锁。
-     6. 条件变量的支持：AQS提供了Condition条件变量的支持，用于实现更复杂的线程协作机制。
+     * 1. 状态管理：AQS允许同步器定义和管理一个整数状态，用于表示共享资源的状态或可用性。同步器可以通过获取、释放和修改状态来控制对共享资源的访问。
+     * 2. 线程排队与阻塞：AQS支持将等待线程以FIFO（先进先出）的顺序排队，这样可以确保公平性。当一个线程尝试获取锁或资源时，如果条件不满足，它会被阻塞并加入到同步队列中等待条件满足。
+     * 3. 同步状态的获取与释放：AQS提供了acquire和release等方法，用于获取和释放同步状态。具体来说，通过调用acquire方法可以尝试获取同步状态，如果未成功则会将调用线程阻塞；而调用release方法将释放已持有的同步状态。
+     * 4. 实现锁和同步器：AQS是实现各种锁（如ReentrantLock、ReadWriteLock）和同步器（如CountDownLatch、Semaphore）的基础框架。开发者可以通过继承AQS类来自定义同步器，实现特定的同步策略。
+     * 5. 可重入性支持：AQS提供了内置的支持来实现可重入锁，允许同一线程重复获取同步状态而不会造成死锁。
+     * 6. 条件变量的支持：AQS提供了Condition条件变量的支持，用于实现更复杂的线程协作机制。
      * ReentrantLock 可重入独占锁, Java常见的锁
      * ReentrantReadWriteLock 读写分离的锁, 分写锁和读锁
      * JDK8新增的 StampedLock
@@ -328,37 +329,6 @@ public class JUC {
      */
     ReentrantLock reentrantLock;
 
-
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
-
-        // 创建线程的三种方式
-        // MyThread myThread = new MyThread();
-        // Thread thread = new Thread(new RunnableTask());
-        // FutureTask<String> futureTask = new FutureTask<>(new CallerTask());
-        // Thread thread2 = new Thread(futureTask);
-        // myThread.start();
-        // thread.start();
-        // thread2.start();
-        // System.out.println(futureTask.get());
-
-        // ThreadPoolExecutor 定义为当前线程的状态
-        int COUNT_BITS = Integer.SIZE - 3;
-        int RUNNING = -1 << COUNT_BITS;
-        int SHUTDOWN = 0 << COUNT_BITS;
-        int STOP = 1 << COUNT_BITS;
-        int TIDYING = 2 << COUNT_BITS;
-        int TERMINATED = 3 << COUNT_BITS;
-        System.out.println(String.format("%32s", Integer.toBinaryString(COUNT_BITS)).replace(' ', '0'));
-        System.out.println(String.format("%32s", Integer.toBinaryString(RUNNING)).replace(' ', '0'));
-        System.out.println(String.format("%32s", Integer.toBinaryString(SHUTDOWN)).replace(' ', '0'));
-        System.out.println(String.format("%32s", Integer.toBinaryString(STOP)).replace(' ', '0'));
-        System.out.println(String.format("%32s", Integer.toBinaryString(TIDYING)).replace(' ', '0'));
-        System.out.println(String.format("%32s", Integer.toBinaryString(TERMINATED)).replace(' ', '0'));
-        System.out.println(String.format("%32s", Integer.toBinaryString(RUNNING | 0)).replace(' ', '0'));
-        System.out.println(String.format("%32s", Integer.toBinaryString((1 << COUNT_BITS) - 1)).replace(' ', '0'));
-        System.out.println(String.format("%32s", Integer.toBinaryString((RUNNING | 0) & (1 << COUNT_BITS) - 1)).replace(' ', '0'));
-    }
-
     // ThreadPoolExecutor 通过worker队列+getTask()阻塞循环获取任务的方式来实现线程的复用
     // protected Runnable getTask() {
     //     boolean timedOut = false; // 标记上一次从队列获取是否超时
@@ -397,5 +367,73 @@ public class JUC {
     //     }
     // }
 
+    @SneakyThrows
+    private static void createThread() {
+        // 创建线程的三种方式
+        MyThread myThread = new MyThread();
+        Thread thread = new Thread(new RunnableTask());
+        FutureTask<String> futureTask = new FutureTask<>(new CallerTask());
+        Thread thread2 = new Thread(futureTask);
+        myThread.start();
+        thread.start();
+        thread2.start();
+        System.out.println(futureTask.get());
+    }
+
+    private static void threadPoolExecutorStatus() {
+        // ThreadPoolExecutor 定义为当前线程的状态
+        int COUNT_BITS = Integer.SIZE - 3;
+        int RUNNING = -1 << COUNT_BITS;
+        int SHUTDOWN = 0 << COUNT_BITS;
+        int STOP = 1 << COUNT_BITS;
+        int TIDYING = 2 << COUNT_BITS;
+        int TERMINATED = 3 << COUNT_BITS;
+        System.out.println(String.format("%32s", Integer.toBinaryString(COUNT_BITS)).replace(' ', '0'));
+        System.out.println(String.format("%32s", Integer.toBinaryString(RUNNING)).replace(' ', '0'));
+        System.out.println(String.format("%32s", Integer.toBinaryString(SHUTDOWN)).replace(' ', '0'));
+        System.out.println(String.format("%32s", Integer.toBinaryString(STOP)).replace(' ', '0'));
+        System.out.println(String.format("%32s", Integer.toBinaryString(TIDYING)).replace(' ', '0'));
+        System.out.println(String.format("%32s", Integer.toBinaryString(TERMINATED)).replace(' ', '0'));
+        System.out.println(String.format("%32s", Integer.toBinaryString(RUNNING | 0)).replace(' ', '0'));
+        System.out.println(String.format("%32s", Integer.toBinaryString((1 << COUNT_BITS) - 1)).replace(' ', '0'));
+        System.out.println(String.format("%32s", Integer.toBinaryString((RUNNING | 0) & (1 << COUNT_BITS) - 1)).replace(' ', '0'));
+    }
+
+
+    static final Object lock = new Object();
+
+    @SneakyThrows
+    private static void waitAndNotify() {
+        Thread one = new Thread(() -> {
+            synchronized (lock) {
+                System.out.println("准备wait()");
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                System.out.println("结束wait()");
+            }
+        });
+
+        Thread two = new Thread(() -> {
+            synchronized (lock) {
+                System.out.println("准备notify()");
+                lock.notify(); // 唤醒第一个在等待的线程
+                // lock.notifyAll() 同时唤醒所有正在等待的线程
+                System.out.println("结束notify()");
+            }
+        });
+
+        one.start();
+        Thread.sleep(1000);
+        two.start();
+    }
+
+    public static void main(String[] args) {
+        createThread();
+        threadPoolExecutorStatus();
+        waitAndNotify();
+    }
 
 }
