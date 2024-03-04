@@ -495,7 +495,7 @@ public class JUC {
     private static void volatileTest() {
         Thread readerThread = new Thread(() -> {
             while (!flag) {
-                // 空循环等待flag变为true
+                // 空循环等待flag变为true, 只要启动后读线程率先进入这个方法(也就是说在读线程修改flag之前在主存中获取了flag的值), 那么就会在这里形成思索
             }
             System.out.println("Count: " + count);
         });
