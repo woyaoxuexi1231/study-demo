@@ -19,6 +19,7 @@ public class BinarySearch {
         int[] ints = new int[]{1, 3, 4, 6, 8, 11, 15, 67, 89, 101};
         int num = 5;
         // int index = binarySearch(ints, num);
+        // 二分查找的时间复杂度为 logn, 取以2为底n的对数则是二分查找的时间复杂度
         int index = doBinarySearch(ints, num);
         System.out.println(index);
     }
