@@ -33,6 +33,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class Collection {
 
     /*
+    集合框架是 Java 中用于存储和操作一组对象的类库。它提供了一套接口和类，用于表示和操作不同类型的集合
+
+
     Iterable -
         Iterable接口是Java集合框架中的一个顶级接口，它定义了一种表示可迭代对象（即可以按顺序访问元素的对象）的标准方式。
         实现了Iterable接口的类可以使用增强型的for循环（foreach loop）来遍历其中的元素。
