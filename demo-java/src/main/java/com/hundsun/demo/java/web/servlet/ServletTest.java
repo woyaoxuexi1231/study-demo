@@ -1,4 +1,4 @@
-package com.hundsun.demo.java.jdk.servlet;
+package com.hundsun.demo.java.web.servlet;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
