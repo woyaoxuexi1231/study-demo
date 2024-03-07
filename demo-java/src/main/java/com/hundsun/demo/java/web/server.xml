@@ -226,6 +226,7 @@ autoDeploy: 指定是否启用自动部署功能，默认为true，表示自动�
 
       </Host>
 
+      <!-- <Host name="www.hulei123.com" appBase="webapps" unpackWARs="true" autoDeploy="true">: 定义了一个名为"www.hulei123.com"的主机，同样指定了Web应用程序的基本目录为"webapps"，并设置了WAR文件解压和自动部署功能。 -->
       <Host name="www.hulei123.com" appBase="webapps" unpackWARs="true" autoDeploy="true">
         <Alias>hulei123.com</Alias>
       </Host>
