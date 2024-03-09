@@ -21,7 +21,7 @@ import tk.mybatis.spring.annotation.MapperScan;
         "com.hundsun.demo.springboot.mapper",
 })
 @org.mybatis.spring.annotation.MapperScan(basePackages = {
-        "com.hundsun.demo.springboot.mybatisplus"
+        "com.hundsun.demo.springboot.utils.mybatisplus"
 })
 @Slf4j
 // @ServletComponentScan

@@ -8,6 +8,7 @@ import com.hundsun.demo.springboot.model.pojo.EmployeeDO;
 import com.hundsun.demo.springboot.service.serviceimpl.SimpleServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -21,7 +22,8 @@ import javax.annotation.Resource;
  * @createDate: 2023/11/4 14:47
  */
 
-@RestController(value = "/db")
+@RestController
+@RequestMapping("/db")
 public class DbController {
 
     @Autowired

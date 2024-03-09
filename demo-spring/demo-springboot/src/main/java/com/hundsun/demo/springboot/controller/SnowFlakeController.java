@@ -8,6 +8,7 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.zookeeper.CreateMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.nio.charset.StandardCharsets;
@@ -27,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @RestController
+@RequestMapping("/snowflake")
 public class SnowFlakeController {
 
     @Autowired
