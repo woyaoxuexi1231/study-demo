@@ -1,6 +1,6 @@
 package com.hundsun.demo.springboot.mapper;
 
-import com.hundsun.demo.springboot.utils.segmentid.LeafAlloc;
+import com.hundsun.demo.springboot.utils.idgenerator.segmentid.LeafAlloc;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;

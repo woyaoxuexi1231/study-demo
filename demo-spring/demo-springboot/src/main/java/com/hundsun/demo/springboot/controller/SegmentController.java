@@ -1,7 +1,7 @@
 package com.hundsun.demo.springboot.controller;
 
 import com.hundsun.demo.springboot.mapper.SequenceMapper;
-import com.hundsun.demo.springboot.utils.segmentid.SegmentIdGenerator;
+import com.hundsun.demo.springboot.utils.idgenerator.segmentid.SegmentIdGenerator;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.mapping.Environment;
