@@ -67,6 +67,11 @@
             <artifactId>hibernate-validator</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+        </dependency>
+
 
         <!-- 一些可选的配置 -->
         <!-- spring容器包 -->

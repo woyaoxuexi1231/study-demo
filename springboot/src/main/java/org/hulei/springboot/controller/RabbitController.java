@@ -1,42 +1,46 @@
-package com.hundsun.demo.dubbo.provider.service.impl;
+package org.hulei.springboot.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.hundsun.demo.commom.core.model.dto.ResultDTO;
-import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
 import com.hundsun.demo.commom.core.model.MQIdempotency;
-import com.hundsun.demo.dubbo.provider.api.service.RabbitMqService;
 import com.hundsun.demo.java.mq.rabbit.config.MQConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
 /**
- * @ProductName: Hundsun amust
- * @ProjectName: study-demo
- * @Package: com.hundsun.demo.dubbo.consumer.service.impl
- * @Description:
- * @Author: hulei42031
- * @Date: 2022-06-17 13:49
+ * @projectName: study-demo
+ * @package: org.hulei.springboot.controller
+ * @className: RabbitController
+ * @description:
+ * @author: woaixuexi
+ * @createDate: 2024/3/10 23:34
  */
+
 @Slf4j
-@Service
-public class RabbitMqServiceImpl implements RabbitMqService {
+@RestController
+@RequestMapping(value = "/rabbit")
+public class RabbitController {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    @Override
-    public ResultDTO<?> sentSampleMsg(String uuid) {
+    @GetMapping(value = "/sentSampleMsg")
+    public void sentSampleMsg(@RequestParam(value = "uuid", required = false) String uuid) {
 
         try {
 
             MQIdempotency idempotency = new MQIdempotency();
             uuid = uuid == null ? UUID.randomUUID().toString() : uuid;
+
+            log.info("开始发送消息! uuid: {}", uuid);
             idempotency.setUuid(uuid);
             idempotency.setMsg("hello rabbitmq!");
 
@@ -66,9 +70,7 @@ public class RabbitMqServiceImpl implements RabbitMqService {
             // rabbitTemplate.convertSendAndReceive()
         } catch (Exception e) {
             log.error("消息发送异常!", e);
-            return ResultDTOBuild.resultErrorBuild("消息发送异常!");
         }
-        return ResultDTOBuild.resultDefaultBuild();
     }
 
 }

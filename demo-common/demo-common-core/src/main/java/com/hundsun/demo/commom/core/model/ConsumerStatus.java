@@ -1,4 +1,4 @@
-package com.hundsun.demo.dubbo.consumer.listener;
+package com.hundsun.demo.commom.core.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

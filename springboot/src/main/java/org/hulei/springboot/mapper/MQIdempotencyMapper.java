@@ -1,6 +1,7 @@
-package com.hundsun.demo.dubbo.consumer.mapper;
+package org.hulei.springboot.mapper;
 
 import com.hundsun.demo.commom.core.model.MQIdempotency;
+import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.BaseMapper;
 
 /**
@@ -12,6 +13,7 @@ import tk.mybatis.mapper.common.BaseMapper;
  * @createDate: 2023/3/18 22:51
  */
 
+@Repository
 public interface MQIdempotencyMapper extends BaseMapper<MQIdempotency> {
 
     /**

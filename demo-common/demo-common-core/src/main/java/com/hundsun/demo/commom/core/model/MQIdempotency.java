@@ -1,4 +1,4 @@
-package com.hundsun.demo.dubbo.provider.api.model.pojo;
+package com.hundsun.demo.commom.core.model;
 
 import lombok.Data;
 

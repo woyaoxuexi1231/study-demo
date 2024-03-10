@@ -1,12 +1,14 @@
-package com.hundsun.demo.dubbo.consumer.listener;
+package org.hulei.springboot.listener;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hundsun.demo.commom.core.model.ConsumerStatus;
-import com.hundsun.demo.dubbo.consumer.mapper.MQIdempotencyMapper;
 import com.hundsun.demo.commom.core.model.MQIdempotency;
+import com.hundsun.demo.commom.core.model.RabbitmqLogDO;
 import com.hundsun.demo.java.mq.rabbit.config.MQConfig;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
+import org.hulei.springboot.mapper.MQIdempotencyMapper;
+import org.hulei.springboot.mapper.RabbitmqLogMapper;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Argument;
@@ -16,7 +18,6 @@ import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.connection.RedisStringCommands;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -26,8 +27,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -61,6 +60,9 @@ public class RabbiMQListener {
     @Autowired
     StringRedisTemplate stringRedisTemplate;
 
+    @Autowired
+    RabbitmqLogMapper rabbitmqLogMapper;
+
     @RabbitHandler
     @RabbitListener(bindings = @QueueBinding(
             value = @Queue(
@@ -85,7 +87,6 @@ public class RabbiMQListener {
         1. 采用唯一ID+数据库主键
         2. 利用 redis来实现幂等
          */
-
         log.info("收到消息: {}", msg);
         MQIdempotency validation = JSONObject.parseObject(new String(msg.getBody(), StandardCharsets.UTF_8), MQIdempotency.class);
         // handleMsgByMysql(validation);
@@ -105,6 +106,12 @@ public class RabbiMQListener {
                 // 模拟一个比较长时间的消息处理时间
                 log.info("开始执行业务逻辑...");
                 try {
+
+                    RabbitmqLogDO logDO = new RabbitmqLogDO();
+                    logDO.setUuid(validation.getUuid());
+                    logDO.setMsg(validation.getMsg());
+                    rabbitmqLogMapper.insertSelective(logDO);
+
                     Thread.sleep(10 * 1000);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -133,92 +140,6 @@ public class RabbiMQListener {
         } catch (Exception e) {
             log.error("应答失败!", e);
         }
-    }
-
-    /**
-     * 利用唯一 ID + mysql主键来控制重复消费的问题, 此方法在某些场景下依旧存在重复消费问题
-     *
-     * @param validation 消息
-     */
-    private void handleMsgByMysql(MQIdempotency validation) {
-        /*
-        todo 这里是否存在问题?
-        1. 上游发了两条一模一样的消息, 依旧会导致重复消费
-        2. 第一个消费者在消费过程中, 断开了与 mq的连接, 也依旧会导致重复消费
-         */
-        MQIdempotency idempotency = mqIdempotencyMapper.selectByPrimaryKey(validation);
-        if (idempotency == null) {
-            // 执行业务逻辑
-            log.info("开始执行业务逻辑...收到的消息为: {}", validation);
-            try {
-                Thread.sleep(10 * 1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            // 执行完业务逻辑添加唯一ID作为已消费的证据
-            mqIdempotencyMapper.insert(validation);
-        } else {
-            log.info("消息已被消费! ");
-        }
-    }
-
-    /**
-     * 利用唯一 ID + mysql主键来控制重复消费的问题, 优化可以避免重复消费问题
-     *
-     * @param validation 消息
-     */
-    private ConsumerStatus handleMsgByMysqlOptimize(MQIdempotency validation) {
-        /*
-        这种方法, 需要自己处理主键冲突的逻辑
-        1. 为消息表设置一个消息的插入时间, 并且在业务上自定义消息的过期时间
-         */
-
-        // 创建一个消息的过期时间, 在这个时间点之前的消息都应该是执行超时了
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//定义格式，不显示毫秒
-        Timestamp now = new Timestamp(System.currentTimeMillis());//获取系统当前时间
-        String nowTime = df.format(now);
-        Timestamp explore = new Timestamp(System.currentTimeMillis() - (60 * 1000));
-        String exploreTime = df.format(explore);
-
-        try {
-            validation.setTime(nowTime);
-            validation.setStatus(CONSUME_STATUS_CONSUMING);
-            int i = mqIdempotencyMapper.insertSelective(validation);
-        } catch (DuplicateKeyException e) {
-
-            // 主键冲突报错, 进行延迟消费, 假设消息的过期时间是 十分钟
-            // 首先去查看这个消息的消费状态
-            MQIdempotency mqIdempotency = mqIdempotencyMapper.selectByPrimaryKey(validation);
-            // 如果有其他消费者正在消费这个消息
-            if (CONSUME_STATUS_CONSUMING.equals(mqIdempotency.getStatus())) {
-                // 1. 判断消息是否过期
-                validation.setStatus(CONSUME_STATUS_CONSUMING);
-                validation.setTime(exploreTime);
-                /*
-                todo 这里是否依旧存在问题? 如果就是另一台机器单纯的慢呢? 正好执行了十分零一秒, 那是否意味着依旧存在重复消费的问题?
-                感觉就像又回到最初的问题, 感觉没办法避免,
-                 */
-                int i = mqIdempotencyMapper.deleteByTime(validation);
-                if (i > 0) {
-                    // 说明消费已经超时了, 可以进行这一次的消费了
-                    log.info("上次消费已超时, 准备重新消费消息! ");
-                    validation.setTime(nowTime);
-                    mqIdempotencyMapper.insertSelective(validation);
-                    return new ConsumerStatus(true, false);
-                } else {
-                    // 消费没有超时, 仍在消费中, 把这个信息传递出去, 具体怎么处理看情况
-                    log.info("上次消费仍在进行中...");
-                    return new ConsumerStatus(false, false);
-                }
-            }
-            // 如果这个消息已经被成功消费过了, 就不再次消费了
-            if (CONSUME_STATUS_CONSUMED.equals(mqIdempotency.getStatus())) {
-                return new ConsumerStatus(false, true);
-            }
-        }
-
-        // 插入数据成功意味着, 当前服务拿到消费权就正常消费
-        return new ConsumerStatus(true, false);
     }
 
     /**
@@ -295,30 +216,4 @@ public class RabbiMQListener {
         }
 
     }
-
-    /*
-    // 设置消费者每次只拉取一条消息
-    @RabbitListener(queues = "myQueue", containerFactory = "myContainerFactory")
-    public void handleMessage(String message) {
-        // 处理消息逻辑
-    }
-    @Bean
-    public SimpleRabbitListenerContainerFactory myContainerFactory(ConnectionFactory connectionFactory) {
-        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
-        factory.setConnectionFactory(connectionFactory);
-        factory.setMessageConverter(jsonMessageConverter());
-        factory.setPrefetchCount(1); // 设置为 1，表示一次只接收一条未确认的消息
-        return factory;
-    }
-    对于队列阻塞, 只是相对于单个消费者而言, 多个消费者之间并不会互相影响
-    如果消费者 A 阻塞了，它不会直接导致消费者 B 无法接收到消息。当使用多个消费者共享同一个队列时，每个消费者都有机会获取队列中的消息进行处理。
-    具体来说，当有消息到达队列时，RabbitMQ 会按照一定的策略（如轮询或者优先级）将消息发送给可用的消费者。如果消费者 A 阻塞了，即无法及时消费消息，RabbitMQ 会将该消息发送给其他可用的消费者，如消费者 B。
-    但是，需要注意的是，如果消费者 A 阻塞的时间过长或者一直处于阻塞状态，队列中的消息可能会积压，导致整体处理速度变慢。如果积压的消息过多，可能会影响到其他消费者的消息处理速度，从而间接地影响到消费者 B 的消息接收。
-    因此，为了避免消息积压和消费者之间的影响，需要综合考虑以下几点：
-    1. 消费者的处理速度：确保消费者能够及时处理队列中的消息，避免长时间的阻塞。
-    2. 队列长度和缓冲策略：设置合适的队列长度，并根据实际情况选择适当的缓冲策略，如溢出策略或丢弃策略，以防止队列中消息过多导致的性能问题。
-    3. 并发控制：根据实际需求，合理配置消费者数量和并发性，避免过度消费或阻塞。
-    通过上述措施，可以在一定程度上避免因为某个消费者的阻塞而导致其他消费者无法接收到消息的情况。
-     */
-
 }
