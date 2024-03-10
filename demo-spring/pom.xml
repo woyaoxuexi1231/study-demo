@@ -18,6 +18,7 @@
         <module>demo-springboot</module>
         <module>demo-springcloud</module>
         <module>springboot-js</module>
+        <module>springboot-thymeleaf</module>
     </modules>
 
     <properties>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Employee List</title>
+    <!-- 引入Bootstrap 3的CSS -->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="container">
+    <h1 class="text-center">Employee List</h1>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Employee Number</th>
+            <th>Last Name</th>
+            <th>First Name</th>
+            <th>Email</th>
+            <th>Office Code</th>
+            <th>Reports To</th>
+            <th>Job Title</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="employee : ${pageInfo.list}">
+            <td th:text="${employee.employeeNumber}">123</td>
+            <td th:text="${employee.lastName}">Doe</td>
+            <td th:text="${employee.firstName}">John</td>
+            <td th:text="${employee.email}">john.doe@example.com</td>
+            <td th:text="${employee.officeCode}">OC1</td>
+            <td th:text="${employee.reportsTo}">42</td>
+            <td th:text="${employee.jobTitle}">Developer</td>
+        </tr>
+        </tbody>
+    </table>
+    <!-- 分页导航 -->
+    <div class="text-center">
+        <ul class="pagination">
+            <li th:class="${pageInfo.hasPreviousPage}? '' : 'disabled'">
+                <a th:href="@{/employees(size=${pageInfo.pageSize}, page=${pageInfo.prePage})}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li th:class="${pageInfo.pageNum == num}? 'active'" th:each="num : ${#numbers.sequence(1, pageInfo.pages)}">
+                <a th:href="@{/employees(size=${pageInfo.pageSize}, page=${num})}" th:text="${num}">1</a>
+            </li>
+            <li th:class="${pageInfo.hasNextPage}? '' : 'disabled'">
+                <a th:href="@{/employees(size=${pageInfo.pageSize}, page=${pageInfo.nextPage})}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- 引入jQuery和Bootstrap的JavaScript插件 -->
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+</html>
