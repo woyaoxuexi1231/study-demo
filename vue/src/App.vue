@@ -56,6 +56,11 @@
       <el-container>
         <el-header>
           <img style="width: 60px; height: 60px" src="./assets/logo.png">
+          <div style="float: right">
+            <el-badge :value="12" class="item">
+              <el-button size="small">消息</el-button>
+            </el-badge>
+          </div>
         </el-header>
         <el-main>
           <!-- <router-link> 是 Vue Router 提供的用于创建页面导航链接的组件。-->
