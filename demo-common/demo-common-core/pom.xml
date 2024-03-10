@@ -62,6 +62,11 @@
             <artifactId>guava</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+        </dependency>
+
 
         <!-- 一些可选的配置 -->
         <!-- spring容器包 -->
