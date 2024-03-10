@@ -17,13 +17,13 @@ import java.io.Serializable;
 @Data
 public class PageQryReqDTO implements Serializable {
     /**
-     * 数量
-     */
-    @NotNull(message = "分页参数 PageSize 不能为 null")
-    private Integer pageSize;
-    /**
      * 页数
      */
     @NotNull(message = "分页参数 pageNum 不能为 null")
     private Integer pageNum;
+    /**
+     * 数量
+     */
+    @NotNull(message = "分页参数 PageSize 不能为 null")
+    private Integer pageSize;
 }
