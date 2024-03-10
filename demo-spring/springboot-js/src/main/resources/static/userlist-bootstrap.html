@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Query Page</title>
+    <!-- Add Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 20px;
+        }
+
+        .user-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .user-list li {
+            margin-bottom: 10px;
+        }
+
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .table-header {
+            background-color: #337ab7;
+            color: #fff;
+            text-align: left;
+            padding: 8px;
+        }
+
+        .page-info {
+            margin-top: 10px;
+        }
+
+        #pagination {
+            text-align: center;
+        }
+
+        #pagination button {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <h1>User Query Page</h1>
+    <div id="userList"></div>
+    <div id="pagination"></div>
+    <p><a href="/">Back to Home</a></p>
+</div>
+
+<!-- Add Bootstrap JS and jQuery -->
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
+<script>
+    const ITEMS_PER_PAGE = 10;
+    let currentPage = 1;
+
+    function getUsers(pageSize, pageNum) {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'getUsers', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                const users = JSON.parse(xhr.responseText);
+                displayUsers(users);
+            }
+        };
+        const data = JSON.stringify({pageSize: pageSize, pageNum: pageNum});
+        xhr.send(data);
+    }
+
+    function displayUsers(users) {
+        const userList = document.getElementById('userList');
+        userList.innerHTML = '';
+
+        const table = document.createElement('table');
+        table.classList.add('user-table');
+
+        const tableHeader = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        const headers = ['Employee Number', 'Last Name', 'First Name', 'Extension', 'Email', 'Office Code', 'Reports To', 'Job Title'];
+
+        headers.forEach(headerText => {
+            const header = document.createElement('th');
+            header.textContent = headerText;
+            header.classList.add('table-header');
+            headerRow.appendChild(header);
+        });
+
+        tableHeader.appendChild(headerRow);
+        table.appendChild(tableHeader);
+
+        const tableBody = document.createElement('tbody');
+        users.list.forEach(user => {
+            const row = document.createElement('tr');
+            Object.values(user).forEach(value => {
+                const cell = document.createElement('td');
+                cell.textContent = value;
+                row.appendChild(cell);
+            });
+            tableBody.appendChild(row);
+        });
+
+        table.appendChild(tableBody);
+
+        const pageInfo = document.createElement('div');
+        pageInfo.textContent = `Page ${users.pageNum} of ${users.pages} - Total Records: ${users.total}`;
+        pageInfo.classList.add('page-info');
+
+        userList.appendChild(table);
+        userList.appendChild(pageInfo);
+
+        // 更新页码显示
+        generatePagination(users.pages);
+    }
+
+    function generatePagination(totalPages) {
+        const pagination = document.getElementById('pagination');
+        pagination.innerHTML = '';
+        for (let i = 1; i <= totalPages; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.textContent = i;
+            pageButton.addEventListener('click', function () {
+                currentPage = i;
+                getUsers(ITEMS_PER_PAGE, currentPage);
+            });
+            pagination.appendChild(pageButton);
+        }
+    }
+
+    // Initial call to fetch and display users
+    getUsers(ITEMS_PER_PAGE, currentPage);
+
+    // Assume totalUsers and totalPages are known from server response or other means
+    const totalUsers = 100; // Example total number of users
+    const totalPages = Math.ceil(totalUsers / ITEMS_PER_PAGE);
+    generatePagination(totalPages);
+</script>
+</body>
+
+</html>
