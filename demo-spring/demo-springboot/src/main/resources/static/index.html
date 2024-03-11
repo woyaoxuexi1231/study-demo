@@ -1,24 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spring Boot Example</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="/main.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+    <script src="/websocket-STOMP.js"></script>
+    <title>Index Page</title>
+    <style>
+        .button-wrapper {
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
-<h1 th:text="${message}">Placeholder</h1>
-</body>
+<h1>Spring Boot Example</h1>
+<div class="button-wrapper">
+    <button class="btn btn-default" onclick="goToPage('websocket-spring.html')">websocket-spring.html</button>
+</div>
+<div class="button-wrapper">
+    <button class="btn btn-default" onclick="goToPage('websocket-STOMP.html')">websocket-STOMP.html</button>
+</div>
 
-<script>
-    let ws = new WebSocket("ws://localhost:9094/myWs");
-    ws.onopen = function () {
-        ws.send("hello, this is client");
+<script type="text/javascript">
+    function goToPage(pageUrl) {
+        window.location.href = pageUrl;
     }
-    ws.onmessage = function (message) {
-        console.log(message.data);
-    }
-
 </script>
-
+</body>
 </html>

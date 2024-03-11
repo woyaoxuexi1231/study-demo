@@ -1,4 +1,4 @@
-package com.hundsun.demo.springboot.utils.websocket;
+package com.hundsun.demo.springboot.utils.websocket.java;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @ServerEndpoint("/myWs")
-@Component
+// @Component
 public class WebSocketListener {
 
     /**
@@ -71,7 +71,7 @@ public class WebSocketListener {
         log.info("websocket is onClose");
     }
 
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 2000)
     public void execute() {
         for (String s : sessionMap.keySet()) {
             try {
