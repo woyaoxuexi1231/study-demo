@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import EmployeeTable from "../components/EmployeeTable";
 import Calendar from "../components/Calendar";
-import Progress from "../components/Progress";
+import MessageQueue from "../components/MessageQueue";
 
 Vue.use(Router)
 
@@ -30,9 +30,9 @@ export default new Router({
       component: Calendar
     },
     {
-      path: '/progress',
-      name: 'Progress',
-      component: Progress
+      path: '/messageQueue',
+      name: 'MessageQueue',
+      component: MessageQueue
     }
   ]
 })

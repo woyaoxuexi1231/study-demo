@@ -35,7 +35,7 @@
               </el-submenu>
               <el-menu-item index="2">
                 <i class="el-icon-menu"></i>
-                <router-link to="/employeeTable">EmployeeTable</router-link>
+                <router-link style="text-decoration: none;" to="/employeeTable">EmployeeTable</router-link>
               </el-menu-item>
               <el-menu-item index="3" disabled>
                 <i class="el-icon-document"></i>
@@ -43,11 +43,11 @@
               </el-menu-item>
               <el-menu-item index="4">
                 <i class="el-icon-setting"></i>
-                <router-link to="/Calendar">Calendar</router-link>
+                <router-link style="text-decoration: none;" to="/Calendar">Calendar</router-link>
               </el-menu-item>
               <el-menu-item index="5">
-                <i class="el-icon-menu"></i>
-                <router-link to="/progress">progress</router-link>
+                <i class="el-icon-chat-dot-round"></i>
+                <router-link style="text-decoration: none;" to="/messageQueue">消息队列</router-link>
               </el-menu-item>
             </el-menu>
           </el-col>

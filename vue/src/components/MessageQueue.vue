@@ -36,25 +36,44 @@
         <div>结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。</div>
       </el-collapse-item>
     </el-collapse>
+    <p></p>
+<!--    <button @click="connectWebSocket">连接 WebSocket</button>-->
+    <div>
+      <h3>Notifications:</h3>
+      <ul>
+        <li v-for="notification in notifications" :key="notification">
+          {{ notification }}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script>
+
+import SockJS from 'sockjs-client';
+import Stomp from 'webstomp-client';
+
 export default {
-  name: "Progress",
+  name: "MessageQueue",
   data() {
     return {
-      progressValue: 0, // 进度条初始百分比
-      progressStatus: '',  // 进度条初始状态，空字符串表示正常状态
+      // 进度条初始百分比
+      progressValue: 0,
+      // 进度条初始状态，空字符串表示正常状态
+      progressStatus: 'success',
       visible: false,
       activeName: '0',
+      stompClient: null,
+      notifications: [],
     };
   },
   methods: {
+    // 发送消息
     startProgress() {
       // 模拟请求发出前的进度
       this.progressValue = 10;
-      this.progressStatus = '';
+      this.progressStatus = 'success';
 
       // 模拟加载过程，每隔一段时间增加进度
       // const interval = setInterval(() => {
@@ -80,10 +99,31 @@ export default {
           this.progressStatus = 'exception';
         });
     },
-    handleChange(val) {
-      console.log(val);
+    // 连接websocket
+    connectWebSocket() {
+      this.websocket = new WebSocket('ws://localhost:8080/notification'); // WebSocket 地址
+      this.websocket.onmessage = event => {
+        this.notifications.push(event.data);
+      };
+    },
+    connect() {
+      const socket = new SockJS('/ws');
+      this.stompClient = Stomp.over(socket);
+      this.stompClient.connect({}, frame => {
+        this.stompClient.subscribe('/api/topic/notifications', notification => {
+          this.notifications.push(notification.body);
+        });
+      });
     }
-  }
+  },
+  mounted() {
+    this.connect();
+  },
+  beforeDestroy() {
+    if (this.websocket) {
+      this.websocket.close();
+    }
+  },
 }
 </script>
 
