@@ -4124,3 +4124,23 @@ CREATE TABLE `rabbitmq_test` (
                                  `status` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
                                  PRIMARY KEY (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+
+-- auto-generated definition
+create table rabbitmq_log
+(
+    uuid varchar(255)                        not null
+        primary key,
+    msg  varchar(255)                        null,
+    time timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP
+)
+    collate = utf8mb4_bin;
+
+-- auto-generated definition
+create table sequence
+(
+    `key` varchar(32) not null,
+    value int         not null,
+    constraint sequence_uindex
+        unique (`key`)
+);
