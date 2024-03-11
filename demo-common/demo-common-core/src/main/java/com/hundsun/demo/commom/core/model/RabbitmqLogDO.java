@@ -15,7 +15,7 @@ import javax.persistence.Table;
  */
 
 @Data
-@Table(name = "rabbitmq_test")
+@Table(name = "rabbitmq_log")
 public class RabbitmqLogDO {
     /**
      * uuid
