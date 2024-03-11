@@ -14,12 +14,13 @@ import org.springframework.stereotype.Controller;
  */
 
 @Controller
-public class NotificationController {
+public class WebSocketController {
 
     @MessageMapping("/hello")
     @SendTo("/topic/greetings")
     public String greeting(String message) throws Exception {
-        Thread.sleep(1000); // 模拟延迟
-        return "Hello, " + message + "!";
+        Thread.sleep(1000); // simulated delay
+        return String.format("Hello, %s !", message);
     }
+
 }

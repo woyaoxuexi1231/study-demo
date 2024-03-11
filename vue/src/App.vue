@@ -49,6 +49,10 @@
                 <i class="el-icon-chat-dot-round"></i>
                 <router-link style="text-decoration: none;" to="/messageQueue">消息队列</router-link>
               </el-menu-item>
+              <el-menu-item index="5">
+                <i class="el-icon-chat-dot-round"></i>
+                <router-link style="text-decoration: none;" to="/webSocket">webSocket</router-link>
+              </el-menu-item>
             </el-menu>
           </el-col>
         </el-row>

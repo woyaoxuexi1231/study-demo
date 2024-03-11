@@ -4,6 +4,7 @@ import HelloWorld from '@/components/HelloWorld'
 import EmployeeTable from "../components/EmployeeTable";
 import Calendar from "../components/Calendar";
 import MessageQueue from "../components/MessageQueue";
+import WebSocket from "../components/WebSocket";
 
 Vue.use(Router)
 
@@ -33,6 +34,11 @@ export default new Router({
       path: '/messageQueue',
       name: 'MessageQueue',
       component: MessageQueue
+    },
+    {
+      path: '/webSocket',
+      name: 'WebSocket',
+      component: WebSocket
     }
   ]
 })
