@@ -30,12 +30,14 @@ public class MQIdempotency {
     private String msg;
 
     /**
-     * 消息发生的时间
+     * 消息发生的时间,
+     * 这个主要用于示例里用mysql来保证消息幂等性来使用, 作为消息是否消费过期的依据
      */
     private String time;
 
     /**
      * 消费状态
+     * 这个主要用于示例里用mysql来保证消息幂等性来使用, 作为消息是否消费过期的依据
      */
     private String status;
 }

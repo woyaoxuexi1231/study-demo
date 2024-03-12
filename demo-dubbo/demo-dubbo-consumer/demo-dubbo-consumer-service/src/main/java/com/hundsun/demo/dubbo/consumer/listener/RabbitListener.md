@@ -2,7 +2,8 @@
 
 1. **queues**：指定监听的队列名，可以是一个字符串数组，用于指定多个队列。例如：`@RabbitListener(queues = "myQueue")` 或 `@RabbitListener(queues = {"queue1", "queue2"})`。
 
-2. **containerFactory**：指定 `MessageListenerContainer` 的工厂类，用于创建监听器容器。可以通过 `@RabbitListenerContainerFactory` 注解定义自定义的容器工厂，然后在 `@RabbitListener` 注解中使用该工厂。例如：`@RabbitListener(queues = "myQueue", containerFactory = "myContainerFactory")`。
+2. **containerFactory**：指定 `MessageListenerContainer` 的工厂类，用于创建监听器容器。可以通过 `@RabbitListenerContainerFactory` 注解定义自定义的容器工厂，然后在 `@RabbitListener`
+   注解中使用该工厂。例如：`@RabbitListener(queues = "myQueue", containerFactory = "myContainerFactory")`。
 
 3. **id**：指定监听容器的唯一标识符，用于区分不同的监听容器。
 
@@ -27,6 +28,7 @@
 13. **errorHandler**：指定消息处理异常时的错误处理器，可以是一个实现了 `MessageListenerErrorHandler` 接口的类。
 
 14. **group**：用于设置消费者组的名称。具有相同组名的消费者将共享处理消息的工作。
+    这个 group 参数在 Spring Cloud Stream 中更为常见，用于多个实例之间的负载均衡。如果没有使用 Spring Cloud Stream，这个属性可能在 Spring AMQP 的默认上下文中没有任何效果。
 
 15. **useDefaultContainerFactory**：指定是否使用默认的容器工厂。如果设置为 `true`，则使用默认的容器工厂；如果设置为 `false`，则需要通过 `containerFactory` 属性指定自定义的容器工厂。
 

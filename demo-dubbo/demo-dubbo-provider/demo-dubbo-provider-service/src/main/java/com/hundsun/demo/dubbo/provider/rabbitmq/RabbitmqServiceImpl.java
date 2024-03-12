@@ -38,6 +38,7 @@ public class RabbitmqServiceImpl implements RabbitMqService {
             // 创建一个消息实体
             MQIdempotency idempotency = new MQIdempotency();
             String uuid = UUID.randomUUID().toString();
+            // String uuid = "2";
             idempotency.setUuid(uuid);
             idempotency.setMsg("hello rabbitmq!");
 
