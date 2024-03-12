@@ -16,7 +16,7 @@
             %msg：日志消息，%n是换行符
             %logger{36} 表示 Logger 名字最长36个字符
             在Log4j 2.10以前的版本，pattern中配置%highlight属性是可以正常打印彩色日志的例如：
-            pattern: “%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%-5level} [%t] %highlight{%c{1.}.%M(%L)}: %msg%n”
+            pattern: “%d{yy-MM-dd HH:mm:ss.SSS} %highlight{%-5level} [%t] %highlight{%c{1.}.%M(%L)}: %msg%n”
             但是更新到2.10版本以后，控制台中就无法显示彩色日志了，各种级别的日志混杂在一起，难以阅读
             通过查阅官方文档，发现在2.10版本以后，Log4j2默认关闭了Jansi（一个支持输出ANSI颜色的类库）
             可见，配置 log4j.skipJansi 这个全局属性即可。
@@ -31,7 +31,7 @@
 
         -->
         <property name="LOG_PATTERN"
-                  value="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%-5level}{ERROR=Bright RED, WARN=Bright Yellow, INFO=Bright Green, DEBUG=Bright Cyan, TRACE=Bright White} %style{[%t]}{bright,magenta} %style{%c{1.}.%M(%L)}{cyan} : %msg%n"/>
+                  value="%d{yy-MM-dd HH:mm:ss.SSS} %highlight{%-5level}{ERROR=Bright RED, WARN=Bright Yellow, INFO=Bright Green, DEBUG=Bright Cyan, TRACE=Bright White} %style{[%t]}{bright,magenta} %style{%c{1.}.%M(%L)}{cyan} : %msg%n"/>
 
         <!-- 定义日志存储的路径，不要配置相对路径 -->
         <property name="FILE_PATH" value="logs"/>

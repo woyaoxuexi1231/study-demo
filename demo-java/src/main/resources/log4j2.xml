@@ -65,11 +65,11 @@
         - `%d{yyyy-MM-dd HH:mm:ss.SSSS-SS}`：这是日期和时间的格式，输出的日期和时间将按照`yyyy-MM-dd HH:mm:ss.SSSS-SS`这个格式显示。
         - `%highlight{%-5level}`：这是日志级别的格式，`%-5level`表示左对齐并且占用5个字符宽度。`%highlight{}`表示根据日志级别的不同，输出不同颜色的日志级别。
         - `[%thread]`：这是线程名的格式，输出的线程名将被包含在方括号中。
-        - `%style{%logger{36}}{cyan}`：这是日志名称的格式，`%logger{36}`表示输出的日志名称最多占用36个字符宽度。`%style{}{cyan}`表示输出青色的日志名称。
+        - `%style{%c{1.}}{cyan}`：这是日志名称的格式，`%logger{36}`表示输出的日志名称最多占用36个字符宽度。`%style{}{cyan}`表示输出青色的日志名称。
         - `- %msg%n`：这是日志信息的格式，`%msg`表示日志信息，`%n`表示换行。日志信息前面有一个短横线和一个空格。
         所以，这个配置定义了如下的日志输出格式：日期和时间（按照特定格式），高亮的日志级别（左对齐并且占用5个字符宽度），线程名（被包含在方括号中），青色的日志名称（最多占用36个字符宽度），以及日志信息（前面有一个短横线和一个空格）。
          -->
-        <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%-5level}[%thread] %style{%logger{36}}{cyan} - %msg%n"/>
+        <property name="LOG_PATTERN" value="%d{yy-MM-dd HH:mm:ss.SSS} %highlight{%-5level}[%thread] %style{%c{1.}}{cyan} - %msg%n"/>
 
         <!-- 定义日志存储的路径，不要配置相对路径 -->
         <property name="FILE_PATH" value="logs"/>
