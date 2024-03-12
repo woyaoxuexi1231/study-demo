@@ -34,6 +34,7 @@ public class MQConfig {
     public static final String FANOUT_SLAVE_ROUTE_KEY = "fanout.route.key.slave";
     public static final String FANOUT_SLAVE_QUEUE = "fanout-queue-slave";
     public static final String TOPIC_EXCHANGE_NAME = "exchange-test-topic";
+    // topic主题交换机以这种主题声明的队列,意味着消息只要以topic.route.key.开头,都会被路由到这个队列
     public static final String TOPIC_MASTER_ROUTE_KEY = "topic.route.key.*";
     public static final String TOPIC_MASTER_QUEUE = "topic-queue-master";
     public static final String TOPIC_SLAVE_ROUTE_KEY = "topic.route.key.slave";
