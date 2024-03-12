@@ -70,7 +70,7 @@ export default {
       // }, 500); // 每隔 500 毫秒增加一次进度
 
       // 使用 axios 发送 GET 请求
-      this.$axios.get('/api/rabbit/sentSampleMsg2')
+      this.$axios.get('/api/rabbit/sentSampleMsg')
           .then(response => {
             // 请求成功时的处理
             console.log('响应数据:', response.data);

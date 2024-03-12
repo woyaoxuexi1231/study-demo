@@ -7,6 +7,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Objects;
+
 /**
  * @projectName: study-demo
  * @package: com.hundsun.demo.dubbo.provider.controller
@@ -25,9 +27,12 @@ public class SimpleController {
     RabbitMqService rabbitMqService;
 
     @RequestMapping("/sentSampleMsg")
-    public ResultDTO<?> sentSampleMsg(String uuid) {
-        for (int i = 0; i < 10; i++) {
-            rabbitMqService.sentSampleMsg(uuid);
+    public ResultDTO<?> sentSampleMsg(Integer msgNum) {
+        if (Objects.isNull(msgNum) || msgNum < 0) {
+            msgNum = 1;
+        }
+        for (int i = 0; i < msgNum; i++) {
+            rabbitMqService.sentSampleMsg();
         }
         return new ResultDTO<>();
     }

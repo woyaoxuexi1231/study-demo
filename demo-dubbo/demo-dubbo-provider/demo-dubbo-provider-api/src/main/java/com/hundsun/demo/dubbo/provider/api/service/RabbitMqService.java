@@ -18,5 +18,5 @@ public interface RabbitMqService {
      *
      * @return ?
      */
-    ResultDTO<?> sentSampleMsg(String uuid);
+    ResultDTO<?> sentSampleMsg();
 }

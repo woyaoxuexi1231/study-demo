@@ -6,6 +6,7 @@ import com.hundsun.demo.dubbo.consumer.mapper.MQIdempotencyMapper;
 import com.hundsun.demo.commom.core.model.MQIdempotency;
 import com.hundsun.demo.java.mq.rabbit.config.MQConfig;
 import com.rabbitmq.client.Channel;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.core.Message;
@@ -61,23 +62,22 @@ public class RabbiMQListener {
     @Autowired
     StringRedisTemplate stringRedisTemplate;
 
-    @RabbitHandler
-    @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(
-                    name = MQConfig.TOPIC_MASTER_QUEUE,
-                    durable = "true",
-                    autoDelete = "false",
-                    exclusive = "false",
-                    arguments = {@Argument(name = "x-dead-letter-exchange", value = MQConfig.DEAD_EXCHANGE_NAME)}
-            ),
-            exchange = @Exchange(
-                    value = MQConfig.TOPIC_EXCHANGE_NAME,
-                    type = ExchangeTypes.TOPIC,
-                    autoDelete = "false",
-                    durable = "true"),
-            key = MQConfig.TOPIC_MASTER_ROUTE_KEY
-    ))
-
+    // @RabbitListener(
+    //         bindings = @QueueBinding(
+    //                 value = @Queue(
+    //                         name = MQConfig.TOPIC_MASTER_QUEUE,
+    //                         durable = "true",
+    //                         autoDelete = "false",
+    //                         exclusive = "false",
+    //                         arguments = {@Argument(name = "x-dead-letter-exchange", value = MQConfig.DEAD_EXCHANGE_NAME)}
+    //                 ),
+    //                 exchange = @Exchange(
+    //                         value = MQConfig.TOPIC_EXCHANGE_NAME,
+    //                         type = ExchangeTypes.TOPIC,
+    //                         autoDelete = "false",
+    //                         durable = "true"),
+    //                 key = MQConfig.TOPIC_MASTER_ROUTE_KEY
+    //         ))
     public void receiveMsg(Message msg, Channel channel) {
 
         /*
@@ -294,6 +294,42 @@ public class RabbiMQListener {
             log.error("应答失败!", e);
         }
 
+    }
+
+    /**
+     * queues参数, 如果队列不存在, 启动将会报错
+     * author: hulei42031
+     * date: 2024-03-12 16:01
+     *
+     * @param msg     msg
+     * @param channel channel
+     */
+    @SneakyThrows
+    // @RabbitListener(queues = "topic-queue-master")
+    public void queuesParam(Message msg, Channel channel) {
+        log.info("queuesParam: {}", msg);
+        // 即使自动提交, ack也会在业务方法执行完之后再ack
+        Thread.sleep(5 * 1000);
+    }
+
+    /**
+     * 如果你没有配置自定义的 SimpleRabbitListenerContainerFactory，Spring AMQP 会使用默认的 RabbitListenerContainerFactory 实现(SimpleRabbitListenerContainerFactory 的一个实例)
+     * 默认的工厂配置旨在提供一套合理的默认行为，适用于大多数简单场景。
+     * RabbitAnnotationDrivenConfiguration会默认配置一个 SimpleRabbitListenerContainerFactory
+     * <p>
+     * 指定了containerFactory之后, 会使用指定的containerFactory来注册这个监听器, 不会再使用springboot默认的监听器容器来注册了
+     * <p>
+     * author: hulei42031
+     * date: 2024-03-12 18:09
+     *
+     * @param message message
+     * @param channel channel
+     */
+    // @RabbitListener(queues = "topic-queue-master", containerFactory = "myContainerFactory")
+    public void handleMessage(String message, Channel channel) {
+        System.out.println("Received message: " + message);
+        // 这里是否ack也会右具体的消息监听容器来决定了
+        // channel.basicAck();
     }
 
     /*
