@@ -35,6 +35,7 @@ public interface DynamicdbService {
      * 从数据源的更改操作
      */
     void selectFromSlave(List<EmployeeDO> employeeDOS, Semaphore masterSemaphore, Semaphore slaveSemaphore, AtomicBoolean isFinished);
+
     /**
      * 测试事务失效
      */

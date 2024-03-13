@@ -6,7 +6,7 @@
     <!-- metadata-complete 为 false时表示启动注解形式, 为 true时表示用配置文件形式-->
     <servlet>
         <servlet-name>JavaWeb</servlet-name>
-        <servlet-class>com.hundsun.demo.java.web.servlet.ServletTest</servlet-class>
+        <servlet-class>com.hundsun.demo.spring.web.servlet.ServletTest</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>JavaWeb</servlet-name>

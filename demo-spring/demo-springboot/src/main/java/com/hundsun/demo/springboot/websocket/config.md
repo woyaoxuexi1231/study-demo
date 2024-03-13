@@ -9,8 +9,10 @@
 ### `WebSocketMessageBrokerConfigurer`
 
 - **层次**：更高级、更抽象。
-- **用途**：用于配置基于消息代理的WebSocket通讯。`WebSocketMessageBrokerConfigurer`是为了支持更复杂的消息传递场景设计的，比如使用STOMP协议（Simple Text Oriented Messaging Protocol）来作为WebSocket的子协议，允许通过消息代理来进行广播或者与特定用户通讯。
-- **实现方式**：通过实现`WebSocketMessageBrokerConfigurer`接口并重写相关的配置方法（例如`configureMessageBroker`、`registerStompEndpoints`等），开发者可以定义消息代理的行为、配置端点、设置消息的前缀等。这种方式允许使用更高级的消息传递模式，如发布/订阅。
+- **用途**：用于配置基于消息代理的WebSocket通讯。`WebSocketMessageBrokerConfigurer`是为了支持更复杂的消息传递场景设计的，比如使用STOMP协议（Simple Text Oriented Messaging
+  Protocol）来作为WebSocket的子协议，允许通过消息代理来进行广播或者与特定用户通讯。
+- **实现方式**：通过实现`WebSocketMessageBrokerConfigurer`接口并重写相关的配置方法（例如`configureMessageBroker`、`registerStompEndpoints`
+  等），开发者可以定义消息代理的行为、配置端点、设置消息的前缀等。这种方式允许使用更高级的消息传递模式，如发布/订阅。
 
 ### 关系与区别
 

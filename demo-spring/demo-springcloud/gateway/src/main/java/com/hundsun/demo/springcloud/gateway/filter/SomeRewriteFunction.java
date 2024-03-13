@@ -10,23 +10,23 @@ import java.util.Map;
 
 public class SomeRewriteFunction implements RewriteFunction<String, String> {
 
-        private final Map<String, String> values;
+    private final Map<String, String> values;
 
-        public SomeRewriteFunction(Map<String, String> values) {
-            this.values = values;
-        }
-
-        @Override
-        public Publisher<String> apply(ServerWebExchange serverWebExchange, String oldBody) {
-            /* do things here */
-            /* example: */
-            try {
-                String newBody = new ObjectMapper().writeValueAsString(values);
-                return Mono.just(newBody);
-            } catch (Exception e) {
-                /* error parsing values to json, do something else */
-                return Mono.just(oldBody);
-            }
-            // return Mono.just(oldBody);
-        }
+    public SomeRewriteFunction(Map<String, String> values) {
+        this.values = values;
     }
+
+    @Override
+    public Publisher<String> apply(ServerWebExchange serverWebExchange, String oldBody) {
+        /* do things here */
+        /* example: */
+        try {
+            String newBody = new ObjectMapper().writeValueAsString(values);
+            return Mono.just(newBody);
+        } catch (Exception e) {
+            /* error parsing values to json, do something else */
+            return Mono.just(oldBody);
+        }
+        // return Mono.just(oldBody);
+    }
+}

@@ -47,6 +47,14 @@ export default {
             this.reconnect(this.socketUrl, this.connectSucceed)
           }
       );
+
+      //
+      //
+      // const webSocket = new WebSocket('ws://localhost:10088/gs-guide-websocket');
+      // webSocket.onopen => (){
+      //   console.log("WebSocket connection opened:", event);
+      // };
+
     },
     reconnect(socketUrl, callback) {
       this.reconnecting = true

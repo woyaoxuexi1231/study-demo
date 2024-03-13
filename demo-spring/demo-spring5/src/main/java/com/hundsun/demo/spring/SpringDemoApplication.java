@@ -1,8 +1,8 @@
 package com.hundsun.demo.spring;
 
+import com.hundsun.demo.spring.db.jdbc.DynamicDataSourceType;
 import com.hundsun.demo.spring.init.listener.MybatisEvent;
 import com.hundsun.demo.spring.init.listener.SimpleEvent;
-import com.hundsun.demo.spring.jdbc.DynamicDataSourceType;
 import com.hundsun.demo.spring.mybatis.MyBatisOperationType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;

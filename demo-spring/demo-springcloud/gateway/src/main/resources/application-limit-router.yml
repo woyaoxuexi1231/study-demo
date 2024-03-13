@@ -5,16 +5,16 @@ spring:
       routes:
         - id: limit-router
 
-# The address forwarded by the route
+          # The address forwarded by the route
           uri: http://httpbin.org:80
-# predicates config
+          # predicates config
           predicates:
-          - After=2023-01-20T17:42:47.789-07:00[America/Denver]
+            - After=2023-01-20T17:42:47.789-07:00[America/Denver]
           filters:
-          - name: RequestRateLimiter
-            args:
-              key-resolver: '#{@hostAddrKeyResolver}'
-              redis-rate-limiter.replenishRate: 1
-              redis-rate-limiter.burstCapacity": 1
+            - name: RequestRateLimiter
+              args:
+                key-resolver: '#{@hostAddrKeyResolver}'
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity": 1
 #server:
 #  port: 9131

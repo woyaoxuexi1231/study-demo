@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hundsun.demo.spring.mybatis.CustomerMapper">
-
     <resultMap id="BaseResultMap" type="com.hundsun.demo.commom.core.model.CustomerDO">
         <id property="customernumber" column="customerNumber" jdbcType="INTEGER"/>
         <result property="customername" column="customerName" jdbcType="VARCHAR"/>

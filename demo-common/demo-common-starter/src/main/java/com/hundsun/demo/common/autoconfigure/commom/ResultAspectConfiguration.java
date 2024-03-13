@@ -1,7 +1,6 @@
 package com.hundsun.demo.common.autoconfigure.commom;
 
 import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @ProductName: Hundsun amust

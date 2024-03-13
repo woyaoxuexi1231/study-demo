@@ -1,7 +1,5 @@
 package com.hundsun.demo.springboot.aop;
 
-import com.hundsun.demo.springboot.service.SimpleService;
-import com.hundsun.demo.springboot.aop.AopServiceWithOutInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

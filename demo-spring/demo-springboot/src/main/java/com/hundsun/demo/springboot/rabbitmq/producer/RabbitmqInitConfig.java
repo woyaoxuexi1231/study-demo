@@ -1,10 +1,9 @@
 package com.hundsun.demo.springboot.rabbitmq.producer;
 
-import com.hundsun.demo.java.mq.rabbit.config.MQConfig;
+import com.hundsun.demo.spring.mq.rabbit.config.MQConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Exchange;
 import org.springframework.amqp.core.TopicExchange;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Autowired;

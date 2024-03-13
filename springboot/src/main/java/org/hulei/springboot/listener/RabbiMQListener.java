@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.hundsun.demo.commom.core.model.ConsumerStatus;
 import com.hundsun.demo.commom.core.model.MQIdempotency;
 import com.hundsun.demo.commom.core.model.RabbitmqLogDO;
-import com.hundsun.demo.java.mq.rabbit.config.MQConfig;
+import com.hundsun.demo.spring.mq.rabbit.config.MQConfig;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.hulei.springboot.mapper.MQIdempotencyMapper;

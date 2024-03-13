@@ -9,9 +9,9 @@ package com.hundsun.demo.java.hs;
  * @Version: 1.0
  * <p>
  */
-public class Response extends ReBody{
+public class Response extends ReBody {
 
-	public Response(String functionId) {
-		super(functionId);
-	}
+    public Response(String functionId) {
+        super(functionId);
+    }
 }

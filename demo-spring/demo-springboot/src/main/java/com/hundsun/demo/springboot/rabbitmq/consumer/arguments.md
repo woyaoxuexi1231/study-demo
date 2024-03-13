@@ -27,6 +27,7 @@
 ```java
 import org.springframework.amqp.core.QueueBuilder;
 ```
+
 ```
 Queue queue = QueueBuilder.durable("myQueue")
     .withArgument("x-message-ttl", 60000) // 参数的key和value

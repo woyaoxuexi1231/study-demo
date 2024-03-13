@@ -20,10 +20,11 @@ public class RequestBodyRewrite implements RewriteFunction<String, String> {
 
     /**
      * The method of obtaining the user name according to the user ID can be implemented internally according to the actual situation, such as library lookup or cache, or remote call
+     *
      * @param userId
      * @return
      */
-    private  String mockUserName(int userId) {
+    private String mockUserName(int userId) {
         return "user-" + userId;
     }
 
@@ -33,7 +34,7 @@ public class RequestBodyRewrite implements RewriteFunction<String, String> {
             Map<String, Object> map = objectMapper.readValue(body, Map.class);
 
             // Get id
-            int userId = (Integer)map.get("user-id");
+            int userId = (Integer) map.get("user-id");
 
             // Write the map after obtaining the nanme
             map.put("user-name", mockUserName(userId));

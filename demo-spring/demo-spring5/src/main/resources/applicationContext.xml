@@ -75,10 +75,10 @@
         <property name="password" value="123456"/>
     </bean>
     <!-- 动态数据源切换 -->
-    <bean id="dataSource" class="com.hundsun.demo.spring.jdbc.DynamicDataSource">
+    <bean id="dataSource" class="com.hundsun.demo.spring.db.jdbc.DynamicDataSource">
         <property name="defaultTargetDataSource" ref="masterDataSource"/>
         <property name="targetDataSources">
-            <map key-type="com.hundsun.demo.spring.jdbc.DynamicDataSourceType">
+            <map key-type="com.hundsun.demo.spring.db.jdbc.DynamicDataSourceType">
                 <entry key="MASTER" value-ref="masterDataSource"/>
                 <entry key="SECOND" value-ref="secondDataSource"/>
                 <entry key="THIRD" value-ref="thirdDataSource"/>

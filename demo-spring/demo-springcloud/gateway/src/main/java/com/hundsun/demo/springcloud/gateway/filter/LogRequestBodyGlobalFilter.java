@@ -3,7 +3,6 @@ package com.hundsun.demo.springcloud.gateway.filter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
-import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpMethod;
@@ -30,7 +29,7 @@ public class LogRequestBodyGlobalFilter implements GlobalFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-       // Only apply on POST requests
+        // Only apply on POST requests
         if (HttpMethod.POST.equals(exchange.getRequest().getMethod())) {
             return logRequestBody(exchange, chain);
         } else {

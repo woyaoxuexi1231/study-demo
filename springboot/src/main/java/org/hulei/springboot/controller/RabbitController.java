@@ -2,7 +2,7 @@ package org.hulei.springboot.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.hundsun.demo.commom.core.model.MQIdempotency;
-import com.hundsun.demo.java.mq.rabbit.config.MQConfig;
+import com.hundsun.demo.spring.mq.rabbit.config.MQConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.connection.CorrelationData;

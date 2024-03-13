@@ -3,7 +3,7 @@ package com.hundsun.demo.springboot.rabbitmq.consumer;
 import com.alibaba.fastjson.JSONObject;
 import com.hundsun.demo.commom.core.model.ConsumerStatus;
 import com.hundsun.demo.commom.core.model.MQIdempotency;
-import com.hundsun.demo.java.mq.rabbit.config.MQConfig;
+import com.hundsun.demo.spring.mq.rabbit.config.MQConfig;
 import com.rabbitmq.client.Channel;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

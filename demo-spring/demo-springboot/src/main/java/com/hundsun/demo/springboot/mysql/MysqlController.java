@@ -4,7 +4,6 @@ import com.hundsun.demo.springboot.common.mapper.EmployeeMapper;
 import com.hundsun.demo.springboot.common.model.EmployeeDO;
 import com.hundsun.demo.springboot.dynamicdb.core.DynamicDataSourceType;
 import com.hundsun.demo.springboot.dynamicdb.core.DynamicDataSourceTypeManager;
-import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 

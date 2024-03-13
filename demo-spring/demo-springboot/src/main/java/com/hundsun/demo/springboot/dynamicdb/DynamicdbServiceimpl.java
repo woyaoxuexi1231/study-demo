@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Service
-public class DynamicdbServiceimpl implements DynamicdbService{
+public class DynamicdbServiceimpl implements DynamicdbService {
 
 
     @Resource

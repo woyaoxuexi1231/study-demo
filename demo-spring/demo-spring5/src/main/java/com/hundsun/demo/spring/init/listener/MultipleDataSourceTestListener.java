@@ -1,6 +1,6 @@
 package com.hundsun.demo.spring.init.listener;
 
-import com.hundsun.demo.spring.jdbc.DynamicDataSourceTypeManager;
+import com.hundsun.demo.spring.db.jdbc.DynamicDataSourceTypeManager;
 import com.hundsun.demo.spring.service.YiibaidbService;
 import lombok.Data;
 import org.springframework.context.ApplicationListener;

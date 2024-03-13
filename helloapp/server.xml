@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!-- Note:  A "Server" is not itself a "Container", so you may not
+     define subcomponents such as "Valves" at this level.
+     Documentation at /docs/config/server.html
+ -->
+
+<!--
+port: 指定服务器控制端口，即用于接收关闭命令的端口，默认为8005。
+shutdown: 定义用于关闭服务器的命令字符串，这里设置为"SHUTDOWN"。
+ -->
+<Server port="8005" shutdown="SHUTDOWN">
+    <!--
+    Listener: Tomcat的监听器，用于处理各种事件。
+    className: 指定监听器的Java类，这里是用于记录Tomcat版本信息的监听器。
+     -->
+    <Listener className="org.apache.catalina.startup.VersionLoggerListener"/>
+    <!-- Security listener. Documentation at /docs/config/listeners.html
+    <Listener className="org.apache.catalina.security.SecurityListener" />
+    -->
+    <!-- APR library loader. Documentation at /docs/apr.html -->
+    <!--
+  AprLifecycleListener: Tomcat的APR（Apache Portable Runtime）生命周期监听器，用于加载APR库，提高性能。
+  SSLEngine: 启用或禁用SSL引擎，这里设置为"on"，表示启用SSL。
+     -->
+    <Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on"/>
+    <!-- Prevent memory leaks due to use of particular java/javax APIs-->
+
+    <!-- JreMemoryLeakPreventionListener: 防止由于使用特定Java/Javax API而导致的内存泄漏的监听器。 -->
+    <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener"/>
+    <!-- GlobalResourcesLifecycleListener: 管理全局资源的生命周期的监听器。 -->
+    <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener"/>
+    <!-- ThreadLocalLeakPreventionListener: 防止由于使用ThreadLocal导致的内存泄漏的监听器。 -->
+    <Listener className="org.apache.catalina.core.ThreadLocalLeakPreventionListener"/>
+
+    <!-- Global JNDI resources
+         Documentation at /docs/jndi-resources-howto.html
+    -->
+    <!--
+  <GlobalNamingResources>: 定义全局命名资源的起始标签，其中包含一组全局资源的配置。
+
+  <Resource>: 定义一个具体的资源，这里是用户数据库资源的定义。
+
+  name: 资源的名称，这里是"UserDatabase"。
+  auth: 定义资源的认证方式，这里设置为"Container"，表示通过容器进行认证。
+  type: 指定资源的类型，这里是"org.apache.catalina.UserDatabase"，表示用户数据库类型。
+  description: 对资源的描述信息，说明其作用和用途。
+  factory: 指定用于创建资源实例的工厂类，这里是"org.apache.catalina.users.MemoryUserDatabaseFactory"，表示使用内存中的用户数据库工厂。
+  pathname: 指定资源的路径或位置，这里是"conf/tomcat-users.xml"，表示用户数据库的配置文件路径。
+     -->
+    <GlobalNamingResources>
+        <!-- Editable user database that can also be used by
+             UserDatabaseRealm to authenticate users
+        -->
+        <Resource name="UserDatabase" auth="Container"
+                  type="org.apache.catalina.UserDatabase"
+                  description="User database that can be updated and saved"
+                  factory="org.apache.catalina.users.MemoryUserDatabaseFactory"
+                  pathname="conf/tomcat-users.xml"/>
+    </GlobalNamingResources>
+
+    <!-- A "Service" is a collection of one or more "Connectors" that share
+         a single "Container" Note:  A "Service" is not itself a "Container",
+         so you may not define subcomponents such as "Valves" at this level.
+         Documentation at /docs/config/service.html
+     -->
+    <!-- <Service name="Catalina">: 定义了Tomcat的服务名称为"Catalina"，该服务包含了Tomcat的各种组件和配置。 -->
+    <Service name="Catalina">
+
+        <!--The connectors can use a shared executor, you can define one or more named thread pools-->
+        <!--
+        <Executor name="tomcatThreadPool" namePrefix="catalina-exec-"
+            maxThreads="150" minSpareThreads="4"/>
+        -->
+
+
+        <!-- A "Connector" represents an endpoint by which requests are received
+             and responses are returned. Documentation at :
+             Java HTTP Connector: /docs/config/http.html
+             Java AJP  Connector: /docs/config/ajp.html
+             APR (HTTP/AJP) Connector: /docs/apr.html
+             Define a non-SSL/TLS HTTP/1.1 Connector on port 8080
+        -->
+        <!--
+    <Connector>: 定义了连接器，用于处理客户端请求和服务器响应的端点。
+
+    port: 指定连接器监听的端口号，这里是8080，表示HTTP请求的默认端口。
+    protocol: 指定连接器使用的协议，这里是HTTP/1.1。
+    connectionTimeout: 指定连接超时时间，即当客户端连接在指定时间内没有响应时将被关闭，这里是20000毫秒（20秒）。
+    redirectPort: 指定重定向端口，即当使用HTTPS进行访问时，将请求重定向到指定的SSL端口，这里是8443。
+         -->
+        <Connector port="8080" protocol="HTTP/1.1"
+                   connectionTimeout="20000"
+                   redirectPort="8443"/>
+        <!-- A "Connector" using the shared thread pool-->
+        <!--
+        <Connector executor="tomcatThreadPool"
+                   port="8080" protocol="HTTP/1.1"
+                   connectionTimeout="20000"
+                   redirectPort="8443" />
+        -->
+        <!-- Define an SSL/TLS HTTP/1.1 Connector on port 8443
+             This connector uses the NIO implementation. The default
+             SSLImplementation will depend on the presence of the APR/native
+             library and the useOpenSSL attribute of the AprLifecycleListener.
+             Either JSSE or OpenSSL style configuration may be used regardless of
+             the SSLImplementation selected. JSSE style configuration is used below.
+        -->
+        <!--
+        <Connector port="8443" protocol="org.apache.coyote.http11.Http11NioProtocol"
+                   maxThreads="150" SSLEnabled="true">
+            <SSLHostConfig>
+                <Certificate certificateKeystoreFile="conf/localhost-rsa.jks"
+                             type="RSA" />
+            </SSLHostConfig>
+        </Connector>
+        -->
+        <!-- Define an SSL/TLS HTTP/1.1 Connector on port 8443 with HTTP/2
+             This connector uses the APR/native implementation which always uses
+             OpenSSL for TLS.
+             Either JSSE or OpenSSL style configuration may be used. OpenSSL style
+             configuration is used below.
+        -->
+        <!--
+        <Connector port="8443" protocol="org.apache.coyote.http11.Http11AprProtocol"
+                   maxThreads="150" SSLEnabled="true" >
+            <UpgradeProtocol className="org.apache.coyote.http2.Http2Protocol" />
+            <SSLHostConfig>
+                <Certificate certificateKeyFile="conf/localhost-rsa-key.pem"
+                             certificateFile="conf/localhost-rsa-cert.pem"
+                             certificateChainFile="conf/localhost-rsa-chain.pem"
+                             type="RSA" />
+            </SSLHostConfig>
+        </Connector>
+        -->
+
+        <!-- Define an AJP 1.3 Connector on port 8009 -->
+        <!--
+        <Connector protocol="AJP/1.3"
+                   address="::1"
+                   port="8009"
+                   redirectPort="8443" />
+        -->
+
+        <!-- An Engine represents the entry point (within Catalina) that processes
+             every request.  The Engine implementation for Tomcat stand alone
+             analyzes the HTTP headers included with the request, and passes them
+             on to the appropriate Host (virtual host).
+             Documentation at /docs/config/engine.html -->
+
+        <!-- You should set jvmRoute to support load-balancing via AJP ie :
+        <Engine name="Catalina" defaultHost="localhost" jvmRoute="jvm1">
+        -->
+        <!--
+    name: 指定引擎的名称，这里是"Catalina"。
+    defaultHost: 指定默认的主机名，当请求未指定主机名时，将使用该主机名处理请求，默认为"localhost"。
+         -->
+        <Engine name="Catalina" defaultHost="localhost">
+
+            <!--For clustering, please take a look at documentation at:
+                /docs/cluster-howto.html  (simple how to)
+                /docs/config/cluster.html (reference documentation) -->
+            <!--
+            <Cluster className="org.apache.catalina.ha.tcp.SimpleTcpCluster"/>
+            -->
+
+            <!-- Use the LockOutRealm to prevent attempts to guess user passwords
+                 via a brute-force attack -->
+            <!--
+      <Realm className="org.apache.catalina.realm.LockOutRealm">: 定义了一个LockOutRealm类型的安全领域，该领域用于防止暴力破解攻击。
+      className: 指定了领域类的完全限定类名，这里是"org.apache.catalina.realm.LockOutRealm"，表示使用LockOutRealm类。
+             -->
+            <Realm className="org.apache.catalina.realm.LockOutRealm">
+                <!-- This Realm uses the UserDatabase configured in the global JNDI
+                     resources under the key "UserDatabase".  Any edits
+                     that are performed against this UserDatabase are immediately
+                     available for use by the Realm.  -->
+                <!--
+        className: 指定了领域类的完全限定类名，这里是"org.apache.catalina.realm.UserDatabaseRealm"，表示使用UserDatabaseRealm类。
+        resourceName: 指定了用户数据库资源的名称，这里是"UserDatabase"，对应之前定义的全局命名资源中的名称。
+                 -->
+                <Realm className="org.apache.catalina.realm.UserDatabaseRealm"
+                       resourceName="UserDatabase"/>
+            </Realm>
+
+            <!--
+      <Host name="localhost" appBase="webapps" unpackWARs="true" autoDeploy="true">: 定义了一个名为"localhost"的主机，指定了Web应用程序的基本目录为"webapps"，并设置了WAR文件解压和自动部署功能。
+
+      name: 指定了主机的名称，这里是"localhost"。
+      appBase: 指定了Web应用程序的基本目录，即存放部署的Web应用程序的位置，这里是"webapps"目录。
+      unpackWARs: 指定是否解压WAR文件，默认为true，表示自动解压WAR文件。
+      autoDeploy: 指定是否启用自动部署功能，默认为true，表示自动部署部署在appBase目录中的Web应用程序。
+             -->
+            <Host name="localhost" appBase="webapps"
+                  unpackWARs="true" autoDeploy="true">
+
+                <!-- SingleSignOn valve, share authentication between web applications
+                     Documentation at: /docs/config/valve.html -->
+                <!--
+                <Valve className="org.apache.catalina.authenticator.SingleSignOn" />
+                -->
+
+                <!-- Access log processes all example.
+                     Documentation at: /docs/config/valve.html
+                     Note: The pattern used is equivalent to using pattern="common" -->
+
+
+                <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs"
+                       prefix="localhost_access_log" suffix=".txt"
+                       pattern="%h %l %u %t &quot;%r&quot; %s %b"/>
+
+            </Host>
+
+            <!-- <Host name="www.hulei123.com" appBase="webapps" unpackWARs="true" autoDeploy="true">: 定义了一个名为"www.hulei123.com"的主机，同样指定了Web应用程序的基本目录为"webapps"，并设置了WAR文件解压和自动部署功能。 -->
+            <Host name="www.hulei123.com" appBase="webapps" unpackWARs="true" autoDeploy="true">
+                <Alias>hulei123.com</Alias>
+            </Host>
+        </Engine>
+    </Service>
+</Server>

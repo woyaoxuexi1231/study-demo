@@ -1,6 +1,5 @@
 package com.hundsun.demo.springboot.mysql;
 
-import com.hundsun.demo.springboot.service.serviceimpl.SimpleServiceImpl;
 import tk.mybatis.mapper.common.special.InsertListMapper;
 
 /**

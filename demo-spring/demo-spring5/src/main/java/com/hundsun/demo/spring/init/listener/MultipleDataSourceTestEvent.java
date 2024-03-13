@@ -1,6 +1,6 @@
 package com.hundsun.demo.spring.init.listener;
 
-import com.hundsun.demo.spring.jdbc.DynamicDataSourceType;
+import com.hundsun.demo.spring.db.jdbc.DynamicDataSourceType;
 import org.springframework.context.ApplicationEvent;
 
 /**

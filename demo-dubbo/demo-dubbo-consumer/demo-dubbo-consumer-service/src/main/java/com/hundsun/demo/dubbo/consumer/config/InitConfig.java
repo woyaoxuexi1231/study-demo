@@ -1,6 +1,5 @@
 package com.hundsun.demo.dubbo.consumer.config;
 
-import com.hundsun.demo.java.mq.rabbit.config.MQConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.springframework.beans.factory.annotation.Autowired;

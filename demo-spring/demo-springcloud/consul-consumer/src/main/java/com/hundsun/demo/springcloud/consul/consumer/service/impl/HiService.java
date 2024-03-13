@@ -19,7 +19,7 @@ public class HiService {
     @Autowired
     ConsumerClientFeign consumerClientFeign;
 
-    public String sayHi(){
+    public String sayHi() {
         return consumerClientFeign.sayHiFromConsulProvider();
     }
 }

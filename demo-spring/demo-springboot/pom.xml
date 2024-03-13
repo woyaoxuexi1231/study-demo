@@ -40,6 +40,11 @@
             <artifactId>demo-common-starter</artifactId>
             <version>1.0.0.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.hundsun</groupId>
+            <artifactId>demo-spring5</artifactId>
+            <version>1.0.0.0-SNAPSHOT</version>
+        </dependency>
 
         <!-- 一些工具包 -->
         <dependency>
@@ -77,7 +82,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
-
 
 
         <!-- jdbc -->
@@ -131,10 +135,10 @@
         <!--        </dependency>-->
 
         <!-- 整合 thymeleaf -->
-<!--         <dependency> -->
-<!--             <groupId>org.springframework.boot</groupId> -->
-<!--             <artifactId>spring-boot-starter-thymeleaf</artifactId> -->
-<!--         </dependency> -->
+        <!--         <dependency> -->
+        <!--             <groupId>org.springframework.boot</groupId> -->
+        <!--             <artifactId>spring-boot-starter-thymeleaf</artifactId> -->
+        <!--         </dependency> -->
 
         <dependency>
             <groupId>org.apache.poi</groupId>

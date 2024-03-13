@@ -1,11 +1,6 @@
 package com.hundsun.demo.springboot.service.serviceimpl;
 
 import com.github.pagehelper.PageHelper;
-import com.hundsun.demo.commom.core.model.dto.ResultDTO;
-import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
-import com.hundsun.demo.springboot.dynamicdb.annotation.TargetDataSource;
-import com.hundsun.demo.springboot.dynamicdb.core.DynamicDataSourceType;
-import com.hundsun.demo.springboot.dynamicdb.core.DynamicDataSourceTypeManager;
 import com.hundsun.demo.springboot.common.mapper.EmployeeMapper;
 import com.hundsun.demo.springboot.common.model.EmployeeDO;
 import com.hundsun.demo.springboot.service.SimpleService;
@@ -18,9 +13,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.List;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @projectName: study-demo
@@ -81,34 +73,6 @@ public class SimpleServiceImpl implements SimpleService {
         employeeDO.setJobTitle("'?'");
         employeeMapper.insertWithDollar(employeeDO);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /**
