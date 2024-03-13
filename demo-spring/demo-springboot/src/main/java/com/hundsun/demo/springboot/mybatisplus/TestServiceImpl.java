@@ -1,6 +1,6 @@
 package com.hundsun.demo.springboot.mybatisplus;
 
-import com.hundsun.demo.springboot.common.model.EmployeeDO;
+import com.hundsun.demo.commom.core.model.EmployeeDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

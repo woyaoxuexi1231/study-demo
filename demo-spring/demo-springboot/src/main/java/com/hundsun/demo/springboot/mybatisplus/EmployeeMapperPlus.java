@@ -1,7 +1,7 @@
 package com.hundsun.demo.springboot.mybatisplus;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.hundsun.demo.springboot.common.model.EmployeeDO;
+import com.hundsun.demo.commom.core.model.EmployeeDO;
 import org.springframework.stereotype.Repository;
 
 /**

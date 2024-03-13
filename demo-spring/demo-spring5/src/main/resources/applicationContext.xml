@@ -21,8 +21,8 @@
 
     <!-- 当注入MySQLService的实现类的时候,全部改成注入MySQLServiceProxy而不是MySQLServiceImpl -->
     <bean class="com.hundsun.demo.spring.init.processor.ResolvableDependencyPostProcessor"/>
-    <bean name="mySQLServiceImpl" class="com.hundsun.demo.java.jdk.pattern.structural.proxy.MySQLServiceImpl"/>
-    <bean name="mySQLServiceProxy" class="com.hundsun.demo.java.jdk.pattern.structural.proxy.normal.MySQLServiceProxy">
+    <bean name="mySQLServiceImpl" class="com.hundsun.demo.spring.jdk.pattern.structural.proxy.MySQLServiceImpl"/>
+    <bean name="mySQLServiceProxy" class="com.hundsun.demo.spring.jdk.pattern.structural.proxy.normal.MySQLServiceProxy">
         <property name="mySqlService" ref="mySQLServiceImpl"/>
     </bean>
 
@@ -42,16 +42,20 @@
         <property name="circleBean" ref="circleBean"/>
     </bean>
 
-    <!-- Spring AOP -->
+    <!-- ##################################################################################### -->
+    <!-- ##################################### Spring AOP #################################### -->
+    <!-- ##################################################################################### -->
     <bean class="com.hundsun.demo.commom.core.aop.DoneTimeAspect"/>
     <!-- 用于支持基于注解的 AspectJ 切面编程-->
-    <bean class="org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator">
-        <!-- 配置指示 Spring 使用 CGLIB 来创建代理对象，而不是标准的 Java 接口代理。 -->
-        <property name="proxyTargetClass" value="true"/>
-    </bean>
+    <!-- <bean class="org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator"> -->
+    <!--     &lt;!&ndash; 配置指示 Spring 使用 CGLIB 来创建代理对象，而不是标准的 Java 接口代理。 &ndash;&gt; -->
+    <!--     <property name="proxyTargetClass" value="true"/> -->
+    <!-- </bean> -->
 
 
-    <!-- Spring 多数据源解决方案 -->
+    <!-- ##################################################################################### -->
+    <!-- ################################### Spring 多数据源 ################################### -->
+    <!-- ##################################################################################### -->
     <!-- 先定义三套数据库 -->
     <bean id="masterDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
@@ -63,94 +67,153 @@
     <bean id="secondDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url"
-                  value="jdbc:mysql://192.168.80.128:3306/test?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>
+                  value="jdbc:mysql://192.168.80.128:3306/yiibaidb?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>
         <property name="username" value="root"/>
         <property name="password" value="123456"/>
     </bean>
     <bean id="thirdDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url"
-                  value="jdbc:mysql://192.168.80.128:3306/test?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>
+                  value="jdbc:mysql://192.168.80.128:3306/yiibaidb?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>
         <property name="username" value="root"/>
         <property name="password" value="123456"/>
     </bean>
-    <!-- 动态数据源切换 -->
-    <bean id="dataSource" class="com.hundsun.demo.spring.db.jdbc.DynamicDataSource">
+    <!-- 用于切换动态数据源的 AbstractRoutingDataSource -->
+    <bean id="dataSource" class="com.hundsun.demo.spring.db.dynamicdb.DynamicDataSource">
         <property name="defaultTargetDataSource" ref="masterDataSource"/>
         <property name="targetDataSources">
-            <map key-type="com.hundsun.demo.spring.db.jdbc.DynamicDataSourceType">
+            <map key-type="com.hundsun.demo.spring.db.dynamicdb.DynamicDataSourceType">
                 <entry key="MASTER" value-ref="masterDataSource"/>
                 <entry key="SECOND" value-ref="secondDataSource"/>
                 <entry key="THIRD" value-ref="thirdDataSource"/>
             </map>
         </property>
     </bean>
+    <!-- 一个注入AbstractRoutingDataSource的JdbcTemplate -->
     <bean id="multipleDataSourceJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <property name="dataSource" ref="dataSource"/>
     </bean>
-    <bean name="yiibaidbServiceTarget" class="com.hundsun.demo.spring.service.impl.YiibaidbServiceImpl"
-          autowire="byName"/>
     <!-- 测试多数据源的监听器 -->
-    <bean class="com.hundsun.demo.spring.init.listener.MultipleDataSourceTestListener">
-        <property name="yiibaidbService" ref="yiibaidbService"/>
+    <bean class="com.hundsun.demo.spring.db.dynamicdb.MultipleDataSourceTestListener">
+        <!-- 注入dynamicTestService这个业务对象,声明信息在下面 -->
+        <property name="dynamicTestService" ref="dynamicTestService"/>
     </bean>
 
-    <!-- Spring 多数据源 + 事务管理 -->
+    <!-- ##################################################################################### -->
+    <!-- ####################################### 事务管理 ###################################### -->
+    <!-- ##################################################################################### -->
+    <!-- 这是一个事务管理器,有一个dataSource的属性,即指定这个事务管理器应该用哪个数据源来管理事务 -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!-- 绑定对哪个数据源生效 -->
         <property name="dataSource" ref="dataSource"/>
     </bean>
+    <!-- 有了事务管理器还不够,事务管理器需要知道在哪里开启事务才行,并且需要知道事务隔离级别之类的属性,所以有了TransactionInterceptor -->
+    <!-- 这个Bean是Spring事务管理的关键，它定义了事务的属性，比如事务的传播行为。-->
+    <!-- 这里，它引用了transactionManager（需要在其他地方定义）来管理事务，并且设置了事务属性 -->
     <bean id="transactionInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <!-- 被配置为使用transactionManager这个Bean来管理事务。 -->
         <property name="transactionManager" ref="transactionManager"/>
+        <!-- 这部分配置定义了哪些方法应该在事务的环境下执行，以及这些事务应该遵循的规则。 -->
         <property name="transactionAttributes">
             <props>
+                <!-- multipleDataSourceTransaction方法是测试多数据源DynamicTestService的一个方法 -->
+                <!-- 指定multipleDataSourceTransaction方法（或更可能是一系列方法的模式）需要遵循的事务传播行为为PROPAGATION_REQUIRE -->
                 <prop key="multipleDataSourceTransaction">PROPAGATION_REQUIRED</prop>
             </props>
         </property>
     </bean>
-    <bean id="yiibaidbService" class="org.springframework.aop.framework.ProxyFactoryBean">
-        <property name="target" ref="yiibaidbServiceTarget"/>
-        <property name="proxyInterfaces" value="com.hundsun.demo.spring.service.YiibaidbService"/>
+    <!-- 事务管理器现在都定义好了,但是业务对象依旧不具备事务特性,我们需要通过生成代理对象来拦截业务对象,使其在业务方法外包裹一层事务逻辑来实现事务 -->
+    <!-- 这是一个实际的业务对象 -->
+    <bean name="DynamicTestServiceTarget" class="com.hundsun.demo.spring.db.dynamicdb.DynamicTestServiceImpl"
+          autowire="byName"/>
+    <!-- 配置代理对象的信息 -->
+    <bean id="dynamicTestService" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <!-- 代理的业务对象为上面定义的bean -->
+        <property name="target" ref="DynamicTestServiceTarget"/>
+        <!-- 明确指出代理应该实现的接口,这意味着代理将对外表现为DynamicTestService接口的实现,客户端代码可以透明地使用它，就像使用实际的服务实现一样，而不必知道代理的存在。-->
+        <property name="proxyInterfaces" value="com.hundsun.demo.spring.db.dynamicdb.DynamicTestService"/>
+        <!-- 这里通过一个列表指定了一个或多个拦截器的名称，这些拦截器会在调用目标方法前后执行。 -->
         <property name="interceptorNames">
             <list>
+                <!-- 这里指定了之前配置好的事务拦截器来管理事务 -->
                 <value>transactionInterceptor</value>
             </list>
         </property>
     </bean>
+    <!-- 到此,事务管理器,事务拦截器,业务对象实现事务都已经配置完成 -->
 
-    <!-- Mybatis 事务 -->
-    <!-- 数据库连接 -->
-    <bean id="singleDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url"
-                  value="jdbc:mysql://192.168.80.128:3306/yiibaidb?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>
-        <property name="username" value="root"/>
-        <property name="password" value="123456"/>
-    </bean>
+
+    <!-- ##################################################################################### -->
+    <!-- ####################################### Mybatis ##################################### -->
+    <!-- ##################################################################################### -->
+    <!-- 它负责创建SqlSessionFactory，后者是MyBatis中非常重要的一个对象，用于创建SqlSession -->
+    <!-- 通过SqlSession，应用程序就可以执行SQL命令、管理事务和处理映射。 -->
     <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- 指定了MyBatis将用于数据库操作的数据源 -->
         <property name="dataSource" ref="dataSource"/>
+        <!-- 指定了MyBatis的全局配置文件的位置。这个文件通常包含了MyBatis的配置信息，如类型别名、类型处理器、设置等。通过这个配置，MyBatis知道如何连接数据库以及如何生成SQL语句。 -->
         <property name="configLocation" value="spring-mybatis-config.xml"/>
+        <!-- 定义了MyBatis mapper XML文件的位置 -->
         <property name="mapperLocations" value="mapper/*.xml"/>
     </bean>
-    <!--配置 Mybatis 接口扫描, Mybatis 通过这种方式帮我们把 mapper 接口做成实现类, 并注册成 bean-->
+    <!-- 这个类的作用是自动扫描指定包下的Mapper接口，并为它们创建代理对象，这些代理对象实际上就是执行SQL操作的MyBatis mapper -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!-- 可以指定一个或多个包的路径，框架会扫描这些包下的所有接口 -->
         <property name="basePackage" value="com.hundsun.demo.spring.mybatis"/>
     </bean>
-    <bean class="com.hundsun.demo.spring.mybatis.MyBatisTest" autowire="byName"/>
+    <!--
+     假设不使用上面的自动扫描
+     MapperFactoryBean是Spring提供的一个工厂bean，用于生成Mapper接口的代理实现
+    <bean id="exampleMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        这是你的Mapper接口的全限定名
+        <property name="mapperInterface" value="com.hundsun.demo.spring.mybatis.mapper.ExampleMapper"/>
+        引用前面定义的SqlSessionFactoryBean，它是MyBatis中生成SqlSession的工厂，而SqlSession是执行SQL操作的关键。
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    </bean>
+    那就需要想这样对于每个mapper都定义一遍
+     -->
+    <!-- mybatis的配置到此为止 -->
+
+
+    <!-- ##################################################################################### -->
+    <!-- ################################## Mybatis+多数据源 ################################## -->
+    <!-- ##################################################################################### -->
+    <!-- <bean name="DynamicTestServiceTarget" class="com.hundsun.demo.spring.db.dynamicdb.DynamicTestServiceImpl" -->
+    <!--       autowire="byName"/> -->
+    <!-- &lt;!&ndash; 配置代理对象的信息 &ndash;&gt; -->
+    <!-- <bean id="dynamicTestService" class="org.springframework.aop.framework.ProxyFactoryBean"> -->
+    <!--     &lt;!&ndash; 代理的业务对象为上面定义的bean &ndash;&gt; -->
+    <!--     <property name="target" ref="DynamicTestServiceTarget"/> -->
+    <!--     &lt;!&ndash; 明确指出代理应该实现的接口,这意味着代理将对外表现为DynamicTestService接口的实现,客户端代码可以透明地使用它，就像使用实际的服务实现一样，而不必知道代理的存在。&ndash;&gt; -->
+    <!--     <property name="proxyInterfaces" value="com.hundsun.demo.spring.mybatis.MyBatisDynamicdbService"/> -->
+    <!--     &lt;!&ndash; 这里通过一个列表指定了一个或多个拦截器的名称，这些拦截器会在调用目标方法前后执行。 &ndash;&gt; -->
+    <!--     <property name="interceptorNames"> -->
+    <!--         <list> -->
+    <!--             &lt;!&ndash; 这里指定了之前配置好的事务拦截器来管理事务 &ndash;&gt; -->
+    <!--             <value>transactionInterceptor</value> -->
+    <!--         </list> -->
+    <!--     </property> -->
+    <!-- </bean> -->
     <!-- mybatis 整合进 spring 之后, 事务的管理权就交给了 spring, 所以如果我们要使用事务, 那就必须按规矩办事, 好好的声明 spring 事务吧! -->
     <bean id="mybatisTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>
+    <!-- 定义了一个事务管理策略txAdvice,指明了哪些方法需要进行事务管理，以及事务的具体属性（如传播行为、是否只读、异常回滚条件等） -->
     <tx:advice id="txAdvice" transaction-manager="mybatisTransactionManager">
         <tx:attributes>
-            <tx:method name="mybatisSpringTransaction" propagation="REQUIRED" read-only="false"
-                       rollback-for="java.lang.Exception"/>
+            <!-- 任何名为mybatisSpringTransaction的方法将在调用时开启事务，并且这个事务在遇到Exception时会回滚。 -->
+            <tx:method name="mybatisSpringTransaction" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception"/>
         </tx:attributes>
     </tx:advice>
     <!-- 这里使用面向 aop 的命名空间 -->
     <aop:config>
+        <!-- 这里定义了一个切点mybatisMethods，它匹配特定的方法（这里是com.hundsun.demo.spring.mybatis.MyBatisDynamicdbService类中的mybatisSpringTransaction方法） -->
         <aop:pointcut id="mybatisMethods"
-                      expression="execution(* com.hundsun.demo.spring.service.YiibaidbService.mybatisSpringTransaction(..))"/>
+                      expression="execution(* com.hundsun.demo.spring.mybatis.MyBatisDynamicdbService.mybatisSpringTransaction())"/>
+        <!-- 通过aop:advisor将前面定义的事务管理策略txAdvice应用到这个切点上，这样就实现了对指定方法的事务管理。 -->
         <aop:advisor advice-ref="txAdvice" pointcut-ref="mybatisMethods"/>
     </aop:config>
+
+    <bean class="com.hundsun.demo.spring.mybatis.MyBatisDynamicdbTestListener" autowire="byName"/>
 
 </beans>

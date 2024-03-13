@@ -1,8 +1,6 @@
 package com.hundsun.demo.spring.mybatis;
 
-import com.hundsun.demo.spring.db.jdbc.DynamicDataSourceTypeManager;
-import com.hundsun.demo.spring.init.listener.MybatisEvent;
-import com.hundsun.demo.spring.service.YiibaidbService;
+import com.hundsun.demo.spring.db.dynamicdb.DynamicDataSourceTypeManager;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
@@ -18,14 +16,14 @@ import org.springframework.context.ApplicationListener;
 
 @Data
 @Slf4j
-public class MyBatisTest implements ApplicationListener<MybatisEvent> {
+public class MyBatisDynamicdbTestListener implements ApplicationListener<MybatisEvent> {
 
-    private YiibaidbService yiibaidbService;
+    private MyBatisDynamicdbService myBatisDynamicdbService;
 
     @Override
     public void onApplicationEvent(MybatisEvent event) {
         // 切换数据源
         DynamicDataSourceTypeManager.set(event.getDataSourceType());
-        this.yiibaidbService.mybatisSpringTransaction(event.getMyBatisOperationType(), event.getDataSourceType());
+        this.myBatisDynamicdbService.mybatisSpringTransaction(event.getMyBatisOperationType(), event.getDataSourceType());
     }
 }

@@ -1,4 +1,4 @@
-package com.hundsun.demo.spring.db.jdbc;
+package com.hundsun.demo.spring.db.dynamicdb;
 
 /**
  * @projectName: study-demo

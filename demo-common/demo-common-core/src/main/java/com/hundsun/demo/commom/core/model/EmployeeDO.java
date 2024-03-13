@@ -1,6 +1,5 @@
-package com.hundsun.demo.springboot.common.model;
+package com.hundsun.demo.commom.core.model;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -18,7 +17,6 @@ import javax.persistence.Table;
 
 @Data
 @Table(name = "employees")
-@TableName(value = "employees")
 public class EmployeeDO {
 
     /**

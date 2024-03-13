@@ -1,4 +1,4 @@
-package com.hundsun.demo.spring.db.mybatis;
+package com.hundsun.demo.spring.mybatis;
 
 import com.github.pagehelper.PageHelper;
 import com.hundsun.demo.commom.core.model.CustomerDO;
@@ -10,7 +10,6 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
 import java.util.List;
 
 /**
@@ -26,25 +25,12 @@ import java.util.List;
 public class MybatisTest {
 
     public static void main(String[] args) throws IOException {
-        // 读取配置文件
-        Reader reader = Resources.getResourceAsReader("mybatis-config.xml");
-        // 创建SqlSessionFactory
-        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
-        // 创建SqlSession
-        SqlSession sqlSession = sqlSessionFactory.openSession();
-        try {
-            // 获取Mapper
-            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
-            // 调用Mapper方法
-            User user = userMapper.getUser(1);
-            log.info("{}", user);
-        } finally {
-            sqlSession.close();
-        }
+        SqlSessionFactory sessionFactory = getSessionFactory();
+        // staticInvoke(sessionFactory);
+        update(sessionFactory);
     }
 
-    private static void staticInvoke() {
-
+    private static SqlSessionFactory getSessionFactory() {
         // 读取 mybatis-config.xml 配置文件
         String resource = "mybatis-config.xml";
         InputStream in;
@@ -53,27 +39,45 @@ public class MybatisTest {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         // 加载 mybatis-config.xml 配置文件, 并创建 SqlSessionFactory 对象
-        SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(in);
-        selectAll(sessionFactory);
+        return new SqlSessionFactoryBuilder().build(in);
     }
 
-    private static void selectAll(SqlSessionFactory sessionFactory) {
+    /**
+     * 原生mybatis查询
+     *
+     * @param sessionFactory sessionFactory
+     */
+    private static void staticInvoke(SqlSessionFactory sessionFactory) {
+
+        /*两种不同的调用方式*/
         try (SqlSession session = sessionFactory.openSession()) {
             // 对于原生Java, 使用pageHelper需要在mybatis的配置文件配置该插件
             PageHelper.startPage(1, 10);
             List<CustomerDO> customerDOS = session.selectList("com.hundsun.demo.spring.mybatis.CustomerMapper.selectAll");
+            log.info("{}", customerDOS);
+        }
+        try (SqlSession sqlSession = sessionFactory.openSession()) {
+            // 获取Mapper
+            CustomerMapper customerMapper = sqlSession.getMapper(CustomerMapper.class);
+            // 调用Mapper方法
+            List<CustomerDO> customerDOS = customerMapper.selectAll();
+            log.info("{}", customerDOS);
         }
     }
 
+    /**
+     * 原生mybatis更新操作(包括回滚)
+     *
+     * @param sessionFactory sessionFactory
+     */
     private static void update(SqlSessionFactory sessionFactory) {
         try (SqlSession session = sessionFactory.openSession()) {
             boolean isRollback = false;
             try {
                 CustomerDO customerDO = new CustomerDO();
                 customerDO.setCustomernumber(103);
-                customerDO.setPhone("40.32.25541");
+                customerDO.setPhone("40.32.251");
                 session.update("com.hundsun.demo.spring.mybatis.CustomerMapper.updateOne", customerDO);
             } catch (Exception e) {
                 isRollback = true;

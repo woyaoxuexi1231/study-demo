@@ -1,7 +1,7 @@
 package com.hundsun.demo.spring.service;
 
 import com.hundsun.demo.commom.core.model.CustomerDO;
-import com.hundsun.demo.spring.db.jdbc.DynamicDataSourceType;
+import com.hundsun.demo.spring.db.dynamicdb.DynamicDataSourceType;
 import com.hundsun.demo.spring.mybatis.MyBatisOperationType;
 
 import java.util.List;
@@ -34,25 +34,5 @@ public interface YiibaidbService {
      */
     void handleTransaction();
 
-    /**
-     * Spring 多数据源小 demo
-     *
-     * @param dynamicDataSourceType dataSourceType
-     */
-    void multipleDataSource(DynamicDataSourceType dynamicDataSourceType);
 
-    /**
-     * Spring 多数据源 + 事务
-     *
-     * @param dynamicDataSourceType dataSourceType
-     */
-    void multipleDataSourceTransaction(DynamicDataSourceType dynamicDataSourceType);
-
-    /**
-     * Mybatis + Spring 整合, 事务
-     *
-     * @param myBatisOperationType  myBatisOperationType
-     * @param dynamicDataSourceType dataSourceType
-     */
-    void mybatisSpringTransaction(MyBatisOperationType myBatisOperationType, DynamicDataSourceType dynamicDataSourceType);
 }

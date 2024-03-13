@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hundsun.demo.springboot.common.mapper.UserMapper;
-import com.hundsun.demo.springboot.common.model.EmployeeDO;
+import com.hundsun.demo.commom.core.model.EmployeeDO;
 import com.hundsun.demo.springboot.common.model.User;
 import com.hundsun.demo.springboot.config.ThreadPoolBeanConfig;
 import lombok.SneakyThrows;

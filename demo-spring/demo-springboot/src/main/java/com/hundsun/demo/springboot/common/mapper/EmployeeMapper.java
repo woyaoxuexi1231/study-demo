@@ -1,6 +1,6 @@
 package com.hundsun.demo.springboot.common.mapper;
 
-import com.hundsun.demo.springboot.common.model.EmployeeDO;
+import com.hundsun.demo.commom.core.model.EmployeeDO;
 import tk.mybatis.mapper.common.BaseMapper;
 import tk.mybatis.mapper.common.ConditionMapper;
 import tk.mybatis.mapper.common.MySqlMapper;

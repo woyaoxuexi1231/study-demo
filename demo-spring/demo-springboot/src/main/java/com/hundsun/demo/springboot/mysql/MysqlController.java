@@ -1,7 +1,7 @@
 package com.hundsun.demo.springboot.mysql;
 
 import com.hundsun.demo.springboot.common.mapper.EmployeeMapper;
-import com.hundsun.demo.springboot.common.model.EmployeeDO;
+import com.hundsun.demo.commom.core.model.EmployeeDO;
 import com.hundsun.demo.springboot.dynamicdb.core.DynamicDataSourceType;
 import com.hundsun.demo.springboot.dynamicdb.core.DynamicDataSourceTypeManager;
 import lombok.SneakyThrows;

@@ -1,7 +1,5 @@
-package com.hundsun.demo.spring.init.listener;
+package com.hundsun.demo.spring.db.dynamicdb;
 
-import com.hundsun.demo.spring.db.jdbc.DynamicDataSourceTypeManager;
-import com.hundsun.demo.spring.service.YiibaidbService;
 import lombok.Data;
 import org.springframework.context.ApplicationListener;
 
@@ -17,13 +15,13 @@ import org.springframework.context.ApplicationListener;
 @Data
 public class MultipleDataSourceTestListener implements ApplicationListener<MultipleDataSourceTestEvent> {
 
-    private YiibaidbService yiibaidbService;
+    private DynamicTestService dynamicTestService;
 
     @Override
     public void onApplicationEvent(MultipleDataSourceTestEvent multipleDataSourceTestEvent) {
         // yiibaidbService.multipleDataSource(multipleDataSourceTestEvent.getDataSourceType());
         // 使用指定数据源更新数据
         DynamicDataSourceTypeManager.set(multipleDataSourceTestEvent.getDataSourceType());
-        yiibaidbService.multipleDataSourceTransaction(multipleDataSourceTestEvent.getDataSourceType());
+        dynamicTestService.multipleDataSourceTransaction(multipleDataSourceTestEvent.getDataSourceType());
     }
 }
