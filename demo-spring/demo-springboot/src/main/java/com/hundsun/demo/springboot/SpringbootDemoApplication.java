@@ -18,10 +18,11 @@ import tk.mybatis.spring.annotation.MapperScan;
 
 @SpringBootApplication
 @MapperScan(basePackages = {
-        "com.hundsun.demo.springboot.mapper",
+        "com.hundsun.demo.springboot.common.mapper",
+        "com.hundsun.demo.springboot.rabbitmq.consumer"
 })
 @org.mybatis.spring.annotation.MapperScan(basePackages = {
-        "com.hundsun.demo.springboot.utils.mybatisplus"
+        "com.hundsun.demo.springboot.mybatisplus"
 })
 @Slf4j
 // @ServletComponentScan

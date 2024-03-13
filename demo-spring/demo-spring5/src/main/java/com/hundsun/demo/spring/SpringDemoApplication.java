@@ -32,10 +32,10 @@ public class SpringDemoApplication {
     /**
      * spring容器
      */
-    public static final ApplicationContext applicationContext;
+    public static ApplicationContext applicationContext;
 
-    static {
-        // 创建容器
+    public static void main(String[] args) {
+        // 创建容器,以读取配置文件的方式开启容器
         applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml", "simple.xml");
         // 这里通过 applicationContext 容器来发布一个简单的事件
         applicationContext.publishEvent(new SimpleEvent("Application Started"));
@@ -55,10 +55,6 @@ public class SpringDemoApplication {
         } catch (Exception e) {
             log.error("Mybatis更新数据异常, 已执行回滚. ", e);
         }
-
-    }
-
-    public static void main(String[] args) {
         // 销毁容器
         ((AbstractApplicationContext) applicationContext).close();
     }

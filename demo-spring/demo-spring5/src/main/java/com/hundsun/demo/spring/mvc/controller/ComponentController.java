@@ -1,7 +1,7 @@
 package com.hundsun.demo.spring.mvc.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.hundsun.demo.spring.model.pojo.CustomerDO;
+import com.hundsun.demo.commom.core.model.CustomerDO;
 import com.hundsun.demo.spring.service.YiibaidbService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

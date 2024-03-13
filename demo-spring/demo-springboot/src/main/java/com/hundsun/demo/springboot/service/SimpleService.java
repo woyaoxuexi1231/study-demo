@@ -1,7 +1,7 @@
 package com.hundsun.demo.springboot.service;
 
 import com.hundsun.demo.commom.core.model.dto.ResultDTO;
-import com.hundsun.demo.springboot.model.pojo.EmployeeDO;
+import com.hundsun.demo.springboot.common.model.EmployeeDO;
 
 import java.util.List;
 import java.util.concurrent.Semaphore;

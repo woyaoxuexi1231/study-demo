@@ -3,12 +3,12 @@ package com.hundsun.demo.springboot.service.serviceimpl;
 import com.github.pagehelper.PageHelper;
 import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
-import com.hundsun.demo.springboot.utils.dynamicdb.annotation.TargetDataSource;
-import com.hundsun.demo.springboot.utils.dynamicdb.core.DynamicDataSourceType;
-import com.hundsun.demo.springboot.utils.dynamicdb.core.DynamicDataSourceTypeManager;
-import com.hundsun.demo.springboot.mapper.AutoKeyTestMapper;
-import com.hundsun.demo.springboot.mapper.EmployeeMapper;
-import com.hundsun.demo.springboot.model.pojo.EmployeeDO;
+import com.hundsun.demo.springboot.dynamicdb.annotation.TargetDataSource;
+import com.hundsun.demo.springboot.dynamicdb.core.DynamicDataSourceType;
+import com.hundsun.demo.springboot.dynamicdb.core.DynamicDataSourceTypeManager;
+import com.hundsun.demo.springboot.common.mapper.AutoKeyTestMapper;
+import com.hundsun.demo.springboot.common.mapper.EmployeeMapper;
+import com.hundsun.demo.springboot.common.model.EmployeeDO;
 import com.hundsun.demo.springboot.service.SimpleService;
 import lombok.Data;
 import lombok.SneakyThrows;
@@ -406,7 +406,7 @@ public class SimpleServiceImpl implements SimpleService {
         employeeDO.setEmployeeNumber(1002L);
         System.out.println(employeeMapper.selectOne(employeeDO));
         DynamicDataSourceTypeManager.set(DynamicDataSourceType.MASTER);
-        simpleService.getOneEmployeeDO();
+        // simpleService.getOneEmployeeDO();
         /*
         这个地方切换与否其实不重要, 因为上一个查询语句结束之后, 在这里 spring 会恢复挂起的事务, 拿到之前的连接来执行查询语句, 即使不切换, 也不影响查询
         但是如果后续还有其他数据源的查询需要自行切换

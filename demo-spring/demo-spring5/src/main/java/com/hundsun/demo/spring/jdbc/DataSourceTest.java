@@ -1,6 +1,6 @@
 package com.hundsun.demo.spring.jdbc;
 
-import com.hundsun.demo.spring.model.pojo.CustomerDO;
+import com.hundsun.demo.commom.core.model.CustomerDO;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;

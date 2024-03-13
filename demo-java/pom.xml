@@ -114,6 +114,11 @@
             <artifactId>zookeeper</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper</artifactId>
+        </dependency>
+
         <!-- 测试 -->
         <dependency>
             <groupId>junit</groupId>

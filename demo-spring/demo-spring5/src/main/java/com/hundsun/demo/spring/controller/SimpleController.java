@@ -1,6 +1,6 @@
 package com.hundsun.demo.spring.controller;
 
-import com.hundsun.demo.spring.model.pojo.CustomerDO;
+import com.hundsun.demo.commom.core.model.CustomerDO;
 import com.hundsun.demo.spring.service.YiibaidbService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.ModelAndView;

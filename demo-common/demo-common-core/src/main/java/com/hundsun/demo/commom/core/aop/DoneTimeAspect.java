@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Aspect
-@Component
+// @Component
 @Slf4j
 public class DoneTimeAspect {
 
@@ -33,7 +33,7 @@ public class DoneTimeAspect {
 
     }
 
-    @Around(value = "point2(doneTime)")
+    @Around(value = "point2(doneTime)", argNames = "joinPoint,doneTime")
     public Object around(ProceedingJoinPoint joinPoint, DoneTime doneTime) throws Throwable {
 
         // 计时器
@@ -46,7 +46,7 @@ public class DoneTimeAspect {
             return joinPoint.proceed();
         } finally {
             stopWatch.stop();
-            log.info("Invoke Method {}, Param: {}, Time: {}ms", joinPoint.getSignature(), param, stopWatch.getTotalTimeMillis());
+            log.info("DoneTimeAspect => Method {}, Param: {}, Time: {}ms", joinPoint.getSignature(), param, stopWatch.getTotalTimeMillis());
         }
 
     }

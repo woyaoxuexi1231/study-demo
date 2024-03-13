@@ -1,6 +1,6 @@
 package com.hundsun.demo.spring.mybatis;
 
-import com.hundsun.demo.spring.model.pojo.CustomerDO;
+import com.hundsun.demo.commom.core.model.CustomerDO;
 
 import java.util.List;
 

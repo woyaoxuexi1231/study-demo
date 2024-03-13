@@ -1,7 +1,7 @@
 package com.hundsun.demo.springboot.controller;
 
-import com.hundsun.demo.springboot.mapper.SequenceMapper;
-import com.hundsun.demo.springboot.utils.idgenerator.segmentid.SegmentIdGenerator;
+import com.hundsun.demo.springboot.idgenerator.SequenceMapper;
+import com.hundsun.demo.springboot.idgenerator.segmentid.SegmentIdGenerator;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.mapping.Environment;
@@ -76,8 +76,8 @@ public class SegmentController implements ApplicationContextAware {
              *
              */
             try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-                sqlSession.update("com.hundsun.demo.springboot.mapper.SequenceMapper.update", "t1");
-                value = sqlSession.selectOne("com.hundsun.demo.springboot.mapper.SequenceMapper.get", "t1").toString();
+                sqlSession.update("com.hundsun.demo.springboot.idgenerator.SequenceMapper.update", "t1");
+                value = sqlSession.selectOne("com.hundsun.demo.springboot.idgenerator.SequenceMapper.get", "t1").toString();
                 sqlSession.commit();
             }
         }

@@ -15,13 +15,16 @@
     <settings>
         <setting name="logImpl" value="STDOUT_LOGGING"/>
     </settings>
-<!--     <plugins> -->
-<!--         &lt;!&ndash; PageHelper 插件&ndash;&gt; -->
-<!--         <plugin interceptor="com.github.pagehelper.PageInterceptor"> -->
-<!--             <property name="pageSizeZero" value="true"/> -->
-<!--             <property name="autoRuntimeDialect" value="true"/> -->
-<!--         </plugin> -->
-<!--     </plugins> -->
+    <plugins>
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+            <!-- 使用默认配置 -->
+            <!--  -->
+            <property name="helperDialect" value="mysql"/>
+            <property name="reasonable" value="true"/>
+            <property name="pageSizeZero" value="true"/>
+            <property name="autoRuntimeDialect" value="true"/>
+        </plugin>
+    </plugins>
     <environments default="development">
         <environment id="development">
             <transactionManager type="JDBC"/>

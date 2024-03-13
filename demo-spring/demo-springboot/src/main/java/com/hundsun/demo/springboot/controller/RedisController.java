@@ -1,7 +1,7 @@
 package com.hundsun.demo.springboot.controller;
 
 import com.hundsun.demo.springboot.config.BeanConfig;
-import com.hundsun.demo.springboot.mapper.EmployeeMapper;
+import com.hundsun.demo.springboot.common.mapper.EmployeeMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;

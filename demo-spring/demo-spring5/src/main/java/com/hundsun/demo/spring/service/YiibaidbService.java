@@ -1,7 +1,7 @@
 package com.hundsun.demo.spring.service;
 
 import com.hundsun.demo.spring.jdbc.DynamicDataSourceType;
-import com.hundsun.demo.spring.model.pojo.CustomerDO;
+import com.hundsun.demo.commom.core.model.CustomerDO;
 import com.hundsun.demo.spring.mybatis.MyBatisOperationType;
 
 import java.util.List;

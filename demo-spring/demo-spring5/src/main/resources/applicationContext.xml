@@ -13,16 +13,20 @@
     <aop:aspectj-autoproxy/>
     <!-- <context:component-scan base-package="com.hundsun.demo.spring"></context:com> -->
 
+    <!-- spring相关的配置信息 -->
     <!-- BeanFactoryPostProcessor -->
+    <!-- 配置如果实现IgnoreBean接口,那么这个bean的自动注入将不会生效 -->
     <bean class="com.hundsun.demo.spring.init.processor.IgnoreBeanFactoryPostProcessor"/>
-    <bean class="com.hundsun.demo.spring.init.processor.ResolvableDependencyPostProcessor"/>
     <bean class="com.hundsun.demo.spring.service.impl.IgnoreBean"/>
+
+    <!-- 当注入MySQLService的实现类的时候,全部改成注入MySQLServiceProxy而不是MySQLServiceImpl -->
+    <bean class="com.hundsun.demo.spring.init.processor.ResolvableDependencyPostProcessor"/>
     <bean name="mySQLServiceImpl" class="com.hundsun.demo.java.jdk.pattern.structural.proxy.MySQLServiceImpl"/>
     <bean name="mySQLServiceProxy" class="com.hundsun.demo.java.jdk.pattern.structural.proxy.normal.MySQLServiceProxy">
         <property name="mySqlService" ref="mySQLServiceImpl"/>
     </bean>
 
-    <!-- ApplicationListener -->
+    <!-- spring监听机制,由 ApplicationListener + ApplicationEvent 实现 -->
     <bean class="com.hundsun.demo.spring.init.listener.SimpleListener"/>
 
     <!-- Spring通过三级缓存来解决循环依赖的问题 -->
@@ -40,9 +44,12 @@
 
     <!-- Spring AOP -->
     <bean class="com.hundsun.demo.commom.core.aop.DoneTimeAspect"/>
+    <!-- 用于支持基于注解的 AspectJ 切面编程-->
     <bean class="org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator">
+        <!-- 配置指示 Spring 使用 CGLIB 来创建代理对象，而不是标准的 Java 接口代理。 -->
         <property name="proxyTargetClass" value="true"/>
     </bean>
+
 
     <!-- Spring 多数据源解决方案 -->
     <!-- 先定义三套数据库 -->

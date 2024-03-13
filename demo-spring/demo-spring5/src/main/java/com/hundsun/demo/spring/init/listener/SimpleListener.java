@@ -26,6 +26,6 @@ public class SimpleListener implements ApplicationListener<SimpleEvent> {
     @Override
     @DoneTime
     public void onApplicationEvent(SimpleEvent event) {
-        log.info("A message is received: {}", event.getSource());
+        log.info("SimpleListener => A message is received: {}", event.getSource());
     }
 }

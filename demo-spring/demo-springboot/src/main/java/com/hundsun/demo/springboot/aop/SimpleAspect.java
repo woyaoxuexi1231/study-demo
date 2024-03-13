@@ -28,27 +28,22 @@ public class SimpleAspect {
      * author: hulei42031
      * date: 2024-02-21 16:47
      */
-    @Pointcut(value = "execution(* com.hundsun.demo.springboot.service..*.*(..))")
+    @Pointcut(value = "execution(* com.hundsun.demo.springboot.aop.*.*(..)) && !execution(* com.hundsun.demo.springboot.aop.AopTestController.*(..))")
     public void point() {
-
     }
 
     @Around(value = "point()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
-
         // 计时器
         StopWatch stopWatch = new StopWatch();
         // 方法参数
         Object[] param = joinPoint.getArgs();
-
-
         try {
             stopWatch.start();
             return joinPoint.proceed();
         } finally {
             stopWatch.stop();
-            log.info("Invoke Method {}, Param: {}, Time: {}ms", joinPoint.getSignature(), param, stopWatch.getTotalTimeMillis());
+            log.info("SimpleAspect => Method {}, Param: {}, Time: {}ms", joinPoint.getSignature(), param, stopWatch.getTotalTimeMillis());
         }
-
     }
 }

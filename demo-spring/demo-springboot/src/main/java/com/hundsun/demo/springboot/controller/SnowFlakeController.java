@@ -1,7 +1,7 @@
 package com.hundsun.demo.springboot.controller;
 
 import cn.hutool.core.net.NetUtil;
-import com.hundsun.demo.springboot.utils.idgenerator.SnowflakeUtil;
+import com.hundsun.demo.springboot.idgenerator.SnowflakeUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
