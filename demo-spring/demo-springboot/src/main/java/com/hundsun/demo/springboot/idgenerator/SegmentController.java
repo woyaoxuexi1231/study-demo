@@ -1,4 +1,4 @@
-package com.hundsun.demo.springboot.controller;
+package com.hundsun.demo.springboot.idgenerator;
 
 import com.hundsun.demo.springboot.idgenerator.SequenceMapper;
 import com.hundsun.demo.springboot.idgenerator.segmentid.SegmentIdGenerator;

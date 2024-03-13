@@ -1,4 +1,4 @@
-package com.hundsun.demo.springboot.controller;
+package com.hundsun.demo.springboot.idgenerator;
 
 import cn.hutool.core.net.NetUtil;
 import com.hundsun.demo.springboot.idgenerator.SnowflakeUtil;

@@ -1,4 +1,4 @@
-package com.hundsun.demo.springboot.controller;
+package com.hundsun.demo.springboot.redis;
 
 import com.hundsun.demo.springboot.config.BeanConfig;
 import com.hundsun.demo.springboot.common.mapper.EmployeeMapper;

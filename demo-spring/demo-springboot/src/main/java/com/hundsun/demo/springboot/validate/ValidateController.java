@@ -1,4 +1,4 @@
-package com.hundsun.demo.springboot.controller;
+package com.hundsun.demo.springboot.validate;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;

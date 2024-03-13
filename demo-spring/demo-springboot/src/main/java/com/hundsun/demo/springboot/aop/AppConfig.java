@@ -18,7 +18,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  * Copyright 2023 Hundsun Technologies Inc. All Rights Reserved
  */
 
-// @Configuration
+// @Configuration todo 注入这个类之后莫名其妙的会报循环依赖的报错
 // @EnableAspectJAutoProxy
 public class AppConfig {
 

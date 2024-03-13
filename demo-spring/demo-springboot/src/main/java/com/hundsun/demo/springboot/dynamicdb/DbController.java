@@ -1,11 +1,9 @@
-package com.hundsun.demo.springboot.controller;
+package com.hundsun.demo.springboot.dynamicdb;
 
 import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import com.hundsun.demo.springboot.dynamicdb.core.DynamicDataSourceType;
 import com.hundsun.demo.springboot.dynamicdb.core.DynamicDataSourceTypeManager;
 import com.hundsun.demo.springboot.common.mapper.EmployeeMapper;
-import com.hundsun.demo.springboot.common.model.EmployeeDO;
-import com.hundsun.demo.springboot.service.serviceimpl.SimpleServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +25,7 @@ import javax.annotation.Resource;
 public class DbController {
 
     @Autowired
-    SimpleServiceImpl simpleServiceImpl;
+    DynamicdbService dynamicdbService;
 
     @Resource
     EmployeeMapper employeeMapper;
@@ -37,39 +35,16 @@ public class DbController {
      */
     @GetMapping("/multiDataSourceSingleTransaction")
     public ResultDTO<?> multiDataSourceSingleTransaction() {
-        return simpleServiceImpl.multiDataSourceSingleTransaction();
+        return dynamicdbService.multiDataSourceSingleTransaction();
     }
 
-    @GetMapping("/mysqlSelect")
-    public void mysqlSelect() {
-        simpleServiceImpl.mysqlSelect();
-    }
-
-    @GetMapping("/mysqlUpdate")
-    public void mysqlUpdate() {
-        simpleServiceImpl.mysqlUpdate();
-    }
-
-    @GetMapping("/mybatis")
-    public void mybatis() {
-        // simpleService.mybatis();
-        EmployeeDO employeeDO = new EmployeeDO();
-        // employeeDO.setEmployeeNumber(System.currentTimeMillis());
-        employeeDO.setLastName("n");
-        employeeDO.setFirstName("a");
-        employeeMapper.insertSelective(employeeDO);
-    }
-
-    @GetMapping("/testMysqlAutoKey")
-    public void testMysqlAutoKey() {
-        simpleServiceImpl.testMysqlAutoKey();
-    }
-
+    /**
+     *
+     */
     @GetMapping("/transactionInvalidation")
     public void transactionInvalidation() {
         DynamicDataSourceTypeManager.set(DynamicDataSourceType.SECOND);
-        simpleServiceImpl.transactionInvalidation();
+        dynamicdbService.transactionInvalidation();
     }
-
 
 }

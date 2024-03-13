@@ -1,4 +1,4 @@
-package com.hundsun.demo.springboot.common.mapper;
+package com.hundsun.demo.springboot.mysql;
 
 import com.hundsun.demo.springboot.service.serviceimpl.SimpleServiceImpl;
 import tk.mybatis.mapper.common.special.InsertListMapper;
@@ -12,5 +12,5 @@ import tk.mybatis.mapper.common.special.InsertListMapper;
  * @createDate: 2023/3/18 15:36
  */
 
-public interface AutoKeyTestMapper extends InsertListMapper<SimpleServiceImpl.AutoKeyTest> {
+public interface AutoKeyTestMapper extends InsertListMapper<AutoKeyTest> {
 }
