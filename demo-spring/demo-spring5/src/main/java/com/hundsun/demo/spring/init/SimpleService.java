@@ -1,4 +1,4 @@
-package com.hundsun.demo.spring.service;
+package com.hundsun.demo.spring.init;
 
 /**
  * @ProductName: Hundsun amust

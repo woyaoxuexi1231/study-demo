@@ -1,6 +1,4 @@
-package com.hundsun.demo.spring.service.impl;
-
-import com.hundsun.demo.spring.service.IgnoreAware;
+package com.hundsun.demo.spring.init.processor;
 
 /**
  * @projectName: study-demo
