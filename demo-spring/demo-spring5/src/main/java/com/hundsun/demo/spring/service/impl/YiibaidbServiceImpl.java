@@ -1,12 +1,6 @@
 package com.hundsun.demo.spring.service.impl;
 
-import com.github.pagehelper.PageHelper;
 import com.hundsun.demo.commom.core.model.CustomerDO;
-import com.hundsun.demo.commom.core.model.ProductsDO;
-import com.hundsun.demo.spring.db.dynamicdb.DynamicDataSourceType;
-import com.hundsun.demo.spring.db.dynamicdb.DynamicDataSourceTypeManager;
-import com.hundsun.demo.spring.mybatis.CustomerMapper;
-import com.hundsun.demo.spring.mybatis.MyBatisOperationType;
 import com.hundsun.demo.spring.service.YiibaidbService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

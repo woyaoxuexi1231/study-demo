@@ -268,7 +268,7 @@
                         <configuration>
                             <!--使打的包是可执行的-->
                             <executable>true</executable>
-                            <mainClass>com.hundsun.demo.spring.SpringDemoApplication</mainClass>
+                            <mainClass>com.hundsun.demo.spring.SpringApplication</mainClass>
                         </configuration>
                         <executions>
                             <execution>

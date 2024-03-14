@@ -3,6 +3,8 @@ package com.hundsun.demo.spring.mybatis;
 import com.github.pagehelper.PageHelper;
 import com.hundsun.demo.commom.core.model.CustomerDO;
 import com.hundsun.demo.spring.db.dynamicdb.DynamicDataSourceType;
+import com.hundsun.demo.spring.mybatis.mapper.CustomerMapper;
+import lombok.Data;
 
 import java.util.List;
 
@@ -15,7 +17,9 @@ import java.util.List;
  * @createDate: 2024/3/14 1:03
  */
 
+@Data
 public class MyBatisDynamicdbServiceImpl implements MyBatisDynamicdbService {
+
     /**
      * 自动注入 Mybatis生成的 mapperBean
      */
@@ -50,9 +54,17 @@ public class MyBatisDynamicdbServiceImpl implements MyBatisDynamicdbService {
             customerDO.setCustomernumber(103);
             customerDO.setPhone("40.32.100");
             customerMapper.updateOne(customerDO);
-            // if (dynamicDataSourceType.equals(DynamicDataSourceType.SECOND)) {
-            //     throw new RuntimeException("数据源 SECOND 更新出错!");
-            // }
+            /*
+            mybatis会通过isSqlSessionTransactional方法判断事务是否被spring管理
+             if (!isSqlSessionTransactional(sqlSession, SqlSessionTemplate.this.sqlSessionFactory)) {
+              // force commit even on non-dirty sessions because some databases require
+              // a commit/rollback before calling close()
+              sqlSession.commit(true);
+            }
+            * */
+            if (dynamicDataSourceType.equals(DynamicDataSourceType.SECOND)) {
+                throw new RuntimeException("数据源 SECOND 更新出错!");
+            }
         }
     }
 }

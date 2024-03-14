@@ -1,4 +1,4 @@
-package com.hundsun.demo.spring.mybatis;
+package com.hundsun.demo.spring.mybatis.mapper;
 
 import com.hundsun.demo.commom.core.model.CustomerDO;
 

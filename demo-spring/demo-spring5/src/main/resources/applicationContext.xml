@@ -10,7 +10,7 @@
        http://www.springframework.org/schema/aop/spring-aop.xsd
        http://www.springframework.org/schema/tx
        http://www.springframework.org/schema/tx/spring-tx.xsd">
-    <aop:aspectj-autoproxy/>
+
     <!-- <context:component-scan base-package="com.hundsun.demo.spring"></context:com> -->
 
     <!-- spring相关的配置信息 -->
@@ -45,6 +45,10 @@
     <!-- ##################################################################################### -->
     <!-- ##################################### Spring AOP #################################### -->
     <!-- ##################################################################################### -->
+    <!-- 用于启用 AspectJ 自动代理功能。 -->
+    <!-- Spring 将会自动检测并创建应用程序中使用了 AspectJ 注解的 bean，并将其装配为代理对象，以便应用程序中的切面可以对这些对象进行增强。 -->
+    <aop:aspectj-autoproxy/>
+    <!-- 这是一个AspectJ的bean,如果不开启上面的配置,那么这个类将不会被增强 -->
     <bean class="com.hundsun.demo.commom.core.aop.DoneTimeAspect"/>
     <!-- 用于支持基于注解的 AspectJ 切面编程-->
     <!-- <bean class="org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator"> -->
@@ -124,12 +128,15 @@
     </bean>
     <!-- 事务管理器现在都定义好了,但是业务对象依旧不具备事务特性,我们需要通过生成代理对象来拦截业务对象,使其在业务方法外包裹一层事务逻辑来实现事务 -->
     <!-- 这是一个实际的业务对象 -->
-    <bean name="DynamicTestServiceTarget" class="com.hundsun.demo.spring.db.dynamicdb.DynamicTestServiceImpl"
-          autowire="byName"/>
-    <!-- 配置代理对象的信息 -->
+    <bean name="DynamicTestServiceTarget" class="com.hundsun.demo.spring.db.dynamicdb.DynamicTestServiceImpl" autowire="byName"/>
+    <!-- ProxyFactoryBean可以用来为目标对象创建一个代理，这个代理可以实现相同的接口或继承相同的类，而且可以在目标方法的调用前后添加额外的处理逻辑，这种技术通常用于事务管理、日志记录、安全控制等方面。 -->
+    <!-- Spring AOP默认使用JDK动态代理和CGLIB代理两种方式来生成代理对象，选择哪种方式取决于被代理的目标对象。 -->
+    <!-- 1. JDK动态代理：默认情况下，如果目标对象实现了至少一个接口，Spring AOP会使用JDK动态代理。这种方式通过反射机制，在运行时创建了一个实现了目标对象所有接口的代理对象。这要求被代理的类至少实现了一个接口。 -->
+    <!-- 2. 如果目标对象没有实现任何接口，Spring AOP会退回到使用CGLIB库生成代理对象。CGLIB（Code Generation Library）是一个第三方代码生成库，通过继承方式实现代理，可以在运行时动态扩展Java类。 -->
     <bean id="dynamicTestService" class="org.springframework.aop.framework.ProxyFactoryBean">
         <!-- 代理的业务对象为上面定义的bean -->
         <property name="target" ref="DynamicTestServiceTarget"/>
+        <!-- 定义代理需要实现的接口列表。如果指定了此属性，则代理将是基于Java接口的动态代理。如果没有指定，则会使用CGLIB创建基于类的代理。 -->
         <!-- 明确指出代理应该实现的接口,这意味着代理将对外表现为DynamicTestService接口的实现,客户端代码可以透明地使用它，就像使用实际的服务实现一样，而不必知道代理的存在。-->
         <property name="proxyInterfaces" value="com.hundsun.demo.spring.db.dynamicdb.DynamicTestService"/>
         <!-- 这里通过一个列表指定了一个或多个拦截器的名称，这些拦截器会在调用目标方法前后执行。 -->
@@ -159,7 +166,7 @@
     <!-- 这个类的作用是自动扫描指定包下的Mapper接口，并为它们创建代理对象，这些代理对象实际上就是执行SQL操作的MyBatis mapper -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <!-- 可以指定一个或多个包的路径，框架会扫描这些包下的所有接口 -->
-        <property name="basePackage" value="com.hundsun.demo.spring.mybatis"/>
+        <property name="basePackage" value="com.hundsun.demo.spring.mybatis.mapper"/>
     </bean>
     <!--
      假设不使用上面的自动扫描
@@ -176,44 +183,39 @@
 
 
     <!-- ##################################################################################### -->
-    <!-- ################################## Mybatis+多数据源 ################################## -->
+    <!-- ######################## Mybatis+多数据源+<tx:advice>配置事务 ########################## -->
     <!-- ##################################################################################### -->
-    <!-- <bean name="DynamicTestServiceTarget" class="com.hundsun.demo.spring.db.dynamicdb.DynamicTestServiceImpl" -->
-    <!--       autowire="byName"/> -->
-    <!-- &lt;!&ndash; 配置代理对象的信息 &ndash;&gt; -->
-    <!-- <bean id="dynamicTestService" class="org.springframework.aop.framework.ProxyFactoryBean"> -->
-    <!--     &lt;!&ndash; 代理的业务对象为上面定义的bean &ndash;&gt; -->
-    <!--     <property name="target" ref="DynamicTestServiceTarget"/> -->
-    <!--     &lt;!&ndash; 明确指出代理应该实现的接口,这意味着代理将对外表现为DynamicTestService接口的实现,客户端代码可以透明地使用它，就像使用实际的服务实现一样，而不必知道代理的存在。&ndash;&gt; -->
-    <!--     <property name="proxyInterfaces" value="com.hundsun.demo.spring.mybatis.MyBatisDynamicdbService"/> -->
-    <!--     &lt;!&ndash; 这里通过一个列表指定了一个或多个拦截器的名称，这些拦截器会在调用目标方法前后执行。 &ndash;&gt; -->
-    <!--     <property name="interceptorNames"> -->
-    <!--         <list> -->
-    <!--             &lt;!&ndash; 这里指定了之前配置好的事务拦截器来管理事务 &ndash;&gt; -->
-    <!--             <value>transactionInterceptor</value> -->
-    <!--         </list> -->
-    <!--     </property> -->
-    <!-- </bean> -->
     <!-- mybatis 整合进 spring 之后, 事务的管理权就交给了 spring, 所以如果我们要使用事务, 那就必须按规矩办事, 好好的声明 spring 事务吧! -->
     <bean id="mybatisTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!-- 这里数据源依旧还是使用之前定义的多数据源 -->
         <property name="dataSource" ref="dataSource"/>
     </bean>
+    <!-- 启用了对@Transactional注解的支持，这意味着你可以在需要事务管理的方法上使用@Transactional注解 -->
+    <!-- <tx:annotation-driven/> -->
     <!-- 定义了一个事务管理策略txAdvice,指明了哪些方法需要进行事务管理，以及事务的具体属性（如传播行为、是否只读、异常回滚条件等） -->
     <tx:advice id="txAdvice" transaction-manager="mybatisTransactionManager">
         <tx:attributes>
             <!-- 任何名为mybatisSpringTransaction的方法将在调用时开启事务，并且这个事务在遇到Exception时会回滚。 -->
-            <tx:method name="mybatisSpringTransaction" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception"/>
+            <!-- <tx:method name="mybatisSpringTransaction" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception"/> -->
+            <tx:method name="mybatisSpringTransaction"/>
+            <!-- <tx:method name="*"配置表示匹配所有方法名 -->
+            <!-- <tx:method name="*"/> -->
         </tx:attributes>
     </tx:advice>
     <!-- 这里使用面向 aop 的命名空间 -->
     <aop:config>
-        <!-- 这里定义了一个切点mybatisMethods，它匹配特定的方法（这里是com.hundsun.demo.spring.mybatis.MyBatisDynamicdbService类中的mybatisSpringTransaction方法） -->
+        <!-- <aop:pointcut>**定义了一个或多个切点，指定了哪些方法（即哪个执行点）应该被增强（如事务管理）。expression属性用于指定这些方法的表达式。 -->
+        <!--  -->
+        <!-- 单独配置方法时,一定要注意方法参数是否一致 -->
+        <!-- <aop:pointcut id="mybatisMethods" expression="execution(* com.hundsun.demo.spring.mybatis.MyBatisDynamicdbService.*(..))"/> -->
         <aop:pointcut id="mybatisMethods"
-                      expression="execution(* com.hundsun.demo.spring.mybatis.MyBatisDynamicdbService.mybatisSpringTransaction())"/>
+                      expression="execution(* com.hundsun.demo.spring.mybatis.MyBatisDynamicdbService.mybatisSpringTransaction(..))"/>
         <!-- 通过aop:advisor将前面定义的事务管理策略txAdvice应用到这个切点上，这样就实现了对指定方法的事务管理。 -->
         <aop:advisor advice-ref="txAdvice" pointcut-ref="mybatisMethods"/>
     </aop:config>
-
-    <bean class="com.hundsun.demo.spring.mybatis.MyBatisDynamicdbTestListener" autowire="byName"/>
+    <bean name="myBatisDynamicdbService" class="com.hundsun.demo.spring.mybatis.MyBatisDynamicdbServiceImpl" autowire="byName"/>
+    <bean class="com.hundsun.demo.spring.mybatis.MyBatisDynamicdbTestListener">
+        <property name="myBatisDynamicdbService" ref="myBatisDynamicdbService"/>
+    </bean>
 
 </beans>

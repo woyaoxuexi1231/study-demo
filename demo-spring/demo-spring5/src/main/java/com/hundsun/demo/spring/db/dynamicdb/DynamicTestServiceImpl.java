@@ -1,10 +1,6 @@
 package com.hundsun.demo.spring.db.dynamicdb;
 
-import com.github.pagehelper.PageHelper;
-import com.hundsun.demo.commom.core.model.CustomerDO;
 import com.hundsun.demo.commom.core.model.ProductsDO;
-import com.hundsun.demo.spring.mybatis.CustomerMapper;
-import com.hundsun.demo.spring.mybatis.MyBatisOperationType;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

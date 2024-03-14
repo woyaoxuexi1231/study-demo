@@ -1,6 +1,7 @@
 package com.hundsun.demo.spring;
 
 import com.hundsun.demo.spring.db.dynamicdb.DynamicDataSourceType;
+import com.hundsun.demo.spring.db.dynamicdb.MultipleDataSourceTestEvent;
 import com.hundsun.demo.spring.mybatis.MybatisEvent;
 import com.hundsun.demo.spring.init.listener.SimpleEvent;
 import com.hundsun.demo.spring.mybatis.MyBatisOperationType;
@@ -19,7 +20,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 
 @Slf4j
-public class SpringDemoApplication {
+public class SpringApplication {
 
     /*
     spring 读取配置文件的顺序如下:
@@ -37,26 +38,38 @@ public class SpringDemoApplication {
     public static void main(String[] args) {
         // 创建容器,以读取配置文件的方式开启容器
         applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml", "simple.xml");
-        // 这里通过 applicationContext 容器来发布一个简单的事件
+
+        springListener();
+        // dynamicDB();
+        mybatisDynamicDB();
+
+        // 销毁容器
+        ((AbstractApplicationContext) applicationContext).close();
+    }
+
+    private static void springListener() {
+        // spring自带的监听机制测试.
         applicationContext.publishEvent(new SimpleEvent("Application Started"));
+    }
 
+    private static void dynamicDB() {
         // 测试多数据源切换
-        // try {
-        //     applicationContext.publishEvent(new MultipleDataSourceTestEvent(DynamicDataSourceType.MASTER));
-        //     applicationContext.publishEvent(new MultipleDataSourceTestEvent(DynamicDataSourceType.SECOND));
-        // } catch (Exception e) {
-        //     log.error("多数据源更新异常, 执行回滚操作. ", e);
-        // }
+        try {
+            applicationContext.publishEvent(new MultipleDataSourceTestEvent(DynamicDataSourceType.MASTER));
+            applicationContext.publishEvent(new MultipleDataSourceTestEvent(DynamicDataSourceType.SECOND));
+        } catch (Exception e) {
+            log.error("多数据源更新异常, 执行回滚操作. ", e);
+        }
+    }
 
+    private static void mybatisDynamicDB() {
         // mybatis 事务小测试
         try {
-            // applicationContext.publishEvent(new MybatisEvent(MyBatisOperationType.UPDATE, DynamicDataSourceType.MASTER));
-            applicationContext.publishEvent(new MybatisEvent(MyBatisOperationType.SELECT, DynamicDataSourceType.SECOND));
+            applicationContext.publishEvent(new MybatisEvent(MyBatisOperationType.UPDATE, DynamicDataSourceType.SECOND));
+            // applicationContext.publishEvent(new MybatisEvent(MyBatisOperationType.SELECT, DynamicDataSourceType.SECOND));
         } catch (Exception e) {
             log.error("Mybatis更新数据异常, 已执行回滚. ", e);
         }
-        // 销毁容器
-        ((AbstractApplicationContext) applicationContext).close();
     }
 
 }
