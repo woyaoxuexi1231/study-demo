@@ -17,7 +17,7 @@
     <!-- BeanFactoryPostProcessor -->
     <!-- 配置如果实现IgnoreBean接口,那么这个bean的自动注入将不会生效 -->
     <bean class="com.hundsun.demo.spring.init.processor.IgnoreBeanFactoryPostProcessor"/>
-    <bean class="com.hundsun.demo.spring.service.impl.IgnoreBean"/>
+    <bean class="com.hundsun.demo.spring.init.processor.IgnoreBean"/>
 
     <!-- 当注入MySQLService的实现类的时候,全部改成注入MySQLServiceProxy而不是MySQLServiceImpl -->
     <bean class="com.hundsun.demo.spring.init.processor.ResolvableDependencyPostProcessor"/>

@@ -12,5 +12,6 @@
 </head>
 <body>
 ${data}
+<p><a href="/demo-spring5/">Back to Home</a></p>
 </body>
 </html>

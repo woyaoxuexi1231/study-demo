@@ -9,41 +9,51 @@
 
     <!-- HandlerMapping, DispatcherServlet 用这个处理器映射来确定请求将给到哪一个 Controller 来处理 -->
     <!-- Spring提供了多种映射器, 在没有配置的情况下, 默认会选择 BeanNameUrlHandlerMapping -->
-    <!--    <bean id="handlerMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>-->
+    <bean id="handlerMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>
 
     <!-- 配置视图解析器, 将控制器方法返回的逻辑视图解析为物理视图, DispatcherServlet 用这个来确定将控制器返回的逻辑视图名称转换成渲染结果的实际视图 -->
-    <bean id="viewResolver"
-          class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <!--        <property name="prefix" value="/WEB-INF/jsp/"/>-->
-        <!--        <property name="suffix" value=".jsp"/>-->
+    <!-- InternalResourceViewResolver 类用于解析视图名称，并将其解析为内部资源（例如 JSP 文件）的实际路径。 -->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/jsp/"/>
+        <property name="suffix" value=".jsp"/>
     </bean>
 
+    <!-- 当请求被映射到 “/simple” 路径时，Spring MVC 将会调用 SimpleController 中的相应方法来处理请求，并返回名为 “SimpleMVC” 的视图。 -->
     <!-- 配置 controller, 映射为 /simple -->
-    <!--    <bean name="/simple" class="com.hundsun.demo.spring.controller.SimpleController">-->
-    <!--        <property name="viewName" value="SimpleMVC"/>-->
-    <!--        <property name="yiibaidbService" ref="yiibaidbService"/>-->
-    <!--    </bean>-->
+    <bean name="/simple" class="com.hundsun.demo.spring.mvc.controller.SimpleController">
+        <property name="viewName" value="SimpleMVC"/>
+    </bean>
 
     <!-- 基于注解的形式的控制器 -->
     <!-- 配置自动扫描包 -->
     <context:component-scan base-package="com.hundsun.demo.spring"/>
-    <!-- 1. 该标签会注册 DefaultAnnotationHandlerMapping 与 AnnotationMethodHandlerAdapter 两个 Bean -->
-    <!--    通过这两个 Bean 来完成对 @Controller 和 @RequestMapping 等注解的支持 -->
-    <!-- *2. Spring MVC 类型转换, 数据格式化和数据校验 -->
-    <!--  -->
+
+
+    <!-- 告诉 Spring MVC 框架去扫描应用程序中所有的类，查找带有特定注解（如 @Controller、@RequestMapping 等）的类，并根据这些注解配置相应的请求映射和处理器。 -->
+    <!-- 启用了这个配置后，Spring MVC 将会自动注册 DefaultAnnotationHandlerMapping 和 AnnotationMethodHandlerAdapter 这两个处理器，用于处理基于注解的请求映射和方法处理。 -->
+    <!-- Spring MVC 类型转换, 数据格式化和数据校验 -->
     <mvc:annotation-driven/>
-    <!--    <mvc:resources mapping="/script/**" location="/script/"/>-->
-    <!-- 该元素将在 Spring MVC 上下文定义一个 DefaultServletHttpRequestHandler -->
+
+    <!-- <mvc:resources> 元素用于指定一个或多个静态资源的映射关系，以便让 Spring MVC 框架知道如何处理这些静态资源的请求。 -->
+    <!-- mapping="/script/**" 指定了 URL 匹配模式，用于匹配静态资源的请求路径。这里的 "/script/**" 表示匹配以 “/script/” 开头的所有请求路径。 -->
+    <!-- location="/script/" 指定了静态资源的存储位置。这里的 "/script/" 是相对于 web 应用程序根目录的路径，用于指定静态资源文件的实际存储位置。 -->
+    <!-- 这样配置后，当有请求路径匹配到 "/script/**" 时，Spring MVC 将会在 "/script/" 目录下寻找对应的静态资源文件，并将其返回给客户端。 -->
+    <mvc:resources mapping="/scripts/**" location="/scripts/"/>
+
+    <!-- 使用该配置元素后，Spring MVC 将会注册一个 DefaultServletHttpRequestHandler，它会将请求传递给Servlet容器的默认Servlet进行处理。 -->
     <!-- 这个 handler 会对进入 DispatcherServlet 的请求进行筛选, 如果发现是没有经过映射的请求, 会把这个请求交给 Web 服务器默认的 Servlet 处理 -->
     <mvc:default-servlet-handler/>
+
+
     <!-- 配置拦截器 -->
     <mvc:interceptors>
-        <bean class="com.hundsun.demo.spring.mvc.filter.SimpleFilter"/>
-        <!-- 定义在  <mvc:interceptor> 内部的拦截器, 表示对匹配路径请求才进行拦截, 顺序执行-->
-        <!--        <mvc:interceptor>-->
-        <!--            <mvc:mapping path="/**"/>-->
-        <!--            <mvc:exclude-mapping path=""/>-->
-        <!--            <bean />-->
-        <!--        </mvc:interceptor>-->
+        <!-- 这个标签定义了一个拦截器。拦截器可以看作是一个过滤器，它能够在请求到达控制器之前、处理完请求后以及渲染视图之前执行特定的代码。 -->
+        <mvc:interceptor>
+            <!-- 这里的 <mvc:mapping> 定义了拦截器应用的 URL 模式。path="/**" 表示拦截器将应用于所有的请求路径。这是一个非常广泛的模式，实际上会匹配所有的 URL。 -->
+            <mvc:mapping path="/**"/>
+            <!--  这里的 <mvc:exclude-mapping> 定义了哪些请求路径不应该被拦截器处理。path="/" 指的是应用的根路径。这意味着，虽然拦截器会拦截所有的请求，但是它不会处理到达应用根路径的请求。这通常用于允许对主页的无障碍访问，而无需经过拦截器的处理。 -->
+            <mvc:exclude-mapping path="/"/>
+            <bean class="com.hundsun.demo.spring.mvc.filter.SimpleFilter"/>
+        </mvc:interceptor>
     </mvc:interceptors>
 </beans>
