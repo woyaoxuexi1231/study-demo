@@ -1,5 +1,6 @@
 package com.hundsun.demo.dubbo.provider.service.impl;
 
+import com.hundsun.demo.commom.core.annotation.DoneTime;
 import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
 import com.hundsun.demo.dubbo.provider.api.service.SimpleProviderService;
@@ -19,6 +20,7 @@ import org.apache.dubbo.config.annotation.DubboService;
 @Slf4j
 public class SimpleProviderServiceImpl implements SimpleProviderService {
 
+    @DoneTime
     @Override
     public ResultDTO<?> RpcSimpleInvoke() {
         return ResultDTOBuild.resultSuccessBuild("hello rpc!");

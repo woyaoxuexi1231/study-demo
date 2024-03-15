@@ -8,6 +8,8 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 
+import java.text.DecimalFormat;
+
 /**
  * @projectName: study-demo
  * @package: com.hundsun.dubbodemo.common.aop
@@ -45,7 +47,7 @@ public class DoneTimeAspect {
             return joinPoint.proceed();
         } finally {
             stopWatch.stop();
-            log.info("DoneTimeAspect => Method {}, Param: {}, Time: {}ms", joinPoint.getSignature(), param, stopWatch.getTotalTimeMillis());
+            log.info("method: {}, param: {}, time: {} nanos", joinPoint.getSignature(), param, new DecimalFormat("#,###").format(stopWatch.getLastTaskTimeNanos()));
         }
 
     }

@@ -53,6 +53,12 @@
             <version>${demo.common.verison}</version>
         </dependency>
 
+        <!-- aspectJ -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+        </dependency>
+
         <!--curator这里作为可选模块-->
         <dependency>
             <groupId>com.hundsun</groupId>
