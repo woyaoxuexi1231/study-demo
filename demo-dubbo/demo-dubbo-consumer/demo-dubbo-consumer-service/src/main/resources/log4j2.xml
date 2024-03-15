@@ -43,7 +43,7 @@
             <!--输出日志的格式-->
             <PatternLayout pattern="${LOG_PATTERN}" disableAnsi="false" noConsoleNoAnsi="false"/>
             <!--控制台只输出level及其以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
-            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <!-- <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/> -->
         </console>
 
         <!--
@@ -53,7 +53,7 @@
         <RollingFile name="RollingFileInfo" fileName="${FILE_PATH}/${FILE_NAME}-info.log"
                      filePattern="${FILE_PATH}/${FILE_NAME}-INFO-%d{yyyy-MM-dd}_%i.log.gz">
             <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
-            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <!-- <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/> -->
             <PatternLayout pattern="${LOG_PATTERN}"/>
             <Policies>
                 <!--interval属性用来指定多久滚动一次，默认是1 hour-->
