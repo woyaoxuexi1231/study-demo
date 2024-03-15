@@ -1,4 +1,4 @@
-package com.hundsun.demo.springboot.rabbitmq.consumer;
+package com.hundsun.demo.springboot.rabbitmq.consumer.mapper;
 
 import com.hundsun.demo.commom.core.model.MQIdempotency;
 import tk.mybatis.mapper.common.BaseMapper;

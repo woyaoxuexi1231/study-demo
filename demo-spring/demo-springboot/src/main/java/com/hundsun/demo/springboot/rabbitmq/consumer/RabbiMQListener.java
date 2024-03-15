@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.hundsun.demo.commom.core.model.ConsumerStatus;
 import com.hundsun.demo.commom.core.model.MQIdempotency;
 import com.hundsun.demo.spring.mq.rabbit.config.MQConfig;
+import com.hundsun.demo.springboot.rabbitmq.consumer.mapper.MQIdempotencyMapper;
 import com.rabbitmq.client.Channel;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -142,7 +143,7 @@ public class RabbiMQListener {
                     durable = "true",
                     autoDelete = "false",
                     arguments = {
-                            // @Argument(name = "x-dead-letter-exchange", value = MQConfig.DEAD_EXCHANGE_NAME)
+                            @Argument(name = "x-dead-letter-exchange", value = MQConfig.DEAD_EXCHANGE_NAME)
                     }
             ),
             exchange = @Exchange(

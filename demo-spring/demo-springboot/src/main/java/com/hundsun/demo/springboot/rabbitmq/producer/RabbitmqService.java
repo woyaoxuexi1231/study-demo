@@ -11,7 +11,7 @@ import com.hundsun.demo.commom.core.model.dto.ResultDTO;
  * @Date: 2022-06-17 13:48
  */
 
-public interface RabbitMqService {
+public interface RabbitmqService {
 
     /**
      * use rabbiMQ to send a simple message

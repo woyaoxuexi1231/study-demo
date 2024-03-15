@@ -1,5 +1,6 @@
-package com.hundsun.demo.springboot.mysql;
+package com.hundsun.demo.springboot.mysql.mapper;
 
+import com.hundsun.demo.springboot.mysql.AutoKeyTest;
 import tk.mybatis.mapper.common.special.InsertListMapper;
 
 /**

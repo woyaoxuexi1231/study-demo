@@ -25,7 +25,7 @@ import java.util.UUID;
  */
 @Slf4j
 @Service
-public class RabbitmqServiceImpl implements RabbitMqService {
+public class RabbitmqServiceImpl implements RabbitmqService {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;

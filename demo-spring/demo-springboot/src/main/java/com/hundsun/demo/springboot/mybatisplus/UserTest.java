@@ -8,6 +8,7 @@ import com.hundsun.demo.springboot.common.mapper.UserMapper;
 import com.hundsun.demo.commom.core.model.EmployeeDO;
 import com.hundsun.demo.springboot.common.model.User;
 import com.hundsun.demo.springboot.config.ThreadPoolBeanConfig;
+import com.hundsun.demo.springboot.mybatisplus.mapper.EmployeeMapperPlus;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.ExecutorType;

@@ -1,4 +1,4 @@
-package com.hundsun.demo.springboot.mybatisplus;
+package com.hundsun.demo.springboot.mybatisplus.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hundsun.demo.commom.core.model.EmployeeDO;
