@@ -12,12 +12,6 @@ import org.springframework.validation.annotation.Validated;
  * @Date: 2022-05-21 15:21
  */
 @Validated
-public interface SimpleService {
-
-    /**
-     * simple rpc invoke
-     *
-     * @return ?
-     */
-    ResultDTO<?> simpleRpcInvoke();
+public interface InvokeService {
+    
 }

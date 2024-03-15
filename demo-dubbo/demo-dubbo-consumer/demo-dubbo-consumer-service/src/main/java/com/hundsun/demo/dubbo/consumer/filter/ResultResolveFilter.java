@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class ResultResolveFilter {
 
-    @Pointcut(value = "execution(* com.hundsun.demo.dubbo.consumer.api.service.SimpleService.*(..))")
+    @Pointcut(value = "execution(* com.hundsun.demo.dubbo.consumer.api.service.InvokeService.*(..))")
     public void pointCut() {
     }
 

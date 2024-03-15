@@ -11,12 +11,12 @@ import com.hundsun.demo.commom.core.model.dto.ResultDTO;
  * @Date: 2022-05-21 15:14
  */
 
-public interface SimpleProviderService {
+public interface ProviderService {
 
     /**
      * simple rpc invoke
      *
      * @return ?
      */
-    ResultDTO<?> RpcSimpleInvoke();
+    ResultDTO<?> RpcInvoke();
 }
