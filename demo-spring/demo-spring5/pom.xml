@@ -109,35 +109,20 @@
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
         </dependency>
-
-
+        <!-- 操作excel -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <optional>true</optional>
         </dependency>
-        <!-- 学习动态代理 -->
+        <!-- 动态代理 -->
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
             <optional>true</optional>
         </dependency>
-        <!-- 学习servlet -->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <!-- mybatis -->
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
+
+
         <!-- Redis的客户端 -->
         <dependency>
             <groupId>redis.clients</groupId>
@@ -154,6 +139,8 @@
             <artifactId>lettuce-core</artifactId>
             <optional>true</optional>
         </dependency>
+
+
         <!--RabbitMQ-->
         <dependency>
             <groupId>com.rabbitmq</groupId>
@@ -170,6 +157,9 @@
             <artifactId>kafka-streams</artifactId>
             <optional>true</optional>
         </dependency>
+
+
+        <!-- 数据校验 -->
         <dependency>
             <groupId>javax.persistence</groupId>
             <artifactId>persistence-api</artifactId>
@@ -180,6 +170,7 @@
             <artifactId>jakarta.validation-api</artifactId>
         </dependency>
 
+        <!-- curator客户端 -->
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-client</artifactId>
@@ -197,14 +188,18 @@
             <artifactId>zookeeper</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+
+        <!-- dubbo -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo</artifactId>
+            <version>2.7.8</version>
         </dependency>
 
 
