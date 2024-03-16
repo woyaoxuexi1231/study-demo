@@ -1,4 +1,5 @@
 # dubbo 通信协议 dubbo 协议为什么要消费者比提供者个数多?
+
 dubbo 使用单一长连接, 当服务上线或者下线,会订阅或者取消订阅这个消费者.通过日志也可以看到  
 `` INFO [main-EventThread] o.a.d.r.z.ZookeeperRegistry.notify(407) :  [DUBBO] Notify urls for subscribe url consumer://192.168.80.1/com.hundsun.demo.dubbo.provider.api.service.ProviderService?application=demo-dubbo-consumer&category=providers,configurators,routers&check=false&cluster=failsafe&dubbo=2.0.2&init=false&interface=com.hundsun.demo.dubbo.provider.api.service.ProviderService&loadbalance=roundrobin&metadata-type=remote&methods=RpcInvoke&pid=20316&qos.enable=false&release=2.7.8&side=consumer&sticky=false&timeout=30000&timestamp=1710519547651, urls: [dubbo://192.168.80.1:20100/com.hundsun.demo.dubbo.provider.api.service.ProviderService?anyhost=true&application=demo-dubbo-provider&deprecated=false&dubbo=2.0.2&dynamic=true&generic=false&interface=com.hundsun.demo.dubbo.provider.api.service.ProviderService&metadata-type=remote&methods=RpcInvoke&pid=7752&release=2.7.8&side=provider&timestamp=1710521177820&token=admin], dubbo version: 2.7.8, current host: 192.168.80.1``  
 当第一次调用服务提供者提供的服务时,可以看到消费者会与服务提供者建立连接  
@@ -6,7 +7,7 @@ dubbo 使用单一长连接, 当服务上线或者下线,会订阅或者取消�
 ``24-03-16 00:46:55.010 INFO  [NettyClientWorker-1-2] o.a.d.r.t.n.NettyClientHandler.channelActive(62) :  [DUBBO] The connection of /192.168.80.1:9289 -> /192.168.80.1:20100 is established., dubbo version: 2.7.8, current host: 192.168.80.1``   
 ``24-03-16 00:46:55.010 INFO  [http-nio-9000-exec-3] o.a.d.r.t.AbstractClient.connect(200) :  [DUBBO] Successed connect to server /192.168.80.1:20100 from NettyClient 192.168.80.1 using dubbo version 2.7.8, channel is NettyChannel [channel=[id: 0x2fb817dc, L:/192.168.80.1:9289 - R:/192.168.80.1:20100]], dubbo version: 2.7.8, current host: 192.168.80.1``  
 ``24-03-16 00:46:55.011 INFO  [http-nio-9000-exec-3] o.a.d.r.t.AbstractClient.<init>(73) :  [DUBBO] Start NettyClient /192.168.80.1 connect to the server /192.168.80.1:20100, dubbo version: 2.7.8, current host: 192.168.80.1``
- 因 dubbo 协议采用单一长连接，假设网络为千兆网卡(1024Mbit=128MByte), 根据测试经验数据每条连接最多只能压满 7MByte(不同的环境可能不一样，供参考)，理论上 1 个服务提供者需要 20 个服务消费者才能压满网卡。
+因 dubbo 协议采用单一长连接，假设网络为千兆网卡(1024Mbit=128MByte), 根据测试经验数据每条连接最多只能压满 7MByte(不同的环境可能不一样，供参考)，理论上 1 个服务提供者需要 20 个服务消费者才能压满网卡。
 ---
 
 # Rpc协议是什么
@@ -30,7 +31,15 @@ RPC 协议被设计成远程调用就像是本地调用一样，其具体实现�
 ----
 
 # dubbo服务治理篇
-## 什么是服务降级
+
+## 什么是服务降级 (包括本地的mock和admin服务的mock)
+
+在跨团队或是多应用开发时，在前期开发中往往会出现依赖的服务还未开发完成的情况，这样就会导致流程的阻塞，影响研发效率。基于这种情况，Dubbo Admin 提供了 mock 能力来解耦 Consumer 与 Provider 之间的依赖，以确保在 Provider 未就绪的情况下 Consumer
+仍能正常开展测试，提高研发效率。  
+Dubbo 框架本身设计有服务降级（有时也称为 mock）能力，通过配置 org.apache.dubbo.config.ReferenceConfig 的 mock
+字段（可设置为true或是对应接口的Mock实现）或动态配置规则，此时就可以启动服务降级能力。这种服务降级能力是为生产环境的限流降级准备的，虽然也可以用于本地开发测试场景，但灵活度并不高  
+基于提升开发效率的根本诉求，dubbo设计了基于 Admin 的服务降级能力。
+
 服务降级是一种分布式系统设计中的策略，用于在服务不可用或性能下降时，以一种有限但可控的方式维持系统的可用性和稳定性。服务降级通常在以下情况下发挥作用：
 
 1. **服务不可用**: 当服务因为网络故障、硬件故障或其他原因导致不可用时，降级策略可以保证系统的其他部分仍然可以正常运行，而不会因为单个服务的故障而导致整个系统崩溃。

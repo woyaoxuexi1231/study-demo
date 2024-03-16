@@ -33,9 +33,13 @@ public class SimpleController {
      */
     @DubboReference(
             check = false, // 不检查提供者是否可用
-            timeout = 30000,
-            loadbalance = RoundRobinLoadBalance.NAME,
-            cluster = "failsafe"
+            loadbalance = RoundRobinLoadBalance.NAME, // 负载均衡策略
+            // cluster = "forking", // 集群策略
+            mock = "com.hundsun.demo.dubbo.consumer.service.impl.InvokeServiceMock", // 实现服务降级,当服务不可用(服务可以但是不报错,这个mock配置是不会生效的)时,会自动进行本地服务降级
+            group = "*", // *代表所有,但是匹配不了空串 dubbo 2.7.8
+            version = "*", // *代表所有,但是匹配不了空串 dubbo 2.7.8
+            // merger = "true",
+            timeout = 30000 // 服务调用超时,0则不触发超时报错
     )
     ProviderService providerService;
 
