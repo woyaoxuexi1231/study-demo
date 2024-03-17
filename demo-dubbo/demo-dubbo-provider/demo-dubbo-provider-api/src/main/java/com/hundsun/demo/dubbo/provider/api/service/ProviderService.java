@@ -18,5 +18,5 @@ public interface ProviderService {
      *
      * @return ?
      */
-    ResultDTO<?> RpcInvoke();
+    String RpcInvoke();
 }

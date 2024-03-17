@@ -1,6 +1,7 @@
 package com.hundsun.demo.dubbo.consumer.controller;
 
 import com.hundsun.demo.commom.core.model.dto.ResultDTO;
+import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
 import com.hundsun.demo.dubbo.provider.api.service.ProviderService;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.rpc.cluster.loadbalance.RoundRobinLoadBalance;
@@ -35,7 +36,7 @@ public class SimpleController {
             check = false, // 不检查提供者是否可用
             loadbalance = RoundRobinLoadBalance.NAME, // 负载均衡策略
             // cluster = "forking", // 集群策略
-            mock = "com.hundsun.demo.dubbo.consumer.service.impl.InvokeServiceMock", // 实现服务降级,当服务不可用(服务可以但是不报错,这个mock配置是不会生效的)时,会自动进行本地服务降级
+            mock = "true", // 实现服务降级,当服务不可用(服务可以但是不报错,这个mock配置是不会生效的)时,会自动进行本地服务降级
             group = "*", // *代表所有,但是匹配不了空串 dubbo 2.7.8
             version = "*", // *代表所有,但是匹配不了空串 dubbo 2.7.8
             // merger = "true",
@@ -55,7 +56,7 @@ public class SimpleController {
      */
     @GetMapping("/simpleRpcInvoke")
     public ResultDTO<?> simpleRpcInvoke() {
-        return providerService.RpcInvoke();
+        return ResultDTOBuild.resultSuccessBuild(providerService.RpcInvoke());
     }
 
 

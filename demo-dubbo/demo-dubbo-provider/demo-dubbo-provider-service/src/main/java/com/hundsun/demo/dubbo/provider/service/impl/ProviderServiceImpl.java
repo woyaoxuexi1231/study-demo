@@ -1,8 +1,6 @@
 package com.hundsun.demo.dubbo.provider.service.impl;
 
 import com.hundsun.demo.commom.core.annotation.DoneTime;
-import com.hundsun.demo.commom.core.model.dto.ResultDTO;
-import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
 import com.hundsun.demo.dubbo.provider.api.service.ProviderService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -33,14 +31,13 @@ public class ProviderServiceImpl implements ProviderService {
 
     @DoneTime
     @Override
-    public ResultDTO<?> RpcInvoke() {
+    public String RpcInvoke() {
         // throw new RuntimeException("error");
-        return ResultDTOBuild.resultSuccessBuild(
-                String.format("hello rpc! port: %s, group: %s, version: %s",
-                        port,
-                        StringUtils.isEmpty(ProviderServiceImpl.class.getAnnotation(DubboService.class).group()) ? group : ProviderServiceImpl.class.getAnnotation(DubboService.class).group(),
-                        StringUtils.isEmpty(ProviderServiceImpl.class.getAnnotation(DubboService.class).version()) ? version : ProviderServiceImpl.class.getAnnotation(DubboService.class).version()
-                ));
+        return String.format("hello rpc! port: %s, group: %s, version: %s",
+                port,
+                StringUtils.isEmpty(ProviderServiceImpl.class.getAnnotation(DubboService.class).group()) ? group : ProviderServiceImpl.class.getAnnotation(DubboService.class).group(),
+                StringUtils.isEmpty(ProviderServiceImpl.class.getAnnotation(DubboService.class).version()) ? version : ProviderServiceImpl.class.getAnnotation(DubboService.class).version()
+        );
     }
 
 }
