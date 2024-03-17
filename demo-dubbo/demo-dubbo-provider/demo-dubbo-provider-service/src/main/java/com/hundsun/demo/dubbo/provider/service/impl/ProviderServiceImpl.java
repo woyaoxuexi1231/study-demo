@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
  * @Date: 2022-05-21 15:15
  */
 
-@DubboService(token = "admin")
+@DubboService(weight = 70)
 @Slf4j
 public class ProviderServiceImpl implements ProviderService {
 
