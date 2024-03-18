@@ -1,23 +1,19 @@
 package com.hundsun.demo.spring.jdk.algorithms;
 
 /**
- * @ProductName: Hundsun amust
- * @ProjectName: study-demo
- * @Package: com.hundsun.demo.java.jdk.algorithms
- * @Description: 二分查找
- * @Author: hulei42031
- * @Date: 2023-11-30 16:15
- * @UpdateRemark:
- * @Version: 1.0
- * <p>
- * Copyright 2023 Hundsun Technologies Inc. All Rights Reserved
+ * 二分查找,非常经典的查找算法
+ * 每次查找都以中间的数为基准来进行对比
+ * 算法的时间复杂度为 取以2为底n的对数 log2n(每次找到都可以排除当前数量的一半)
+ *
+ * @author hulei42031
+ * @since 2023-11-30 16:15
  */
 
 public class BinarySearch {
 
     public static void main(String[] args) {
         int[] ints = new int[]{1, 3, 4, 6, 8, 11, 15, 67, 89, 101};
-        int num = 5;
+        int num = 4;
         // int index = binarySearch(ints, num);
         // 二分查找的时间复杂度为 logn, 取以2为底n的对数则是二分查找的时间复杂度
         int index = doBinarySearch(ints, num);
