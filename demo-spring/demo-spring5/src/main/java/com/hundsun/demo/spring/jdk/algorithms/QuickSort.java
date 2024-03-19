@@ -4,28 +4,23 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * @ProductName: Hundsun amust
- * @ProjectName: study-demo
- * @Package: com.hundsun.demo.java.jdk.algorithms
- * @Description:
- * @Author: hulei42031
- * @Date: 2023-12-04 21:08
- * @UpdateRemark:
- * @Version: 1.0
- * <p>
- * Copyright 2023 Hundsun Technologies Inc. All Rights Reserved
+ * 快速排序
+ *
+ * @author hulei42031
+ * @since 2023-12-04 21:08
  */
 
-public class BinarySort {
+public class QuickSort {
 
     public static void main(String[] args) {
         int[] ints = new int[]{362, 872591, 9534336, 181, 453873};
-        new BinarySort().randomizedQuicksort(ints, 0, ints.length - 1);
+        new QuickSort().randomizedQuicksort(ints, 0, ints.length - 1);
         System.out.println(Arrays.toString(ints));
         System.out.println(Arrays.toString(Arrays.copyOfRange(ints, 1, 2)));
     }
 
     public void randomizedQuicksort(int[] nums, int l, int r) {
+        // 如果说给定的位置已经是l>=r了,那么说明已经有序了
         if (l < r) {
             // 分割数组, 得到中间指针位置
             int pos = randomizedPartition(nums, l, r);
@@ -37,14 +32,22 @@ public class BinarySort {
     }
 
     public int randomizedPartition(int[] nums, int l, int r) {
-        // 1. 随机选一个作为我们的主元素
+        // 1. 这里随机生成一个当前给定的数组范围内的下标.
         int i = new Random().nextInt(r - l + 1) + l;
         // 2. 把我们选定的主元素和最后一个元素调换位置, 这个不一定是和最后一个元素换位置, 可以是其他操作
-        swap(nums, r, i);
+        swap(nums, i, r);
         // 3. 分割这个数组
         return partition(nums, l, r);
     }
 
+    /**
+     * 分割这个数组, 起始位置是l,终止位置是r
+     *
+     * @param nums 原始数组
+     * @param l    起始位置
+     * @param r    终止位置
+     * @return 分割后的数组
+     */
     public int partition(int[] nums, int l, int r) {
         // 主元素
         int pivot = nums[r];
@@ -70,6 +73,13 @@ public class BinarySort {
         return i + 1;
     }
 
+    /**
+     * 交换两个元素的位置
+     *
+     * @param nums 原始数组
+     * @param i    第i个元素
+     * @param j    第j个元素
+     */
     private void swap(int[] nums, int i, int j) {
         int temp = nums[i];
         nums[i] = nums[j];
