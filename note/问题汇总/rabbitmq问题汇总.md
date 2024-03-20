@@ -7,6 +7,6 @@
 
 > 24-03-16 00:00:51.473 ERROR[AMQP Connection 192.168.80.128:5672] o.s.a.r.c.CachingConnectionFactory(1575) - Channel shutdown: channel error;
 > protocol method: #method<channel.close>(reply-code=406, reply-text=PRECONDITION_FAILED - unknown delivery tag 1, class-id=60, method-id=80)
-> 
+>
 > 
 
