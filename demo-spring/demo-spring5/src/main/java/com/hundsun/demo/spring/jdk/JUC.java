@@ -642,6 +642,29 @@ public class JUC {
         lock.unlock();
     }
 
+    public static void lockSupport() {
+        Thread thread = new Thread(() -> {
+            System.out.println("Thread starts.");
+
+            // 线程等待
+            LockSupport.park();
+
+            System.out.println("Thread resumes.");
+        });
+
+        thread.start();
+
+        // 主线程等待一段时间
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // 主线程唤醒子线程
+        LockSupport.unpark(thread);
+    }
+
     public static void main(String[] args) {
         // createThread();
         // threadPoolExecutorStatus();
@@ -651,7 +674,8 @@ public class JUC {
         // volatileTest();
         // countDownLatch();
         // semaphore();
-        reentrantLock();
+        // reentrantLock();
+        lockSupport();
     }
 
 }
