@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.LockSupport;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -512,13 +513,145 @@ public class JUC {
         writerThread.start();
     }
 
+    public static void countDownLatch() {
+        // 创建一个 CountDownLatch 实例，计数器初始化为3
+        CountDownLatch latch = new CountDownLatch(3);
+
+        // 创建三个线程，并将 CountDownLatch 传递给它们
+        Thread worker1 = new Thread(new Worker(latch, "Worker 1"));
+        Thread worker2 = new Thread(new Worker(latch, "Worker 2"));
+        Thread worker3 = new Thread(new Worker(latch, "Worker 3"));
+
+        // 启动这三个线程
+        worker1.start();
+        worker2.start();
+        worker3.start();
+
+        try {
+            // 主线程等待，直到计数器为0
+            latch.await();
+            // 所有工作线程都完成后，执行这里的代码
+            System.out.println("All workers have completed their tasks.");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static class Worker implements Runnable {
+        private final CountDownLatch latch;
+        private final String name;
+
+        Worker(CountDownLatch latch, String name) {
+            this.latch = latch;
+            this.name = name;
+        }
+
+        @Override
+        public void run() {
+            // 模拟执行任务
+            System.out.println(name + " is working...");
+            try {
+                // 假设任务执行耗时为随机的1到5秒
+                Thread.sleep((long) (Math.random() * 5000 + 1000));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(name + " has completed its task.");
+            // 每个工作线程完成后，将计数器减1
+            latch.countDown();
+        }
+    }
+
+
+    public static void semaphore() {
+        // 创建一个 Semaphore 实例，允许同时访问的线程数量为2
+        Semaphore semaphore = new Semaphore(2);
+
+        // 创建五个线程，并将 Semaphore 传递给它们
+        Thread t1 = new Thread(new Task(semaphore, "Thread 1"));
+        Thread t2 = new Thread(new Task(semaphore, "Thread 2"));
+        Thread t3 = new Thread(new Task(semaphore, "Thread 3"));
+        Thread t4 = new Thread(new Task(semaphore, "Thread 4"));
+        Thread t5 = new Thread(new Task(semaphore, "Thread 5"));
+
+        // 启动这五个线程
+        t1.start();
+        t2.start();
+        t3.start();
+        t4.start();
+        t5.start();
+    }
+
+    static class Task implements Runnable {
+        private final Semaphore semaphore;
+        private final String name;
+
+        Task(Semaphore semaphore, String name) {
+            this.semaphore = semaphore;
+            this.name = name;
+        }
+
+        @Override
+        public void run() {
+            try {
+                // 获取信号量许可
+                semaphore.acquire();
+                System.out.println(name + " is accessing the resource.");
+                // 模拟线程执行任务
+                Thread.sleep(2000);
+                System.out.println(name + " has released the resource.");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                // 释放信号量许可
+                semaphore.release();
+            }
+        }
+    }
+
+    @SneakyThrows
+    public static void reentrantLock() {
+        // 创建一个 ReentrantLock 实例
+        Lock lock = new ReentrantLock();
+
+        // 创建一个线程，模拟对共享资源的访问
+        Thread thread = new Thread(() -> {
+            // 获取锁
+            lock.lock();
+            lock.lock();
+            try {
+                // 在临界区内执行需要同步的操作
+                System.out.println("Thread is executing the critical section.");
+                // 模拟线程执行时间
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                // 释放锁
+                lock.unlock();
+                System.out.println("Thread has released the lock.");
+            }
+        });
+
+        // 启动线程
+        thread.start();
+
+        Thread.sleep(100);
+        lock.lock();
+        System.out.println("this is main");
+        lock.unlock();
+    }
+
     public static void main(String[] args) {
         // createThread();
         // threadPoolExecutorStatus();
         // waitAndNotify();
         // blockQueue();
         // synchronizedTest();
-        volatileTest();
+        // volatileTest();
+        // countDownLatch();
+        // semaphore();
+        reentrantLock();
     }
 
 }
