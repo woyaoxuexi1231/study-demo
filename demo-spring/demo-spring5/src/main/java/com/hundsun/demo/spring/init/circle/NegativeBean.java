@@ -18,4 +18,12 @@ public class NegativeBean {
      * NegativeBean 依赖于 positiveBean
      */
     private PositiveBean positiveBean;
+
+    // public NegativeBean(PositiveBean positiveBean) {
+    //     this.positiveBean = positiveBean;
+    // }
+
+    public void setPositiveBean(PositiveBean positiveBean) {
+        this.positiveBean = positiveBean;
+    }
 }
