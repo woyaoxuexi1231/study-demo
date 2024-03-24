@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.hundsun.demo.springboot.common.mapper.UserMapper;
 import com.hundsun.demo.commom.core.model.EmployeeDO;
+import com.hundsun.demo.springboot.common.mapper.UserMapper;
 import com.hundsun.demo.springboot.common.model.User;
 import com.hundsun.demo.springboot.config.ThreadPoolBeanConfig;
 import com.hundsun.demo.springboot.mybatisplus.mapper.EmployeeMapperPlus;
@@ -49,7 +49,7 @@ public class UserTest extends ServiceImpl<UserMapper, User> {
     @Resource
     private UserMapper userMapper;
 
-    private static Long id = 1l;
+    private static final Long id = 1l;
 
     @GetMapping("/delete")
     public void delete() {
@@ -302,14 +302,12 @@ public class UserTest extends ServiceImpl<UserMapper, User> {
         try {
             userTest.run(name);
         } catch (Exception e) {
-            ;
         }
 
         // 可以触发
         try {
             testService.run(name);
         } catch (Exception e) {
-            ;
         }
     }
 

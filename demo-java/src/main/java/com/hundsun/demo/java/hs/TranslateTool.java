@@ -286,7 +286,7 @@ public class TranslateTool {
                 out.close();
                 log.info("成功生成文件：" + fileName);
             } catch (Exception e) {
-                log.error("the method createServiceCode catch the error : " + e.toString());
+                log.error("the method createServiceCode catch the error : " + e);
             }
 
         }
@@ -477,7 +477,7 @@ public class TranslateTool {
 
 
         }
-        log.info("成功获取到的功能号有：" + allFunctions.toString());
+        log.info("成功获取到的功能号有：" + allFunctions);
         log.info("数量为：" + allFunctions.size());
         return allFunctions;
     }
@@ -700,7 +700,7 @@ public class TranslateTool {
             log.info("成功生成文件：" + functionIdCnName + "-" + functionIdEnName + "serviceCode.txt");
 
         } catch (Exception e) {
-            log.error("the method createServiceCode catch the error : " + e.toString());
+            log.error("the method createServiceCode catch the error : " + e);
         }
 
     }

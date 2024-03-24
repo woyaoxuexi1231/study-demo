@@ -31,19 +31,19 @@ public interface UserMapper extends BaseMapper<User> {
      *
      * @param users
      */
-    public void updateBatchByCaseWhen(@Param("list") List<User> users);
+    void updateBatchByCaseWhen(@Param("list") List<User> users);
 
     /**
      * updateBatch
      *
      * @param users
      */
-    public void updateBatch(@Param("list") List<User> users);
+    void updateBatch(@Param("list") List<User> users);
 
     /**
      * 一个没有 sql 实现的方法
      * author: hulei42031
      * date: 2023-11-23 19:47
      */
-    public void selectAll();
+    void selectAll();
 }

@@ -5,12 +5,9 @@ import org.apache.dubbo.config.ProtocolConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.bootstrap.DubboBootstrap;
-import org.apache.dubbo.rpc.protocol.dubbo.DubboProtocol;
 
 import java.io.IOException;
 import java.util.HashMap;
-
-import static org.apache.dubbo.common.constants.QosConstants.QOS_PORT;
 
 /**
  * @projectName: study-demo
@@ -28,7 +25,7 @@ public class Application {
 
         HashMap<String, String> configMap = new HashMap<>();
         // configMap.put(QOS_PORT,"22223");
-        ProtocolConfig dubboConfig = new ProtocolConfig("dubbo",8201);
+        ProtocolConfig dubboConfig = new ProtocolConfig("dubbo", 8201);
         // dubboConfig.setParameters(configMap);
 
         DubboBootstrap.getInstance()

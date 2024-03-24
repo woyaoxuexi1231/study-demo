@@ -1,6 +1,5 @@
 package com.hundsun.demo.spring.db.dynamicdb;
 
-import com.hundsun.demo.spring.db.dynamicdb.DynamicDataSourceType;
 import org.springframework.context.ApplicationEvent;
 
 /**

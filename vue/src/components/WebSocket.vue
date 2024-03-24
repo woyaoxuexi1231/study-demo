@@ -37,15 +37,15 @@ export default {
       // this.stompClient = Stomp.overWS('ws://localhost:10088/gs-guide-websocket');
       this.stompClient = Stomp.over(socket);
       this.stompClient.connect(
-          {},
-          frame => {
-            console.log('Connected: ' + frame);
-            this.connectSucceed();
-          },
-          err => {
-            console.error(err);
-            this.reconnect(this.socketUrl, this.connectSucceed)
-          }
+        {},
+        frame => {
+          console.log('Connected: ' + frame);
+          this.connectSucceed();
+        },
+        err => {
+          console.error(err);
+          this.reconnect(this.socketUrl, this.connectSucceed)
+        }
       );
 
       //
@@ -63,18 +63,18 @@ export default {
         this.socket = new SockJS(socketUrl)
         this.stompClient = Stomp.over(this.socket)
         this.stompClient.connect(
-            {},
-            frame => {
-              this.reconnectting = false
-              connected = true
-              console.log('Connected: ' + frame);
-              clearInterval(timer)
-              callback()
-            },
-            err => {
-              console.log('Reconnect failed！');
-              if (!connected) console.log(err);
-            })
+          {},
+          frame => {
+            this.reconnectting = false
+            connected = true
+            console.log('Connected: ' + frame);
+            clearInterval(timer)
+            callback()
+          },
+          err => {
+            console.log('Reconnect failed！');
+            if (!connected) console.log(err);
+          })
       }, 1000);
     },
 

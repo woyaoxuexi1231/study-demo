@@ -1,7 +1,5 @@
 package com.hundsun.demo.dubbo.provider.api.service;
 
-import com.hundsun.demo.commom.core.model.dto.ResultDTO;
-
 /**
  * @ProductName: Hundsun amust
  * @ProjectName: dubbo-demo

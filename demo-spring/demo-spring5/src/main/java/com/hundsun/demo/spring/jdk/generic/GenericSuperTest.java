@@ -21,8 +21,8 @@ public class GenericSuperTest {
     public <S> void doProcess(DataTransferReq<S> transferReq) {
         singleDataProcess(
                 transferReq,
-                this.<S, Object, DataTransfer<S, Object>>getSingleRefreshProcess(),
-                this.<S, Object, DataTransfer<S, Object>>getSingleRefreshPushMsgProcess());
+                this.getSingleRefreshProcess(),
+                this.getSingleRefreshPushMsgProcess());
     }
 
     public <S, T, D extends DataTransfer<S, ? super T>> Function<DataTransferReq<S>, D> getSingleRefreshProcess() {

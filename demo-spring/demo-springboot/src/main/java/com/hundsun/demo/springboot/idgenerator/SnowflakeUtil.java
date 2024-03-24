@@ -18,9 +18,9 @@ import org.springframework.stereotype.Component;
 public class SnowflakeUtil {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private long workerId = 0;//为终端ID
-    private long dataCenterId = 1;//数据中心ID
-    private Snowflake snowflake = IdUtil.createSnowflake(workerId, dataCenterId);
+    private final long workerId = 0;//为终端ID
+    private final long dataCenterId = 1;//数据中心ID
+    private final Snowflake snowflake = IdUtil.createSnowflake(workerId, dataCenterId);
 
     // @PostConstruct
     // public void init() {

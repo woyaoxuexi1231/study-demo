@@ -1,7 +1,6 @@
 package com.hundsun.demo.spring.mybatis;
 
 import com.hundsun.demo.spring.db.dynamicdb.DynamicDataSourceType;
-import com.hundsun.demo.spring.mybatis.MyBatisOperationType;
 import org.springframework.context.ApplicationEvent;
 
 /**

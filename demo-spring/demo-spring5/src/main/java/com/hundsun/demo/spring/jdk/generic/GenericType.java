@@ -54,7 +54,7 @@ public class GenericExample<T> {
 
     public static void main(String[] args) {
         List<String> stringList = new ArrayList<>();
-        String s = new String();
+        String s = "";
         MyClass<String, Integer> myClass = new MyClass<>();
         System.out.println(stringList.getClass().getTypeParameters());
         System.out.println(s.getClass().getTypeParameters());

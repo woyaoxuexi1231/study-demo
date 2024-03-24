@@ -1,7 +1,7 @@
 package com.hundsun.demo.springboot.dynamicdb;
 
-import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import com.hundsun.demo.commom.core.model.EmployeeDO;
+import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 
 import java.util.List;
 import java.util.concurrent.Semaphore;

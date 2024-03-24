@@ -175,14 +175,13 @@ public class SecurityFilter implements GlobalFilter, Ordered {
         }
 
         query.append("req2").append("=").append(2);
-        ;
 
         try {
             URI newUri = UriComponentsBuilder.fromUri(uri).replaceQuery(query.toString()).build().encode().toUri();
             ServerHttpRequest request = exchange.getRequest().mutate().uri(newUri).build();
             return chain.filter(exchange.mutate().request(request).build());
         } catch (Exception e) {
-            log.error("Invalid URI query: " + query.toString(), e);
+            log.error("Invalid URI query: " + query, e);
             // 当前过滤器filter执行结束
             return chain.filter(exchange.mutate().request(builder.build()).build());
         }

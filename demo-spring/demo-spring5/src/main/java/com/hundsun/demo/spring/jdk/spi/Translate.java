@@ -25,5 +25,5 @@ public interface Translate {
     /**
      * SPI接口对外提供的方法, 以供服务调用方实现该方法, 这里模拟一个翻译场景
      */
-    public void translate();
+    void translate();
 }

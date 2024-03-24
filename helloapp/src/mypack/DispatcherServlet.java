@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class DispatcherServlet extends GenericServlet {
 
-    private String target = "/hello.jsp";
+    private final String target = "/hello.jsp";
 
     /**
      * 响应客户请求

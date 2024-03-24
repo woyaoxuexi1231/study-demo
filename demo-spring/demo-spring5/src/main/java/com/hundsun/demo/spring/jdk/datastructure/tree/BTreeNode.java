@@ -45,27 +45,27 @@ public class BTreeNode<T> {
     /**
      * 关键字个数
      */
-    private int keyNum;
+    private final int keyNum;
 
     /**
      * 是否为树叶
      */
-    private boolean isLeaf;
+    private final boolean isLeaf;
 
     /**
      * 关键字数组
      */
-    private T[] key;
+    private final T[] key;
 
     /**
      * 子树指针数组
      */
-    private BTreeNode<T>[] child;
+    private final BTreeNode<T>[] child;
 
     /**
      * 双亲结点指针
      */
-    private BTreeNode<T> parent;
+    private final BTreeNode<T> parent;
 
     public BTreeNode(int m) {
         keyNum = 0;

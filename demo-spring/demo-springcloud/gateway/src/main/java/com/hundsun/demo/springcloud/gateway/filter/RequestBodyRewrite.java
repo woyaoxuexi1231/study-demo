@@ -12,7 +12,7 @@ import java.util.Map;
 @Slf4j
 public class RequestBodyRewrite implements RewriteFunction<String, String> {
 
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     public RequestBodyRewrite(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;

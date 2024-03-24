@@ -35,7 +35,7 @@ public class DynamicDataSourceRegister implements ImportBeanDefinitionRegistrar,
     /**
      * 所有的数据源
      */
-    private Map<String, DataSource> dataSourceMap = new ConcurrentHashMap<>();
+    private final Map<String, DataSource> dataSourceMap = new ConcurrentHashMap<>();
 
     /**
      * 默认的数据源

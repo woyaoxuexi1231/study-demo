@@ -3,11 +3,11 @@
     <el-button @click="startProgress">点击发送</el-button>
 
     <el-popover
-        placement="bottom"
-        title="标题"
-        width="200"
-        trigger="click"
-        content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+      placement="bottom"
+      title="标题"
+      width="200"
+      trigger="click"
+      content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
       <el-button slot="reference">click 激活</el-button>
     </el-popover>
 
@@ -71,19 +71,19 @@ export default {
 
       // 使用 axios 发送 GET 请求
       this.$axios.get('/api/rabbit/sentSampleMsg')
-          .then(response => {
-            // 请求成功时的处理
-            console.log('响应数据:', response.data);
-            // 请求成功，设置百分比为 100%
-            this.progressValue = 100;
-          })
-          .catch(error => {
-            // 请求失败时的处理
-            console.error('请求失败:', error);
-            // 请求失败，设置百分比为 50%，并显示失败状态
-            this.progressValue = 50;
-            this.progressStatus = 'exception';
-          });
+        .then(response => {
+          // 请求成功时的处理
+          console.log('响应数据:', response.data);
+          // 请求成功，设置百分比为 100%
+          this.progressValue = 100;
+        })
+        .catch(error => {
+          // 请求失败时的处理
+          console.error('请求失败:', error);
+          // 请求失败，设置百分比为 50%，并显示失败状态
+          this.progressValue = 50;
+          this.progressStatus = 'exception';
+        });
     },
   },
 }
