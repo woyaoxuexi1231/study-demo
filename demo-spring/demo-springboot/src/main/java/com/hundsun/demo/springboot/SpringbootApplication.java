@@ -53,9 +53,12 @@ Spring Boot 读取配置文件的顺序如下：
      * 4. 启动 Tomcat: 在创建WebServer的过程中, Spring Boot 会根据你的 classpath 和你定义的配置来决定使用哪种 Servlet 容器(默认是Tomcat), 然后实例化这个容器, 并将其封装在一个 WebServer 接口的实现类中。
      * 总的来说, Spring Boot内嵌 Tomcat 的过程实际上并不复杂, 就是在刷新 Spring 上下文的过程中将 Tomcat容器启动起来, 并且将当前应用绑定到一个 Context, 然后添加了 Host。
      */
+
+    public static ApplicationContext applicationContext;
+
     public static void main(String[] args) {
         // System.setProperty("cglib.debugLocation","C:\\Project\\study-demo\\demo-spring\\demo-springboot\\target\\classes");
-        ApplicationContext applicationContext = SpringApplication.run(SpringbootApplication.class);
+        applicationContext = SpringApplication.run(SpringbootApplication.class);
         log.info("启动完成");
     }
 }
