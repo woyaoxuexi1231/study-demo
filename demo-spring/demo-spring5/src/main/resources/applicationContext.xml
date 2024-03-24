@@ -19,6 +19,12 @@
     <bean class="com.hundsun.demo.spring.init.processor.IgnoreBeanFactoryPostProcessor"/>
     <bean class="com.hundsun.demo.spring.init.processor.IgnoreBean"/>
 
+    <!-- BeanPostProcessor -->
+    <!-- <bean class="com.hundsun.demo.spring.init.processor.CustomBeanPostProcessor"/> -->
+    <!-- <bean class="com.hundsun.demo.spring.init.processor.PrintMergedBeanDefinitionPostProcessor"/> -->
+    <!-- <bean class="com.hundsun.demo.spring.init.processor.PrintInstantiationAwareBeanPostProcessor"/> -->
+    <!-- <bean class="com.hundsun.demo.spring.init.processor.PrintSmartInstantiationAwareBeanPostProcessor"/> -->
+
     <!-- 当注入MySQLService的实现类的时候,全部改成注入MySQLServiceProxy而不是MySQLServiceImpl -->
     <bean class="com.hundsun.demo.spring.init.processor.ResolvableDependencyPostProcessor"/>
     <bean name="mySQLServiceImpl" class="com.hundsun.demo.spring.jdk.pattern.structural.proxy.MySQLServiceImpl"/>
@@ -40,6 +46,7 @@
     </bean>
     <bean name="circleBean" class="com.hundsun.demo.spring.init.circle.CircleBean">
         <property name="circleBean" ref="circleBean"/>
+        <property name="name" value="first"/>
     </bean>
 
     <!-- ##################################################################################### -->
@@ -62,21 +69,21 @@
     <!-- ##################################################################################### -->
     <!-- 先定义三套数据库 -->
     <bean id="masterDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
         <property name="url"
                   value="jdbc:mysql://192.168.80.128:3306/yiibaidb?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>
         <property name="username" value="root"/>
         <property name="password" value="123456"/>
     </bean>
     <bean id="secondDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
         <property name="url"
                   value="jdbc:mysql://192.168.80.128:3306/yiibaidb?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>
         <property name="username" value="root"/>
         <property name="password" value="123456"/>
     </bean>
     <bean id="thirdDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
         <property name="url"
                   value="jdbc:mysql://192.168.80.128:3306/yiibaidb?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>
         <property name="username" value="root"/>

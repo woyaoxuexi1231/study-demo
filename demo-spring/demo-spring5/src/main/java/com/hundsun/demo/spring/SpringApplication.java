@@ -2,6 +2,7 @@ package com.hundsun.demo.spring;
 
 import com.hundsun.demo.spring.db.dynamicdb.DynamicDataSourceType;
 import com.hundsun.demo.spring.db.dynamicdb.MultipleDataSourceTestEvent;
+import com.hundsun.demo.spring.init.circle.CircleBean;
 import com.hundsun.demo.spring.mybatis.MybatisEvent;
 import com.hundsun.demo.spring.init.listener.SimpleEvent;
 import com.hundsun.demo.spring.mybatis.MyBatisOperationType;
@@ -39,9 +40,12 @@ public class SpringApplication {
         // 创建容器,以读取配置文件的方式开启容器
         applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml", "simple.xml");
 
-        springListener();
+        // springListener();
         // dynamicDB();
-        mybatisDynamicDB();
+        // mybatisDynamicDB();
+
+        CircleBean bean = applicationContext.getBean(CircleBean.class);
+        System.out.println(bean.getName());
 
         // 销毁容器
         ((AbstractApplicationContext) applicationContext).close();

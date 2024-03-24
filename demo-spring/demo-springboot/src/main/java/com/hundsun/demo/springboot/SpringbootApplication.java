@@ -28,7 +28,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 @Slf4j
 // @ServletComponentScan
 @EnableScheduling
-public class SpringbootDemoApplication {
+public class SpringbootApplication {
 
 /*
 Spring Boot 读取配置文件的顺序如下：
@@ -55,7 +55,7 @@ Spring Boot 读取配置文件的顺序如下：
      */
     public static void main(String[] args) {
         // System.setProperty("cglib.debugLocation","C:\\Project\\study-demo\\demo-spring\\demo-springboot\\target\\classes");
-        ApplicationContext applicationContext = SpringApplication.run(SpringbootDemoApplication.class);
+        ApplicationContext applicationContext = SpringApplication.run(SpringbootApplication.class);
         log.info("启动完成");
     }
 }

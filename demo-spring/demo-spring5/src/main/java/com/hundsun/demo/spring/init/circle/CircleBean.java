@@ -1,6 +1,9 @@
 package com.hundsun.demo.spring.init.circle;
 
 import lombok.Data;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 /**
  * @projectName: study-demo
@@ -12,10 +15,17 @@ import lombok.Data;
  */
 
 @Data
-public class CircleBean {
+public class CircleBean implements ApplicationContextAware {
 
     /**
      * 自己注入自己
      */
-    private CircleBean circleBean;
+    private ApplicationContextAware circleBean;
+
+    private String name;
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+
+    }
 }
