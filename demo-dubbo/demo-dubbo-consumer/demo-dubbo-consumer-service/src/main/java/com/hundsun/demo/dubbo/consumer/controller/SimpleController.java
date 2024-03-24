@@ -4,11 +4,7 @@ import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import com.hundsun.demo.dubbo.provider.api.service.ProviderService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.rpc.cluster.loadbalance.ConsistentHashLoadBalance;
-import org.apache.dubbo.rpc.cluster.loadbalance.LeastActiveLoadBalance;
-import org.apache.dubbo.rpc.cluster.loadbalance.RandomLoadBalance;
 import org.apache.dubbo.rpc.cluster.loadbalance.RoundRobinLoadBalance;
-import org.apache.dubbo.rpc.cluster.loadbalance.ShortestResponseLoadBalance;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,11 +36,12 @@ public class SimpleController {
      */
     @DubboReference(
             check = false, // 不检查提供者是否可用
-            loadbalance = ConsistentHashLoadBalance.NAME, // 负载均衡策略
+            loadbalance = RoundRobinLoadBalance.NAME, // 负载均衡策略
             // cluster = "forking", // 集群策略
             mock = "true", // 实现服务降级,当服务不可用(服务可以但是不报错,这个mock配置是不会生效的)时,会自动进行本地服务降级
-            // group = "*", // *代表所有,但是匹配不了空串 dubbo 2.7.8 todo 为什么这个会影响负载均衡策略呢
-            // version = "*", // *代表所有,但是匹配不了空串 dubbo 2.7.8 todo 为什么这个会影响负载均衡策略呢
+            // 分组和版本的*配置,会影响负载均衡,但是不清楚原因 TODO 2024年3月24日
+            // group = "*", // *代表匹配所有
+            // version = "*",
             // merger = "true",
             timeout = 30000 // 服务调用超时,0则不触发超时报错
     )
@@ -64,7 +61,7 @@ public class SimpleController {
     public ResultDTO<?> simpleRpcInvoke() {
         int p1 = 0;
         int p2 = 0;
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10; i++) {
             String s = providerService.RpcInvoke();
             if (s.contains("10290")) {
                 p1++;
