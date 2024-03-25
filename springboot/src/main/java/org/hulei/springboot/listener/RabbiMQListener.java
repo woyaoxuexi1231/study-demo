@@ -197,8 +197,8 @@ public class RabbiMQListener {
             value = @Queue(
                     name = MQConfig.TOPIC_SLAVE_QUEUE,
                     durable = "true",
-                    autoDelete = "false"
-                    // arguments = {@Argument(name = "x-dead-letter-exchange", value = MQConfig.DEAD_EXCHANGE_NAME)}),
+                    autoDelete = "false",
+                    arguments = {@Argument(name = "x-dead-letter-exchange", value = MQConfig.DEAD_EXCHANGE_NAME)}
             ),
             exchange = @Exchange(
                     value = MQConfig.TOPIC_EXCHANGE_NAME,
