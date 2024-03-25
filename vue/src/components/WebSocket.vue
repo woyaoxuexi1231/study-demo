@@ -8,6 +8,9 @@
     <div v-for="message in messages">
       <p>{{ message.body }}</p>
     </div>
+    <div>
+      <p>{{ $route.params.message }}</p>
+    </div>
   </div>
 </template>
 
