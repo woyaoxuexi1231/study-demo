@@ -2,7 +2,8 @@ package com.hundsun.demo.spring;
 
 import com.hundsun.demo.spring.db.dynamicdb.DynamicDataSourceType;
 import com.hundsun.demo.spring.db.dynamicdb.MultipleDataSourceTestEvent;
-import com.hundsun.demo.spring.init.circle.CircleBean;
+import com.hundsun.demo.spring.db.springdao.UserDAOImpl;
+import com.hundsun.demo.spring.db.springdao.UserDAOJdbcTemplateImpl;
 import com.hundsun.demo.spring.init.listener.SimpleEvent;
 import com.hundsun.demo.spring.mybatis.MyBatisOperationType;
 import com.hundsun.demo.spring.mybatis.MybatisEvent;
@@ -43,9 +44,7 @@ public class SpringApplication {
         // springListener();
         // dynamicDB();
         // mybatisDynamicDB();
-
-        CircleBean bean = applicationContext.getBean(CircleBean.class);
-        System.out.println(bean.getName());
+        springDao();
 
         // 销毁容器
         ((AbstractApplicationContext) applicationContext).close();
@@ -76,4 +75,10 @@ public class SpringApplication {
         }
     }
 
+    private static void springDao() {
+        UserDAOImpl bean = applicationContext.getBean(UserDAOImpl.class);
+        UserDAOJdbcTemplateImpl template = applicationContext.getBean(UserDAOJdbcTemplateImpl.class);
+        log.info("{}", bean.findAll());
+        log.info("{}", template.findAll());
+    }
 }

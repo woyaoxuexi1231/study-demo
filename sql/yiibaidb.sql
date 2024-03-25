@@ -8401,3 +8401,37 @@ create table sequence
     constraint sequence_uindex
         unique (`key`)
 );
+
+CREATE TABLE users
+(
+    id   INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+INSERT INTO users (name)
+VALUES ('Alice'),
+       ('Bob'),
+       ('Charlie'),
+       ('David'),
+       ('Emma'),
+       ('Frank'),
+       ('Grace'),
+       ('Hannah'),
+       ('Isaac'),
+       ('Jack'),
+       ('Kate'),
+       ('Liam'),
+       ('Mia'),
+       ('Nathan'),
+       ('Olivia'),
+       ('Peter'),
+       ('Quinn'),
+       ('Rachel'),
+       ('Sam'),
+       ('Tina'),
+       ('Ursula'),
+       ('Victor'),
+       ('Wendy'),
+       ('Xavier'),
+       ('Yvonne'),
+       ('Zach');
