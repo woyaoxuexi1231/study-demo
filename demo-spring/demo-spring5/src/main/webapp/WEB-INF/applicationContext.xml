@@ -242,25 +242,6 @@
     <!-- ##################################################################################### -->
     <!-- 开启注解驱动 -->
     <!-- <context:annotation-config/> -->
-
-    <!-- Hibernate SessionFactory 配置 -->
-    <bean id="hibernateSessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
-                <!-- 其他 Hibernate 相关配置 -->
-            </props>
-        </property>
-    </bean>
-    <!-- 配置 Hibernate 的事务管理器 -->
-    <bean id="hibernateTransactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
-        <property name="sessionFactory" ref="hibernateSessionFactory"/>
-    </bean>
-    <bean class="org.springframework.orm.hibernate5.HibernateTemplate">
-        <constructor-arg name="sessionFactory" ref="hibernateSessionFactory"/>
-    </bean>
-
     <!-- 配置 UserDAO Bean -->
     <bean id="userDAO" class="com.hundsun.demo.spring.mvc.springdao.UserDAOImpl">
         <constructor-arg ref="dataSource"/>
@@ -269,14 +250,30 @@
         <constructor-arg ref="dataSource"/>
     </bean>
 
-    <!-- 配置事务代理 -->
-    <bean id="userDAO" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-        <property name="transactionManager" ref="transactionManager"/>
-        <property name="target">
-            <bean class="com.hundsun.demo.spring.mvc.springdao.UserDAOImpl">
-                <property name="hibernateTemplate" ref="hibernateTemplate"/>
-            </bean>
+    <!-- ##################################################################################### -->
+    <!-- ##################################### Hibernate ##################################### -->
+    <!-- ##################################################################################### -->
+    <!-- Hibernate SessionFactory 配置 -->
+    <bean id="hibernateSessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan" value="com.hundsun.demo.commom.core.model"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <!-- 设置 FlushMode 为 MANUAL -->
+                <prop key="hibernate.flushMode">MANUAL</prop>
+            </props>
         </property>
+    </bean>
+    <!-- 配置 Hibernate 的事务管理器 -->
+    <bean id="hibernateTransactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    </bean>
+    <!-- 配置事务代理 -->
+    <bean id="userDAOHibernate" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager" ref="hibernateTransactionManager"/>
+        <property name="target" ref="userDAOHibernateTarget"/>
         <property name="transactionAttributes">
             <props>
                 <!-- 设置事务属性，这里是设置所有方法都是读写事务 -->
@@ -284,6 +281,8 @@
             </props>
         </property>
     </bean>
-
+    <bean class="org.springframework.orm.hibernate5.HibernateTemplate">
+        <constructor-arg name="sessionFactory" ref="hibernateSessionFactory"/>
+    </bean>
 
 </beans>

@@ -18,6 +18,12 @@
 </p>
 
 <p>
+<%--    <jsp:forward page="/WEB-INF/jsp/userList.jsp"/>--%>
+<%--    <c:redirect url="/w"/>--%>
+    <a href="${pageContext.request.contextPath}/users/list">Go to User List</a>
+</p>
+
+<p>
     <%--javascript:void(0) 是一个 JavaScript 伪协议,作用是在点击链接时执行一段 JavaScript 代码，并防止浏览器执行默认的跳转行为。--%>
     <%--<a href="javascript:void(0)" id="returnJson" onclick="getSimpleJson()">点我</a>--%>
     <button onclick="getSimpleJson()">点击发送一个post请求,并得到一个字符串结果</button>

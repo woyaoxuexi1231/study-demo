@@ -29,11 +29,32 @@
     后续可以使用 org.springframework.web.context.support.WebApplicationContextUtils 来获取我们绑定的 WebApplicationContext
     WebApplicationContextUtils.getWebApplicationContext(getServletContext());
     在 XmlWebApplicationContext 配置了默认文件
+    AbstractRefreshableWebApplicationContext有两个子类 1.XmlWebApplicationContext 2.AnnotationConfigWebApplicationContext
     -->
     <!-- 监听事件, 在Servlet容器启动或者销毁Web应用的时候会触发 -->
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+
+    <!-- 配置XmlWebApplicationContext以及指定配置文件路径 -->
+    <!-- <context-param> -->
+    <!--     <param-name>contextClass</param-name> -->
+    <!--     <param-value>org.springframework.web.context.support.XmlWebApplicationContext</param-value> -->
+    <!-- </context-param> -->
+    <!-- <context-param> -->
+    <!--     <param-name>contextConfigLocation</param-name> -->
+    <!--     <param-value>/WEB-INF/applicationContext1.xml</param-value> -->
+    <!-- </context-param> -->
+
+    <!-- 配置AnnotationConfigWebApplicationContext以及配置文件路径 -->
+    <!-- <context-param> -->
+    <!--     <param-name>contextClass</param-name> -->
+    <!--     <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value> -->
+    <!-- </context-param> -->
+    <!-- <context-param> -->
+    <!--     <param-name>contextConfigLocation</param-name> -->
+    <!--     <param-value>com.hundsun.demo.spring.mvc.AppConfig</param-value> -->
+    <!-- </context-param> -->
 
     <!-- 为 Servlet 类定义名字 -->
     <servlet>
@@ -60,5 +81,14 @@
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
+
+
+    <!-- Other configurations -->
+    <!-- <jsp-config> -->
+    <!--     <taglib> -->
+    <!--         <taglib-uri>http://java.sun.com/jsp/jstl/core</taglib-uri> -->
+    <!--         <taglib-location>/WEB-INF/lib/jstl-1.2.jar</taglib-location> -->
+    <!--     </taglib> -->
+    <!-- </jsp-config> -->
 
 </web-app>
