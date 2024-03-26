@@ -1,6 +1,10 @@
 package com.hundsun.demo.spring.mvc.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hundsun.demo.spring.mvc.springdao.UserDAOHibernate;
+import com.hundsun.demo.spring.mvc.springdao.UserDAOImpl;
+import com.hundsun.demo.spring.mvc.springdao.UserDAOJdbcTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,6 +25,15 @@ import java.util.Map;
 @Controller
 public class ComponentController {
 
+    @Autowired
+    UserDAOImpl userDAO;
+
+    @Autowired
+    UserDAOJdbcTemplate userDAOJdbcTemplate;
+
+    @Autowired
+    UserDAOHibernate userDAOHibernate;
+
     @RequestMapping("/mvc")
     public ModelAndView mvc(String name) {
         ModelAndView mv = new ModelAndView();
@@ -33,8 +46,13 @@ public class ComponentController {
     @RequestMapping(value = "/simpleJS")
     @ResponseBody
     public String simpleJS() {
+
         Map<String, String> map = new HashMap<>();
         map.put("hello", ", world");
+        map.put("userdao", userDAO.findAll().toString());
+        map.put("userDAOJdbcTemplate", userDAOJdbcTemplate.findAll().toString());
+        map.put("userDAOHibernate", userDAOJdbcTemplate.findAll().toString());
+
         return JSONObject.toJSONString(map);
     }
 }

@@ -22,6 +22,7 @@
     <%--<a href="javascript:void(0)" id="returnJson" onclick="getSimpleJson()">点我</a>--%>
     <button onclick="getSimpleJson()">点击发送一个post请求,并得到一个字符串结果</button>
 </p>
+<div id="result"></div>
 <script type="text/javascript">
     function getSimpleJson() {
         // 如果您的应用部署在 http://localhost:8080/myapp/，那么 pageContext.request.contextPath 将返回 /myapp
@@ -29,6 +30,9 @@
         var args = {};
         $.post(url, args, function (data) {
             console.log(data);
+            var response = JSON.parse(data);
+            var formattedResponse = JSON.stringify(response, null, 2); // 格式化JSON
+            document.getElementById('result').innerHTML = '<pre>' + formattedResponse + '</pre>'; // 在<pre>标签中显示格式化后的JSON
         })
     }
 </script>

@@ -1,4 +1,4 @@
-package com.hundsun.demo.spring.db.springdao;
+package com.hundsun.demo.spring.mvc.springdao;
 
 
 import com.hundsun.demo.commom.core.model.User;
@@ -12,12 +12,12 @@ import java.util.List;
  * @since 2024/3/26 0:58
  */
 
-public class UserDAOJdbcTemplateImpl implements UserDAO {
+public class UserDAOJdbcTemplate implements UserDAO {
 
     private JdbcTemplate jdbcTemplate;
 
     // 通过构造函数注入 JdbcTemplate
-    public UserDAOJdbcTemplateImpl(DataSource dataSource) {
+    public UserDAOJdbcTemplate(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 

@@ -255,6 +255,8 @@ public class Collection {
         // asList.add(2); //这里会直接抛出异常 java.lang.UnsupportedOperationException
         log.info("asList: {}", asList);
 
+        Arrays.sort(new int[]{1, 2});
+
         testCopyOnWriteArrayList();
     }
 }

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello WebSocket</title>
+    <script src="./js/sockjs.min.js"></script>
+    <script src="./js/stomp.js"></script>
+</head>
+<body>
+<div>
+    <button onclick="connect()">Connect</button>
+    <button onclick="disconnect()">Disconnect</button>
+    <button onclick="sendMessage()">Send Message</button>
+</div>
+<div id="response"></div>
+
+<script type="text/javascript">
+    var stompClient = null;
+
+    function connect() {
+        var socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function(frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/topic/greetings', function(greeting){
+                showGreeting(JSON.parse(greeting.body).content);
+            });
+        });
+    }
+
+    function disconnect() {
+        if (stompClient !== null) {
+            stompClient.disconnect();
+        }
+        console.log("Disconnected");
+    }
+
+    function sendMessage() {
+        stompClient.send("/app/hello", {}, JSON.stringify({'name': 'World'}));
+    }
+
+    function showGreeting(message) {
+        var response = document.getElementById('response');
+        response.innerHTML = message;
+    }
+</script>
+</body>
+</html>

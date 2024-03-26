@@ -1,4 +1,4 @@
-package com.hundsun.demo.spring.db.springdao;
+package com.hundsun.demo.spring.mvc.springdao;
 
 import com.hundsun.demo.commom.core.model.User;
 

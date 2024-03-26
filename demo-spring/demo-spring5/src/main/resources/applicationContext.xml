@@ -233,10 +233,10 @@
     <!-- ##################################### SpringDAO ##################################### -->
     <!-- ##################################################################################### -->
     <!-- 配置 UserDAO Bean -->
-    <bean id="userDAO" class="com.hundsun.demo.spring.db.springdao.UserDAOImpl">
+    <bean id="userDAO" class="com.hundsun.demo.spring.mvc.springdao.UserDAOImpl">
         <constructor-arg ref="dataSource"/>
     </bean>
-    <bean id="userTemplateDAO" class="com.hundsun.demo.spring.db.springdao.UserDAOJdbcTemplateImpl">
+    <bean id="userTemplateDAO" class="com.hundsun.demo.spring.mvc.springdao.UserDAOJdbcTemplate">
         <constructor-arg ref="dataSource"/>
     </bean>
 

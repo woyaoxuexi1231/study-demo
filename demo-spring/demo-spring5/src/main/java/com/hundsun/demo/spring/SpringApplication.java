@@ -2,8 +2,8 @@ package com.hundsun.demo.spring;
 
 import com.hundsun.demo.spring.db.dynamicdb.DynamicDataSourceType;
 import com.hundsun.demo.spring.db.dynamicdb.MultipleDataSourceTestEvent;
-import com.hundsun.demo.spring.db.springdao.UserDAOImpl;
-import com.hundsun.demo.spring.db.springdao.UserDAOJdbcTemplateImpl;
+import com.hundsun.demo.spring.mvc.springdao.UserDAOImpl;
+import com.hundsun.demo.spring.mvc.springdao.UserDAOJdbcTemplate;
 import com.hundsun.demo.spring.init.listener.SimpleEvent;
 import com.hundsun.demo.spring.mybatis.MyBatisOperationType;
 import com.hundsun.demo.spring.mybatis.MybatisEvent;
@@ -77,7 +77,7 @@ public class SpringApplication {
 
     private static void springDao() {
         UserDAOImpl bean = applicationContext.getBean(UserDAOImpl.class);
-        UserDAOJdbcTemplateImpl template = applicationContext.getBean(UserDAOJdbcTemplateImpl.class);
+        UserDAOJdbcTemplate template = applicationContext.getBean(UserDAOJdbcTemplate.class);
         log.info("{}", bean.findAll());
         log.info("{}", template.findAll());
     }

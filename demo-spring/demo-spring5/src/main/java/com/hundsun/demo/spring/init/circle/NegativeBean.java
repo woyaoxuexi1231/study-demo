@@ -1,6 +1,8 @@
 package com.hundsun.demo.spring.init.circle;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @projectName: study-demo
@@ -11,19 +13,12 @@ import lombok.Data;
  * @createDate: 2023/2/8 0:34
  */
 
-@Data
+@Setter
+@Getter
 public class NegativeBean {
 
     /**
      * NegativeBean 依赖于 positiveBean
      */
     private PositiveBean positiveBean;
-
-    // public NegativeBean(PositiveBean positiveBean) {
-    //     this.positiveBean = positiveBean;
-    // }
-
-    public void setPositiveBean(PositiveBean positiveBean) {
-        this.positiveBean = positiveBean;
-    }
 }
