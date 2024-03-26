@@ -1,6 +1,7 @@
 package com.hundsun.demo.spring.mvc.springdao;
 
 import com.hundsun.demo.commom.core.model.User;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Repository;
@@ -19,6 +20,14 @@ public class UserDAOHibernate implements UserDAO {
 
     @Autowired
     private HibernateTemplate hibernateTemplate;
+
+    private SessionFactory sessionFactory;
+
+    @Autowired
+    public void init(SessionFactory sessionFactory) {
+        // sessionFactory.getProperties().
+        this.sessionFactory = sessionFactory;
+    }
 
     // @Override
     @Transactional
@@ -42,6 +51,7 @@ public class UserDAOHibernate implements UserDAO {
     // @Override
     @Transactional
     public void update(User user) {
+        // hibernateTemplate.getSessionFactory().getCurrentSession().setHibernateFlushMode(FlushMode.COMMIT);
         // 这里发生了报错 Write operations are not allowed in read-only mode (FlushMode.MANUAL): Turn your Session into FlushMode.COMMIT/AUTO or remove 'readOnly' marker from transaction definition.
         hibernateTemplate.update(user);
     }

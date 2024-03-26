@@ -261,8 +261,8 @@
             <props>
                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
                 <prop key="hibernate.show_sql">true</prop>
-                <!-- 设置 FlushMode 为 MANUAL -->
-                <prop key="hibernate.flushMode">MANUAL</prop>
+                <!-- <prop key=""></prop> -->
+                <!-- <prop key="hibernate.session_factory.flush_mode">AUTO</prop> -->
             </props>
         </property>
     </bean>
