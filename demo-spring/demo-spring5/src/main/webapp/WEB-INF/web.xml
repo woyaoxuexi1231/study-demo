@@ -28,6 +28,7 @@
     加载的 WebApplicationContext 的默认配置文件路径为 /WEB-INF/applicationContext.xml
     后续可以使用 org.springframework.web.context.support.WebApplicationContextUtils 来获取我们绑定的 WebApplicationContext
     WebApplicationContextUtils.getWebApplicationContext(getServletContext());
+    在 XmlWebApplicationContext 配置了默认文件
     -->
     <!-- 监听事件, 在Servlet容器启动或者销毁Web应用的时候会触发 -->
     <listener>
