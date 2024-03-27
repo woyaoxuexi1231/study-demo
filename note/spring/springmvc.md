@@ -1,3 +1,5 @@
+### springmvc框架简介
+
 Spring MVC 是 Spring 框架的一个 Web 开发框架，用于构建 Web 应用程序和 RESTful 服务。它采用了经典的 MVC（模型-视图-控制器）设计模式，将一个 Web
 应用程序分成三个核心部分：模型（Model）、视图（View）和控制器（Controller），以提高代码的模块化程度、可维护性和可测试性。
 下面是 Spring MVC 的三个核心组件及其作用的简要介绍：
@@ -10,6 +12,8 @@ Spring MVC 是 Spring 框架的一个 Web 开发框架，用于构建 Web 应用
 3. **控制器（Controller）**：
    控制器负责处理用户请求，并协调模型和视图之间的交互。在 Spring MVC 中，控制器通常是一个带有 `@Controller` 注解的 Java 类，它使用 `@RequestMapping` 注解来映射请求 URL
    和请求方法。控制器接收用户请求后，会调用适当的业务逻辑处理方法，然后将模型数据传递给视图进行呈现。
+
+### springmvc的各个模块介绍
 
 Spring MVC 框架提供了一套灵活的处理器映射机制、视图解析机制和异常处理机制，使得开发者能够更加方便地构建 Web 应用程序。它还提供了丰富的标签库和注解，用于简化表单处理、数据绑定、数据验证等操作。另外，Spring MVC 框架还支持 RESTful 风格的 Web
 服务开发，通过 `@RestController` 注解可以很方便地创建 RESTful 服务。总的来说，Spring MVC 是一个功能强大、灵活性高、易于使用的 Web 开发框架，广泛应用于构建各种类型的 Web 应用程序和 RESTful 服务。
@@ -157,3 +161,28 @@ Spring MVC 框架提供了一套灵活的处理器映射机制、视图解析机
 
 通过合适配置 ViewResolver，开发者可以根据项目的需求将逻辑视图名称映射到各种类型的实际视图对象上，从而实现灵活、可定制的视图解析策略。
 
+### springmvc的工作原理
+
+Spring MVC 是 Spring Framework 中用于构建 Web 应用程序的一个模块，其工作原理如下：
+
+1. **请求的到达：** 当客户端发起 HTTP 请求时，请求首先到达 Servlet 容器（如 Tomcat、Jetty），Servlet 容器根据部署描述符（web.xml）中的配置，将请求交给 Spring 的 DispatcherServlet。
+
+2. **DispatcherServlet 的拦截：** DispatcherServlet 是 Spring MVC 的核心控制器，它拦截所有的请求，并将它们分发到不同的处理器（Handler）上进行处理。DispatcherServlet
+   根据配置文件中的配置和注解扫描，将请求分发给相应的控制器（Controller）。
+
+3. **处理器映射器（Handler Mapping）的使用：** DispatcherServlet 使用 Handler Mapping 将请求映射到对应的处理器（Controller）。Handler Mapping 根据请求的 URL 和 Handler Mapping
+   的配置，确定哪个控制器将处理该请求。
+
+4. **控制器的调用：** 一旦确定了要处理请求的控制器，DispatcherServlet 就会调用相应的控制器方法来处理请求。控制器方法负责执行业务逻辑，处理请求，并返回相应的数据模型或视图名称。
+
+5. **处理器适配器（Handler Adapter）的使用：** 在调用控制器方法之前，DispatcherServlet 使用 Handler Adapter 将请求和控制器方法进行适配。Handler Adapter 将控制器方法的参数绑定到请求的数据，并执行控制器方法。
+
+6. **处理器执行：** 控制器方法执行业务逻辑，处理请求。它可以调用业务逻辑层（Service）进行处理，并将结果存储在模型对象中。
+
+7. **视图解析：** 控制器方法执行完毕后，DispatcherServlet 将模型对象传递给视图解析器（View Resolver）。视图解析器根据控制器返回的视图名称解析出实际的视图对象。
+
+8. **视图渲染：** 视图解析器解析出实际的视图对象后，DispatcherServlet 将模型对象传递给视图对象，并请求视图对象渲染响应。视图对象将模型数据填充到视图中，生成最终的 HTML、JSON 或其他响应内容。
+
+9. **响应的返回：** 渲染完成后，DispatcherServlet 将响应返回给客户端，完成请求-响应周期。
+
+这是 Spring MVC 的基本工作原理。通过使用 DispatcherServlet、Handler Mapping、Handler Adapter、控制器和视图解析器等组件，Spring MVC 提供了一个灵活而强大的框架，用于构建各种类型的 Web 应用程序。

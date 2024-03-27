@@ -2,7 +2,7 @@
 
 首先定位: 开源的,轻量级的,企业应用开发框架  
 主要思想: DI(dependency inject 依赖注入)和AOP(面向切面编程)  
-主要功能: DI,AOP,事务管理,数据访问,web开发,控制反转
+主要功能: DI,AOP,事务管理,数据访问,web开发,控制反转(IoC Inversion of Control)
 
 ### 简要介绍一下spring各个模块
 
@@ -108,3 +108,98 @@ Spring 中懒加载的作用包括：
 
 懒加载在 Spring 中通过 `@Lazy` 注解来实现，可以在 Bean 的定义上使用该注解来指示 Spring 容器在需要时才加载该 Bean。
 这样，在应用程序运行过程中第一次使用 `MyLazyBean` 实例时，Spring 容器才会进行加载和实例化。
+
+### spring的单例bean是线程安全的吗?
+
+Spring框架中的单例bean并不是线程安全的¹²³⁴。Spring框架中的Bean默认是单例模式的，框架并没有对bean进行多线程的封装处理²⁴。
+
+实际上，大部分时间Bean是无状态的（比如Dao），所以在某种程度上来说Bean其实是安全的²⁴。但是，如果Bean是有状态的，那就需要开发人员自己来进行线程安全的保证²⁴。最简单的办法就是改变bean的作用域，把"singleton"
+改为“prototype”，这样每次请求Bean就相当于是新建一个Bean实例，这样就可以保证线程的安全了²⁴。
+
+然而，即使是加上`@Scope`注解也不一定能保证Controller 100%的线程安全²。所以是否线程安全在于怎样去定义变量以及Controller的配置²。
+
+### spring用到了哪些设计模式
+
+Spring 框架在其设计和实现中运用了多种设计模式，其中一些常见的设计模式包括但不限于：
+
+1. **工厂模式**：
+   Spring 使用工厂模式来创建和管理对象的生命周期。例如，BeanFactory 和 ApplicationContext 是 Spring 中常用的工厂类，它们负责创建和管理 bean 对象。
+
+2. **单例模式**：
+   Spring 中的 bean 默认是单例的，即每个 bean 在容器中只有一个实例。这样可以节省资源，并且保证了依赖注入时的一致性。
+
+3. **模板方法模式**：
+   Spring 的 JdbcTemplate 和 HibernateTemplate 等模板类使用了模板方法模式。例如，JdbcTemplate 提供了一系列执行数据库操作的方法，其中包括了模板方法 execute()，而具体的数据库操作在其中由回调方法来实现。
+
+4. **观察者模式**：
+   Spring 的事件（Event）机制使用了观察者模式。ApplicationContext 可以发布事件，而监听器（ApplicationListener）可以订阅这些事件，并在事件发生时做出相应的处理。
+
+5. **代理模式**：
+   Spring AOP 使用了代理模式来实现面向切面编程。在 Spring AOP 中，目标对象被代理对象包装，代理对象拦截目标对象的方法调用，并在方法执行前后执行额外的逻辑。
+
+下面以实际的例子说明 Spring 使用的设计模式：
+
+示例：工厂模式
+
+```java
+public interface Animal {
+    void makeSound();
+}
+
+public class Dog implements Animal {
+    @Override
+    public void makeSound() {
+        System.out.println("Woof");
+    }
+}
+
+public class Cat implements Animal {
+    @Override
+    public void makeSound() {
+        System.out.println("Meow");
+    }
+}
+
+public class AnimalFactory {
+    public Animal createAnimal(String type) {
+        if ("dog".equalsIgnoreCase(type)) {
+            return new Dog();
+        } else if ("cat".equalsIgnoreCase(type)) {
+            return new Cat();
+        }
+        return null;
+    }
+}
+```
+
+在上面的例子中，AnimalFactory 使用了工厂模式来根据类型创建不同的 Animal 对象。通过 AnimalFactory 可以动态地创建不同类型的 Animal 对象，而无需直接依赖具体的类实现。
+
+这些是 Spring 中常见的设计模式示例，Spring 在设计上充分利用了这些设计模式来提高代码的灵活性、可维护性和可扩展性。
+
+### IOC 容器对 Bean 的生命周期
+
+在 Spring 中，当一个 bean 被 IoC 容器创建并初始化之后，可能会涉及到以下几种方法的调用：
+
+1. **构造函数（Constructor）**：
+   首先，IoC 容器会调用 bean 类的构造函数来创建 bean 的实例。构造函数用于初始化 bean 实例的状态，并确保 bean 的一致性和正确性。构造函数的调用发生在 bean 实例化的阶段。
+
+2. **属性设置（Properties Setting）**：
+   在 bean 实例化后，IoC 容器会注入 bean 的属性值。这包括通过 setter 方法注入属性值，或者通过字段直接注入属性值（使用 `@Autowired` 或 `@Inject` 注解）。属性设置的调用发生在 bean 实例化之后，属性注入之前。
+
+3. **自定义初始化方法（Custom Initialization Method）**：
+   在属性设置完成之后，可以定义一个自定义的初始化方法，用于执行一些额外的初始化操作。这个初始化方法通常使用 `@PostConstruct` 注解标记，表示在属性注入完成后立即调用。在这个初始化方法中，可以执行一些与 bean 相关的初始化逻辑，例如数据加载、资源初始化等。
+
+4. **BeanPostProcessor 的前置处理（Before Initialization）**：
+   在调用自定义初始化方法之前，IoC 容器会调用所有注册的 BeanPostProcessor 的 `postProcessBeforeInitialization()` 方法。BeanPostProcessor 是 Spring 容器的扩展点，允许开发者在 bean
+   初始化前后做一些额外的处理。在 `postProcessBeforeInitialization()` 方法中，开发者可以对 bean 进行修改、增强或者验证等操作。
+
+5. **自定义初始化方法的调用**：
+   IoC 容器调用 bean 的自定义初始化方法，例如使用 `@PostConstruct` 注解标记的方法。在这个方法中，可以执行一些与 bean 相关的初始化逻辑。
+
+6. **BeanPostProcessor 的后置处理（After Initialization）**：
+   在调用自定义初始化方法之后，IoC 容器会再次调用所有注册的 BeanPostProcessor 的 `postProcessAfterInitialization()` 方法。在这个方法中，开发者可以对 bean 进行进一步的修改、增强或者验证等操作。
+
+7. **使用 bean**：
+   在初始化完成后，bean 就处于可用状态，可以被其他 bean 或者应用程序的其他部分使用。在应用程序运行期间，可以使用容器的获取方法获取 bean 实例，并使用它们提供的功能。
+
+在 bean 初始化的过程中，构造函数、属性设置、自定义初始化方法以及 BeanPostProcessor 的前置处理和后置处理等方法都可能被调用，以确保 bean 在初始化过程中的一致性和正确性。
