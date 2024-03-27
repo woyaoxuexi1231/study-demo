@@ -20,6 +20,8 @@
     <!-- ##################################### Spring 相关 #################################### -->
     <!-- ##################################################################################### -->
     <context:component-scan base-package="com.hundsun.demo.spring"/>
+
+    <bean class="com.hundsun.demo.spring.init.PrototypeBean" scope="prototype"/>
     <!-- spring相关的配置信息 -->
     <!-- BeanFactoryPostProcessor -->
     <!-- 配置如果实现IgnoreBean接口,那么这个bean的自动注入将不会生效 -->

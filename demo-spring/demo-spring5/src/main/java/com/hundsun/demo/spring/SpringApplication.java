@@ -8,6 +8,7 @@ import com.hundsun.demo.spring.db.dynamicdb.DynamicDataSourceType;
 import com.hundsun.demo.spring.db.dynamicdb.MultipleDataSourceTestEvent;
 import com.hundsun.demo.spring.db.transaction.AnnotationTransaction;
 import com.hundsun.demo.spring.db.transaction.AopTransaction;
+import com.hundsun.demo.spring.init.PrototypeBean;
 import com.hundsun.demo.spring.mvc.springdao.UserDAO;
 import com.hundsun.demo.spring.mvc.springdao.UserDAOImpl;
 import com.hundsun.demo.spring.mvc.springdao.UserDAOJdbcTemplate;
@@ -50,13 +51,15 @@ public class SpringApplication {
         // 创建容器,以读取配置文件的方式开启容器
         applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml", "simple.xml");
 
+        prototypeBean();
         // springListener();
         // dynamicDB();
         // mybatisDynamicDB();
         // springDao();
         // hibernate();
-        transaction();
+        // transaction();
         // springaop();
+
 
 
         // 销毁容器
@@ -130,5 +133,10 @@ public class SpringApplication {
         // for (User u : users) {
         //     System.out.println(u.getName());
         // }
+    }
+
+    private static void prototypeBean(){
+        System.out.println(applicationContext.getBean(PrototypeBean.class));
+        System.out.println(applicationContext.getBean(PrototypeBean.class));
     }
 }
