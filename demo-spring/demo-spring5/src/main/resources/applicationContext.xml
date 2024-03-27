@@ -3,19 +3,23 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/aop
        http://www.springframework.org/schema/aop/spring-aop.xsd
        http://www.springframework.org/schema/tx
-       http://www.springframework.org/schema/tx/spring-tx.xsd">
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd"
+>
 
     <!-- ########################################################################################################################################## -->
     <!-- ##################################################################################### -->
     <!-- ##################################### Spring 相关 #################################### -->
     <!-- ##################################################################################### -->
-    <!-- <context:component-scan base-package="com.hundsun.demo.spring"></context:com> -->
+    <context:component-scan base-package="com.hundsun.demo.spring"/>
     <!-- spring相关的配置信息 -->
     <!-- BeanFactoryPostProcessor -->
     <!-- 配置如果实现IgnoreBean接口,那么这个bean的自动注入将不会生效 -->
@@ -346,23 +350,23 @@
     <!-- ##################################### Hibernate ##################################### -->
     <!-- ##################################################################################### -->
     <!-- 配置 Hibernate 的 SessionFactory -->
-    <bean id="hibernateSessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="packagesToScan" value="com.hundsun.demo.commom.core.model"/>
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
-                <prop key="hibernate.show_sql">true</prop>
-                <!-- 其他 Hibernate 相关配置 -->
-            </props>
-        </property>
-    </bean>
-    <bean id="hibernateUserDao" class="com.hundsun.demo.spring.hibernate.UserDAOImpl">
-        <property name="sessionFactory" ref="hibernateSessionFactory"/>
-    </bean>
-    <!-- 配置 Hibernate 的事务管理器 -->
-    <bean id="hibernateTransactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
-        <property name="sessionFactory" ref="hibernateSessionFactory"/>
-    </bean>
+    <!-- <bean id="hibernateSessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"> -->
+    <!--     <property name="dataSource" ref="dataSource"/> -->
+    <!--     <property name="packagesToScan" value="com.hundsun.demo.commom.core.model"/> -->
+    <!--     <property name="hibernateProperties"> -->
+    <!--         <props> -->
+    <!--             <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop> -->
+    <!--             <prop key="hibernate.show_sql">true</prop> -->
+    <!--             &lt;!&ndash; 其他 Hibernate 相关配置 &ndash;&gt; -->
+    <!--         </props> -->
+    <!--     </property> -->
+    <!-- </bean> -->
+    <!-- <bean class="org.springframework.orm.hibernate5.HibernateTemplate"> -->
+    <!--     <property name="sessionFactory" ref="hibernateSessionFactory"/> -->
+    <!-- </bean> -->
+    <!-- &lt;!&ndash; 配置 Hibernate 的事务管理器 &ndash;&gt; -->
+    <!-- <bean id="hibernateTransactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager"> -->
+    <!--     <property name="sessionFactory" ref="hibernateSessionFactory"/> -->
+    <!-- </bean> -->
 
 </beans>

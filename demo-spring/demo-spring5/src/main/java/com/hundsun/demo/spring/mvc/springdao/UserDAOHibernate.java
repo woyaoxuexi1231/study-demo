@@ -7,6 +7,7 @@ import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 /**
@@ -14,19 +15,20 @@ import java.util.List;
  * @since 2024-03-26 12:40
  */
 
-@Repository(value = "userDAOHibernateTarget")
+// @Repository(value = "userDAOHibernateTarget")
 // @Repository(value = "userDAOHibernate")
 public class UserDAOHibernate implements UserDAO {
 
-    @Autowired
     private HibernateTemplate hibernateTemplate;
 
     private SessionFactory sessionFactory;
 
     @Autowired
-    public void init(SessionFactory sessionFactory) {
+    public void init(SessionFactory sessionFactory, HibernateTemplate hibernateTemplate) {
         // sessionFactory.getProperties().
         this.sessionFactory = sessionFactory;
+        // hibernateTemplate.setCheckWriteOperations(false);
+        this.hibernateTemplate = hibernateTemplate;
     }
 
     // @Override

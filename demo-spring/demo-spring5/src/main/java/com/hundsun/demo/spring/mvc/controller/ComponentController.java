@@ -25,14 +25,14 @@ import java.util.Map;
 @Controller
 public class ComponentController {
 
-    @Autowired
-    UserDAOImpl userDAO;
+    // @Autowired
+    // UserDAOImpl userDAO;
 
     @Autowired
     UserDAOJdbcTemplate userDAOJdbcTemplate;
 
-    @Autowired
-    UserDAOHibernate userDAOHibernate;
+    // @Autowired
+    // UserDAOHibernate userDAOHibernate;
 
     @RequestMapping("/mvc")
     public ModelAndView mvc(String name) {
@@ -49,9 +49,10 @@ public class ComponentController {
 
         Map<String, String> map = new HashMap<>();
         map.put("hello", ", world");
-        map.put("userdao", userDAO.findAll().toString());
+        // map.put("userdao", userDAO.findAll().toString());
         map.put("userDAOJdbcTemplate", userDAOJdbcTemplate.findAll().toString());
-        map.put("userDAOHibernate", userDAOJdbcTemplate.findAll().toString());
+        // 集成hibernate遇到一些bug,花费两天时间依旧没解决,暂时不搞这个了 2024年3月27日
+        // map.put("userDAOHibernate", userDAOHibernate.findAll().toString());
 
         return JSONObject.toJSONString(map);
     }

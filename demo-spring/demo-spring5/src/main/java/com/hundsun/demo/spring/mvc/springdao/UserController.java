@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @Autowired
-    private UserDAOHibernate userDAO;
+    private UserDAOJdbcTemplate userDAO;
 
     @GetMapping("/list")
     public String listUsers(Model model) {

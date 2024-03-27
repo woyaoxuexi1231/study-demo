@@ -59,5 +59,7 @@ public class LogTest {
 
     我们的方案是 slf4j+lof4j2, 所以我们要排除上面的所有包
     log4j-slf4j-impl+log4j2
+
+    log4j-slf4j-impl cannot be present with log4j-to-slf4j
      */
 }
