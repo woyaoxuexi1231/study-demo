@@ -118,17 +118,17 @@ public class SpringApplication {
     }
 
     private static void hibernate() {
-        UserDAO userDAO = applicationContext.getBean(com.hundsun.demo.spring.hibernate.UserDAOImpl.class);
-
-        // 创建用户
-        User user = new User();
-        user.setName("test");
-        userDAO.save(user);
-
-        // 查询所有用户
-        List<User> users = userDAO.findAll();
-        for (User u : users) {
-            System.out.println(u.getName());
-        }
+        // UserDAO userDAO = applicationContext.getBean(com.hundsun.demo.spring.hibernate.UserDAOImpl.class);
+        //
+        // // 创建用户
+        // User user = new User();
+        // user.setName("test");
+        // userDAO.save(user);
+        //
+        // // 查询所有用户
+        // List<User> users = userDAO.findAll();
+        // for (User u : users) {
+        //     System.out.println(u.getName());
+        // }
     }
 }
