@@ -1,4 +1,4 @@
-package com.hundsun.demo.spring.db;
+package com.hundsun.demo.spring.db.transaction;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
@@ -36,12 +36,12 @@ public class SpringTransactionService implements ApplicationContextAware {
      */
     public void handleTransaction() {
         // 1. 手动开启事务
-        PlatformTransactionManager pm = (PlatformTransactionManager) applicationContext.getBean("transactionManager");
+        PlatformTransactionManager pm = (PlatformTransactionManager) applicationContext.getBean("masterDataSourceTransactionManager");
         DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
         TransactionStatus status = pm.getTransaction(definition);
         try {
-            JdbcTemplate jdbcTemplate = (JdbcTemplate) applicationContext.getBean("jdbcTemplate");
-            jdbcTemplate.execute("update customers set phone = '40.32.9999' where customerNumber = '103'");
+            JdbcTemplate jdbcTemplate = (JdbcTemplate) applicationContext.getBean("masterDataSourceJdbcTemplate");
+            jdbcTemplate.execute("update customers set phone = '40.32.SpringTransactionService' where customerNumber = '103'");
             throw new RuntimeException("更新失败! ");
         } catch (Exception e) {
             log.error("SQL执行异常, 准备回滚... ", e);

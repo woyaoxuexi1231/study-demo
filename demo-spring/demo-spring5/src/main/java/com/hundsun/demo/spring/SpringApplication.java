@@ -1,7 +1,14 @@
 package com.hundsun.demo.spring;
 
+import com.hundsun.demo.commom.core.model.User;
+import com.hundsun.demo.spring.aop.annotation.MyService;
+import com.hundsun.demo.spring.aop.annotation.MyServiceImpl;
+import com.hundsun.demo.spring.aop.xml.PrintService;
 import com.hundsun.demo.spring.db.dynamicdb.DynamicDataSourceType;
 import com.hundsun.demo.spring.db.dynamicdb.MultipleDataSourceTestEvent;
+import com.hundsun.demo.spring.db.transaction.AnnotationTransaction;
+import com.hundsun.demo.spring.db.transaction.AopTransaction;
+import com.hundsun.demo.spring.mvc.springdao.UserDAO;
 import com.hundsun.demo.spring.mvc.springdao.UserDAOImpl;
 import com.hundsun.demo.spring.mvc.springdao.UserDAOJdbcTemplate;
 import com.hundsun.demo.spring.init.listener.SimpleEvent;
@@ -11,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.util.List;
 
 /**
  * @ProductName: Hundsun amust
@@ -44,7 +53,11 @@ public class SpringApplication {
         // springListener();
         // dynamicDB();
         // mybatisDynamicDB();
-        springDao();
+        // springDao();
+        // hibernate();
+        transaction();
+        // springaop();
+
 
         // 销毁容器
         ((AbstractApplicationContext) applicationContext).close();
@@ -53,6 +66,27 @@ public class SpringApplication {
     private static void springListener() {
         // spring自带的监听机制测试.
         applicationContext.publishEvent(new SimpleEvent("Application Started"));
+    }
+
+    private static void springaop() {
+        PrintService bean = applicationContext.getBean(PrintService.class);
+        bean.print();
+        MyService myService = applicationContext.getBean(MyService.class);
+        myService.doSomething();
+    }
+
+    private static void transaction() {
+        // SpringTransactionService bean = applicationContext.getBean(SpringTransactionService.class);
+        // bean.handleTransaction();
+
+        // ProxyTransaction bean = applicationContext.getBean(ProxyTransaction.class);
+        // bean.handleTransaction();
+
+        // AopTransaction bean = applicationContext.getBean(AopTransaction.class);
+        // bean.handleTransaction();
+
+        AnnotationTransaction bean = applicationContext.getBean(AnnotationTransaction.class);
+        bean.handleTransaction();
     }
 
     private static void dynamicDB() {
@@ -75,10 +109,26 @@ public class SpringApplication {
         }
     }
 
+
     private static void springDao() {
         UserDAOImpl bean = applicationContext.getBean(UserDAOImpl.class);
         UserDAOJdbcTemplate template = applicationContext.getBean(UserDAOJdbcTemplate.class);
         log.info("{}", bean.findAll());
         log.info("{}", template.findAll());
+    }
+
+    private static void hibernate() {
+        UserDAO userDAO = applicationContext.getBean(com.hundsun.demo.spring.hibernate.UserDAOImpl.class);
+
+        // 创建用户
+        User user = new User();
+        user.setName("test");
+        userDAO.save(user);
+
+        // 查询所有用户
+        List<User> users = userDAO.findAll();
+        for (User u : users) {
+            System.out.println(u.getName());
+        }
     }
 }

@@ -11,8 +11,11 @@
        http://www.springframework.org/schema/tx
        http://www.springframework.org/schema/tx/spring-tx.xsd">
 
+    <!-- ########################################################################################################################################## -->
+    <!-- ##################################################################################### -->
+    <!-- ##################################### Spring 相关 #################################### -->
+    <!-- ##################################################################################### -->
     <!-- <context:component-scan base-package="com.hundsun.demo.spring"></context:com> -->
-
     <!-- spring相关的配置信息 -->
     <!-- BeanFactoryPostProcessor -->
     <!-- 配置如果实现IgnoreBean接口,那么这个bean的自动注入将不会生效 -->
@@ -51,21 +54,36 @@
         <property name="circleBean" ref="circleBean"/>
         <property name="name" value="first"/>
     </bean>
-
     <!-- ##################################################################################### -->
     <!-- ##################################### Spring AOP #################################### -->
     <!-- ##################################################################################### -->
-    <!-- 用于启用 AspectJ 自动代理功能。 -->
+    <bean class="com.hundsun.demo.spring.aop.xml.PrintService"/>
+    <!-- 配置切面 -->
+    <!-- 当我在LoggingAdvice这个类里声明print方法时,并且想用LoggingAdvice去切它自己,我发现好像办不到.切面会不生效 -->
+    <bean id="loggingAdvice" class="com.hundsun.demo.spring.aop.xml.LoggingAdvice"/>
+    <!-- 定义切点 -->
+    <aop:config>
+        <!-- 定义通知 -->
+        <aop:aspect id="loggingAspect" ref="loggingAdvice">
+            <aop:pointcut id="simplePointcut" expression="execution(* com.hundsun.demo.spring.aop.xml.PrintService.print())"/>
+            <aop:before pointcut-ref="simplePointcut" method="beforeAdvice"/>
+        </aop:aspect>
+    </aop:config>
+    <!-- 这是一个AspectJ的bean,如果不开启<aop:aspectj-autoproxy/>,那么这个类将不会被增强 -->
+    <bean class="com.hundsun.demo.commom.core.aop.DoneTimeAspect"/>
+    <!-- 一共有三种用于启用 AspectJ 自动代理功能的方式 -->
+    <!-- 1. 开启<aop:aspectj-autoproxy/>配置-->
+    <!-- 2. 注册AnnotationAwareAspectJAutoProxyCreator这个bean -->
+    <!-- 3. 开启@EnableAspectJAutoProxy这个注解 -->
     <!-- Spring 将会自动检测并创建应用程序中使用了 AspectJ 注解的 bean，并将其装配为代理对象，以便应用程序中的切面可以对这些对象进行增强。 -->
     <aop:aspectj-autoproxy/>
-    <!-- 这是一个AspectJ的bean,如果不开启上面的配置,那么这个类将不会被增强 -->
-    <bean class="com.hundsun.demo.commom.core.aop.DoneTimeAspect"/>
     <!-- 用于支持基于注解的 AspectJ 切面编程-->
     <!-- <bean class="org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator"> -->
     <!--     &lt;!&ndash; 配置指示 Spring 使用 CGLIB 来创建代理对象，而不是标准的 Java 接口代理。 &ndash;&gt; -->
     <!--     <property name="proxyTargetClass" value="true"/> -->
     <!-- </bean> -->
-
+    <bean class="com.hundsun.demo.spring.aop.annotation.LoggingAspect"/>
+    <bean class="com.hundsun.demo.spring.aop.annotation.MyServiceImpl"/>
 
     <!-- ##################################################################################### -->
     <!-- ################################### Spring 多数据源 ################################### -->
@@ -103,40 +121,117 @@
             </map>
         </property>
     </bean>
-    <!-- 一个注入AbstractRoutingDataSource的JdbcTemplate -->
-    <bean id="multipleDataSourceJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
-    <!-- 测试多数据源的监听器 -->
-    <bean class="com.hundsun.demo.spring.db.dynamicdb.MultipleDataSourceTestListener">
-        <!-- 注入dynamicTestService这个业务对象,声明信息在下面 -->
-        <property name="dynamicTestService" ref="dynamicTestService"/>
-    </bean>
+    <!-- ########################################################################################################################################## -->
+    <!-- ########################################################################################################################################## -->
+    <!-- ########################################################################################################################################## -->
+
 
     <!-- ##################################################################################### -->
     <!-- ####################################### 事务管理 ###################################### -->
     <!-- ##################################################################################### -->
+
+
+    <!-- ================================================================编程式事务================================================================== -->
     <!-- 这是一个事务管理器,有一个dataSource的属性,即指定这个事务管理器应该用哪个数据源来管理事务 -->
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <!-- 用于管理基于 JDBC 数据源（DataSource）的事务。它实现了 Spring 的 PlatformTransactionManager 接口，可以与 Spring 的事务管理机制无缝集成。 -->
+    <bean id="masterDataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <!-- 绑定对哪个数据源生效 -->
-        <property name="dataSource" ref="dataSource"/>
+        <property name="dataSource" ref="masterDataSource"/>
     </bean>
+    <bean id="masterDataSourceJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="masterDataSource"/>
+    </bean>
+    <bean class="com.hundsun.demo.spring.db.transaction.SpringTransactionService"/>
+    <!-- ================================================================编程式事务================================================================== -->
+
+    <!-- ================================================================================================================================================ -->
+
+    <!-- ================================================================手动配置代理对象================================================================== -->
     <!-- 有了事务管理器还不够,事务管理器需要知道在哪里开启事务才行,并且需要知道事务隔离级别之类的属性,所以有了TransactionInterceptor -->
-    <!-- 这个Bean是Spring事务管理的关键，它定义了事务的属性，比如事务的传播行为。-->
-    <!-- 这里，它引用了transactionManager（需要在其他地方定义）来管理事务，并且设置了事务属性 -->
+    <!-- TransactionInterceptor 是 Spring 框架提供的一个 AOP（面向切面编程）拦截器，用于在方法调用前后添加事务管理的逻辑。它可以在方法执行前开启事务，在方法执行后提交或回滚事务，以确保数据的一致性和完整性。 -->
+    <!-- 通常情况下，TransactionInterceptor 会与其他 AOP 拦截器一起使用，例如 ProxyFactoryBean、AspectJ 等，来创建代理对象，并将事务管理逻辑应用到被代理的对象的方法上。 -->
+    <!-- TransactionInterceptor 主要用于声明式事务管理中，它可以通过配置来指定事务管理器、事务属性等参数，并且支持在方法级别上指定事务的传播行为、隔离级别等特性。这样，在业务方法中不需要显式地编写事务管理代码，而是通过配置的方式来实现事务管理。 -->
     <bean id="transactionInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor">
         <!-- 被配置为使用transactionManager这个Bean来管理事务。 -->
-        <property name="transactionManager" ref="transactionManager"/>
+        <!-- 这里使用之前的masterDataSourceTransactionManager -->
+        <property name="transactionManager" ref="masterDataSourceTransactionManager"/>
         <!-- 这部分配置定义了哪些方法应该在事务的环境下执行，以及这些事务应该遵循的规则。 -->
         <property name="transactionAttributes">
             <props>
                 <!-- multipleDataSourceTransaction方法是测试多数据源DynamicTestService的一个方法 -->
                 <!-- 指定multipleDataSourceTransaction方法（或更可能是一系列方法的模式）需要遵循的事务传播行为为PROPAGATION_REQUIRE -->
-                <prop key="multipleDataSourceTransaction">PROPAGATION_REQUIRED</prop>
+                <!-- <prop key="multipleDataSourceTransaction">PROPAGATION_REQUIRED</prop> -->
+                <prop key="*">PROPAGATION_REQUIRED</prop>
             </props>
         </property>
     </bean>
     <!-- 事务管理器现在都定义好了,但是业务对象依旧不具备事务特性,我们需要通过生成代理对象来拦截业务对象,使其在业务方法外包裹一层事务逻辑来实现事务 -->
+    <bean id="proxyTransactionTarget" class="com.hundsun.demo.spring.db.transaction.ProxyTransaction"/>
+    <bean id="proxyTransaction" primary="true" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <!-- 代理的业务对象为上面定义的bean -->
+        <property name="target" ref="proxyTransactionTarget"/>
+        <!-- 定义代理需要实现的接口列表。如果指定了此属性，则代理将是基于Java接口的动态代理。如果没有指定，则会使用CGLIB创建基于类的代理。 -->
+        <!-- 明确指出代理应该实现的接口,这意味着代理将对外表现为DynamicTestService接口的实现,客户端代码可以透明地使用它，就像使用实际的服务实现一样，而不必知道代理的存在。-->
+        <!-- <property name="proxyInterfaces" value=""/> -->
+        <!-- 需要指定代理类的生成方式为cglib,不然会报错Exception in thread "main" java.lang.ClassCastException: com.sun.proxy.$Proxy53 cannot be cast to com.hundsun.demo.spring.db.transaction.ProxyTransaction -->
+        <property name="proxyTargetClass" value="true"/>
+        <!-- 这里通过一个列表指定了一个或多个拦截器的名称，这些拦截器会在调用目标方法前后执行。 -->
+        <property name="interceptorNames">
+            <list>
+                <!-- 这里指定了之前配置好的事务拦截器来管理事务 -->
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+    <!-- ================================================================手动配置代理对象==================================================================== -->
+
+    <!-- ================================================================================================================================================ -->
+
+    <!-- ================================================================springaop配置事务================================================================== -->
+    <bean id="secondDataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!-- 绑定对哪个数据源生效 -->
+        <property name="dataSource" ref="secondDataSource"/>
+    </bean>
+    <bean id="secondDataSourceJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="secondDataSource"/>
+    </bean>
+    <bean class="com.hundsun.demo.spring.db.transaction.AopTransaction">
+        <property name="jdbcTemplate" ref="secondDataSourceJdbcTemplate"/>
+    </bean>
+    <!-- 配置通知 -->
+    <tx:advice id="second-tx-advice" transaction-manager="secondDataSourceTransactionManager">
+        <!-- 配置事务参数 -->
+        <tx:attributes>
+            <tx:method name="handle*" propagation="REQUIRED" isolation="DEFAULT" read-only="false" timeout="10"/>
+        </tx:attributes>
+    </tx:advice>
+    <!-- 配置切面 -->
+    <aop:config>
+        <aop:pointcut id="serviceMethod" expression="execution(* com.hundsun.demo.spring.db.transaction.AopTransaction.*(..))"/>
+        <aop:advisor advice-ref="second-tx-advice" pointcut-ref="serviceMethod"/>
+    </aop:config>
+    <!-- ================================================================springaop配置事务================================================================== -->
+
+    <!-- ================================================================================================================================================ -->
+
+    <!-- ================================================================注解形式配置================================================================== -->
+    <bean id="thirdDataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!-- 绑定对哪个数据源生效 -->
+        <property name="dataSource" ref="thirdDataSource"/>
+    </bean>
+    <bean id="thirdDataSourceJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="thirdDataSource"/>
+    </bean>
+    <!-- 启用了对@Transactional注解的支持，这意味着你可以在需要事务管理的方法上使用@Transactional注解 -->
+    <!-- transaction-manager用于配置对哪个事务管理器生效,如果不配置,那么需要有一个默认的名叫transactionManager的事务管理器 -->
+    <tx:annotation-driven transaction-manager="thirdDataSourceTransactionManager"/>
+    <bean class="com.hundsun.demo.spring.db.transaction.AnnotationTransaction">
+        <property name="jdbcTemplate" ref="thirdDataSourceJdbcTemplate"/>
+    </bean>
+    <!-- ================================================================注解形式配置================================================================== -->
+
+
+    <!-- ================================================================多数据源场景================================================================== -->
     <!-- 这是一个实际的业务对象 -->
     <bean name="DynamicTestServiceTarget" class="com.hundsun.demo.spring.db.dynamicdb.DynamicTestServiceImpl" autowire="byName"/>
     <!-- ProxyFactoryBean可以用来为目标对象创建一个代理，这个代理可以实现相同的接口或继承相同的类，而且可以在目标方法的调用前后添加额外的处理逻辑，这种技术通常用于事务管理、日志记录、安全控制等方面。 -->
@@ -157,7 +252,17 @@
             </list>
         </property>
     </bean>
-    <!-- 到此,事务管理器,事务拦截器,业务对象实现事务都已经配置完成 -->
+    <!-- 一个注入AbstractRoutingDataSource的JdbcTemplate -->
+    <bean id="multipleDataSourceJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!-- 测试多数据源的监听器 -->
+    <bean class="com.hundsun.demo.spring.db.dynamicdb.MultipleDataSourceTestListener">
+        <!-- 注入dynamicTestService这个业务对象,声明信息在下面 -->
+        <property name="dynamicTestService" ref="dynamicTestService"/>
+    </bean>
+    <!-- ================================================================================================================================================ -->
+    <!-- ================================================================================================================================================ -->
 
 
     <!-- ##################################################################################### -->
@@ -200,8 +305,6 @@
         <!-- 这里数据源依旧还是使用之前定义的多数据源 -->
         <property name="dataSource" ref="dataSource"/>
     </bean>
-    <!-- 启用了对@Transactional注解的支持，这意味着你可以在需要事务管理的方法上使用@Transactional注解 -->
-    <!-- <tx:annotation-driven/> -->
     <!-- 定义了一个事务管理策略txAdvice,指明了哪些方法需要进行事务管理，以及事务的具体属性（如传播行为、是否只读、异常回滚条件等） -->
     <tx:advice id="txAdvice" transaction-manager="mybatisTransactionManager">
         <tx:attributes>
@@ -238,6 +341,28 @@
     </bean>
     <bean id="userTemplateDAO" class="com.hundsun.demo.spring.mvc.springdao.UserDAOJdbcTemplate">
         <constructor-arg ref="dataSource"/>
+    </bean>
+    <!-- ##################################################################################### -->
+    <!-- ##################################### Hibernate ##################################### -->
+    <!-- ##################################################################################### -->
+    <!-- 配置 Hibernate 的 SessionFactory -->
+    <bean id="hibernateSessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan" value="com.hundsun.demo.commom.core.model"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <!-- 其他 Hibernate 相关配置 -->
+            </props>
+        </property>
+    </bean>
+    <bean id="hibernateUserDao" class="com.hundsun.demo.spring.hibernate.UserDAOImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    </bean>
+    <!-- 配置 Hibernate 的事务管理器 -->
+    <bean id="hibernateTransactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="hibernateSessionFactory"/>
     </bean>
 
 </beans>
