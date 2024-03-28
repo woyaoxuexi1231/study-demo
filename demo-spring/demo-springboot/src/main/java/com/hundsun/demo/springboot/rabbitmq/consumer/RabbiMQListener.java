@@ -84,8 +84,18 @@ public class RabbiMQListener {
                     key = MQConfig.TOPIC_MASTER_ROUTE_KEY // 用于定义绑定键（routing key），这是一个字符串，决定了消息如何路由到队列。
             ))
     public void receiveMasterMsg(Message msg, Channel channel) {
+        // log.info("receiveMasterMsg => msg: {}", msg);
+        System.out.println("receiveMasterMsg#Received string message: " + msg);
+        try {
+            // Thread.sleep(5000);
+            channel.basicAck(msg.getMessageProperties().getDeliveryTag(), false);
+        } catch (Exception e) {
+            log.error("ack异常", e);
+        }
+    }
 
-        /*
+    private void repeatConsumer(Message msg, Channel channel) {
+                /*
         保证消息不被重复消费(即最多消费一次,且成功消费一次)
         1. 采用唯一ID+数据库主键
         2. 利用 redis来实现幂等
@@ -156,13 +166,12 @@ public class RabbiMQListener {
             }
     ))
     public void receiveSlaveMsg(Message msg, Channel channel) {
-        log.info("msg: {}", msg);
+        log.info("receiveSlaveMsg => msg: {}", msg);
         try {
             channel.basicAck(msg.getMessageProperties().getDeliveryTag(), false);
         } catch (Exception e) {
             log.error("ack异常", e);
         }
-
     }
 
     /**
