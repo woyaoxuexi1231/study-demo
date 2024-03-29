@@ -65,7 +65,7 @@ public class RabbitmqServiceImpl implements RabbitmqService {
     private void pushSyncConfirm(MQIdempotency message, MessagePostProcessor messagePostProcessor, CorrelationData correlationData) {
         rabbitTemplate.invoke(operations -> {
             rabbitTemplate.convertAndSend(
-                    MQConfig.TOPIC_EXCHANGE_NAME, // the exchange.
+                    MQConfig.TOPIC_EXCHANGE_NAME, // the exchange. 如果交换机不存在,reply-code=404, reply-text=NOT_FOUND - no exchange 'exchange-test-topic2' in vhost '/', class-id=60, method-id=40
                     MQConfig.TOPIC_MASTER_ROUTE_KEY, // the routing key.
                     JSON.toJSONString(message), // the data to send.
                     messagePostProcessor, // a message post processor (can be null).

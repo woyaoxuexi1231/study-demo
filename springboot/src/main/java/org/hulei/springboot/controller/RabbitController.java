@@ -39,8 +39,6 @@ public class RabbitController {
 
             MQIdempotency idempotency = new MQIdempotency();
             uuid = uuid == null ? UUID.randomUUID().toString() : uuid;
-
-            log.info("开始发送消息! uuid: {}", uuid);
             idempotency.setUuid(uuid);
             idempotency.setMsg("hello rabbitmq!");
 
@@ -68,6 +66,8 @@ public class RabbitController {
                     messagePostProcessor,
                     correlationData);
             // rabbitTemplate.convertSendAndReceive()
+
+            log.info("消息发送完成, uuid: {}", uuid);
         } catch (Exception e) {
             log.error("消息发送异常!", e);
         }

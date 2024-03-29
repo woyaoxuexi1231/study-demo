@@ -17,7 +17,7 @@ import java.util.Arrays;
  * @since 2024-03-28 14:57
  */
 
-@Component
+// @Component
 @Slf4j
 @RabbitListener(queues = MQConfig.TOPIC_MASTER_QUEUE)
 public class RabbitHandlerListener {

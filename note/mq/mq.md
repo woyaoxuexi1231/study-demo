@@ -97,6 +97,18 @@ RabbitMQ集群并非能保证消息万无一失,即使消息,队列,交换机等
 2. 如果在执行Basic.Publish时设置mandatory=true，则在遇到可能出现"blackholed"情况时，服务器会通过返回Basic.Return告之当前message无法被正确投递（内含原因312
    NO_ROUTE）²。这样可以让发送者知道message没有被正确投递，从而采取相应的措施。
 
+### 
+
+
+### 关于spring配置集群的问题
+
+像这样配置多个地址
+spring.rabbitmq.addresses=192.168.80.128:5672,192.168.80.129:5672
+
+提供了多个地址，那么 Spring Boot 会尝试按照你提供的顺序去连接这些地址。也就是说，如果第一个地址的 RabbitMQ 服务器无法连接，那么 Spring Boot 会尝试连接第二个地址，以此类推。
+
+但是，需要注意的是，这并不意味着 Spring Boot 会与所有的 RabbitMQ 服务器建立连接。实际上，Spring Boot 只会与能够成功连接的第一个 RabbitMQ 服务器建立连接。如果这个连接断开，Spring Boot 会再次尝试按照你提供的顺序去连接这些地址。
+
 ### 消息重复消费的解决方案
 
 ### 消息幂等性(需要业务代码具备这种幂等性操作)
