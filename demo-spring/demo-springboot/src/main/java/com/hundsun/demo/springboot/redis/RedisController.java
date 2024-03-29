@@ -38,12 +38,6 @@ public class RedisController {
     ThreadPoolExecutor single;
 
     @Autowired
-    ThreadPoolExecutor commonPool;
-
-    @Autowired
-    RestTemplate restTemplate;
-
-    @Autowired
     RedisTemplate redisTemplate;
 
     @Autowired
@@ -71,22 +65,6 @@ public class RedisController {
         });
     }
 
-    @GetMapping("/send")
-    public void send() {
-        for (int i = 0; i < 2; i++) {
-            commonPool.execute(() -> {
-                String url = "http://localhost:9094/test";
-                restTemplate.getForEntity(url, null);
-            });
-        }
-    }
-
-    @GetMapping("/circle")
-    public String circle() {
-        log.info("circle");
-        return restTemplate.getForObject("http://localhost:9094/circle", String.class);
-    }
-
     @GetMapping("redisTemplate")
     public void redisTemplate() {
         // redisTemplate.opsForValue().set("hello", "redis");
@@ -94,21 +72,5 @@ public class RedisController {
         // Boolean map = StringRedisTemplate.opsForHash().putIfAbsent("map", "1", UUID.randomUUID().toString());
         // System.out.println(map);
         StringRedisTemplate.opsForValue().set("hello", "redis");
-
-
     }
-
-    @Resource
-    EmployeeMapper employeeMapper;
-
-    @GetMapping("/testE")
-    public void testE() {
-        beanConfig.restTemplate();
-        System.out.println(1);
-    }
-
-    @Autowired
-    BeanConfig beanConfig;
-
-
 }
