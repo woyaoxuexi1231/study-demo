@@ -79,7 +79,7 @@ public class ConnectFactory {
         // 设置死信交换机, 这里设置的是, 如果这个队列内的消息出现问题, 消息应该往哪个死信队列发
         arguments.put("x-dead-letter-exchange", MQConfig.DEAD_EXCHANGE_NAME);
         // 设置死信 RoutingKey
-        arguments.put("x-dead-letter-routing-key", "");
+        // arguments.put("x-dead-letter-routing-key", "");
         // 设置队列长度
         // arguments.put("x-max-length", 6);
         // 声明队列, 这里执行这个方法之后就会创建相应的队列, 但是只是创建了队列
