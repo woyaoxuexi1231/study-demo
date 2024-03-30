@@ -38,7 +38,7 @@ public class RedisController {
     ThreadPoolExecutor single;
 
     @Autowired
-    RedisTemplate redisTemplate;
+    RedisTemplate<Object, Object> redisTemplate;
 
     @Autowired
     RedisTemplate<String, String> StringRedisTemplate;

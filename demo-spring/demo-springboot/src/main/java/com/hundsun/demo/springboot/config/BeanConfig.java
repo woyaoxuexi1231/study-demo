@@ -2,6 +2,7 @@ package com.hundsun.demo.springboot.config;
 
 import com.hundsun.demo.commom.core.aop.DoneTimeAspect;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -42,6 +43,7 @@ public class BeanConfig {
      * @param redisTemplate
      */
     @Autowired
+    @Qualifier(value = "redisTemplate")
     public void redisTemplateSerializerInit(RedisTemplate<Object, Object> redisTemplate) {
         redisTemplate.setKeySerializer(RedisSerializer.string());
         redisTemplate.setValueSerializer(RedisSerializer.json());
@@ -50,7 +52,8 @@ public class BeanConfig {
     }
 
     @Autowired
-    public void initRedisTemplate(RedisTemplate redisTemplate) {
+    @Qualifier(value = "redisTemplate")
+    public void initRedisTemplate(RedisTemplate<Object, Object> redisTemplate) {
         // redisTemplate.setKeySerializer(RedisSerializer.json());
         redisTemplate.setKeySerializer(RedisSerializer.string());
     }
