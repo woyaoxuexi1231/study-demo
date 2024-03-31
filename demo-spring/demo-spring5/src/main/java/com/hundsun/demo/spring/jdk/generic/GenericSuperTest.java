@@ -1,5 +1,6 @@
 package com.hundsun.demo.spring.jdk.generic;
 
+
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -19,17 +20,24 @@ import java.util.function.Function;
 public class GenericSuperTest {
 
     public <S> void doProcess(DataTransferReq<S> transferReq) {
+
+        singleDataProcess(transferReq);
+
+        singleDataProcess(transferReq, getSingleRefreshPushMsgProcess());
+
+        singleDataProcess(transferReq, this.getSingleRefreshProcess());
+
         singleDataProcess(
                 transferReq,
                 this.getSingleRefreshProcess(),
                 this.getSingleRefreshPushMsgProcess());
     }
 
-    public <S, T, D extends DataTransfer<S, ? super T>> Function<DataTransferReq<S>, D> getSingleRefreshProcess() {
+    public <S, T, D extends DataTransfer<S, ? super T>> Function<DataTransferReq<S>, ? super D> getSingleRefreshProcess() {
         return standDataTransferReq -> null;
     }
 
-    public <S, T, D extends DataTransfer<S, ? super T>> Consumer<D> getSingleRefreshPushMsgProcess() {
+    public <S, T, D extends DataTransfer<S, ? super T>> Consumer<? super D> getSingleRefreshPushMsgProcess() {
         return transfer -> {
         };
     }
@@ -38,6 +46,20 @@ public class GenericSuperTest {
             DataTransferReq<S> transferReq,
             Function<DataTransferReq<S>, D> subProcess,
             Consumer<D> msgProcess) {
+    }
+
+    public <S, T, D extends DataTransfer<S, ? super T>> void singleDataProcess(
+            DataTransferReq<S> transferReq) {
+    }
+
+    public <S, T, D extends DataTransfer<S, ? super T>> void singleDataProcess(
+            DataTransferReq<S> transferReq,
+            Consumer<D> msgProcess) {
+    }
+
+    public <S, T, D extends DataTransfer<S, ? super T>> void singleDataProcess(
+            DataTransferReq<S> transferReq,
+            Function<DataTransferReq<S>, D> subProcess) {
     }
 
     static class DataTransferReq<T> {
