@@ -17,6 +17,10 @@ public class RedisPipelineExample {
             pipeline.set("key_" + i, "value_" + i);
         }
 
+        for (int i = 0; i < 1000; i++) {
+            pipeline.del("key_" + i);
+        }
+
         // 执行 Pipeline 中的所有命令
         pipeline.sync();
 
