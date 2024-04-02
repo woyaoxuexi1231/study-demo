@@ -243,6 +243,11 @@
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>${mybatis.plus.boot.starter.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus</artifactId>
+                <version>3.3.2</version>
+            </dependency>
 
             <!-- security 整合 thymeleaf -->
             <dependency>

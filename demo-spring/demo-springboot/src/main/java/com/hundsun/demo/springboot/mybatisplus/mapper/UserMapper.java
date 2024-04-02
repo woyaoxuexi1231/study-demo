@@ -1,18 +1,17 @@
-package com.hundsun.demo.springboot.common.mapper;
+package com.hundsun.demo.springboot.mybatisplus.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.hundsun.demo.springboot.common.model.User;
+import com.hundsun.demo.commom.core.model.User;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
 /**
- * 用户信息Mapper
- *
- * @author chendd
- * @date 2022/6/30 21:29
+ * @author woaixuexi
+ * @since 2024/4/2 21:23
  */
 
 @Repository

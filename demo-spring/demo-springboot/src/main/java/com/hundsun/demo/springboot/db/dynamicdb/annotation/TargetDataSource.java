@@ -1,6 +1,6 @@
-package com.hundsun.demo.springboot.dynamicdb.annotation;
+package com.hundsun.demo.springboot.db.dynamicdb.annotation;
 
-import com.hundsun.demo.springboot.dynamicdb.core.DynamicDataSourceType;
+import com.hundsun.demo.springboot.db.dynamicdb.core.DynamicDataSourceType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,7 +1,7 @@
-package com.hundsun.demo.springboot.dynamicdb.config;
+package com.hundsun.demo.springboot.db.dynamicdb.config;
 
-import com.hundsun.demo.springboot.dynamicdb.annotation.TargetDataSource;
-import com.hundsun.demo.springboot.dynamicdb.core.DynamicDataSourceTypeManager;
+import com.hundsun.demo.springboot.db.dynamicdb.annotation.TargetDataSource;
+import com.hundsun.demo.springboot.db.dynamicdb.core.DynamicDataSourceTypeManager;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;

@@ -1,9 +1,9 @@
-package com.hundsun.demo.springboot.dynamicdb;
+package com.hundsun.demo.springboot.db.dynamicdb;
 
 import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import com.hundsun.demo.springboot.common.mapper.EmployeeMapper;
-import com.hundsun.demo.springboot.dynamicdb.core.DynamicDataSourceType;
-import com.hundsun.demo.springboot.dynamicdb.core.DynamicDataSourceTypeManager;
+import com.hundsun.demo.springboot.db.dynamicdb.core.DynamicDataSourceType;
+import com.hundsun.demo.springboot.db.dynamicdb.core.DynamicDataSourceTypeManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

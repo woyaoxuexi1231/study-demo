@@ -1,4 +1,4 @@
-package com.hundsun.demo.springboot.dynamicdb.core;
+package com.hundsun.demo.springboot.db.dynamicdb.core;
 
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 

@@ -1,6 +1,6 @@
-package com.hundsun.demo.springboot.dynamicdb.config;
+package com.hundsun.demo.springboot.db.dynamicdb.config;
 
-import com.hundsun.demo.springboot.dynamicdb.core.DynamicDataSource;
+import com.hundsun.demo.springboot.db.dynamicdb.core.DynamicDataSource;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -102,7 +102,7 @@ public class SegmentIdGenerator implements ApplicationContextAware {
         // 置为未初始化状态
         this.initOk = false;
         // 执行初始化方法
-        this.init();
+        // this.init();
     }
 
     public boolean init() {

@@ -72,6 +72,11 @@
             <artifactId>persistence-api</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus</artifactId>
+        </dependency>
+
 
         <!-- 一些可选的配置 -->
         <!-- spring容器包 -->

@@ -1,4 +1,4 @@
-package com.hundsun.demo.springboot.dynamicdb.core;
+package com.hundsun.demo.springboot.db.dynamicdb.core;
 
 import lombok.extern.slf4j.Slf4j;
 

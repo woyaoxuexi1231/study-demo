@@ -1,4 +1,4 @@
-package com.hundsun.demo.springboot.dynamicdb.config;
+package com.hundsun.demo.springboot.db.dynamicdb.config;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.MutablePropertyValues;

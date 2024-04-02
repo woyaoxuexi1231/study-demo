@@ -1,4 +1,4 @@
-package com.hundsun.demo.springboot.dynamicdb;
+package com.hundsun.demo.springboot.db.dynamicdb;
 
 import com.hundsun.demo.commom.core.model.EmployeeDO;
 import com.hundsun.demo.commom.core.model.dto.ResultDTO;

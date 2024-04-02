@@ -1,4 +1,4 @@
-package com.hundsun.demo.springboot.dynamicdb.config;
+package com.hundsun.demo.springboot.db.dynamicdb.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,13 +1,13 @@
-package com.hundsun.demo.springboot.dynamicdb;
+package com.hundsun.demo.springboot.db.dynamicdb;
 
 import com.github.pagehelper.PageHelper;
 import com.hundsun.demo.commom.core.model.EmployeeDO;
 import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
 import com.hundsun.demo.springboot.common.mapper.EmployeeMapper;
-import com.hundsun.demo.springboot.dynamicdb.annotation.TargetDataSource;
-import com.hundsun.demo.springboot.dynamicdb.core.DynamicDataSourceType;
-import com.hundsun.demo.springboot.dynamicdb.core.DynamicDataSourceTypeManager;
+import com.hundsun.demo.springboot.db.dynamicdb.core.DynamicDataSourceType;
+import com.hundsun.demo.springboot.db.dynamicdb.core.DynamicDataSourceTypeManager;
+import com.hundsun.demo.springboot.db.dynamicdb.annotation.TargetDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

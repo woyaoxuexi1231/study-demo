@@ -1,4 +1,4 @@
-package com.hundsun.demo.springboot.dynamicdb.config;
+package com.hundsun.demo.springboot.db.dynamicdb.config;
 
 import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
