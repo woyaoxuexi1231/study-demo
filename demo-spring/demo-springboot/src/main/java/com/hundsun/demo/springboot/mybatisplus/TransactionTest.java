@@ -175,6 +175,8 @@ public class TransactionTest {
         // mapper.insert(new User("hulei"));
         // sqlSession.commit();
 
+        // 而且这里还存在一个问题,引入mybatisplus之后,mybatisplus的配置会优于mybatis TODO 待研究
+
         // userMapper.insert(new User("hulei"));
         // log.info("{}", userMapper.selectList(new QueryWrapper<>()).size());
         log.info("{}", tkUserMapper.selectAll().size());
