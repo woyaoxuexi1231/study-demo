@@ -20,7 +20,8 @@ import tk.mybatis.spring.annotation.MapperScan;
 @MapperScan(basePackages = {
         "com.hundsun.demo.springboot.common.mapper",
         "com.hundsun.demo.springboot.rabbitmq.consumer.mapper",
-        "com.hundsun.demo.springboot.mysql.mapper"
+        "com.hundsun.demo.springboot.mysql.mapper",
+        "com.hundsun.demo.springboot.tkmybatis.mapper"
 })
 @org.mybatis.spring.annotation.MapperScan(basePackages = {
         "com.hundsun.demo.springboot.mybatisplus.mapper"

@@ -7,12 +7,15 @@ import com.hundsun.demo.commom.core.model.User;
 import com.hundsun.demo.springboot.config.ThreadPoolBeanConfig;
 import com.hundsun.demo.springboot.mybatisplus.mapper.EmployeeMapperPlus;
 import com.hundsun.demo.springboot.mybatisplus.mapper.UserMapper;
+import com.hundsun.demo.springboot.tkmybatis.mapper.TkUserMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.SqlSessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -117,23 +120,33 @@ public class TransactionTest {
     @Autowired
     SqlSessionTemplate sqlSessionTemplate;
 
+    @Autowired
+    JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    TkUserMapper tkUserMapper;
+
     @Transactional
     public void sqlSessionTransaction() {
 
-        // 执行usermapper这个代理对象的这个方法
         //
-        // org.mybatis.spring.SqlSessionTemplate.SqlSessionInterceptor#invoke->org.mybatis.spring.SqlSessionUtils#getSqlSession
-        //
-        // 	1. 调用org.springframework.transaction.support.TransactionSynchronizationManager#getResource这个方法尝试去获取目前是否已经创建过sqlsession了
-        // 	2. 如果没有org.apache.ibatis.session.defaults.DefaultSqlSessionFactory#openSession会尝试调用这个方法去组装好一个SqlSession（连接尚未建立）
-        // 	3. 创建好之后通过org.mybatis.spring.SqlSessionUtils#registerSessionHolder这个方法把sqlsession放入TransactionSynchronizationManager里面，设置synchronizedWithTransaction置为true
-        // 执行方法->结束后会执行commit方法,这个方法在检测到没有更新操作是不会真正执行提交的
-        //
-        // 这里如果中途使用SqlSessionFactory手动openSession的话：
-        // 	1. 创建的SqlSession确实是全新的，SqlSession内绑定的Transaction也是全新的
-        //  2. 但是连接并不是新的，获取连接时会根据DataSource实例在TransactionSynchronizationManager内获取，内部为一个ThreadLocal
+        /*
+        执行usermapper这个代理对象的这个方法:
+        1. org.mybatis.spring.SqlSessionTemplate.SqlSessionInterceptor#invoke->org.mybatis.spring.SqlSessionUtils#getSqlSession
+            - 调用org.springframework.transaction.support.TransactionSynchronizationManager#getResource这个方法尝试去获取目前是否已经创建过sqlsession了
+            - 如果没有org.apache.ibatis.session.defaults.DefaultSqlSessionFactory#openSession会尝试调用这个方法去组装好一个SqlSession（连接尚未建立）
+            - 创建好之后通过org.mybatis.spring.SqlSessionUtils#registerSessionHolder这个方法把sqlsession放入TransactionSynchronizationManager里面，设置synchronizedWithTransaction置为true
+            - 执行方法->结束后会执行commit方法,这个方法在检测到没有更新操作是不会真正执行提交的
+        2. 这里如果中途使用SqlSessionFactory手动openSession的话：
+            - 创建的SqlSession确实是全新的，SqlSession内绑定的Transaction也是全新的
+            - 但是连接并不是新的，获取连接时会根据DataSource实例在TransactionSynchronizationManager内获取，内部为一个ThreadLocal
+         */
 
-        log.info("{}", userMapper.selectList(new QueryWrapper<>()).size());
+        // log.info("{}", userMapper.selectList(new QueryWrapper<>()).size());
+        log.info("{}", tkUserMapper.selectAll().size());
+
+        // 这里两种方式使用
+        // 1.重新开启一个线程,由于重新开启了一个线程,连接和事务完全是独立的,当线程结束,这个新开的线程的事务会提交
         // CountDownLatch latch = new CountDownLatch(1);
         // new Thread(() -> {
         //     try {
@@ -147,12 +160,15 @@ public class TransactionTest {
         // }).start();
         // latch.countDown();
 
-        // 这里通过 batchCommitTest.exeBatch 这个方法去提交的话会导致两个事务之间的提交互不可见
+        // 2.不重新打开线程直接使用 batchCommitTest.exeBatch 来执行sql, 会导致使用了两个独立的 sqlSession, 但是连接是同一个, 最中事务不会提交
+        // 但是如果mybatis的一级缓存,由于sqlSession独立,那么会因为一级缓存的问题导致我们提交的内容不可见
         batchCommitTest.exeBatch(CollectionUtil.newArrayList(new User("hulei")), (sqlSession, user) -> {
             UserMapper mapper = sqlSession.getMapper(UserMapper.class);
             mapper.insert(user);
         });
 
+
+        // 解决上述问题的两种方案 1.关闭一级缓存 2.使整个过程的SqlSession保持统一即可
         // SqlSession sqlSession = SqlSessionUtils.getSqlSession(sqlSessionTemplate.getSqlSessionFactory(),
         //         sqlSessionTemplate.getExecutorType(), sqlSessionTemplate.getPersistenceExceptionTranslator());
         // UserMapper mapper = sqlSession.getMapper(UserMapper.class);
@@ -160,6 +176,8 @@ public class TransactionTest {
         // sqlSession.commit();
 
         // userMapper.insert(new User("hulei"));
-        log.info("{}", userMapper.selectList(new QueryWrapper<>()).size());
+        // log.info("{}", userMapper.selectList(new QueryWrapper<>()).size());
+        log.info("{}", tkUserMapper.selectAll().size());
+        // System.out.println(jdbcTemplate.query("select * from users", BeanPropertyRowMapper.newInstance(User.class)).size());
     }
 }

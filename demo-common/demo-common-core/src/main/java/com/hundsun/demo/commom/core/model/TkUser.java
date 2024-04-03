@@ -1,9 +1,6 @@
 package com.hundsun.demo.commom.core.model;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,31 +12,29 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * @author hulei42031
+ * @since 2024-04-03 17:11
+ */
+
 @Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-@TableName(value = "users")
 @Data
-public class User {
+public class TkUser {
 
-    @TableId(value = "id", type = IdType.AUTO)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "Mysql")
     @Column(name = "id")
     private Long id;
 
-    @TableField(value = "name")
     @Column(name = "name")
     private String name;
     // 省略构造函数和 getter/setter 方法
 
-    public User(String name) {
-        this.name = name;
-    }
-
-    public User(Long id, String name) {
-        this.id = id;
+    public TkUser(String name) {
         this.name = name;
     }
 }
