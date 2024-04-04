@@ -70,8 +70,9 @@
         <hutool.core.version>5.6.1</hutool.core.version>
         <guava.version>21.0</guava.version>
         <cglib.version>3.2.10</cglib.version>
-        <redisson.version>3.13.6</redisson.version>
-        <redisson.spring.boot.starter.verison>3.13.6</redisson.spring.boot.starter.verison>
+        <!-- Redisson 在 3.13.0 and 3.19.0 更换了默认的协议，会报错Unsupported protocol version 118 -->
+        <redisson.version>3.12.4</redisson.version>
+        <redisson.spring.boot.starter.verison>3.12.4</redisson.spring.boot.starter.verison>
         <!--Mybatis框架-->
         <mapper.spring.boot.starter.version>4.2.1</mapper.spring.boot.starter.version>
         <mybatis.version>3.5.5</mybatis.version>
