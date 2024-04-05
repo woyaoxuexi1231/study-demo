@@ -1,4 +1,4 @@
-package com.hundsun.demo.spring.jdk.algorithms;
+package com.hundsun.demo.spring.jdk.algorithms.bruteforce;
 
 import java.util.Arrays;
 
