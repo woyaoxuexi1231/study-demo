@@ -7,6 +7,12 @@
       "defaultValue": false
     },
     {
+      "name": "curator.enable",
+      "type": "java.lang.Boolean",
+      "description": "curator 重连次数, 默认 4.",
+      "defaultValue": true
+    },
+    {
       "name": "curator.connect-string",
       "type": "java.lang.String",
       "sourceType": "com.hundsun.demo.common.autoconfigure.curator.CuratorConfiguration",
