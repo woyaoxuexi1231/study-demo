@@ -16,6 +16,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * @createDate: 2023/5/5 20:44
  */
 
+@Deprecated
 @EnableHystrixDashboard
 @EnableHystrix
 @EnableFeignClients

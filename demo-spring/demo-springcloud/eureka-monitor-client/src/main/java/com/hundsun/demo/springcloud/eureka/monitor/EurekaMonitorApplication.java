@@ -15,6 +15,7 @@ import org.springframework.cloud.netflix.turbine.EnableTurbine;
  * @createDate: 2023/5/5 20:44
  */
 
+@Deprecated
 @EnableHystrixDashboard
 @EnableTurbine
 @EnableEurekaClient

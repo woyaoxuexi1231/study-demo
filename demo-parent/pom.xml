@@ -39,20 +39,23 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <spring.boot.dependencies.version>2.3.1.RELEASE</spring.boot.dependencies.version>
-        <spring.cloud.dependencies.version>Hoxton.RELEASE</spring.cloud.dependencies.version>
+        <!--  -->
+        <spring.boot.dependencies.version>2.7.16</spring.boot.dependencies.version>
+        <spring.cloud.dependencies.version>2021.0.9</spring.cloud.dependencies.version>
 
-        <!--spring-boot-dependencies 2.3.1.RELEASE 包含的依赖版本-->
-        <spring.boot.starter.version>2.3.1.RELEASE</spring.boot.starter.version>
-        <spring.boot.starter.web.version>2.3.1.RELEASE</spring.boot.starter.web.version>
-        <spring.boot.starter.test.version>2.3.1.RELEASE</spring.boot.starter.test.version>
-        <spring.boot.starter.log4j2.version>2.3.1.RELEASE</spring.boot.starter.log4j2.version>
-        <spring.boot.starter.data.redis>2.3.1.RELEASE</spring.boot.starter.data.redis>
-        <lombok.version>1.18.12</lombok.version>
-        <junit.version>4.12</junit.version>
-        <mysql.connector.java.version>8.0.19</mysql.connector.java.version>
-        <commons.lang3.version>3.9</commons.lang3.version>
-        <aspectjweaver.version>1.9.5</aspectjweaver.version>
+        <!--spring-boot-dependencies 2.7.16 包含的依赖版本-->
+        <spring.boot.starter.version>2.7.16</spring.boot.starter.version>
+        <spring.boot.starter.web.version>2.7.16</spring.boot.starter.web.version>
+        <spring.boot.starter.test.version>2.7.16</spring.boot.starter.test.version>
+        <spring.boot.starter.log4j2.version>2.7.16</spring.boot.starter.log4j2.version>
+        <spring.boot.starter.data.redis>2.7.16</spring.boot.starter.data.redis>
+        <!-- <lombok.version>1.18.12</lombok.version> -->
+        <!-- <junit.version>4.12</junit.version> -->
+        <!-- <commons.lang3.version>3.9</commons.lang3.version> -->
+        <!-- <aspectjweaver.version>1.9.5</aspectjweaver.version> -->
+
+        <!-- dubbo -->
+        <apache.dubbo.springboot.starter.version>3.2.7</apache.dubbo.springboot.starter.version>
         <pagehelper.version>5.2.0</pagehelper.version>
         <apache.poi.ooxml.version>4.1.1</apache.poi.ooxml.version>
         <apache.poi.version>4.1.1</apache.poi.version>
@@ -60,9 +63,6 @@
         <apache.curator.recipes.version>2.13.0</apache.curator.recipes.version>
         <commons.io.version>2.6</commons.io.version>
         <alibaba.fastjson.version>2.0.31</alibaba.fastjson.version>
-        <ojdbc8.version>19.3.0.0</ojdbc8.version>
-        <orai18n.version>19.3.0.0</orai18n.version>
-
 
         <!--第三方依赖-->
         <!--一些工具组件-->
@@ -70,23 +70,27 @@
         <hutool.core.version>5.6.1</hutool.core.version>
         <guava.version>21.0</guava.version>
         <cglib.version>3.2.10</cglib.version>
-        <!-- Redisson 在 3.13.0 and 3.19.0 更换了默认的协议，会报错Unsupported protocol version 118 -->
+        <javax.servlet.jsp.version>2.2.1</javax.servlet.jsp.version>
+
+        <!-- 数据库相关 -->
+        <mysql.connector.java.version>8.0.19</mysql.connector.java.version>
+        <ojdbc8.version>19.3.0.0</ojdbc8.version>
+        <orai18n.version>19.3.0.0</orai18n.version>
         <redisson.version>3.12.4</redisson.version>
+        <!-- Redisson 在 3.13.0 and 3.19.0 更换了默认的协议，会报错Unsupported protocol version 118 -->
         <redisson.spring.boot.starter.verison>3.12.4</redisson.spring.boot.starter.verison>
-        <!--Mybatis框架-->
+        <!-- Mybatis框架 -->
         <mapper.spring.boot.starter.version>4.2.1</mapper.spring.boot.starter.version>
         <mybatis.version>3.5.5</mybatis.version>
         <mybatis.spring.verison>2.0.5</mybatis.spring.verison>
         <pagehelper.spring.boot.starter.version>1.3.0</pagehelper.spring.boot.starter.version>
         <mybatis.generator.core.version>1.3.2</mybatis.generator.core.version>
         <mybatis.plus.boot.starter.version>3.3.2</mybatis.plus.boot.starter.version>
-
-        <javax.servlet.jsp.version>2.2.1</javax.servlet.jsp.version>
-        <apache.dubbo.springboot.starter.version>2.7.8</apache.dubbo.springboot.starter.version>
         <apache.curator.x.discovery>2.13.0</apache.curator.x.discovery>
         <thymeleaf-extras-springsecurity4.version>2.1.3.RELEASE</thymeleaf-extras-springsecurity4.version>
         <apache.curator.client.version>2.13.0</apache.curator.client.version>
         <zookeeper.version>3.4.8</zookeeper.version>
+        <grpc-spring-boot-starter.version>4.0.0</grpc-spring-boot-starter.version>
 
         <!--插件版本-->
         <spring.boot.maven.plugin.version>2.2.6.RELEASE</spring.boot.maven.plugin.version>
@@ -131,6 +135,22 @@
                 <version>${spring.cloud.dependencies.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-logging</artifactId>
+                <version>${spring.boot.dependencies.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-to-slf4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>ch.qos.logback</groupId>
+                        <artifactId>logback-classic</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!--springboot-web 依赖-->
@@ -208,7 +228,7 @@
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-registry-nacos</artifactId>
-                <version>2.7.8</version>
+                <version>${apache.dubbo.springboot.starter.version}</version>
             </dependency>
 
 
@@ -253,7 +273,7 @@
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus</artifactId>
-                <version>3.3.2</version>
+                <version>${mybatis.plus.boot.starter.version}</version>
             </dependency>
 
             <!-- security 整合 thymeleaf -->
@@ -268,12 +288,71 @@
                 <artifactId>persistence-api</artifactId>
                 <version>${jpa.version}</version>
             </dependency>
+            <!-- https://mvnrepository.com/artifact/io.github.lognet/grpc-spring-boot-starter -->
+            <dependency>
+                <groupId>io.github.lognet</groupId>
+                <artifactId>grpc-spring-boot-starter</artifactId>
+                <version>${grpc-spring-boot-starter.version}</version>
+            </dependency>
+
+
+
+            <!-- springcloud相关 -->
+            <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-turbine -->
+            <!-- spring-cloud-starter-netflix-turbine 是 Spring Cloud Netflix 中的一个模块，用于构建监控多个 Hystrix 断路器的数据聚合器。它能够将多个微服务的 Hystrix 监控数据聚合起来，展示在一个统一的监控面板上，以便于监控和分析。 -->
+            <!-- Turbine 的工作原理是通过轮询各个微服务的 Hystrix 监控端点，然后将数据聚合到一个可视化的监控面板中。通过这个面板，我们可以看到各个微服务的断路器状态、请求次数、错误率等信息，从而更好地监控系统的健康状况。 -->
+            <!-- 在 Spring Cloud 中，Turbine 曾经是一个非常受欢迎的模块，但是随着时间的推移，Netflix 对其 Hystrix 库的支持已经停止，并且停止了对 Turbine 的维护。因此，Spring Cloud 项目决定不再继续对 Turbine 进行支持，而是推荐使用其他替代方案，比如 Prometheus、Grafana、Spring Boot Admin 等。 -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-netflix-turbine</artifactId>
+                <version>2.2.10.RELEASE</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-hystrix-dashboard -->
+            <!-- spring-cloud-starter-netflix-hystrix-dashboard 是 Spring Cloud Netflix 中的一个模块，用于在 Spring Boot 应用程序中启用 Hystrix 仪表板。Hystrix 仪表板是一个 Web 应用程序，用于可视化显示 Hystrix 断路器的监控数据，包括断路器的状态、请求次数、错误率等信息，帮助开发人员更好地监控和理解断路器的行为。 -->
+            <!-- Hystrix 仪表板工作原理是通过轮询 Hystrix 断路器的监控端点，然后将数据可视化地展示在一个仪表板上。在该仪表板上，我们可以看到断路器的健康状况、请求情况、错误情况等信息，从而帮助开发人员及时发现和解决服务故障。 -->
+            <!-- Spring Cloud 项目曾经支持 Hystrix 仪表板模块，但随着时间的推移，Netflix 对 Hystrix 库的支持已经停止，并且停止了对 Hystrix 仪表板的维护。因此，Spring Cloud 项目决定不再继续对 Hystrix 仪表板模块进行支持。 -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId>
+                <version>2.2.10.RELEASE</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-zuul -->
+            <!-- spring-cloud-starter-netflix-zuul 是 Spring Cloud Netflix 中的一个模块，用于构建和管理微服务架构中的 API 网关。Zuul 可以作为微服务架构中的入口，接收所有客户端请求，并根据预定义的路由规则将请求转发到相应的后端服务。它还提供了一些过滤器，用于实现请求的安全、日志记录、认证、路由等功能。 -->
+            <!-- Spring Cloud Gateway 的出现: Spring Cloud 项目推出了一个新的网关模块 Spring Cloud Gateway，它提供了一种更现代化、更灵活的方式来构建 API 网关，支持响应式编程、函数式配置等特性，因此 Spring Cloud 项目将重点放在推广和维护 Spring Cloud Gateway 上。 -->
+            <!-- Netflix 对 Zuul 的支持停止: Netflix 停止对 Zuul 库的维护，导致 Zuul 的功能无法更新和完善，也无法满足用户日益增长的需求。 -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+                <version>2.2.10.RELEASE</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-hystrix -->
+            <!-- spring-cloud-starter-netflix-hystrix 是 Spring Cloud Netflix 中的一个模块，用于在微服务架构中实现容错和服务降级。Hystrix 是 Netflix 提供的一个开源库，用于处理分布式系统中的延迟和容错问题。它通过实现断路器模式来防止网络故障导致的级联故障，提高了分布式系统的弹性和可用性。 -->
+            <!-- Spring Cloud Netflix 提供了对 Hystrix 的集成，可以方便地将 Hystrix 应用于 Spring Cloud 微服务架构中。通过在服务的方法上添加 @HystrixCommand 注解，开发人员可以定义服务的降级逻辑，并指定当服务调用失败或超时时应该执行的备用逻辑。 -->
+            <!-- 尽管 Hystrix 曾经是 Spring Cloud 中的一个核心组件，但随着时间的推移和技术的发展，Netflix 对 Hystrix 库的支持已经停止，并且停止了对 Hystrix 的维护。因此，Spring Cloud 项目决定不再推荐使用 spring-cloud-starter-netflix-hystrix 模块。 -->
+            <!-- Spring Cloud 项目的发展: Spring Cloud 项目推出了更现代化、更灵活的替代方案，如 Resilience4j 和 Sentinel 等，这些替代方案提供了更丰富、更灵活的容错和服务降级功能，能够更好地满足微服务架构中的需求。 -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+                <version>2.2.10.RELEASE</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-ribbon -->
+            <!-- spring-cloud-starter-netflix-ribbon 是 Spring Cloud Netflix 中的一个模块，用于在微服务架构中实现客户端负载均衡。Ribbon 是 Netflix 提供的一个开源负载均衡器，它可以自动地将客户端请求分发到多个服务实例中，以提高系统的可用性和性能。 -->
+            <!-- Spring Cloud Netflix 提供了对 Ribbon 的集成，使开发人员可以方便地在 Spring Cloud 微服务架构中使用 Ribbon 来实现客户端负载均衡。通过在服务消费者中引入 spring-cloud-starter-netflix-ribbon 依赖，Spring Cloud 应用程序可以利用 Ribbon 来动态地选择服务实例，并实现负载均衡。 -->
+            <!-- 尽管 Ribbon 曾经是 Spring Cloud 中的一个重要组件，但随着时间的推移和技术的发展，Spring Cloud 项目决定不再推荐使用 spring-cloud-starter-netflix-ribbon 模块。 -->
+            <!-- Spring Cloud 项目推出了更现代化、更灵活的替代方案，如 Spring Cloud LoadBalancer 和 Istio 的集成等，这些替代方案提供了更丰富、更灵活的负载均衡功能，能够更好地满足微服务架构中的需求。 -->
+            <!-- Netflix 已经宣布停止对 Ribbon 库的维护，并鼓励用户迁移到其他替代方案。因此，Ribbon 的功能将不再更新和完善。 -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+                <version>2.2.10.RELEASE</version>
+            </dependency>
+
 
 
             <!--......................................................................................................-->
             <!--...............................................组件包...................................................-->
             <!--......................................................................................................-->
-            <!-- redisson. 这里使用的版本是 3.13.6, 没找到与 2.3.1.RELEASE 匹配的 redisson starter -->
+            <!-- redisson. 这里使用的版本是 3.13.6, 没找到与 2.7.16 匹配的 redisson starter -->
             <dependency>
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson</artifactId>
@@ -295,6 +374,11 @@
                 <groupId>com.oracle.database.nls</groupId>
                 <artifactId>orai18n</artifactId>
                 <version>${orai18n.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.connector.java.version}</version>
             </dependency>
 
 
@@ -318,11 +402,11 @@
                 <version>${guava.version}</version>
             </dependency>
             <!--poi工具包（apache用于处理文档的工具包）-->
-            <!--<dependency>-->
-            <!--    <groupId>org.apache.poi</groupId>-->
-            <!--    <artifactId>poi</artifactId>-->
-            <!--    <version>${apache.poi.version}</version>-->
-            <!--</dependency>-->
+            <dependency>
+               <groupId>org.apache.poi</groupId>
+               <artifactId>poi</artifactId>
+               <version>${apache.poi.version}</version>
+            </dependency>
             <!--用于 Microsoft Documents 的 Java API-->
             <!--解决xlsx的文件(包含了org.apache.poi工具包)-->
             <dependency>

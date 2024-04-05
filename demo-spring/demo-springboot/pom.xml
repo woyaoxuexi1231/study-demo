@@ -118,6 +118,11 @@
             <version>1.6.1</version>
         </dependency>
 
+        <!-- <dependency> -->
+        <!--     <groupId>io.github.lognet</groupId> -->
+        <!--     <artifactId>grpc-spring-boot-starter</artifactId> -->
+        <!-- </dependency> -->
+
 
         <!-- 整合 JSP -->
         <!-- 记得在 idea 设置的启动项里面编辑 working-directory 为 $MODULE_DIR$ -->

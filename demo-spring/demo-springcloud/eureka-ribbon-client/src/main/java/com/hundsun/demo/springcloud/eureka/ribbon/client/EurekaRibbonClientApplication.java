@@ -15,6 +15,7 @@ import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboar
  * @createDate: 2023/5/5 20:44
  */
 
+@Deprecated
 @EnableHystrixDashboard
 @EnableHystrix
 @EnableEurekaClient
