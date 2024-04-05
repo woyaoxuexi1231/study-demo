@@ -33,6 +33,17 @@ Raft 算法的核心思想是将分布式一致性问题分解成三个关键问
 3. **安全性（Safety）**：Raft
    算法通过一系列的约束条件来确保安全性。其中最重要的约束条件是领导者的完整性约束和最后一条日志条目的约束。领导者的完整性约束要求一个领导者只能将包含之前任期的日志条目复制到其他节点上。最后一条日志条目的约束要求如果两个日志条目的索引和任期相同，那么它们的内容必须相同。这些约束条件确保了系统的安全性，即使出现网络分区等问题也不会破坏一致性。
 
+### 各类注册中心的比较
 
+| 功能/特性          | Consul                                  | ZooKeeper                               | Eureka                                    | Nacos                                   | etcd                                    |
+|-----------------|-----------------------------------------|-----------------------------------------|-------------------------------------------|-----------------------------------------|-----------------------------------------|
+| 开发者             | HashiCorp                                | Apache Software Foundation               | Netflix                                   | Alibaba                                  | CoreOS                                  |
+| 服务注册和发现    | 是                                      | 是                                      | 是                                        | 是                                      | 是                                      |
+| 一致性             | 强一致性                                 | 强一致性                                | 最终一致性                                 | 最终一致性                               | ?                                       |
+| 数据模型           | KV存储、健康检查、DNS服务等               | 分层命名空间                              | REST API、基于HTTP的通信                       | KV存储、服务注册和发现、配置管理、动态 DNS等 | KV存储、健康检查、DNS服务等                 |
+| 通信协议           | HTTP/HTTPS、gRPC、DNS、TCP/UDP等         | 客户端和服务器之间的二进制协议             | HTTP、RESTful API                          | HTTP、gRPC等                              | HTTP/HTTPS、gRPC、DNS、TCP/UDP等         |
+| 开发语言           | Go、C++、Java等                          | Java                                    | Java                                      | Java、Go等                              | Go                                      |
+| 集成和生态系统    | 支持广泛，与HashiCorp生态系统集成         | 较少的第三方工具和库                        | Spring Cloud集成、Netflix OSS等                | Spring Cloud集成、Alibaba Cloud等           | ?                                       |
+| 框架支持与推荐    | Spring Cloud等                           | Apache Curator、Spring Cloud Zookeeper    | Spring Cloud等                            | Spring Cloud等                           | Kubernetes等                            |
 
-   
+这样的表格可以帮助您了解每个注册中心在不同框架中的集成和推荐情况。
