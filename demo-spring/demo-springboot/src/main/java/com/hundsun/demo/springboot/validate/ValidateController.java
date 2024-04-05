@@ -1,11 +1,16 @@
 package com.hundsun.demo.springboot.validate;
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.Valid;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
@@ -29,6 +34,7 @@ import java.util.Set;
 @Slf4j
 @RestController
 @RequestMapping("/validate")
+@Validated
 public class ValidateController {
 
     @GetMapping("/simpleValidate")
@@ -36,21 +42,27 @@ public class ValidateController {
         this.createUser(user);
     }
 
-    public void createUser(User user) {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
+    // public void createUser(User user) {
+    //     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    //     Validator validator = factory.getValidator();
+    //     Set<ConstraintViolation<User>> violations = validator.validate(user);
+    //
+    //     if (violations.isEmpty()) {
+    //         log.info("数据合法，执行相应的逻辑");
+    //     } else {
+    //         log.error("数据不合法，进行相应的处理");
+    //     }
+    // }
 
-        if (violations.isEmpty()) {
-            log.info("数据合法，执行相应的逻辑");
-        } else {
-            log.error("数据不合法，进行相应的处理");
-        }
+    @PostMapping("/users")
+    public String createUser(@Valid @RequestBody User user) {
+        // 处理用户创建逻辑
+        return "User created successfully!";
     }
 
-    // 其他方法和代码
-
+    @Data
     public static class User {
+
         @NotEmpty
         private String name;
 
