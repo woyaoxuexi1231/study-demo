@@ -40,10 +40,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- https://spring.io/projects/spring-cloud可以查看 spring boot 和 spring cloud 的版本对应 -->
-        <!-- <spring.boot.dependencies.version>2.7.16</spring.boot.dependencies.version> -->
-        <!-- <spring.cloud.dependencies.version>2021.0.9</spring.cloud.dependencies.version> -->
-        <spring.boot.dependencies.version>2.3.12.RELEASE</spring.boot.dependencies.version>
-        <spring.cloud.dependencies.version>Hoxton.SR12</spring.cloud.dependencies.version>
+        <spring.boot.dependencies.version>2.7.16</spring.boot.dependencies.version>
+        <spring.cloud.dependencies.version>2021.0.9</spring.cloud.dependencies.version>
+        <!-- <spring.boot.dependencies.version>2.3.12.RELEASE</spring.boot.dependencies.version> -->
+        <!-- <spring.cloud.dependencies.version>Hoxton.SR12</spring.cloud.dependencies.version> -->
 
         <!--spring-boot-dependencies 2.7.16 包含的依赖版本-->
         <spring.boot.starter.version>2.7.16</spring.boot.starter.version>

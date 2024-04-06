@@ -2,6 +2,7 @@ package com.hundsun.demo.springcloud.loadbalancer;
 
 import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import com.hundsun.demo.commom.core.model.req.SimpleReqDTO;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,7 +21,9 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+// @EnableCircuitBreaker
 @SpringBootApplication
 public class LoadBalancerExampleApplication {
 
@@ -31,11 +34,14 @@ public class LoadBalancerExampleApplication {
     @Bean
     @LoadBalanced
     public RestTemplate restTemplate() {
+        // return new RestTemplateBuilder().rootUri("http://eureka-client/").build();
         return new RestTemplate();
     }
 
     @RestController
     static class LoadBalancedController {
+
+        String url = "http://eureka-client/";
 
         @Autowired
         private LoadBalancerClient loadBalancerClient;
@@ -46,7 +52,6 @@ public class LoadBalancerExampleApplication {
         @GetMapping("/consume")
         public String consumeService() {
 
-            String url = "http://eureka-client/";
             StringBuilder sb = new StringBuilder();
 
             // 无参格式
@@ -131,6 +136,15 @@ public class LoadBalancerExampleApplication {
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
 
             return responseEntity.getBody();
+        }
+
+        @CircuitBreaker(name = "helloService", fallbackMethod = "fallbackHello")
+        public String callHelloService() {
+            return Objects.requireNonNull(restTemplate.getForObject(url + "hi2?req={1}", ResultDTO.class, "hello")).toString();
+        }
+
+        public String fallbackHello(Throwable throwable) {
+            return "Fallback: Unable to call hello service!";
         }
     }
 }

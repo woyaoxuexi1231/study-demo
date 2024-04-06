@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * @projectName: study-demo
@@ -33,5 +35,11 @@ public class EmployeeController {
     public PageInfo<EmployeeDO> getEmployees(@Valid @RequestBody EmployeeQryReqDTO req) {
         PageHelper.startPage(req.getPageNum(), req.getPageSize());
         return new PageInfo<>(employeeMapper.selectAll());
+    }
+
+    @PostMapping("/change")
+    public Map<String, Object> change(@RequestBody Map<String, Object> map) {
+        map.put("response-tag", new Date());
+        return map;
     }
 }

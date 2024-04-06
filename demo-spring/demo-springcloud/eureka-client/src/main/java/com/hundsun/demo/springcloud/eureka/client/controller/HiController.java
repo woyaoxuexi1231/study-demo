@@ -45,8 +45,8 @@ public class HiController {
      */
     @GetMapping("/hi2")
     public ResultDTO<?> hi2(@RequestParam(required = false, name = "req") String req, @RequestParam(required = false, name = "req2") String req2) {
-        throw new RuntimeException("error");
-        // return ResultDTOBuild.resultSuccessBuild("OK, im receive the msg : " + req + " + " + req2);
+        // throw new RuntimeException("error");
+        return ResultDTOBuild.resultSuccessBuild("OK, im receive the msg : " + req + " + " + req2);
     }
 
     /**
