@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * @projectName: study-demo
@@ -39,7 +40,13 @@ public class EmployeeController {
 
     @PostMapping("/change")
     public Map<String, Object> change(@RequestBody Map<String, Object> map) {
-        map.put("response-tag", new Date());
+        // 设置时区为东八区（北京时间）
+        TimeZone timeZone = TimeZone.getTimeZone("Asia/Shanghai");
+        // 获取当前时间
+        Date now = new Date();
+        // 根据指定时区获取当前时间
+        Date nowInTimeZone = new Date(now.getTime() + timeZone.getRawOffset());
+        map.put("response-tag", nowInTimeZone);
         return map;
     }
 }
