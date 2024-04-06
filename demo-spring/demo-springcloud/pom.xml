@@ -12,19 +12,20 @@
     <artifactId>demo-springcloud</artifactId>
     <packaging>pom</packaging>
     <modules>
+        <module>springcloud-Hoxton</module>
+
         <module>eureka-server</module>
         <module>eureka-client</module>
-        <module>eureka-ribbon-client</module>
-        <module>eureka-feign-client</module>
-        <module>eureka-monitor-client</module>
-        <module>eureka-zuul-client</module>
+        <module>spring-cloud-loadbalancer</module>
         <module>gateway</module>
+
         <module>consul-provider</module>
         <module>consul-consumer</module>
+
         <module>config-server</module>
         <module>config-client</module>
+
         <module>security</module>
-        <module>spring-cloud-loadbalancer</module>
     </modules>
 
     <properties>

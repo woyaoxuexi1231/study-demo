@@ -39,9 +39,11 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <!--  -->
-        <spring.boot.dependencies.version>2.7.16</spring.boot.dependencies.version>
-        <spring.cloud.dependencies.version>2021.0.9</spring.cloud.dependencies.version>
+        <!-- https://spring.io/projects/spring-cloud可以查看 spring boot 和 spring cloud 的版本对应 -->
+        <!-- <spring.boot.dependencies.version>2.7.16</spring.boot.dependencies.version> -->
+        <!-- <spring.cloud.dependencies.version>2021.0.9</spring.cloud.dependencies.version> -->
+        <spring.boot.dependencies.version>2.3.12.RELEASE</spring.boot.dependencies.version>
+        <spring.cloud.dependencies.version>Hoxton.SR12</spring.cloud.dependencies.version>
 
         <!--spring-boot-dependencies 2.7.16 包含的依赖版本-->
         <spring.boot.starter.version>2.7.16</spring.boot.starter.version>
@@ -305,7 +307,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-netflix-turbine</artifactId>
-                <version>2.2.10.RELEASE</version>
+                <version>2.2.9.RELEASE</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-hystrix-dashboard -->
             <!-- spring-cloud-starter-netflix-hystrix-dashboard 是 Spring Cloud Netflix 中的一个模块，用于在 Spring Boot 应用程序中启用 Hystrix 仪表板。Hystrix 仪表板是一个 Web 应用程序，用于可视化显示 Hystrix 断路器的监控数据，包括断路器的状态、请求次数、错误率等信息，帮助开发人员更好地监控和理解断路器的行为。 -->
@@ -314,7 +316,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId>
-                <version>2.2.10.RELEASE</version>
+                <version>2.2.9.RELEASE</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-zuul -->
             <!-- spring-cloud-starter-netflix-zuul 是 Spring Cloud Netflix 中的一个模块，用于构建和管理微服务架构中的 API 网关。Zuul 可以作为微服务架构中的入口，接收所有客户端请求，并根据预定义的路由规则将请求转发到相应的后端服务。它还提供了一些过滤器，用于实现请求的安全、日志记录、认证、路由等功能。 -->
@@ -323,7 +325,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
-                <version>2.2.10.RELEASE</version>
+                <version>2.2.9.RELEASE</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-hystrix -->
             <!-- spring-cloud-starter-netflix-hystrix 是 Spring Cloud Netflix 中的一个模块，用于在微服务架构中实现容错和服务降级。Hystrix 是 Netflix 提供的一个开源库，用于处理分布式系统中的延迟和容错问题。它通过实现断路器模式来防止网络故障导致的级联故障，提高了分布式系统的弹性和可用性。 -->
@@ -333,7 +335,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
-                <version>2.2.10.RELEASE</version>
+                <version>2.2.9.RELEASE</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-ribbon -->
             <!-- spring-cloud-starter-netflix-ribbon 是 Spring Cloud Netflix 中的一个模块，用于在微服务架构中实现客户端负载均衡。Ribbon 是 Netflix 提供的一个开源负载均衡器，它可以自动地将客户端请求分发到多个服务实例中，以提高系统的可用性和性能。 -->
@@ -344,7 +346,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
-                <version>2.2.10.RELEASE</version>
+                <version>2.2.9.RELEASE</version>
             </dependency>
 
 
