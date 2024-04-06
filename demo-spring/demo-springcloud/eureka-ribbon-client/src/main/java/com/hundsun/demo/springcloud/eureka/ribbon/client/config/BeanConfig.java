@@ -32,6 +32,8 @@ public class BeanConfig {
     @Bean
     @LoadBalanced
     public RestTemplate restTemplate() {
+        // 由于从从 Spring Cloud 2020.0 版本（即 Spring Cloud Ilford）开始，不再对 @LoadBalanced 对 Netflix Ribbon 提供支持。Netflix Ribbon 已经在 Spring Cloud 中被标记为过时（deprecated），并且在将来的版本中可能会被移除。
+        // 所以这个服务已经不再能够提供调用支持了
         return new RestTemplate();
     }
 }
