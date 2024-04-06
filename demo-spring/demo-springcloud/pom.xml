@@ -24,6 +24,7 @@
         <module>config-server</module>
         <module>config-client</module>
         <module>security</module>
+        <module>spring-cloud-loadbalancer</module>
     </modules>
 
     <properties>
