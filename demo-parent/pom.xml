@@ -58,21 +58,7 @@
 
         <!-- dubbo -->
         <apache.dubbo.springboot.starter.version>3.2.7</apache.dubbo.springboot.starter.version>
-        <pagehelper.version>5.2.0</pagehelper.version>
-        <apache.poi.ooxml.version>4.1.1</apache.poi.ooxml.version>
-        <apache.poi.version>4.1.1</apache.poi.version>
-        <apache.curator.framework.version>2.13.0</apache.curator.framework.version>
-        <apache.curator.recipes.version>2.13.0</apache.curator.recipes.version>
-        <commons.io.version>2.6</commons.io.version>
-        <alibaba.fastjson.version>2.0.31</alibaba.fastjson.version>
 
-        <!--第三方依赖-->
-        <!--一些工具组件-->
-        <jpa.version>1.0</jpa.version>
-        <hutool.core.version>5.6.1</hutool.core.version>
-        <guava.version>21.0</guava.version>
-        <cglib.version>3.2.10</cglib.version>
-        <javax.servlet.jsp.version>2.2.1</javax.servlet.jsp.version>
 
         <!-- 数据库相关 -->
         <mysql.connector.java.version>8.0.19</mysql.connector.java.version>
@@ -81,6 +67,8 @@
         <redisson.version>3.12.4</redisson.version>
         <!-- Redisson 在 3.13.0 and 3.19.0 更换了默认的协议，会报错Unsupported protocol version 118 -->
         <redisson.spring.boot.starter.verison>3.12.4</redisson.spring.boot.starter.verison>
+
+
         <!-- Mybatis框架 -->
         <mapper.spring.boot.starter.version>4.2.1</mapper.spring.boot.starter.version>
         <mybatis.version>3.5.5</mybatis.version>
@@ -88,11 +76,35 @@
         <pagehelper.spring.boot.starter.version>1.3.0</pagehelper.spring.boot.starter.version>
         <mybatis.generator.core.version>1.3.2</mybatis.generator.core.version>
         <mybatis.plus.boot.starter.version>3.3.2</mybatis.plus.boot.starter.version>
-        <apache.curator.x.discovery>2.13.0</apache.curator.x.discovery>
-        <thymeleaf-extras-springsecurity4.version>2.1.3.RELEASE</thymeleaf-extras-springsecurity4.version>
-        <apache.curator.client.version>2.13.0</apache.curator.client.version>
+        <pagehelper.version>5.2.0</pagehelper.version>
+
+
+        <!-- curator -->
         <zookeeper.version>3.4.8</zookeeper.version>
+        <apache.curator.x.discovery>2.13.0</apache.curator.x.discovery>
+        <apache.curator.client.version>2.13.0</apache.curator.client.version>
+        <apache.curator.framework.version>2.13.0</apache.curator.framework.version>
+        <apache.curator.recipes.version>2.13.0</apache.curator.recipes.version>
+
+
+        <!--第三方依赖-->
+        <!--一些工具组件-->
+        <jpa.version>1.0</jpa.version>
+        <hutool.core.version>5.6.1</hutool.core.version>
+        <guava.version>21.0</guava.version>
+        <cglib.version>3.2.10</cglib.version>
+        <javax.servlet.jsp.version>2.2.1</javax.servlet.jsp.version>
+        <apache.poi.ooxml.version>4.1.1</apache.poi.ooxml.version>
+        <apache.poi.version>4.1.1</apache.poi.version>
+        <commons.io.version>2.6</commons.io.version>
+        <alibaba.fastjson.version>2.0.31</alibaba.fastjson.version>
+        <!-- 这个依赖spring已经有了 -->
+        <!-- <gson.version>2.10.1</gson.version>  -->
+        <!-- Thymeleaf 模板引擎的一个扩展模块，用于集成 Spring Security 和 Thymeleaf -->
+        <thymeleaf-extras-springsecurity4.version>3.0.5.RELEASE</thymeleaf-extras-springsecurity4.version>
+        <!-- grpc框架 -->
         <grpc-spring-boot-starter.version>4.0.0</grpc-spring-boot-starter.version>
+
 
         <!--插件版本-->
         <spring.boot.maven.plugin.version>2.2.6.RELEASE</spring.boot.maven.plugin.version>
@@ -130,7 +142,7 @@
                 <!-- 可选依赖的标签, 如果为 true, 那么依赖不会得以传递, 只能显式的引入这个依赖 -->
                 <!--<optional>false</optional>-->
             </dependency>
-
+            <!-- springcloud的依赖版本控制 -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -138,7 +150,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
+            <!-- springlogging,这里为了排除多余的日志框架 -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-logging</artifactId>
@@ -168,7 +180,7 @@
 
 
             <!--......................................................................................................-->
-            <!--...............................................框架....................................................-->
+            <!--...............................................DUBBO....................................................-->
             <!--......................................................................................................-->
             <!--dubbo-->
             <dependency>
@@ -176,6 +188,22 @@
                 <artifactId>dubbo-spring-boot-starter</artifactId>
                 <version>${apache.dubbo.springboot.starter.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.dubbo.extensions</groupId>
+                <artifactId>dubbo-mock-admin</artifactId>
+                <version>3.0.0</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.apache.dubbo/dubbo-registry-nacos -->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-registry-nacos</artifactId>
+                <version>${apache.dubbo.springboot.starter.version}</version>
+            </dependency>
+
+
+            <!--......................................................................................................-->
+            <!--...............................................curator....................................................-->
+            <!--......................................................................................................-->
             <!--Curator是Netflix公司开源的一套zookeeper客户端框架，解决了很多Zookeeper客户端非常底层的细节开发工作，包括连接重连、反复注册Watcher和NodeExistsException异常等等。-->
             <!--1.curator-framework对zookeeper的底层api的一些封装-->
             <dependency>
@@ -221,19 +249,28 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-            <dependency>
-                <groupId>org.apache.dubbo.extensions</groupId>
-                <artifactId>dubbo-mock-admin</artifactId>
-                <version>3.0.0</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/org.apache.dubbo/dubbo-registry-nacos -->
-            <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-registry-nacos</artifactId>
-                <version>${apache.dubbo.springboot.starter.version}</version>
-            </dependency>
 
 
+            <!--......................................................................................................-->
+            <!--...............................................DB相关....................................................-->
+            <!--......................................................................................................-->
+            <!--oracle的驱动包-->
+            <dependency>
+                <groupId>com.oracle.database.jdbc</groupId>
+                <artifactId>ojdbc8</artifactId>
+                <version>${ojdbc8.version}</version>
+            </dependency>
+            <!--解决springboot连接oracle的报错(不支持的字符集 (在类路径中添加 orai18n.jar):ZHS16GBK)-->
+            <dependency>
+                <groupId>com.oracle.database.nls</groupId>
+                <artifactId>orai18n</artifactId>
+                <version>${orai18n.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.connector.java.version}</version>
+            </dependency>
             <!-- 通用Mapper(包含了mybatis和mybatis spring两个包) -->
             <!--https://mapperhelper.github.io/docs/-->
             <dependency>
@@ -278,28 +315,11 @@
                 <version>${mybatis.plus.boot.starter.version}</version>
             </dependency>
 
-            <!-- security 整合 thymeleaf -->
-            <dependency>
-                <groupId>org.thymeleaf.extras</groupId>
-                <artifactId>thymeleaf-extras-springsecurity4</artifactId>
-                <version>${thymeleaf-extras-springsecurity4.version}</version>
-            </dependency>
-            <!-- JPA规范包 -->
-            <dependency>
-                <groupId>javax.persistence</groupId>
-                <artifactId>persistence-api</artifactId>
-                <version>${jpa.version}</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/io.github.lognet/grpc-spring-boot-starter -->
-            <dependency>
-                <groupId>io.github.lognet</groupId>
-                <artifactId>grpc-spring-boot-starter</artifactId>
-                <version>${grpc-spring-boot-starter.version}</version>
-            </dependency>
 
-
-
-            <!-- springcloud相关 -->
+            <!--......................................................................................................-->
+            <!--...............................................springcloud新版本已经抛弃的部分依赖....................................................-->
+            <!--......................................................................................................-->
+            <!-- springcloud新版本已经抛弃的部分依赖(由于Netflix不再维护) -->
             <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-turbine -->
             <!-- spring-cloud-starter-netflix-turbine 是 Spring Cloud Netflix 中的一个模块，用于构建监控多个 Hystrix 断路器的数据聚合器。它能够将多个微服务的 Hystrix 监控数据聚合起来，展示在一个统一的监控面板上，以便于监控和分析。 -->
             <!-- Turbine 的工作原理是通过轮询各个微服务的 Hystrix 监控端点，然后将数据聚合到一个可视化的监控面板中。通过这个面板，我们可以看到各个微服务的断路器状态、请求次数、错误率等信息，从而更好地监控系统的健康状况。 -->
@@ -350,9 +370,8 @@
             </dependency>
 
 
-
             <!--......................................................................................................-->
-            <!--...............................................组件包...................................................-->
+            <!--...............................................redisson...................................................-->
             <!--......................................................................................................-->
             <!-- redisson. 这里使用的版本是 3.13.6, 没找到与 2.7.16 匹配的 redisson starter -->
             <dependency>
@@ -365,22 +384,16 @@
                 <artifactId>redisson-spring-boot-starter</artifactId>
                 <version>${redisson.spring.boot.starter.verison}</version>
             </dependency>
-            <!--oracle的驱动包-->
+
+
+            <!--......................................................................................................-->
+            <!--...............................................模板语言...................................................-->
+            <!--......................................................................................................-->
+            <!-- security 整合 thymeleaf -->
             <dependency>
-                <groupId>com.oracle.database.jdbc</groupId>
-                <artifactId>ojdbc8</artifactId>
-                <version>${ojdbc8.version}</version>
-            </dependency>
-            <!--解决springboot连接oracle的报错(不支持的字符集 (在类路径中添加 orai18n.jar):ZHS16GBK)-->
-            <dependency>
-                <groupId>com.oracle.database.nls</groupId>
-                <artifactId>orai18n</artifactId>
-                <version>${orai18n.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>${mysql.connector.java.version}</version>
+                <groupId>org.thymeleaf.extras</groupId>
+                <artifactId>thymeleaf-extras-springsecurity4</artifactId>
+                <version>${thymeleaf-extras-springsecurity4.version}</version>
             </dependency>
 
 
@@ -405,9 +418,9 @@
             </dependency>
             <!--poi工具包（apache用于处理文档的工具包）-->
             <dependency>
-               <groupId>org.apache.poi</groupId>
-               <artifactId>poi</artifactId>
-               <version>${apache.poi.version}</version>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>${apache.poi.version}</version>
             </dependency>
             <!--用于 Microsoft Documents 的 Java API-->
             <!--解决xlsx的文件(包含了org.apache.poi工具包)-->
@@ -443,6 +456,24 @@
                 <groupId>cglib</groupId>
                 <artifactId>cglib</artifactId>
                 <version>${cglib.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+            <!-- <dependency> -->
+            <!--     <groupId>com.google.code.gson</groupId> -->
+            <!--     <artifactId>gson</artifactId> -->
+            <!--     <version>${gson.version}</version> -->
+            <!-- </dependency> -->
+            <!-- JPA规范包 -->
+            <dependency>
+                <groupId>javax.persistence</groupId>
+                <artifactId>persistence-api</artifactId>
+                <version>${jpa.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/io.github.lognet/grpc-spring-boot-starter -->
+            <dependency>
+                <groupId>io.github.lognet</groupId>
+                <artifactId>grpc-spring-boot-starter</artifactId>
+                <version>${grpc-spring-boot-starter.version}</version>
             </dependency>
 
 

@@ -3,12 +3,18 @@ package com.hundsun.demo.dubbo.consumer.controller;
 import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import com.hundsun.demo.dubbo.provider.api.service.ProviderService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.ReferenceConfig;
+import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.rpc.cluster.loadbalance.RoundRobinLoadBalance;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @ProductName: Hundsun amust
@@ -59,19 +65,60 @@ public class SimpleController {
      */
     @GetMapping("/simpleRpcInvoke")
     public ResultDTO<?> simpleRpcInvoke() {
-        int p1 = 0;
-        int p2 = 0;
+        Map<String, Integer> map = new HashMap<>();
         for (int i = 0; i < 10; i++) {
             String s = providerService.RpcInvoke();
-            if (s.contains("10290")) {
-                p1++;
+            if (map.containsKey(s)) {
+                map.put(s, map.get(s) + 1);
             } else {
-                p2++;
+                map.put(s, 1);
             }
         }
-        log.info("p1:{}, p2:{}", p1, p2);
+        log.info("==============================================================");
+        map.forEach((k, v) -> log.info("{}: {} times", k, v));
+        log.info("==============================================================");
         return new ResultDTO<>();
     }
 
+
+    @GetMapping("/sticky")
+    public void sticky(){
+        /*
+        ReferenceConfig 类用于配置 Dubbo 服务的相关信息，例如应用信息、注册中心信息、服务接口、负载均衡策略、集群容错策略等。通过配置 ReferenceConfig 对象，我们可以告诉 Dubbo 如何访问和调用远程的 Dubbo 服务。
+
+        同时，ReferenceConfig 类还提供了 get() 方法，用于获取对应服务的代理对象。获取到代理对象后，我们就可以像调用本地对象一样来调用远程的 Dubbo 服务。
+
+        以下是 ReferenceConfig 类的一些常用属性和方法：
+
+        setApplication(ApplicationConfig application): 设置应用配置信息。
+        setRegistry(RegistryConfig registry): 设置注册中心配置信息。
+        setInterface(Class<?> interfaceClass): 设置服务接口。
+        setUrl(String url): 设置直连 URL 地址。
+        setLoadbalance(String loadbalance): 设置负载均衡策略。
+        setCluster(String cluster): 设置集群容错策略。
+        setVersion(String version): 设置服务版本。
+        setGroup(String group): 设置服务分组。
+        setTimeout(int timeout): 设置超时时间。
+        setRetries(int retries): 设置重试次数。
+        setSticky(boolean sticky): 设置粘滞连接策略。Dubbo 会在首次调用服务时选择一个服务提供者，并与其建立连接。之后，在同一个方法内的后续调用中，Dubbo 将会尽可能地继续使用与该服务提供者的连接，而不再重新选择其他服务提供者。可以减少连接建立的开销，提高连接的复用率，从而降低网络通信的延迟，提升系统的性能和稳定性。
+        setProxy(String proxy): 设置代理类型（JDK 代理或者 Javassist 代理）
+         */
+        ReferenceConfig<ProviderService> reference = new ReferenceConfig<>();
+        reference.setInterface(ProviderService.class);
+        reference.setSticky(true);
+        ProviderService service = reference.get();
+        Map<String, Integer> map = new HashMap<>();
+        for (int i = 0; i < 10; i++) {
+            String s = service.RpcInvoke();
+            if (map.containsKey(s)) {
+                map.put(s, map.get(s) + 1);
+            } else {
+                map.put(s, 1);
+            }
+        }
+        log.info("==============================================================");
+        map.forEach((k, v) -> log.info("{}: {} times", k, v));
+        log.info("==============================================================");
+    }
 
 }
