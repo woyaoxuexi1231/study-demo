@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>demo-parent</artifactId>
+        <groupId>com.hundsun</groupId>
+        <version>1.0.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>demo-log</artifactId>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+
+        <!-- log4j 最早的日志框架, 是 apache 基金会一个项目, 由 Ceki Gülcü 创建. -->
+        <!-- <dependency> -->
+        <!--     <groupId>log4j</groupId> -->
+        <!--     <artifactId>log4j</artifactId> -->
+        <!--     <version>1.2.17</version> &lt;!&ndash; 替换为最新版本 &ndash;&gt; -->
+        <!-- </dependency> -->
+
+        <!-- 为了解耦日志的接口与实现, apache在2002年推出了JCL(Jakarta Commons Logging), 在当时具体的实现由log4j和JUL 完成 -->
+        <!-- <dependency> -->
+        <!--     <groupId>commons-logging</groupId> -->
+        <!--     <artifactId>commons-logging</artifactId> -->
+        <!--     <version>1.2</version> &lt;!&ndash; 替换为最新版本 &ndash;&gt; -->
+        <!-- </dependency> -->
+
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.32</version> <!-- 根据你需要的版本号来指定 -->
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>1.7.32</version> <!-- 根据你需要的版本号来指定 -->
+        </dependency>
+
+
+    </dependencies>
+
+</project>
