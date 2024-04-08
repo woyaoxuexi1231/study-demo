@@ -4,14 +4,13 @@
 //
 // import java.util.logging.Logger;
 //
-// public class JulToSlf4jExample {
+// public class JulToSlf4jToLogbackExample {
 //
-//     private static final Logger logger = Logger.getLogger(JulToSlf4jExample.class.getName());
+//     private static final Logger logger = Logger.getLogger(JulToSlf4jToLogbackExample.class.getName());
 //
 //     public static void main(String[] args) {
-//         // Optionally remove existing handlers attached to j.u.l root logger
+//         // 移除现有的JUL默认处理器，并安装SLF4JBridgeHandler
 //         SLF4JBridgeHandler.removeHandlersForRootLogger();
-//         // Add SLF4JBridgeHandler to j.u.l's root logger
 //         SLF4JBridgeHandler.install();
 //         // 记录不同级别的日志消息
 //         logger.severe("Severe log message");

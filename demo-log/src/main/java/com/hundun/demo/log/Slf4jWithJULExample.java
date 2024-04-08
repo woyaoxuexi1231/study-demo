@@ -13,12 +13,12 @@
 //
 //     public static void main(String[] args) {
 //         // 读取配置文件
-//         try {
-//             LogManager.getLogManager().readConfiguration(Slf4jWithJULExample.class.getResourceAsStream("/logging.properties"));
-//         } catch (IOException e) {
-//             System.out.println("Could not load configuration file");
-//             e.printStackTrace();
-//         }
+//         // try {
+//         //     LogManager.getLogManager().readConfiguration(Slf4jWithJULExample.class.getResourceAsStream("/logging.properties"));
+//         // } catch (IOException e) {
+//         //     System.out.println("Could not load configuration file");
+//         //     e.printStackTrace();
+//         // }
 //         // 记录不同级别的日志消息
 //         logger.debug("Debug log message");
 //         logger.info("Info log message");

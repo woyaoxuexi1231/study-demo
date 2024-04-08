@@ -30,7 +30,7 @@ SLF4J: Found binding in [jar:file:/C:/Users/h1123/.m2/repository/org/apache/logg
 SLF4J: Found binding in [jar:file:/C:/Users/h1123/.m2/repository/org/slf4j/slf4j-log4j12/1.7.30/slf4j-log4j12-1.7.30.jar!/org/slf4j/impl/StaticLoggerBinder.class]
 SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
 SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
-这个是存在了多个 SLF4J 的具体实现, 删除一个
+这个是存在了多个 SLF4J 的具体实现, 这两个一个log4j(slf4j-log4j12)的一个是log4j2(log4j-slf4j-impl)
 
 
 JCL(Commons-Logging) & log4j
@@ -47,20 +47,4 @@ jul-to-slf4j(提供了 jul(java-util-logging) 到 slf4j 的支持, 依赖包含s
 log4j-slf4j-impl+log4j2
 
 log4j-slf4j-impl cannot be present with log4j-to-slf4j
-
-
-下表列出了 SLF4J 提供的主要桥接器及其作用：
-
-| 桥接器                     | 作用                                                             |
-|--------------------------|------------------------------------------------------------------|
-| `jcl-over-slf4j`         | 将 Jakarta Commons Logging (JCL) 的日志记录委托给 SLF4J。             |
-| `log4j-over-slf4j`       | 将 Log4j 1.x 的日志记录委托给 SLF4J。                                 |
-| `jul-to-slf4j`           | 将 JDK 自带的日志框架（JUL）的日志记录委托给 SLF4J。                    |
-| `log4j12-over-slf4j`     | 将 Log4j 1.2.x 的日志记录委托给 SLF4J。                              |
-| `jboss-logmanager-over-slf4j` | 将 JBoss Log Manager 的日志记录委托给 SLF4J。                         |
-| `jul-to-slf4j`           | 将 Logback 的日志记录委托给 SLF4J。                                  |
-| `slf4j-jcl`              | 允许在 JCL 应用程序中使用 SLF4J 进行日志记录。                         |
-| `slf4j-jdk14`            | 允许在 JDK 1.4 java.util.logging 应用程序中使用 SLF4J 进行日志记录。    |
-
-这些桥接器允许你在项目中使用 SLF4J 进行日志记录，而不必直接依赖于特定的日志实现框架。你可以根据项目中已有的日志框架选择相应的桥接器，将其日志记录委托给 SLF4J，以便统一管理和使用日志。
 
