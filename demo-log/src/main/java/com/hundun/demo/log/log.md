@@ -1,10 +1,10 @@
 日志框架的进化史 - log4j - Apache(1999) -> JUL - sun(2002) -> JCL - Apache(commons logging)(2002) -> slf4j&logback - Ceki Gülcü(2005,2006) -> log4j - 2Apache(2014)
 
-log4j 最早的日志框架, 是 apache 基金会一个项目, 由 Ceki Gülcü 创建.
--> 随后apache想让sun公司把log4j并入jdk遭到了拒绝, sun又模仿log4j推出了JUL(java.util.logging)
--> 为了解耦日志的接口与实现, apache紧接着推出了 JCL(Jakarta Commons Logging), 当时具体的实现由 log4j和JUL 完成
--> Ceki Gülcü 后来与 Apache 基金会关于 Commons-Logging 制定的标准存在分歧, Ceki Gülcü 离开 Apache 并先后创建了 Slf4j(门面,同样支持log4j和JUL) 和 Logback(实现) 两个项目
--> 为了维护在 Java 日志江湖的地位, 防止 JCL、Log4j 被 Slf4j、Logback 组合取代, 2014 年 Apache 推出了 Log4j2, Log4j2 与 log4j 不兼容, 经过大量深度优化, 其性能显著提升
+log4j 最早的日志框架, 是 apache 基金会一个项目, 由 Ceki Gülcü 创建.  
+-> 随后apache想让sun公司把log4j并入jdk遭到了拒绝, sun又模仿log4j推出了JUL(java.util.logging)  
+-> 为了解耦日志的接口与实现, apache紧接着推出了 JCL(Jakarta Commons Logging), 当时具体的实现由 log4j和JUL 完成  
+-> Ceki Gülcü 后来与 Apache 基金会关于 Commons-Logging 制定的标准存在分歧, Ceki Gülcü 离开 Apache 并先后创建了 Slf4j(门面,同样支持log4j和JUL) 和 Logback(实现) 两个项目  
+-> 为了维护在 Java 日志江湖的地位, 防止 JCL、Log4j 被 Slf4j、Logback 组合取代, 2014 年 Apache 推出了 Log4j2, Log4j2 与 log4j 不兼容, 经过大量深度优化, 其性能显著提升  
 
 日志框架分为日志门面(只提供相应API而不提供接口实现)和日志系统(提供具体的接口实现)
 日志门面: commons-logging(JCL), slf4j
@@ -47,3 +47,20 @@ jul-to-slf4j(提供了 jul(java-util-logging) 到 slf4j 的支持, 依赖包含s
 log4j-slf4j-impl+log4j2
 
 log4j-slf4j-impl cannot be present with log4j-to-slf4j
+
+
+下表列出了 SLF4J 提供的主要桥接器及其作用：
+
+| 桥接器                     | 作用                                                             |
+|--------------------------|------------------------------------------------------------------|
+| `jcl-over-slf4j`         | 将 Jakarta Commons Logging (JCL) 的日志记录委托给 SLF4J。             |
+| `log4j-over-slf4j`       | 将 Log4j 1.x 的日志记录委托给 SLF4J。                                 |
+| `jul-to-slf4j`           | 将 JDK 自带的日志框架（JUL）的日志记录委托给 SLF4J。                    |
+| `log4j12-over-slf4j`     | 将 Log4j 1.2.x 的日志记录委托给 SLF4J。                              |
+| `jboss-logmanager-over-slf4j` | 将 JBoss Log Manager 的日志记录委托给 SLF4J。                         |
+| `jul-to-slf4j`           | 将 Logback 的日志记录委托给 SLF4J。                                  |
+| `slf4j-jcl`              | 允许在 JCL 应用程序中使用 SLF4J 进行日志记录。                         |
+| `slf4j-jdk14`            | 允许在 JDK 1.4 java.util.logging 应用程序中使用 SLF4J 进行日志记录。    |
+
+这些桥接器允许你在项目中使用 SLF4J 进行日志记录，而不必直接依赖于特定的日志实现框架。你可以根据项目中已有的日志框架选择相应的桥接器，将其日志记录委托给 SLF4J，以便统一管理和使用日志。
+

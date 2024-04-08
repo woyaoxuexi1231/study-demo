@@ -25,7 +25,10 @@
         <!--     <version>1.2.17</version> &lt;!&ndash; 替换为最新版本 &ndash;&gt; -->
         <!-- </dependency> -->
 
+        <!-- 这中间由于Apache想把log4j并入jdk遭到SUN公司的拒绝, 而后sun公司自己研发了JUL -->
+
         <!-- 为了解耦日志的接口与实现, apache在2002年推出了JCL(Jakarta Commons Logging), 在当时具体的实现由log4j和JUL 完成 -->
+        <!-- 这是一个日志API -->
         <!-- <dependency> -->
         <!--     <groupId>commons-logging</groupId> -->
         <!--     <artifactId>commons-logging</artifactId> -->
@@ -33,17 +36,61 @@
         <!-- </dependency> -->
 
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.32</version> <!-- 根据你需要的版本号来指定 -->
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jul-to-slf4j</artifactId>
-            <version>1.7.32</version> <!-- 根据你需要的版本号来指定 -->
-        </dependency>
+        <!-- Ceki Gülcü 在JCL的标准制定方面产生了分歧, 离开 Apache 并先后创建了 Slf4j(门面,同样支持log4j和JUL) 和 Logback(实现) 两个项目 -->
+        <!-- <dependency> -->
+        <!--     <groupId>org.slf4j</groupId> -->
+        <!--     <artifactId>slf4j-api</artifactId> -->
+        <!--     <version>1.7.32</version> &lt;!&ndash; 根据你需要的版本号来指定 &ndash;&gt; -->
+        <!-- </dependency> -->
+        <!-- Logback作为Ceki Gülcü开发的slf4j的默认实现 -->
+        <!-- <dependency> -->
+        <!--     <groupId>ch.qos.logback</groupId> -->
+        <!--     <artifactId>logback-classic</artifactId> -->
+        <!--     <version>1.2.6</version> &lt;!&ndash; 根据你需要的版本号来指定 &ndash;&gt; -->
+        <!-- </dependency> -->
+        <!-- slf4j桥接到jul(JDK的实现),即使用slf4j的API,实现由JDK输出 -->
+        <!-- <dependency> -->
+        <!--     <groupId>org.slf4j</groupId> -->
+        <!--     <artifactId>slf4j-jdk14</artifactId> -->
+        <!--     <version>1.7.32</version> &lt;!&ndash; 根据你需要的版本号来指定 &ndash;&gt; -->
+        <!-- </dependency> -->
+        <!-- slf4j桥接到log4j的桥接包 -->
+        <!-- <dependency> -->
+        <!--     <groupId>org.slf4j</groupId> -->
+        <!--     <artifactId>slf4j-log4j12</artifactId> -->
+        <!-- </dependency> -->
 
+        <!-- 2014 年 Apache 推出了 Log4j2, Log4j2 与 log4j 不兼容, 经过大量深度优化, 其性能显著提升 -->
+        <!-- 这是一个slf4j桥接到log4j2 -->
+        <!-- <dependency> -->
+        <!--     <groupId>org.apache.logging.log4j</groupId> -->
+        <!--     <artifactId>log4j-slf4j-impl</artifactId> -->
+        <!--     &lt;!&ndash; <version>2.17.1</version> &lt;!&ndash; 或者其他版本 &ndash;&gt; &ndash;&gt; -->
+        <!-- </dependency> -->
+
+        <!-- 我这里加入了一个JDK日志全部重定向到SJF4j的依赖包,还加了一个logback的实现 -->
+        <!-- 按我的猜想,使用jdk的日志打印会被重定向到logback -->
+        <!-- 需要在代码里使用SLF4JBridgeHandler.removeHandlersForRootLogger()和SLF4JBridgeHandler.install()这两个方法才行 -->
+        <!-- <dependency> -->
+        <!--     <groupId>org.slf4j</groupId> -->
+        <!--     <artifactId>jul-to-slf4j</artifactId> -->
+        <!--     <version>1.7.32</version> &lt;!&ndash; 或者其他版本 &ndash;&gt; -->
+        <!-- </dependency> -->
+        <!-- <dependency> -->
+        <!--     <groupId>ch.qos.logback</groupId> -->
+        <!--     <artifactId>logback-classic</artifactId> -->
+        <!--     <version>1.2.6</version> &lt;!&ndash; 根据你需要的版本号来指定 &ndash;&gt; -->
+        <!-- </dependency> -->
+
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-jul</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+        </dependency>
 
     </dependencies>
 
