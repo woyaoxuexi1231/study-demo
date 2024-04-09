@@ -5,12 +5,19 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * @ProductName: Hundsun amust
@@ -65,6 +72,42 @@ public class ExcelController {
         // 在这里添加代码将文件转换为字节数组
         // 返回文件字节数组
         return null;
+    }
+
+
+    private static final String UPLOAD_DIR = "uploads";
+
+    @PostMapping("/upload")
+    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
+
+        // 文件上传可能超过大小. 配置这两个参数
+        // spring.servlet.multipart.max-file-size=10MB 指定了单个文件上传的最大大小限制
+        // spring.servlet.multipart.max-request-size=10MB 指定了整个 multipart 请求的最大大小限制
+
+        if (file.isEmpty()) {
+            return new ResponseEntity<>("Please select a file to upload", HttpStatus.BAD_REQUEST);
+        }
+
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        Path uploadPath = Paths.get(UPLOAD_DIR);
+
+        try {
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(file.getInputStream(), filePath);
+
+            return new ResponseEntity<>("File uploaded successfully: " + fileName, HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<>("Failed to upload file: " + fileName, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/")
+    public String index() {
+        return "Welcome to file upload example. Use /upload to upload a file.";
     }
 }
 
