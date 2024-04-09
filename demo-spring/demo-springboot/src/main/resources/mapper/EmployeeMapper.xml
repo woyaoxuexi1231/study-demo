@@ -11,4 +11,10 @@
         select *
         from employees
     </select>
+
+    <select id="selectLastNameById" resultType="java.lang.String">
+        select t.lastName
+        from employees t
+        where t.employeeNumber = #{id}
+    </select>
 </mapper>

@@ -1,6 +1,7 @@
 package com.hundsun.demo.springboot.common.mapper;
 
 import com.hundsun.demo.commom.core.model.EmployeeDO;
+import org.apache.ibatis.annotations.Param;
 import tk.mybatis.mapper.common.BaseMapper;
 import tk.mybatis.mapper.common.ConditionMapper;
 import tk.mybatis.mapper.common.MySqlMapper;
@@ -23,4 +24,6 @@ public interface EmployeeMapper extends BaseMapper<EmployeeDO>, ConditionMapper<
     void insertWithDollar(EmployeeDO employeeDO);
 
     List<EmployeeDO> selectAll2();
+
+    String selectLastNameById(@Param(value = "id") Long employeeNumber);
 }
