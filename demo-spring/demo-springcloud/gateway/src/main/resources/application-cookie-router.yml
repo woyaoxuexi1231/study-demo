@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: cookie_route
+          uri: http://httpbin.org:80
+          predicates:
+            - Cookie=name,value
+# postman请求header里添加cookie
+# key为Cookie  value为name=value

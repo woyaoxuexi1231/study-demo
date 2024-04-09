@@ -1,0 +1,11 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: method_route
+          uri: http://httpbin.org:80
+          predicates:
+            - Method=GET
+            - Path=/api
+# api接口会被转发到http://httpbin.org:80
+# 如果不配path,那么就是所有get请求都会被转发到http://httpbin.org:80

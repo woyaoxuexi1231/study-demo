@@ -1,0 +1,9 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: host_route
+          uri: http://httpbin.org:80
+          predicates:
+            - Host=DESKTOP-SFJ85U4,localhost,127.0.0.1
+# 这个也是需要在请求头中添加一个Host的参数,然后指定他的值

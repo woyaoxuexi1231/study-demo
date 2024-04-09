@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: path_route
+          uri: https://www.baidu.com
+          predicates:
+            - Path=/api/**
+
+# 这个命中不仅会跳转,还会把请求转发,这里如果通过,相当于回去调用https://www.baidu.com/api/**
