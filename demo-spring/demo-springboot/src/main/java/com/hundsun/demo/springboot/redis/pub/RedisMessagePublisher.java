@@ -1,12 +1,13 @@
 package com.hundsun.demo.springboot.redis.pub;
 
+import cn.hutool.core.date.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 
 
 @RestController
@@ -15,14 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class RedisMessagePublisher {
 
     @Autowired
+    @Qualifier(value = "stringObjRedisTemplate")
     private RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     private ChannelTopic channelTopic;
 
     @RequestMapping(value = "/publish")
-    public void publish(String message) {
-        redisTemplate.convertAndSend(channelTopic.getTopic(), message);
-        System.out.println("Published message: " + message);
+    public void publish() {
+        redisTemplate.convertAndSend(channelTopic.getTopic(), DateUtil.date().toString());
+        System.out.println("Published message: " + DateUtil.date());
     }
 }
