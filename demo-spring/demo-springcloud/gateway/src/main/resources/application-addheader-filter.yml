@@ -1,0 +1,11 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: after_router
+          uri: http://httpbin.org:80
+          predicates:
+            - After=2023-12-31T23:59:59Z
+          filters:
+            - AddRequestHeader=X-Request-Foo, Bar
+#           AddRequestHeaderGatewayFilterFactory约定写为AddRequestHeader

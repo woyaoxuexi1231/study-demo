@@ -1,19 +1,25 @@
-Spring Cloud 中的过滤器工厂可以用于定义和配置 Zuul 或 Gateway 等网关的过滤器。以下是 Spring Cloud 中一些常用的内置过滤器工厂：
+Spring Cloud Gateway 内置了许多过滤器，用于处理请求和响应。以下是一些常见的内置过滤器：
 
-1. **AddRequestHeaderHeader**：添加请求头的过滤器工厂。
-2. **AddResponseHeaderHeader**：添加响应头的过滤器工厂。
-3. **PrefixPath**：为请求添加前缀路径的过滤器工厂。
-4. **PreserveHostHeader**：保留原始请求中的主机头的过滤器工厂。
-5. **RequestRateLimiter**：请求速率限制器的过滤器工厂。
-6. **RemoveRequestHeader**：移除请求头的过滤器工厂。
-7. **RemoveResponseHeader**：移除响应头的过滤器工厂。
-8. **RewritePath**：重写请求路径的过滤器工厂。
-9. **RewriteResponseHeader**：重写响应头的过滤器工厂。
-10. **Retry**：重试请求的过滤器工厂。
-11. **SetPath**：设置请求路径的过滤器工厂。
-12. **SetRequestHeader**：设置请求头的过滤器工厂。
-13. **SetResponseHeader**：设置响应头的过滤器工厂。
-14. **StripPrefix**：去除请求前缀的过滤器工厂。
-15. **FallbackHeaders**：降级处理的过滤器工厂，用于添加回退响应头。
+1. **ForwardRoutingFilter**：用于转发请求到目标服务。
+2. **ForwardPathFilter**：用于处理转发路径。
+3. **AddRequestHeaderFilter**：用于添加请求头。
+4. **AddResponseHeaderFilter**：用于添加响应头。
+5. **RemoveRequestHeaderFilter**：用于移除请求头。
+6. **RemoveResponseHeaderFilter**：用于移除响应头。
+7. **PrefixPathFilter**：用于添加或移除路径前缀。
+8. **SetPathFilter**：用于设置路径。
+9. **SetStatusFilter**：用于设置响应状态码。
+10. **RetryGatewayFilterFactory**：用于执行重试操作。
+11. **RewritePathGatewayFilterFactory**：用于重写请求路径。
+12. **RewriteResponseHeaderGatewayFilterFactory**：用于重写响应头。
+13. **SetRequestHeaderGatewayFilterFactory**：用于设置请求头。
+14. **SetResponseHeaderGatewayFilterFactory**：用于设置响应头。
+15. **SecureHeadersGatewayFilterFactory**：用于添加安全相关的响应头，如X-Content-Type-Options、X-XSS-Protection等。
+16. **RedirectToGatewayFilterFactory**：用于执行重定向操作。
+17. **AddRequestParameterGatewayFilterFactory**：用于添加请求参数。
+18. **RemoveRequestParameterGatewayFilterFactory**：用于移除请求参数。
+19. **MapRequestHeaderGatewayFilterFactory**：用于映射请求头。
+20. **MapResponseHeaderGatewayFilterFactory**：用于映射响应头。
+21. **HystrixGatewayFilterFactory**：用于执行 Hystrix 断路器操作。
 
-这些过滤器工厂可以通过配置文件或代码来使用，并且可以组合使用以实现更复杂的路由和过滤逻辑。具体使用哪些过滤器工厂取决于你的项目需求和设计。
+这些过滤器提供了各种功能，可以用于修改请求和响应、执行重试、添加安全头等操作。你可以根据需求选择合适的过滤器进行配置。
