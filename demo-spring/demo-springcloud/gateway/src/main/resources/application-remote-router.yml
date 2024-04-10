@@ -1,0 +1,8 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: remoteaddr_route
+          uri: http://httpbin.org:80
+          predicates:
+            - RemoteAddr=192.168.1.1/24
