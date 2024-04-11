@@ -1,5 +1,9 @@
 package com.hundsun.demo.spring.jdk.algorithms.bruteforce;
 
+/**
+ *
+ */
+
 public class BruteForceStringMatching {
     public static int bruteForceMatch(String text, String pattern) {
         int n = text.length();

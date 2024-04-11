@@ -1,7 +1,10 @@
 package com.hundsun.demo.springcloud.gateway.config;
 
+import com.hundsun.demo.springcloud.gateway.filter.RequestLoggingFilter;
 import com.hundsun.demo.springcloud.gateway.filter.RequestTimeFilter;
 import com.hundsun.demo.springcloud.gateway.filter.RequestTimeGatewayFilterFactory;
+import com.netflix.discovery.converters.Auto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -39,6 +42,17 @@ public class BeanConfig {
                 )
                 .build();
     }
+
+    // @Bean
+    // public RouteLocator requestLoggingFilterLocator(RouteLocatorBuilder builder) {
+    //     // return builder.routes()
+    //     //         .route( // 创建新路由
+    //     //                 r -> r.path("/get") // 检查请求路径是否与给定模式匹配的谓词
+    //     //                         .filters(f -> f.filter(requestLoggingFilter)) // 向路由定义添加筛选器。
+    //     //                         .uri("http://httpbin.org:80") // 设置路由的 URI。
+    //     //         )
+    //     //         .build();
+    // }
 
     /**
      * 构造路由规则

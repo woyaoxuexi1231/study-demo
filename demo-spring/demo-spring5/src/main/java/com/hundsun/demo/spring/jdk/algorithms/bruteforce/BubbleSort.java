@@ -1,5 +1,10 @@
 package com.hundsun.demo.spring.jdk.algorithms.bruteforce;
 
+/**
+ * 冒泡排序
+ * 排序的主要思路就是像水滴冒泡一样，越大的数据就会越往后，每一次循环都执行这个操作
+ */
+
 public class BubbleSort {
     public static void bubbleSort(int[] arr) {
         int n = arr.length;

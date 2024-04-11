@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -21,7 +22,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class RequestTimeGatewayFilterFactory extends AbstractGatewayFilterFactory<RequestTimeGatewayFilterFactory.Config> {
+public class RequestTimeGatewayFilterFactory extends AbstractGatewayFilterFactory<RequestTimeGatewayFilterFactory.Config> implements Ordered {
 
     /**
      * 用于在请求的属性中存储请求开始时间的键。
@@ -67,6 +68,11 @@ public class RequestTimeGatewayFilterFactory extends AbstractGatewayFilterFactor
                     })
             );
         };
+    }
+
+    @Override
+    public int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE;
     }
 
 

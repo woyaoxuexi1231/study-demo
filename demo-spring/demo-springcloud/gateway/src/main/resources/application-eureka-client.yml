@@ -1,0 +1,13 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: eureka-client
+          uri: lb://eureka-client
+          predicates:
+            - Path=/**
+
+#spring.cloud.gateway.routes[0].id=eureka-client
+#spring.cloud.gateway.routes[0].uri=lb://eureka-client
+#spring.cloud.gateway.routes[0].predicates[0]=Path=/demo/**
+#spring.cloud.gateway.routes[0].filters[0]=StripPrefix=1

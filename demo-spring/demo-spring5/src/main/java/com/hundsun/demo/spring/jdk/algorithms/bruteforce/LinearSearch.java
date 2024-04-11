@@ -1,5 +1,10 @@
 package com.hundsun.demo.spring.jdk.algorithms.bruteforce;
 
+/**
+ * 在给定的数组中寻找一个指定的关键字。
+ * 蛮力法：直接遍历数组，找到就返回
+ */
+
 public class LinearSearch {
     public static int linearSearch(int[] arr, int target) {
         // 遍历数组，逐个比较元素是否等于目标值
