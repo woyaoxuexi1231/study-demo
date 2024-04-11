@@ -1,20 +1,22 @@
-# route ID
 spring:
   cloud:
     gateway:
       routes:
-        - id: limit-router
-
-          # The address forwarded by the route
+        - id: limit_route
           uri: http://httpbin.org:80
-          # predicates config
           predicates:
-            - After=2023-01-20T17:42:47.789-07:00[America/Denver]
+            - After=2017-01-20T17:42:47.789-07:00[America/Denver]
           filters:
+            # 这是spring官方提供的一个限流过滤器,通过redis和lua脚本实现
             - name: RequestRateLimiter
               args:
+                # 用于限流的键的解析器的bean的名字,根据 #{@xxx} 从spring中获取bean对象
                 key-resolver: '#{@hostAddrKeyResolver}'
+                # 令牌桶每秒的平均填充速率
                 redis-rate-limiter.replenishRate: 1
-                redis-rate-limiter.burstCapacity": 1
-#server:
-#  port: 9131
+                # 令牌桶总容量
+                redis-rate-limiter.burstCapacity: 3
+  redis:
+    host: 192.168.80.128
+    port: 6379
+    database: 0

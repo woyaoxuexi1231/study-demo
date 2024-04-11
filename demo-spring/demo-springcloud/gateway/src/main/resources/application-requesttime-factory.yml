@@ -1,0 +1,11 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: customFilter
+          uri: http://httpbin.org:80
+          predicates:
+            - Path=/**
+          filters:
+            - RequestTime=true, hello, world
+#           AddRequestHeaderGatewayFilterFactory约定写为AddRequestHeader

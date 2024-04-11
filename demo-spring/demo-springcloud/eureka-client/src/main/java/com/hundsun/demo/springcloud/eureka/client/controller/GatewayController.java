@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,16 +19,13 @@ import java.util.Map;
 import java.util.TimeZone;
 
 /**
- * @projectName: study-demo
- * @package: com.hundsun.demo.springcloud.eureka.client.controller
- * @className: HiController
- * @description:
- * @author: h1123
- * @createDate: 2023/5/6 22:53
+ * @author woaixuexi
+ * @since 2024/4/12 1:01
  */
 
+@RequestMapping("/gateway")
 @RestController
-public class HiController {
+public class GatewayController {
 
     @Value("${server.port}")
     private String port;

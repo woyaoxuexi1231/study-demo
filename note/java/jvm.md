@@ -1,8 +1,8 @@
 ### 简要介绍一下JVM
 
-Java一次编写,到处运行
-跨平台的 jvm会负责在不同操作系统上帮我们把class文件翻译成对应的指令
-语言无关: 只要是class文件就行
+Java一次编写,到处运行  
+跨平台的 jvm会负责在不同操作系统上帮我们把class文件翻译成对应的指令  
+语言无关: 只要是class文件就行  
 
 ### JVM的解释器和JIT(just-in-time)
 
@@ -13,17 +13,17 @@ JIT编译器会监视程序的运行情况,根据实际路径和数据来优化,
 
 ### GC的判定方法
 
-1. 引用计数算法: 有一个地方引用的时候就+1,当一个引用失效的时候就-1,当为0的时候就说明对象没有再被使用了.
+1. 引用计数算法: 有一个地方引用的时候就+1,当一个引用失效的时候就-1,当为0的时候就说明对象没有再被使用了.  
 2. 可达性分析算法: 以GC Roots作为其实节点,从这些节点开始,根据引用关系向下搜索,搜过过程中走过的路径成为引用链,如果某个对象到GCRoots之间没有任何的引用链,那么说明对象没有再被使用了.
    GC Roots: 线程堆栈中的变量,类的静态变量等
 
 ### JVM内存分代
 
-新生代: minor GC
-老年代: major GC
-整个Java堆和方法区的垃圾回收: Full GC
+新生代: minor GC  
+老年代: major GC  
+整个Java堆和方法区的垃圾回收: Full GC  
 
-### GC的三种收集算法
+### GC的三种收集算法 
 
 1. 标记-清除: 首先标记出所有需要回收的对象,在标记完成后,对这些对象进行回收. 缺点:执行效率不稳定,内存空间碎片化
 2. 标记-复制: 每次使用一半, 标记处还存活的对象, 然后把这些对象复制到另一半(同时更新引用到新的位置),然后把之前的全部清理掉. 缺点: 空间浪费
@@ -54,14 +54,14 @@ safepoint: 在一些不会导致引用关系变化的点(各种跳转).设置这
 
 ### JVM运行时数据区
 
-线程私有区域: 程序计数器,本地方法栈,虚拟机栈
+线程私有区域: 程序计数器,本地方法栈,虚拟机栈  
 线程共享区域: 堆(新生代(e,s+s),老年代),方法区(还包含运行时常量池)
 
 ### jvm内存溢出
 
-* 栈溢出 - 压栈过深了,栈一般来说1000-2000完全够了,jvm默认1m
-* 堆溢出 - 堆内对象太多了,又回收不了,就堆溢出了,单纯的虚拟机内存分配不足或者是机器本身就不够
-* 方法区溢出
+* 栈溢出 - 压栈过深了,栈一般来说1000-2000完全够了,jvm默认1m  
+* 堆溢出 - 堆内对象太多了,又回收不了,就堆溢出了,单纯的虚拟机内存分配不足或者是机器本身就不够  
+* 方法区溢出  
 * 本机直接内存溢出
 
 ### 什么是内存泄漏,哪些情况可能会导致内存泄漏
@@ -81,49 +81,49 @@ safepoint: 在一些不会导致引用关系变化的点(各种跳转).设置这
 
 ### JVM的一些常见启动参数
 
--Xmx40m/4g
--Xms40M/4G
--XX:+UseG1GC -XX:MaxGCPauseMillis=50
--XX:ParallelGCThreads=4 设置并行垃圾收集器线程数目。
--XX:+PrintGCDetails
+-Xmx40m/4g  
+-Xms40M/4G  
+-XX:+UseG1GC -XX:MaxGCPauseMillis=50  
+-XX:ParallelGCThreads=4 设置并行垃圾收集器线程数目。  
+-XX:+PrintGCDetails  
 
--Xmx: 设置Java堆的最大内存大小。
--Xms: 设置Java堆的初始内存大小。
--Xss: 设置每个线程的栈大小。
--XX:PermSize / -XX:MaxPermSize: 设置持久代（Java 8之前）的初始大小和最大大小。
--XX:MetaspaceSize / -XX:MaxMetaspaceSize: 设置元空间（Java 8及更高版本）的初始大小和最大大小。
--XX:NewSize / -XX:MaxNewSize: 设置新生代的初始大小和最大大小。
--XX:SurvivorRatio: 设置Eden区与Survivor区的比率。
--XX:MaxTenuringThreshold: 设置对象晋升到老年代之前在新生代的最大存活次数。
--XX:InitialCodeCacheSize / -XX:ReservedCodeCacheSize: 设置初始代码缓存大小和保留代码缓存大小。
--XX:MaxDirectMemorySize: 设置直接内存的最大大小。
--XX:ParallelGCThreads: 设置并行垃圾收集器线程数目。
--XX:+UseConcMarkSweepGC: 启用CMS垃圾收集器。
--XX:+UseG1GC: 启用G1垃圾收集器。
--XX:+UseSerialGC: 启用串行垃圾收集器。
--XX:CompileThreshold: 设置即时编译的阈值。
--XX:CICompilerCount: 设置并行编译器的数量。
--XX:+PrintGCDetails: 打印详细的垃圾收集信息。
--XX:+HeapDumpOnOutOfMemoryError: 当发生内存溢出时自动生成堆转储文件。
+-Xmx: 设置Java堆的最大内存大小。  
+-Xms: 设置Java堆的初始内存大小。  
+-Xss: 设置每个线程的栈大小。  
+-XX:PermSize / -XX:MaxPermSize: 设置持久代（Java 8之前）的初始大小和最大大小。  
+-XX:MetaspaceSize / -XX:MaxMetaspaceSize: 设置元空间（Java 8及更高版本）的初始大小和最大大小。  
+-XX:NewSize / -XX:MaxNewSize: 设置新生代的初始大小和最大大小。  
+-XX:SurvivorRatio: 设置Eden区与Survivor区的比率。  
+-XX:MaxTenuringThreshold: 设置对象晋升到老年代之前在新生代的最大存活次数。  
+-XX:InitialCodeCacheSize / -XX:ReservedCodeCacheSize: 设置初始代码缓存大小和保留代码缓存大小。  
+-XX:MaxDirectMemorySize: 设置直接内存的最大大小。  
+-XX:ParallelGCThreads: 设置并行垃圾收集器线程数目。  
+-XX:+UseConcMarkSweepGC: 启用CMS垃圾收集器。  
+-XX:+UseG1GC: 启用G1垃圾收集器。  
+-XX:+UseSerialGC: 启用串行垃圾收集器。  
+-XX:CompileThreshold: 设置即时编译的阈值。  
+-XX:CICompilerCount: 设置并行编译器的数量。  
+-XX:+PrintGCDetails: 打印详细的垃圾收集信息。  
+-XX:+HeapDumpOnOutOfMemoryError: 当发生内存溢出时自动生成堆转储文件。  
 
 ### 类的加载过程
 
 加载->连接(验证->准备->解析)->初始化->使用->卸载
 
-加载(读文件): 通过一个类的全限定名来获取class文件的二进制字节流->将这个字节流所代表的静态存储结构方法转化成方法区的运行时数据结构->在内存中生成一个代表这个类的java.lang.class对象,作为方法去这个类的各种数据的访问入口  
-验证(读了,但是需要判断给的东西是不是符合规范):确保class文件的字节流中包含的信息是符合规范和约束的  
-准备(类的静态变量申请空间和设置初始值)
-解析(符号引用变成直接引用)
-初始化:给静态变量赋值->调用对象的构造方法
-使用.
-卸载.
+**加载**(读文件): 通过一个类的全限定名来获取class文件的二进制字节流->将这个字节流所代表的静态存储结构方法转化成方法区的运行时数据结构->在内存中生成一个代表这个类的java.lang.class对象,作为方法去这个类的各种数据的访问入口  
+**验证**(读了,但是需要判断给的东西是不是符合规范):确保class文件的字节流中包含的信息是符合规范和约束的  
+**准备**(类的静态变量申请空间和设置初始值)  
+**解析**(符号引用变成直接引用)  
+**初始化**:给静态变量赋值->调用对象的构造方法  
+**使用**.  
+**卸载**.  
 
 ### 什么是双亲委派机制,具体有什么作用?
 
-BootStrap(rt.jar)最顶层 - Extension(扩展加载器,jre/lib...) - 应用程序类加载器
+**BootStrap**(rt.jar)最顶层 - **Extension**(扩展加载器,jre/lib...) - 应用程序类加载器
 
-如果一个类加载器收到了一个类加载的请求,它首先不会加载这个类,而是把它委派给父类加载器去完成,每一个层次的加载器都如此.
-只有当最上级的父类加载器尝试加载却无法记载时,会向下反馈,然后一级级向下传递
+如果一个类加载器收到了一个类加载的请求,它首先不会加载这个类,而是把它委派给父类加载器去完成,每一个层次的加载器都如此.  
+只有当最上级的父类加载器尝试加载却无法记载时,会向下反馈,然后一级级向下传递  
 
 1. **通过带有优先级的层级关系可以避免类的重复加载**
 2. **保证Java程序的安全稳定运行, Java核心的API定义不会被随意的替换**
