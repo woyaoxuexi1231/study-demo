@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono;
  */
 
 @Slf4j
-public class RequestTimeFilter implements GatewayFilter, Ordered {
+public class RequestTimeGatewayFilter implements GatewayFilter, Ordered {
 
     private static final String REQUEST_TIME_BEGIN = "requestTimeBegin";
 

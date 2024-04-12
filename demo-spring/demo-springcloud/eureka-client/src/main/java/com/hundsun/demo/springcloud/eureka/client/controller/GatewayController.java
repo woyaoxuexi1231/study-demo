@@ -3,6 +3,7 @@ package com.hundsun.demo.springcloud.eureka.client.controller;
 import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import com.hundsun.demo.commom.core.model.req.SimpleReqDTO;
 import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ import java.util.TimeZone;
  * @since 2024/4/12 1:01
  */
 
+@Slf4j
 @RequestMapping("/gateway")
 @RestController
 public class GatewayController {
@@ -32,6 +34,7 @@ public class GatewayController {
 
     @GetMapping("/hi")
     public String hi(HttpServletRequest req, HttpServletResponse rsp) {
+        log.info("req: {}", req.getParameterMap());
         return "here is " + port + " and your ip is " + req.getRemoteAddr();
     }
 
@@ -73,6 +76,12 @@ public class GatewayController {
         return ResultDTOBuild.resultSuccessBuild("OK, im receive the msg : " + req.toString());
     }
 
+    /**
+     * 当 post 请求的请求参数没有加 @RequestBody 的时候, req参数将会在请求参数中获取
+     *
+     * @param req req
+     * @return rsp
+     */
     @PostMapping("/hi5")
     public ResultDTO<?> hi5(String req) {
         return ResultDTOBuild.resultSuccessBuild("OK, im receive the msg : " + req);

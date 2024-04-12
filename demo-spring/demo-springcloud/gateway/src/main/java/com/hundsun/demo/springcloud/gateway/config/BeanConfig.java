@@ -1,6 +1,6 @@
 package com.hundsun.demo.springcloud.gateway.config;
 
-import com.hundsun.demo.springcloud.gateway.filter.RequestTimeFilter;
+import com.hundsun.demo.springcloud.gateway.filter.RequestTimeGatewayFilter;
 import com.hundsun.demo.springcloud.gateway.filter.RequestTimeGatewayFilterFactory;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
@@ -37,8 +37,10 @@ public class BeanConfig {
         return builder.routes()
                 .route( // 创建新路由,对于请求路径为 “/get” 的请求，只有第一个路由规则会被匹配到并执行，即使有第二个路由规则也匹配路径为 “/get”。因此，第二个路由规则将被忽略，不会被执行。
                         r -> r.path("/get") // 表示这个路由规则会匹配请求路径为 “/get” 的请求
-                                .filters(f -> f.filter(new RequestTimeFilter())
-                                        .addRequestHeader("X-Response-Default-Foo", "Default-Bar")) // 在转发请求的响应中添加了一个名为 X-Response-Default-Foo 值为 Default-Bar 的头信息
+                                .filters(f -> f.filter(new RequestTimeGatewayFilter())
+                                        .addRequestHeader("X-Response-Default-Foo", "Default-Bar") // 在转发请求的响应中添加了一个名为 X-Response-Default-Foo 值为 Default-Bar 的头信息
+                                        .addRequestParameter("add-something", "hahaha") // 直接添加一个参数
+                                )
                                 .uri("http://httpbin.org:80") // 设置路由的 URI。
                 )
                 .build();
@@ -52,6 +54,18 @@ public class BeanConfig {
                         r -> r.path("/ip") // 检查请求路径是否与给定模式匹配的谓词
                                 .filters(f -> f.filter(requestTimeGatewayFilterFactory.apply(new RequestTimeGatewayFilterFactory.Config(true, "hello", "world")))) // 向路由定义添加筛选器。
                                 .uri("http://httpbin.org:80") // 设置路由的 URI。
+                )
+                .build();
+    }
+
+
+    @Bean
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+        return builder.routes()
+                .route("service_route", r -> r
+                        .path("/eureka-client/**") // 匹配请求路径
+                        .filters(f -> f.stripPrefix(1)) // 去掉 eureka-client 这个路径
+                        .uri("lb://EUREKA-CLIENT") // 转发到Eureka中名为SERVICE-NAME的服务
                 )
                 .build();
     }

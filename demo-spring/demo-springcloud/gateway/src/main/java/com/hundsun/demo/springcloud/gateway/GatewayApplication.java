@@ -32,11 +32,12 @@ public class GatewayApplication {
     }
 
     // @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
-        return builder.routes()
-                .route("add_request_header_example", r -> r.path("/api/**")
-                        .filters(f -> f.addRequestHeader("X-Custom-Header", "custom-value"))
-                        .uri("http://httpbin.org:80"))
-                .build();
-    }
+    // public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+    //     return builder.routes()
+    //             .route("add_request_parameter_route",
+    //                     r -> r.path("/eureka-client/**")
+    //                             .filters(f -> f.addRequestParameter("paramName", "paramValue"))
+    //                             .uri("lb://eureka-client"))
+    //             .build();
+    // }
 }
