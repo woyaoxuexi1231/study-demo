@@ -21,6 +21,8 @@ public class HostAddrKeyResolver implements KeyResolver {
     @Override
     public Mono<String> resolve(ServerWebExchange exchange) {
         // 这里相当于是把地址作为key返回
+        // 这个类配置在 application-limit-router.yml
+        // 作用于 RequestRateLimiterGatewayFilterFactory(springcloudgateway内置的) 这个类
         return Mono.just(exchange.getRequest().getRemoteAddress().getAddress().getHostAddress());
     }
 }
