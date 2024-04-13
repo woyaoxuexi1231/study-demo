@@ -59,7 +59,7 @@ public class BeanConfig {
     }
 
 
-    @Bean
+    // @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route("service_route", r -> r

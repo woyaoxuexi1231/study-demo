@@ -1,20 +1,20 @@
 spring:
   cloud:
     gateway:
-      routes:
-        - id: eureka-client
-          uri: lb://EUREKA-CLIENT
-          predicates:
-            - Path=/eureka-client/gateway/**
-          filters:
-            # 路由转换会把整个路径转发, /eureka-client/gateway/**并不是我们真正的路径,需要去掉 /eureka-client
-            - StripPrefix=1
-#      discovery:
-#        locator:
-#          # 表明服务网关开启服务注册和发现的功能，并且服务网关自动根据服务发现为每一个服务创建了一个路由，这个路由将以服务名开头的请求路径转发到对应的服务中
-#          enabled: true
-#          # 将请求路径上的服务名配置为小写（因为在服务注册过程中，向注册中心注册时将服务名转成大写了），比如以/service-hi/*的请求路径被路由转发到服务名为service-hi的服务上。
-#          lower-case-service-id: true
+#      routes:
+#        - id: eureka-client
+#          uri: lb://EUREKA-CLIENT
+#          predicates:
+#            - Path=/eureka-client/gateway/**
+#          filters:
+#            # 路由转换会把整个路径转发, /eureka-client/gateway/**并不是我们真正的路径,需要去掉 /eureka-client
+#            - StripPrefix=1
+      discovery:
+        locator:
+          # 表明服务网关开启服务注册和发现的功能，并且服务网关自动根据服务发现为每一个服务创建了一个路由，这个路由将以服务名开头的请求路径转发到对应的服务中
+          enabled: true
+          # 将请求路径上的服务名配置为小写（因为在服务注册过程中，向注册中心注册时将服务名转成大写了），比如以/service-hi/*的请求路径被路由转发到服务名为service-hi的服务上。
+          lower-case-service-id: true
 
 ## The gateway enables service registration and discovery
 #spring.cloud.gateway.discovery.locator.enabled=false
