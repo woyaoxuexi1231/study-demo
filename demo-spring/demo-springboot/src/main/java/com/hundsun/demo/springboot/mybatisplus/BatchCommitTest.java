@@ -116,8 +116,10 @@ public class BatchCommitTest extends ServiceImpl<UserMapper, User> {
 
         2. 关于事务问题,
             mybatisplus 的 updateBatchById 报错会回滚
-            但是这里的 exeBatch 也会回滚, 我不知道是被spring回滚了, 还是他自己回滚的, 这个待研究 todo
-
+            但是这里的 exeBatch 也会回滚, 我不知道是被spring回滚了, 还是他自己回滚的, 这个待研究
+            2024年4月14日 视情况而定,看是否包含在spring事务内,如果包含在spring事务内,那么由spring决定回滚/提交
+                        这里exeBatch虽然开启了新的SqlSession,但是由于在同一个线程内,连接是同一个,在提交时spring会校验是否回滚/提交
+                        *注意 这种情况可能会因为mybatis的一级缓存导致某些情况下的数据问题,在com.hundsun.demo.springboot.mybatisplus.TransactionTest.sqlSessionTransaction方法有个小实验
          */
     }
 
