@@ -40,17 +40,18 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- https://spring.io/projects/spring-cloud可以查看 spring boot 和 spring cloud 的版本对应 -->
-        <spring.boot.dependencies.version>2.7.16</spring.boot.dependencies.version>
+        <!-- <spring.boot.dependencies.version>2.7.16</spring.boot.dependencies.version> -->
+        <spring.boot.dependencies.version>2.5.15</spring.boot.dependencies.version>
         <spring.cloud.dependencies.version>2021.0.9</spring.cloud.dependencies.version>
         <!-- <spring.boot.dependencies.version>2.3.12.RELEASE</spring.boot.dependencies.version> -->
         <!-- <spring.cloud.dependencies.version>Hoxton.SR12</spring.cloud.dependencies.version> -->
 
         <!--spring-boot-dependencies 2.7.16 包含的依赖版本-->
-        <spring.boot.starter.version>2.7.16</spring.boot.starter.version>
-        <spring.boot.starter.web.version>2.7.16</spring.boot.starter.web.version>
-        <spring.boot.starter.test.version>2.7.16</spring.boot.starter.test.version>
-        <spring.boot.starter.log4j2.version>2.7.16</spring.boot.starter.log4j2.version>
-        <spring.boot.starter.data.redis>2.7.16</spring.boot.starter.data.redis>
+        <!-- <spring.boot.starter.version>2.7.16</spring.boot.starter.version> -->
+        <!-- <spring.boot.starter.web.version>2.7.16</spring.boot.starter.web.version> -->
+        <!-- <spring.boot.starter.test.version>2.7.16</spring.boot.starter.test.version> -->
+        <!-- <spring.boot.starter.log4j2.version>2.7.16</spring.boot.starter.log4j2.version> -->
+        <!-- <spring.boot.starter.data.redis>2.7.16</spring.boot.starter.data.redis> -->
         <!-- <lombok.version>1.18.12</lombok.version> -->
         <!-- <junit.version>4.12</junit.version> -->
         <!-- <commons.lang3.version>3.9</commons.lang3.version> -->
@@ -67,7 +68,7 @@
         <!-- <redisson.version>3.12.4</redisson.version> -->
         <!-- Redisson 在 3.13.0 and 3.19.0 更换了默认的协议，会报错Unsupported protocol version 118 -->
         <!-- <redisson.spring.boot.starter.verison>3.12.4</redisson.spring.boot.starter.verison> -->
-        <redisson.spring.boot.starter.verison>3.17.7</redisson.spring.boot.starter.verison>
+        <redisson.spring.boot.starter.verison>3.15.6</redisson.spring.boot.starter.verison>
 
 
         <!-- Mybatis框架 -->

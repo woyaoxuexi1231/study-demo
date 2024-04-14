@@ -2,6 +2,7 @@ package com.hundsun.demo.springboot.rabbitmq.producer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.ReturnedMessage;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -20,7 +21,7 @@ import javax.annotation.PostConstruct;
  */
 @Slf4j
 @Component
-public class RabbitmqCallBack implements RabbitTemplate.ConfirmCallback, RabbitTemplate.ReturnCallback {
+public class RabbitmqCallBack implements RabbitTemplate.ConfirmCallback, RabbitTemplate.ReturnsCallback {
 
     /**
      * 注入容器里的rabbitTemplate, 以便对容器里的rabbitTemplate进行改造
@@ -63,13 +64,12 @@ public class RabbitmqCallBack implements RabbitTemplate.ConfirmCallback, RabbitT
         需要注意的是，为了触发 ReturnCallback，需要在消息发送时设置 mandatory 参数为 true，否则即使消息无法路由到队列，也不会触发该回调。
         通过 ReturnCallback 可以对发送到交换机但无法路由到队列的消息进行处理，确保消息的可靠性和处理返回的错误情况。
 
-        todo 具体哪种情况下会触发呢??
         使用这两个都可以开启
         spring.rabbitmq.publisher-returns=true
         rabbitTemplate.setMandatory(true);
          */
-        rabbitTemplate.setReturnCallback(this);
-
+        // rabbitTemplate.setReturnCallback(this);
+        rabbitTemplate.setReturnsCallback(this);
     }
 
 
@@ -101,5 +101,10 @@ public class RabbitmqCallBack implements RabbitTemplate.ConfirmCallback, RabbitT
     @Override
     public void returnedMessage(Message message, int replyCode, String replyText, String exchange, String routingKey) {
         log.info("returnedMessage => message: {}, replyCode: {}, replyText: {}, exchange: {}, routingKey: {}", message, replyCode, replyText, exchange, routingKey);
+    }
+
+    @Override
+    public void returnedMessage(ReturnedMessage returned) {
+        log.info("returnedMessage => returned: {}", returned);
     }
 }

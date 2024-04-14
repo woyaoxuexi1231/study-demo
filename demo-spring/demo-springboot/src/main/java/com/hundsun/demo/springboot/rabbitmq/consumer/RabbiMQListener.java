@@ -136,7 +136,8 @@ public class RabbiMQListener {
                 channel.basicAck(msg.getMessageProperties().getDeliveryTag(), false);
                 log.info("ack成功");
             } else {
-                // 当前有消费者正在处理消息, todo 是重新入列呢,还是直接抛弃这个消息呢? 入列是否已经没有必要了? 这个要看具体的场景吧.
+                // 当前有消费者正在处理消息
+                // 是重新入列呢,还是直接抛弃这个消息呢? 入列是否已经没有必要了? 2024年4月14日 看具体的业务场景吧.
                 log.info("当前有重复的消息正在被其他线程消费,将延迟5秒进行拒绝消息,以重新入列");
                 Thread.sleep(5 * 1000);
                 channel.basicReject(msg.getMessageProperties().getDeliveryTag(), true);
