@@ -9,7 +9,7 @@ public class JedisPoolExample {
     private static final String REDIS_HOST = "192.168.80.128";
     private static final int REDIS_PORT = 6379;
 
-    private static JedisPool jedisPool;
+    private static final JedisPool jedisPool;
 
     static {
         // 配置连接池

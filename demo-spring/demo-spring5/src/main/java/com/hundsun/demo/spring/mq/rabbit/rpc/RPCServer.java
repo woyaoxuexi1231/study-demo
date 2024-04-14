@@ -7,6 +7,8 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 
+import java.nio.charset.StandardCharsets;
+
 public class RPCServer {
 
     private static final String RPC_QUEUE_NAME = "rpc_queue";
@@ -43,16 +45,16 @@ public class RPCServer {
 
                 try {
                     // 解析收到的消息
-                    String message = new String(delivery.getBody(), "UTF-8");
+                    String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
                     int n = Integer.parseInt(message);
                     System.out.println(" [.] fib(" + message + ")");
                     // 结果
                     response += fib(n);
                 } catch (RuntimeException e) {
-                    System.out.println(" [.] " + e.toString());
+                    System.out.println(" [.] " + e);
                 } finally {
                     // 响应消息
-                    channel.basicPublish("", delivery.getProperties().getReplyTo(), replyProps, response.getBytes("UTF-8"));
+                    channel.basicPublish("", delivery.getProperties().getReplyTo(), replyProps, response.getBytes(StandardCharsets.UTF_8));
                     // ack
                     channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
                     // RabbitMq consumer worker thread notifies the RPC server owner thread

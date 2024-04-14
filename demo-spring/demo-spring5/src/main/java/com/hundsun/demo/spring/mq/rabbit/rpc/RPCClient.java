@@ -6,6 +6,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -41,7 +42,7 @@ public class RPCClient implements AutoCloseable {
         // 发送消息
         String requestQueueName = "rpc_queue";
         // 交换机在这里设置为空字符串，表示消息直接发送到指定的队列，而不经过交换机。
-        channel.basicPublish("", requestQueueName, props, message.getBytes("UTF-8"));
+        channel.basicPublish("", requestQueueName, props, message.getBytes(StandardCharsets.UTF_8));
 
         // 阻塞队列来等待回调
         final BlockingQueue<String> response = new ArrayBlockingQueue<>(1);
@@ -52,7 +53,7 @@ public class RPCClient implements AutoCloseable {
                 true, // true 自动ack
                 (consumerTag, delivery) -> { // 一个消费者的回调函数，用于处理接收到的消息
                     if (delivery.getProperties().getCorrelationId().equals(corrId)) {
-                        response.offer(new String(delivery.getBody(), "UTF-8"));
+                        response.offer(new String(delivery.getBody(), StandardCharsets.UTF_8));
                     }
                 },
                 consumerTag -> { //  一个消费者取消的回调函数

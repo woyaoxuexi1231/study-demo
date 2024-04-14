@@ -9,7 +9,7 @@ public class RedisDistributedLock {
     private static final String LOCK_VALUE = "locked";
     private static final long LOCK_EXPIRE_TIME = 30000; // 锁的过期时间，单位毫秒
 
-    private Jedis jedis;
+    private final Jedis jedis;
 
     public RedisDistributedLock(Jedis jedis) {
         this.jedis = jedis;

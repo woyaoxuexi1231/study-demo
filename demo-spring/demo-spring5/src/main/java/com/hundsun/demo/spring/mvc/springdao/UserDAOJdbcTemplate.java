@@ -14,7 +14,7 @@ import java.util.List;
 
 public class UserDAOJdbcTemplate implements UserDAO {
 
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     // 通过构造函数注入 JdbcTemplate
     public UserDAOJdbcTemplate(DataSource dataSource) {

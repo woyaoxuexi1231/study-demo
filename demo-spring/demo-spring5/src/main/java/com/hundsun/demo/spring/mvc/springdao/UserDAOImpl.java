@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 
 public class UserDAOImpl implements UserDAO {
 
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
     // 通过构造函数注入 DataSource
     public UserDAOImpl(DataSource dataSource) {
@@ -25,7 +25,7 @@ public class UserDAOImpl implements UserDAO {
         String sql = "INSERT INTO users (name) VALUES (?)";
         try (
             Connection conn = dataSource.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+            PreparedStatement ps = conn.prepareStatement(sql)
         ) {
             ps.setString(1, user.getName());
             ps.executeUpdate();
@@ -40,7 +40,7 @@ public class UserDAOImpl implements UserDAO {
         String sql = "SELECT * FROM users WHERE id = ?";
         try (
             Connection conn = dataSource.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+            PreparedStatement ps = conn.prepareStatement(sql)
         ) {
             ps.setLong(1, id);
             ResultSet rs = ps.executeQuery();
@@ -64,7 +64,7 @@ public class UserDAOImpl implements UserDAO {
         try (
             Connection conn = dataSource.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+            ResultSet rs = ps.executeQuery()
         ) {
             while (rs.next()) {
                 User user = new User();
@@ -84,7 +84,7 @@ public class UserDAOImpl implements UserDAO {
         String sql = "UPDATE users SET name = ? WHERE id = ?";
         try (
             Connection conn = dataSource.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+            PreparedStatement ps = conn.prepareStatement(sql)
         ) {
             ps.setString(1, user.getName());
             ps.setLong(2, user.getId());
@@ -100,7 +100,7 @@ public class UserDAOImpl implements UserDAO {
         String sql = "DELETE FROM users WHERE id = ?";
         try (
             Connection conn = dataSource.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+            PreparedStatement ps = conn.prepareStatement(sql)
         ) {
             ps.setLong(1, id);
             ps.executeUpdate();
