@@ -1,8 +1,9 @@
 package com.hundsun.demo.springboot.websocket.spring;
 
+import com.alibaba.fastjson.JSON;
+import com.hundsun.demo.springboot.websocket.stomp.Greeting;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -39,6 +40,13 @@ public class SpringWebSocketHandler extends AbstractWebSocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         super.handleTextMessage(session, message);
         log.info("handleTextMessage, session: {}, message: {}", session, message);
+        sessionMap.forEach(new BiConsumer<String, WebSocketSession>() {
+            @SneakyThrows
+            @Override
+            public void accept(String s, WebSocketSession webSocketSession) {
+                webSocketSession.sendMessage(new TextMessage(JSON.toJSONString(new Greeting("Hello, " + (message.getPayload() + "!")))));
+            }
+        });
     }
 
     @Override
@@ -55,7 +63,7 @@ public class SpringWebSocketHandler extends AbstractWebSocketHandler {
         sessionMap.remove(session.getId());
     }
 
-    @Scheduled(fixedRate = 2000)
+    // @Scheduled(fixedRate = 2000)
     public void execute() {
         sessionMap.forEach(new BiConsumer<String, WebSocketSession>() {
             @SneakyThrows

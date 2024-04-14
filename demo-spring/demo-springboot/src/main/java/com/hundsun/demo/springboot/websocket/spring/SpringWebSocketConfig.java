@@ -39,7 +39,7 @@ public class SpringWebSocketConfig implements WebSocketConfigurer {
     }
 
     /**
-     * TODO
+     * TODO 2024年4月14日 就目前来说,又没报错了.
      * a.根据报错中defaultSockJsTaskScheduler找到websocket源码如下，
      * 在初始化websocket时WebSocketConfigurationSupport.class 类中会执行defaultSockJsTaskScheduler()方法，返回一TaskScheduler对象，
      * 此时this.TaskScheduler 为null , 但是在判断中 initHandlerRegistry().requiresTaskScheduler() 检验调度器是否必须时，
@@ -56,7 +56,7 @@ public class SpringWebSocketConfig implements WebSocketConfigurer {
      *
      * @return
      */
-    @Bean
+    // @Bean
     public TaskScheduler taskScheduler() {
         ThreadPoolTaskScheduler scheduling = new ThreadPoolTaskScheduler();
         scheduling.setPoolSize(10);

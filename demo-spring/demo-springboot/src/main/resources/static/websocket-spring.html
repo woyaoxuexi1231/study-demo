@@ -1,30 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/icon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icon/favicon-16x16.png">
+    <link rel="manifest" href="/icon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/icon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spring Boot Example</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link href="/main.css" rel="stylesheet">
+    <title>websocket-spring</title>
+
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script src="/js/jquery.min.js"></script>
+    <link href="/css/main.css" rel="stylesheet">
 </head>
 <body>
-<h1>Spring Boot Example</h1>
 <button class="btn btn-default" onclick="goToPage('index.html')">back</button>
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
+    enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
+<div id="main-content" class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="connect">WebSocket connection:</label>
+                    <button id="connect" class="btn btn-default" type="submit">Connect</button>
+                    <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">Disconnect
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="name">What is your name?</label>
+                    <input type="text" id="name" class="form-control" placeholder="Your name here...">
+                </div>
+                <button id="send" class="btn btn-default" type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table id="conversation" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Greetings</th>
+                </tr>
+                </thead>
+                <tbody id="greetings">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 </body>
 
 <script>
     // Java注解形式
-    // let ws = new WebSocket("ws://localhost:9094/myWs");
+    // let ws = new WebSocket("ws://localhost:10001/myWs");
     // spring形式
-    let ws = new WebSocket("ws://localhost:9094/myWsSpring");
-    ws.onopen = function () {
-        ws.send("hello, this is client");
+    // let ws = new WebSocket("ws://localhost:10001/myWsSpring");
+    // ws.onopen = function () {
+    //     ws.send("hello, this is client");
+    // }
+    // ws.onmessage = function (message) {
+    //     console.log(message.data);
+    // }
+    //
+    // function goToPage(pageUrl) {
+    //     window.location.href = pageUrl;
+    // }
+
+
+    let socket;
+
+    // 建立WebSocket连接
+    function connect() {
+
+        // 创建WebSocket对象，指定服务器的URL
+        socket = new WebSocket("ws://localhost:10001/myWsSpring");
+
+        // 当WebSocket连接成功时触发的事件处理程序
+        socket.onopen = function (event) {
+            console.log('WebSocket连接已建立');
+            setConnected(true);
+        };
+
+        // 当接收到来自服务器的消息时触发的事件处理程序
+        socket.onmessage = function (event) {
+            console.log('收到消息:', event.data);
+            // 在页面上显示收到的消息
+            showGreeting(event.data);
+        };
+
+        // 当WebSocket连接关闭时触发的事件处理程序
+        socket.onclose = function (event) {
+            console.log('WebSocket连接已关闭');
+            // setConnected(true);
+        };
+
+        // 当发生WebSocket错误时触发的事件处理程序
+        socket.onerror = function (error) {
+            console.error('WebSocket发生错误:', error);
+        };
     }
-    ws.onmessage = function (message) {
-        console.log(message.data);
+
+    // 断开WebSocket连接
+    function disconnect() {
+        if (socket) {
+            socket.close(); // 关闭WebSocket连接
+            socket = null; // 清空WebSocket对象
+        }
+        setConnected(false);
+        console.log("Disconnected");
     }
+
+    // 发送消息到服务器
+    function sendMessage() {
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            const message = JSON.stringify({'name': $("#name").val()});
+            socket.send(message);
+            console.log('消息已发送:', message);
+        } else {
+            console.error('WebSocket连接未建立或已关闭，无法发送消息');
+        }
+    }
+
+    function setConnected(connected) {
+        $("#connect").prop("disabled", connected);
+        $("#disconnect").prop("disabled", !connected);
+        if (connected) {
+            $("#conversation").show();
+        } else {
+            $("#conversation").hide();
+        }
+        $("#greetings").html("");
+    }
+
+    function showGreeting(message) {
+        $("#greetings").append("<tr><td>" + message + "</td></tr>");
+    }
+
+    $(function () {
+        $("form").on('submit', (e) => e.preventDefault());
+        $("#connect").click(() => connect());
+        $("#disconnect").click(() => disconnect());
+        $("#send").click(() => sendMessage());
+    });
 
     function goToPage(pageUrl) {
         window.location.href = pageUrl;

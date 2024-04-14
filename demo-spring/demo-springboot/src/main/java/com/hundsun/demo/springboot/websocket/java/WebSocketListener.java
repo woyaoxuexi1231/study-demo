@@ -2,6 +2,7 @@ package com.hundsun.demo.springboot.websocket.java;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
@@ -23,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @ServerEndpoint("/myWs")
-// @Component
+@Component
 public class WebSocketListener {
 
     /**
