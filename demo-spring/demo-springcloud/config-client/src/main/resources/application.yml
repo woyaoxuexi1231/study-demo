@@ -1,19 +1,22 @@
-#spring:
-#  application:
-#    name: config-client
-#  cloud:
-#    config:
-#      fail-fast: true
-#      discovery:
-#        enabled: true
-#        service-id: config-server
-#  profiles:
-#    active: dev
-#eureka:
-#  client:
-#    service-url:
-#      defaultZone: http://localhost:9100/eureka/
-#server:
-#  port: 9161
+spring:
+  application:
+    name: config-client
+  cloud:
+    config:
+      fail-fast: true
+      uri: http://localhost:9160
+  #      discovery:
+  #        enabled: true
+  #        service-id: config-server
+  config:
+    import: "optional:configserver:"
+  profiles:
+    active: dev
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:12000/eureka/
+server:
+  port: 9161
 
 

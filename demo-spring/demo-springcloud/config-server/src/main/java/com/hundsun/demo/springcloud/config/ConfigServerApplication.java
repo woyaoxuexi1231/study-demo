@@ -14,7 +14,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
  * @createDate: 2023/5/5 20:44
  */
 
-@EnableEurekaClient
+// @EnableEurekaClient
 @EnableConfigServer
 @SpringBootApplication
 public class ConfigServerApplication {
