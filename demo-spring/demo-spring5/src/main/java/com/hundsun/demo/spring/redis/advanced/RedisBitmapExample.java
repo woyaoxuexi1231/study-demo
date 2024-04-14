@@ -1,8 +1,13 @@
-package com.hundsun.demo.spring.redis;
+package com.hundsun.demo.spring.redis.advanced;
 
 import redis.clients.jedis.Jedis;
 
+/*
+位图 应用于布隆过滤器
+ */
+
 public class RedisBitmapExample {
+
     public static void main(String[] args) {
         // 创建 Jedis 客户端连接
         Jedis jedis = new Jedis("192.168.80.128", 6379);

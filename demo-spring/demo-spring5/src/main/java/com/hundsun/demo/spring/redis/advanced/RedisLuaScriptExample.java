@@ -1,4 +1,4 @@
-package com.hundsun.demo.spring.redis;
+package com.hundsun.demo.spring.redis.advanced;
 
 import redis.clients.jedis.Jedis;
 

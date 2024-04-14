@@ -1,4 +1,4 @@
-package com.hundsun.demo.spring.redis;
+package com.hundsun.demo.spring.redis.basic;
 
 import org.redisson.Redisson;
 import org.redisson.api.RBucket;

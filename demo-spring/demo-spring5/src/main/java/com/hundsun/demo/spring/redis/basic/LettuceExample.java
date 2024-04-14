@@ -1,4 +1,4 @@
-package com.hundsun.demo.spring.redis;
+package com.hundsun.demo.spring.redis.basic;
 
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
