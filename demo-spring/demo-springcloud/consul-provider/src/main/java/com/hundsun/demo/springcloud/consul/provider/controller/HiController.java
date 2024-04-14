@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
  * @createDate: 2023/5/6 22:53
  */
 
+// 用于标识一个Bean在配置发生变化时需要被动态刷新。
 @RefreshScope
 @RestController
 public class HiController {
@@ -29,7 +30,7 @@ public class HiController {
         return "here is " + port + " and your ip is " + req.getRemoteAddr();
     }
 
-    @Value("${foo.bar}")
+    @Value("${foo.bar:null}")
     String fooBar;
 
     @GetMapping("/foo")

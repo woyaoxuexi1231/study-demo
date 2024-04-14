@@ -5,14 +5,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 /**
- * @projectName: study-demo
- * @package: com.hundsun.demo.springcloud.eureka.server
- * @className: EurekaServerApplication
- * @description:
- * @author: h1123
- * @createDate: 2023/5/5 20:44
+ * @author h1123
+ * @since 2023/5/5 20:44
  */
 
+// 开启服务注册发现
 @EnableDiscoveryClient
 @SpringBootApplication
 public class ConsulProviderApplication {

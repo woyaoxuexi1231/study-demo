@@ -1,15 +1,27 @@
-spring:
-  application:
-    name: consul-provider
-  cloud:
-    consul:
-      host: localhost
-      port: 8500
-      discovery:
-        service-name: consul-provider
-      config:
-        enabled: true
-        format: yaml
-        prefix: config
-        profile-separator: ':'
-        data-key: data
+#server:
+#  port: 9141
+
+#spring:
+#  application:
+#    name: consul-provider
+#  cloud:
+#    consul:
+#      # Consul 服务器的主机名或 IP 地址
+#      host: localhost
+#      # Consul 服务器的端口号，设置为 8500。
+#      port: 8500
+#      discovery:
+#        # 服务在 Consul 注册中心中的名称，设置为 consul-provider。
+#        service-name: consul-provider
+#        instance-id: ${spring.application.name}:${server.port}
+#      config:
+#        # 是否启用 Consul 配置中心，设置为 true。
+#        enabled: true
+#        # 配置的格式，这里设置为 YAML。
+#        format: yaml
+#        # 配置的前缀，即在 Consul 中存储配置时的前缀，设置为 config
+#        # 配置文件的分隔符，用于区分不同的配置文件和 Spring Profile，设置为 ':'
+#        profile-separator: ':'
+#        # 数据键，指定了配置中心中存储配置的键，这里设置为 data
+#        data-key: data
+#        prefixes: config

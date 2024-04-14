@@ -1,0 +1,61 @@
+server:
+  # 配置中心的端口配置会优于本地的配置
+  port: 9141
+spring:
+  application:
+    name: consul-provider
+  cloud:
+    consul:
+      # Consul 服务器的主机名或 IP 地址
+      host: localhost
+      # Consul 服务器的端口号，设置为 8500。
+      port: 8500
+      discovery:
+        # 服务在 Consul 注册中心中的名称，设置为 consul-provider。
+        service-name: consul-provider
+        # instanceId 是一个可选属性，允许你自定义服务实例的ID。你可以利用Spring表达式语言（SpEL）来构建一个复杂的ID。例如，包括应用IP、应用实例ID和一些随机值。
+        instance-id: ${spring.application.name}:${server.port}
+        health-check-path: /actuator/health
+        health-check-interval: 30s
+      config:
+        # 是否启用 Consul 配置中心，设置为 true。
+        enabled: true
+        # 配置的格式，这里设置为 YAML。
+        format: yaml
+        # 配置文件的分隔符，用于区分不同的配置文件和 Spring Profile，设置为 ':'
+        profile-separator: ':'
+        # 数据键，指定了配置中心中存储配置的键，这里设置为 data
+        data-key: data
+        # 配置的前缀，即在 Consul 中存储配置时的前缀，设置为 config
+        # prefix: config 已经不再推荐
+        prefixes: config
+        # 这个参数决定了当Consul连接失败时，应用是否会立即失败并抛出异常41。如果设置为true，那么在无法连接到Consul时，应用将无法启动41。如果设置为false，那么在无法连接到Consul时，应用将继续启动，并记录一个警告41。
+        fail-fast: true
+        watch:
+          # 这个参数决定了是否启用Consul的配置自动刷新功能。如果设置为true，那么应用将会定期检查Consul中的配置是否有更新。如果有新的配置数据，应用将会自动刷新配置。如果设置为false，那么应用将不会自动刷新配置。
+          enabled: true
+          # delay属性控制的是服务启动后首次从Consul拉取配置的初始延迟时间。这个延迟是服务启动时，等待一个特定时间后才开始查询Consul获取配置更新。这个时间是以毫秒为单位。
+          # 这个参数有助于减少在服务启动的初始阶段对Consul服务器的请求压力，并且对于服务刚刚启动时而言，并不总是立即需要最新的配置。
+          # delay: 1000
+          # 属性设置了长轮询的等待时间（以秒为单位），这决定了检测配置更改的时间频率。通过减少这个值，可以让客户端更频繁地检查配置更改，进而减少配置刷新的延迟。
+          # 假设wait-time为10秒，那么客户端会发起一个请求后等待最多10秒钟。如果这10秒内配置发生了更改，Consul会立即返回响应，客户端就会收到更新的配置。如果10秒内没有更改，请求会超时，然后客户端将重新发起请求。
+          # wait-time: 1
+  config:
+    # spring.config.import属性被用来明确声明配置信息应从哪里被加载
+    # 在Spring Boot 2.4及更高版本中，您需要在application.yml（或application.properties）文件中而不是在bootstrap.yml中指定spring.config.import属性。
+    # 这是因为最近的Spring Boot版本改变了配置文件加载的方式。
+    # optional: 前缀表示该导入的配置源是可选的。这意味着，如果指定的配置源（在本例中是Consul）无法被访问或加载，Spring Boot不会抛出异常或停止应用启动。这对于开发环境特别有用，因为可能有时候你不希望运行Consul服务，或者Consul服务暂时不可用，但你仍希望应用能够启动并正常运行。
+    # consul: 部分指明了配置数据应从Consul配置中心加载。这是告诉Spring Boot应用需要与Consul服务通信，从Consul中获取配置信息。Consul是一个分布式服务发现和配置中心，支持通过键值存储机制来保存和管理配置信息。
+    # import: "optional:consul:" todo 没实际场景试验过 optional到底有什么作用
+    import: 'consul:'
+  profiles:
+    # 如果我们指定了一个不存在的环境的配置文件
+    # 1.后备到默认配置(确实会,但是需要有一个无环境的主配置文件)
+    # 2.部分配置可用(如果dev1不可用,那么会找其他的可以用的配置文件)
+    # 3.启动失败(如果都没有,并且配置文件还强制需要加载)
+    active: dev
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
