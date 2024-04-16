@@ -1,5 +1,6 @@
 package org.hulei.springboot.websocket;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -13,12 +14,14 @@ import org.springframework.stereotype.Controller;
  * @Date: 2024-03-11 16:04
  */
 
+@Slf4j
 @Controller
 public class WebSocketController {
 
     @MessageMapping("/hello")
     @SendTo("/topic/greetings")
     public String greeting(String message) throws Exception {
+        log.info("websocket收到消息: {}, topic: {}", message, "hello");
         Thread.sleep(1000); // simulated delay
         return String.format("Hello, %s !", message);
     }

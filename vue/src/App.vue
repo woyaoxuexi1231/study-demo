@@ -21,14 +21,21 @@
                   <span>发布订阅</span>
                 </template>
                 <!--消息队列子页面-->
-                <el-menu-item index="3">
+                <el-menu-item index="1">
                   <i class="el-icon-chat-dot-round"></i>
                   <router-link style="text-decoration: none;  color: #333333" to="/messageQueue">RabbitMQ</router-link>
                 </el-menu-item>
                 <!--websocket子页面-->
-                <el-menu-item index="4">
+                <el-menu-item index="2">
                   <i class="el-icon-chat-dot-round"></i>
-                  <router-link style="text-decoration: none; color: #333333" :to="{name:'WebSocket', params:{message:'Hello from parent!'}}">webSocket
+                  <router-link style="text-decoration: none; color: #333333"
+                               :to="{name:'WebSocket', params:{message:'Hello from parent!'}}">WebSocket
+                  </router-link>
+                </el-menu-item>
+                <el-menu-item index="3">
+                  <i class="el-icon-chat-dot-round"></i>
+                  <router-link style="text-decoration: none; color: #333333"
+                               :to="{name:'WebSocketStomp', params:{message:'Hello from parent!'}}">WebSocketStomp
                   </router-link>
                 </el-menu-item>
               </el-submenu>

@@ -1,22 +1,27 @@
-`WebSocketMessageBrokerConfigurer`和`WebSocketConfigurer`是Spring框架中用于配置WebSocket的两个接口，它们在WebSocket配置中扮演着不同的角色，并且服务于Spring框架中不同层次的WebSocket支持。
+`WebSocketMessageBrokerConfigurer` 和 `WebSocketConfigurer` 是 Spring WebSocket 模块中用于配置 WebSocket 的两个不同的接口，它们各自适用于不同的场景和配置需求。下面是这两个接口的主要区别：
 
-### `WebSocketConfigurer`
+### `WebSocketMessageBrokerConfigurer`：
 
-- **层次**：更接近底层。
-- **用途**：用于配置原生WebSocket的端点。如果你正在直接使用WebSocket API（例如使用`@ServerEndpoint`注解），并且希望通过Spring来配置WebSocket的端点，那么你可能会实现`WebSocketConfigurer`接口。
-- **实现方式**：通过实现`WebSocketConfigurer`接口并重写`registerWebSocketHandlers`方法，开发者可以注册WebSocket的处理器，并且定义URL的映射路径。这允许直接使用WebSocket协议。
+- **用途：** 该接口用于实现基于消息代理的 WebSocket 应用，通常是结合使用 STOMP 协议（Simple (or Streaming) Text Orientated Messaging Protocol）。这种方式比原生的 WebSocket 更高级，因为它允许通过消息代理进行更为复杂的消息传递模式（例如广播和点对点）。
 
-### `WebSocketMessageBrokerConfigurer`
+- **主要方法：**
+  - `registerStompEndpoints(StompEndpointRegistry registry)` – 用于定义 WebSocket 端点，允许客户端连接到 WebSocket 服务器。
+  - `configureMessageBroker(MessageBrokerRegistry registry)` – 用于配置消息代理，如定义应用的消息前缀和代理的目标前缀。
 
-- **层次**：更高级、更抽象。
-- **用途**：用于配置基于消息代理的WebSocket通讯。`WebSocketMessageBrokerConfigurer`是为了支持更复杂的消息传递场景设计的，比如使用STOMP协议（Simple Text Oriented Messaging
-  Protocol）来作为WebSocket的子协议，允许通过消息代理来进行广播或者与特定用户通讯。
-- **实现方式**：通过实现`WebSocketMessageBrokerConfigurer`接口并重写相关的配置方法（例如`configureMessageBroker`、`registerStompEndpoints`
-  等），开发者可以定义消息代理的行为、配置端点、设置消息的前缀等。这种方式允许使用更高级的消息传递模式，如发布/订阅。
+- **注解：** 使用 `@EnableWebSocketMessageBroker` 注解可以启用 STOMP 消息代理的功能，并使用实现了 `WebSocketMessageBrokerConfigurer` 接口的类来配置这些功能。
 
-### 关系与区别
+### `WebSocketConfigurer`：
 
-- **关系**：它们都是Spring框架中用于配置WebSocket的接口，但是服务于不同的使用场景和需求。`WebSocketConfigurer`更多地面向底层的WebSocket配置，而`WebSocketMessageBrokerConfigurer`面向基于消息代理的高级特性。
-- **区别**：主要在于它们配置的层次和复杂性不同。`WebSocketConfigurer`适合那些需要直接控制WebSocket连接和处理的场景，而`WebSocketMessageBrokerConfigurer`适合需要通过消息代理进行复杂消息传递模式的应用场景。
+- **用途：** 该接口用于直接配置原生的 WebSocket 而不涉及消息代理。如果你的应用不需要复杂的消息传递模式，或者你想直接控制 WebSocket 会话，你可能会选择实现 `WebSocketConfigurer`。
 
-根据你的具体需求，你可能会选择实现其中的一个或者两者都不使用，直接利用Spring提供的注解和自动配置来简化WebSocket的开发。
+- **主要方法：**
+  - `registerWebSocketHandlers(WebSocketHandlerRegistry registry)` – 用于注册 WebSocket 处理程序，定义 WebSocket 端点和握手拦截器。
+
+- **注解：** 使用 `@EnableWebSocket` 注解可以启用原生 WebSocket 支持，并使用实现了 `WebSocketConfigurer` 接口的类来配置 WebSocket 处理程序。
+
+### 总结：
+
+- `WebSocketMessageBrokerConfigurer` 适用于创建基于 STOMP 消息代理的 WebSocket 应用。这通常用于更复杂、更高级的场景，如消息发布/订阅、群组广播等。
+- `WebSocketConfigurer` 适用于仅需要原生 WebSocket 功能的应用。这用于更简单直接的用例，其中直接处理 WebSocket 消息。
+
+实际选择哪一个接口取决于你的应用需求，如果你需要利用 STOMP 协议来进行复杂的消息交互，你可能会选择 `WebSocketMessageBrokerConfigurer`。相反，如果你的应用只需要简单的 WebSocket 功能，你可以选择 `WebSocketConfigurer`。

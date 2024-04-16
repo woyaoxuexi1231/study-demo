@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1>WebSocket</h1>
     <el-row>
       <el-col :span="12">
         <el-form inline>
@@ -16,7 +17,7 @@
             <el-input v-model="message" placeholder="Your name here..."></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button id="send" type="primary" @click="sendMessage">Send</el-button>
+            <el-button id="send" type="primary" @click="sendMessage" :disabled="!connected">Send</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -29,15 +30,9 @@
 
 <script>
 export default {
-  props: {
-    connected: {
-      type: Boolean,
-      required: true
-    }
-  },
   data() {
     return {
-      // connected: false,
+      connected: false,
       name: '',
       messages: [],
       message: '',
