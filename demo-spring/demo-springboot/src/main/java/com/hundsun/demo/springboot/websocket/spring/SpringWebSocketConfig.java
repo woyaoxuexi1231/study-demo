@@ -33,7 +33,19 @@ public class SpringWebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry webSocketHandlerRegistry) {
         webSocketHandlerRegistry
+                /*
+                AbstractWebSocketHandler 是一个抽象类，用于处理 WebSocket 消息和事件。
+                它定义了一组方法，可以重写这些方法来处理 WebSocket 连接的不同阶段，例如连接建立、消息处理、连接关闭等。
+                开发人员可以通过继承 AbstractWebSocketHandler 并重写其方法来实现自定义的 WebSocket 处理逻辑。
+                提供了一些便捷方法用于发送消息、获取会话信息等。
+                 */
                 .addHandler(springWebSocketHandler, "/myWsSpring")
+                /*
+                HttpSessionHandshakeInterceptor 是用于 WebSocket 握手过程的拦截器。
+                在 WebSocket 建立连接之前，会经过一次 HTTP 握手过程，这个过程中可以通过拦截器来进行一些预处理或校验。
+                开发人员可以通过实现 HttpSessionHandshakeInterceptor 接口，并重写其中的方法来定义自己的握手拦截逻辑。
+                其中最常用的方法是 beforeHandshake()，可以在 WebSocket 握手之前执行一些逻辑，比如校验用户身份、设置一些 WebSocket 相关的属性等。
+                 */
                 .addInterceptors(springWebSocketInterceptor)
                 .setAllowedOrigins("*");
     }
