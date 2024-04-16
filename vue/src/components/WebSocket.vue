@@ -1,43 +1,95 @@
 <template>
   <div>
-    <h1>WebSocket 示例</h1>
-    <p>从WebSocket接收的消息: "{{ messageFromServer }}"</p>
+    <el-row>
+      <el-col :span="12">
+        <el-form inline>
+          <el-form-item label="WebSocket connection:">
+            <el-button id="connect" type="primary" @click="connectWebSocket" :disabled=connected>Connect</el-button>
+            <el-button id="disconnect" type="danger" @click="disconnectWebSocket" :disabled=!connected>Disconnect
+            </el-button>
+          </el-form-item>
+        </el-form>
+      </el-col>
+      <el-col :span="12">
+        <el-form inline>
+          <el-form-item label="What is your name?">
+            <el-input v-model="message" placeholder="Your name here..."></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button id="send" type="primary" @click="sendMessage">Send</el-button>
+          </el-form-item>
+        </el-form>
+      </el-col>
+    </el-row>
+    <el-table :data="messages" border style="width: 100%">
+      <el-table-column prop="message" label="Greetings"></el-table-column>
+    </el-table>
   </div>
 </template>
 
 <script>
 export default {
+  props: {
+    connected: {
+      type: Boolean,
+      required: true
+    }
+  },
   data() {
     return {
-      ws: null, // 用于存储WebSocket对象
-      messageFromServer: '', // 从服务器接收的消息
+      // connected: false,
+      name: '',
+      messages: [],
+      message: '',
+      socket: null
     };
   },
-  created() {
-    this.connectToWebSocket();
-  },
   methods: {
-    connectToWebSocket() {
-      // 假设你的WebSocket服务器地址为 ws://localhost:8080
-      this.ws = new WebSocket("ws://localhost:10088/myWsSpring");
-      this.ws.onopen = () => {
-        console.log('连接到WebSocket服务器');
-        // WebSocket连接成功后发送一个消息
-        this.ws.send('Hello Server!');
+    connectWebSocket() {
+      this.socket = new WebSocket("ws://localhost:10088/myWsSpring");
+
+      this.socket.onopen = () => {
+        console.log('WebSocket连接已建立');
+        this.setConnected(true);
       };
-      this.ws.onerror = (error) => {
-        console.error('WebSocket错误:', error);
+
+      this.socket.onmessage = (event) => {
+        console.log('收到消息:', event.data);
+        this.showGreeting(event.data);
       };
-      this.ws.onmessage = (event) => {
-        // 当从服务器接收到消息时更新messageFromServer
-        this.messageFromServer = event.data;
-        console.log('从服务器接收到消息:', event.data);
-      };
-      this.ws.onclose = () => {
+
+      this.socket.onclose = () => {
         console.log('WebSocket连接已关闭');
+        this.setConnected(false);
+      };
+
+      this.socket.onerror = (error) => {
+        console.error('WebSocket发生错误:', error);
       };
     },
-  },
+    disconnectWebSocket() {
+      if (this.socket) {
+        this.socket.close();
+        this.socket = null;
+      }
+      this.setConnected(false);
+      console.log("Disconnected");
+    },
+    sendMessage() {
+      if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+        this.socket.send(this.message);
+        console.log('消息已发送:', this.message);
+      } else {
+        console.error('WebSocket连接未建立或已关闭，无法发送消息');
+      }
+    },
+    setConnected(connected) {
+      this.connected = Boolean(connected);
+    },
+    showGreeting(message) {
+      this.messages.push({message});
+    }
+  }
 };
 </script>
 
