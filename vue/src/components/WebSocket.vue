@@ -1,100 +1,46 @@
 <template>
   <div>
-    <h1>WebSocket Test</h1>
-    <div>
-      <input v-model="name" placeholder="Enter your name">
-      <button @click="sendMessage">Send</button>
-    </div>
-    <div v-for="message in messages">
-      <p>{{ message.body }}</p>
-    </div>
-    <div>
-      <p>{{ $route.params.message }}</p>
-    </div>
+    <h1>WebSocket 示例</h1>
+    <p>从WebSocket接收的消息: "{{ messageFromServer }}"</p>
   </div>
 </template>
 
 <script>
-import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
-
 export default {
-  name: "WebSocket",
   data() {
     return {
-      socketUrl: '/api/gs-guide-websocket',
-      reconnecting: false,
-      stompClient: null,
-      name: '',
-      messages: []
+      ws: null, // 用于存储WebSocket对象
+      messageFromServer: '', // 从服务器接收的消息
     };
   },
-  mounted() {
-    this.connect();
+  created() {
+    this.connectToWebSocket();
   },
   methods: {
-    connect() {
-      const socket = new SockJS(this.socketUrl); // 连接到WebSocket服务器端点
-      // const socket = new SockJS('ws://localhost:10088/gs-guide-websocket'); // 连接到WebSocket服务器端点
-      // this.stompClient = Stomp.overWS(socket);
-      // this.stompClient = Stomp.overWS('ws://localhost:10088/gs-guide-websocket');
-      this.stompClient = Stomp.over(socket);
-      this.stompClient.connect(
-        {},
-        frame => {
-          console.log('Connected: ' + frame);
-          this.connectSucceed();
-        },
-        err => {
-          console.error(err);
-          this.reconnect(this.socketUrl, this.connectSucceed)
-        }
-      );
-
-      //
-      //
-      // const webSocket = new WebSocket('ws://localhost:10088/gs-guide-websocket');
-      // webSocket.onopen => (){
-      //   console.log("WebSocket connection opened:", event);
-      // };
-
+    connectToWebSocket() {
+      // 假设你的WebSocket服务器地址为 ws://localhost:8080
+      this.ws = new WebSocket("ws://localhost:10088/myWsSpring");
+      this.ws.onopen = () => {
+        console.log('连接到WebSocket服务器');
+        // WebSocket连接成功后发送一个消息
+        this.ws.send('Hello Server!');
+      };
+      this.ws.onerror = (error) => {
+        console.error('WebSocket错误:', error);
+      };
+      this.ws.onmessage = (event) => {
+        // 当从服务器接收到消息时更新messageFromServer
+        this.messageFromServer = event.data;
+        console.log('从服务器接收到消息:', event.data);
+      };
+      this.ws.onclose = () => {
+        console.log('WebSocket连接已关闭');
+      };
     },
-    reconnect(socketUrl, callback) {
-      this.reconnecting = true
-      let connected = false
-      const timer = setInterval(() => {
-        this.socket = new SockJS(socketUrl)
-        this.stompClient = Stomp.over(this.socket)
-        this.stompClient.connect(
-          {},
-          frame => {
-            this.reconnectting = false
-            connected = true
-            console.log('Connected: ' + frame);
-            clearInterval(timer)
-            callback()
-          },
-          err => {
-            console.log('Reconnect failed！');
-            if (!connected) console.log(err);
-          })
-      }, 1000);
-    },
-
-    connectSucceed() {
-      this.stompClient.subscribe('/topic/greetings', (greeting) => {
-        console.log("receive message(/topic/greetings) ==> " + greeting)
-        this.messages.push(greeting);
-      });
-    },
-
-    sendMessage() {
-      this.stompClient.send('/app/hello', {}, JSON.stringify({name: this.name}));
-    }
-  }
-}
+  },
+};
 </script>
 
-<style scoped>
-
+<style>
+/* 添加你的样式 */
 </style>

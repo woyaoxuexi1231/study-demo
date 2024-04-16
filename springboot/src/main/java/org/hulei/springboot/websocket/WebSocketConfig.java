@@ -1,4 +1,4 @@
-package org.hulei.springboot.config;
+package org.hulei.springboot.websocket;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

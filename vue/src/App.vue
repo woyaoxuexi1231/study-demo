@@ -80,7 +80,7 @@ export default {
     };
   },
   mounted() {
-    this.connect();
+    // this.connect();
   },
   methods: {
     handleOpen(key, keyPath) {

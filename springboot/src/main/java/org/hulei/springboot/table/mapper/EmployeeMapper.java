@@ -1,4 +1,4 @@
-package org.hulei.springboot.mapper;
+package org.hulei.springboot.table.mapper;
 
 import org.hulei.springboot.model.pojo.EmployeeDO;
 import org.springframework.stereotype.Repository;

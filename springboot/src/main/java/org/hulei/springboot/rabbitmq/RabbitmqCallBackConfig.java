@@ -1,4 +1,4 @@
-package org.hulei.springboot.config;
+package org.hulei.springboot.rabbitmq;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;

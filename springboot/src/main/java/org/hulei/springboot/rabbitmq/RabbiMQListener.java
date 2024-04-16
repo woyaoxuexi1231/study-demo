@@ -1,9 +1,9 @@
-package org.hulei.springboot.listener;
+package org.hulei.springboot.rabbitmq;
 
 import com.hundsun.demo.spring.mq.rabbit.config.MQConfig;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.springboot.mapper.RabbitmqLogMapper;
+import org.hulei.springboot.rabbitmq.mapper.RabbitmqLogMapper;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Argument;
@@ -14,7 +14,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
 
 /**
  * @projectName: study-demo

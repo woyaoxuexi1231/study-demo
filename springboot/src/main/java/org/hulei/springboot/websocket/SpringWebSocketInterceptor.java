@@ -1,4 +1,4 @@
-package com.hundsun.demo.springboot.websocket.spring;
+package org.hulei.springboot.websocket;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.ServerHttpRequest;

@@ -1,4 +1,4 @@
-package org.hulei.springboot.controller;
+package org.hulei.springboot.rabbitmq;
 
 import com.alibaba.fastjson.JSON;
 import com.hundsun.demo.commom.core.model.MQIdempotency;

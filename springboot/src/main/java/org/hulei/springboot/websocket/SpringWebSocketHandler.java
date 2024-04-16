@@ -1,9 +1,9 @@
-package com.hundsun.demo.springboot.websocket.spring;
+package org.hulei.springboot.websocket;
 
 import com.alibaba.fastjson.JSON;
-import com.hundsun.demo.springboot.websocket.stomp.Greeting;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.hulei.springboot.model.Greeting;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;

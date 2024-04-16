@@ -1,10 +1,10 @@
-package org.hulei.springboot.controller;
+package org.hulei.springboot.table;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.hulei.springboot.mapper.EmployeeMapper;
 import org.hulei.springboot.model.pojo.EmployeeDO;
 import org.hulei.springboot.model.req.EmployeeQryReqDTO;
+import org.hulei.springboot.table.mapper.EmployeeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

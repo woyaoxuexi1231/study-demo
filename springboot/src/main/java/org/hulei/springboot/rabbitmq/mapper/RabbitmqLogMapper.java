@@ -1,4 +1,4 @@
-package org.hulei.springboot.mapper;
+package org.hulei.springboot.rabbitmq.mapper;
 
 import com.hundsun.demo.commom.core.model.RabbitmqLogDO;
 import org.springframework.stereotype.Repository;

@@ -18,7 +18,8 @@ import tk.mybatis.spring.annotation.MapperScan;
  */
 
 @MapperScan(basePackages = {
-        "org.hulei.springboot.mapper",
+        "org.hulei.springboot.table.mapper",
+        "org.hulei.springboot.rabbitmq.mapper",
 })
 @Slf4j
 @SpringBootApplication
