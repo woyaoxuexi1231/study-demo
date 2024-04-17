@@ -14,7 +14,8 @@
             %msg：日志消息，%n是换行符
             %logger{36} 表示 Logger 名字最长36个字符
         -->
-        <property name="LOG_PATTERN" value="%d{yy-MM-dd HH:mm:ss.SSS} %highlight{%-5level}[%thread] %style{%c{}}{cyan}(%L) - %msg%n"/>
+        <property name="LOG_PATTERN"
+                  value="%d{yy-MM-dd HH:mm:ss.SSS} %highlight{%-5level}[%thread] %style{%c{}}{cyan}(%L) - %msg%n"/>
 
         <!-- 定义日志存储的路径, 不要配置相对路径 -->
         <property name="FILE_PATH" value="logs"/>
@@ -32,6 +33,7 @@
 
         <RollingFile name="RollingFileInfo" fileName="${FILE_PATH}/${FILE_NAME}-info.log"
                      filePattern="${FILE_PATH}/${FILE_NAME}-INFO-%d{yyyy-MM-dd}_%i.log.gz">
+<!--            <PatternLayout pattern="${LOG_PATTERN}" disableAnsi="false" noConsoleNoAnsi="false"/>-->
             <PatternLayout pattern="${LOG_PATTERN}"/>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1"/>
@@ -69,12 +71,12 @@
         <!-- 过滤掉 spring 和 mybatis 的一些无用的 DEBUG 信息 -->
         <!-- 若是 additivity 设为 false, 则子 Logger 只会在自己的 appender 里输出, 而不会在父 Logger 的 appender 里输出。 -->
 
-        <logger name="org.mybatis" level="info" additivity="false">
-            <AppenderRef ref="Console"/>
-        </logger>
-        <Logger name="org.springframework" level="info" additivity="false">
-            <AppenderRef ref="Console"/>
-        </Logger>
+<!--        <logger name="org.mybatis" level="info" additivity="false">-->
+<!--            <AppenderRef ref="Console"/>-->
+<!--        </logger>-->
+<!--        <Logger name="org.springframework" level="info" additivity="false">-->
+<!--            <AppenderRef ref="Console"/>-->
+<!--        </Logger>-->
 
         <root level="info">
             <appender-ref ref="Console"/>

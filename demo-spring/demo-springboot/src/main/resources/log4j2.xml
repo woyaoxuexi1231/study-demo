@@ -69,12 +69,12 @@
         <!-- 过滤掉 spring 和 mybatis 的一些无用的 DEBUG 信息 -->
         <!-- 若是 additivity 设为 false, 则子 Logger 只会在自己的 appender 里输出, 而不会在父 Logger 的 appender 里输出。 -->
 
-        <logger name="org.mybatis" level="info" additivity="false">
-            <AppenderRef ref="Console"/>
-        </logger>
-        <Logger name="org.springframework" level="info" additivity="false">
-            <AppenderRef ref="Console"/>
-        </Logger>
+<!--        <logger name="org.mybatis" level="info" additivity="false">-->
+<!--            <AppenderRef ref="Console"/>-->
+<!--        </logger>-->
+<!--        <Logger name="org.springframework" level="info" additivity="false">-->
+<!--            <AppenderRef ref="Console"/>-->
+<!--        </Logger>-->
 
         <root level="info">
             <appender-ref ref="Console"/>
