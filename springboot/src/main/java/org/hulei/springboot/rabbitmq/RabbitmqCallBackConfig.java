@@ -56,7 +56,7 @@ public class RabbitmqCallBackConfig implements RabbitTemplate.ConfirmCallback, R
     @Override
     public void confirm(CorrelationData correlationData, boolean ack, String cause) {
         // ack = true 交换机收到了消息, ack = false 交换机没收到消息
-        // log.info("confirm => correlationData: {}, ack: {}, cause: {}", correlationData, ack, cause);
+        log.info("confirm => correlationData: {}, ack: {}, cause: {}", correlationData, ack, cause);
     }
 
 
