@@ -1,0 +1,34 @@
+spring:
+  cloud:
+    config:
+      server:
+#        native:
+          # 用于指定本地配置文件搜索位置的属性。当 Config Server 启动时，它需要知道在哪些位置搜索配置文件以提供给客户端请求的配置信息。
+          # 可以通过设置一个或多个路径来指定搜索位置，多个路径之间使用逗号分隔。Config Server 将会按照指定的路径顺序搜索配置文件，一旦找到符合条件的配置文件，就会返回给客户端。
+          # spring.cloud.config.server.native.search-locations=file:/path/to/config1,file:/path/to/config2
+#          search-locations: classpath:/shared
+        git:
+          uri: https://github.com/woyaoxuexi1231/SpringcloudConfig
+          searchPaths: respo
+          username: 154347188@qq.com
+          password: Github123a
+          force-pull: true
+#          timeout: 10
+      label: master
+#  profiles:
+    # 在spring-cloud-config-server中代表将使用本地文件系统作为配置存储后端
+    # 并且根据客户端请求的配置文件和激活的 profile 来返回相应的配置信息。
+#    active: native
+  application:
+    name: config-server
+server:
+  port: 9160
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    serviceUrl:
+      defaultZone: http://localhost:12000/eureka/
+
+
+

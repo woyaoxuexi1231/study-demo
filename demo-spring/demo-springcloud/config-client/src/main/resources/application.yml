@@ -3,14 +3,18 @@ spring:
     name: config-client
   cloud:
     config:
+      # 配置 Spring Cloud Config 客户端在启动时是否快速失败。当设置为 true 时，如果配置服务器不可用，应用将快速失败启动。默认为 false。
       fail-fast: true
+      # 指定 Spring Cloud Config 服务器的 URI 地址，用于从配置服务器获取配置信息。
       uri: http://localhost:9160
   #      discovery:
   #        enabled: true
   #        service-id: config-server
   config:
+    # 指定应用是否应该导入配置服务器的配置。这里使用了 optional 前缀，表示如果配置服务器不可用，应用也可以正常启动。
     import: "optional:configserver:"
   profiles:
+    # 指定当前应用的活动配置文件为 dev，这意味着应用将会加载名为 application-dev.yml 或 application-dev.properties 的配置文件。
     active: dev
 eureka:
   client:
