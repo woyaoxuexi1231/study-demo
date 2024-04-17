@@ -82,6 +82,26 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
+        <!--
+        `spring-boot-starter-actuator` 是 Spring Boot 的一个启动器（starter）依赖，其设计初衷是为了让开发者能够方便快捷地获取应用程序的运行时信息和健康状况，无需编写额外的监控和管理代码。这个库提供了一系列的预设端点（endpoints），通过这些端点，可以访问应用程序的内部信息，比如运行状况（health）、指标信息（metrics）、环境属性（env）等。
+
+        出现契机：
+        - **提高可观察性**：在现代应用的开发过程中，理解应用的运行状况、性能指标和各项资源的使用情况变得至关重要。随着微服务架构的流行，单个应用可能被拆分成多个服务，这使得监控单个服务的性能和健康状态成为一项挑战。`spring-boot-starter-actuator` 被设计来简化这一过程，通过暴露端点来帮助开发者和运维人员监控和管理应用。
+        - **简化运维任务**：在没有合适工具的情况下，维护和监测应用可能需要编写大量定制代码。`spring-boot-starter-actuator` 提供了一个简单而强大的方式来进行操作，比如实时检查应用的健康状况，查看应用的配置信息，实时访问日志级别等，无需登录服务器或直接访问数据库。
+        - **增强微服务架构支持**：在微服务架构中，管理和监控数十或数百个服务可能非常复杂。Actuator提供的端点可以轻松集成到微服务监控工具中，如Prometheus、Grafana等，这使得集中监控变得容易。
+
+        解决问题：
+        - **透明度**：提供应用程序运行时的详细视图，帮助开发者了解应用的内部状态。
+        - **诊断能力**：通过提供详细的健康指标和信息，帮助开发者快速定位问题所在。
+        - **减少开发负担**：避免开发者需要自行实现监控和管理功能，提高开发效率。
+        - **易于集成**：Actuator 端点容易与现有的监控系统集成，提供实时监控和警报功能。
+
+        总之，`spring-boot-starter-actuator` 是一个非常强大的工具，它通过提供丰富的运行时信息和管理功能，帮助开发者更好地管理和监控他们的应用程序。
+         -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
 
 
         <!-- jdbc -->
