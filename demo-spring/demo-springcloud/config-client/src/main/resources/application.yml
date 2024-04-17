@@ -6,21 +6,57 @@ spring:
       # 配置 Spring Cloud Config 客户端在启动时是否快速失败。当设置为 true 时，如果配置服务器不可用，应用将快速失败启动。默认为 false。
       fail-fast: true
       # 指定 Spring Cloud Config 服务器的 URI 地址，用于从配置服务器获取配置信息。
-      uri: http://localhost:9160
-  #      discovery:
-  #        enabled: true
-  #        service-id: config-server
+      #uri: http://localhost:9160
+      #开启服务发现并指定服务ID后，Spring Cloud Config 客户端将能够自动地定位配置服务实例的真实网络位置，即使这些实例的地址或端口发生变化。这提供了以下几个优势:
+      #灵活性和可扩展性：配置服务的实例可以自由地增加或移动到不同的服务器或端口，而不需要修改客户端配置。
+      #容错性：如果使用的服务发现工具支持负载均衡，客户端可以自动地从多个配置服务实例中选择一个可用的实例，从而增加服务容错性。
+      #动态性：在云环境或容器化部署（如 Kubernetes）中，服务实例可能会因为多种原因频繁地更换IP或端口。服务发现机制使得客户端总是能找到正确的服务实例。
+      discovery:
+        # 这个配置项用于启用或禁用配置客户端的服务发现功能。当您设置此属性为 true，Spring Cloud Config 客户端将不再使用静态定义的 URI 访问配置服务器。相反，他会使用集成的服务发现机制（通常是 Eureka, Consul 或其他服务发现工具）来动态查找配置服务的位置。
+        enabled: true
+        # 此配置项与 spring.cloud.config.discovery.enabled=true 一起使用时，指定了配置服务器在服务注册中心登记时使用的服务ID。这意味着配置客户端知道要查找哪个具体的服务名称来获取配置信息。
+        service-id: config-server
+    bus:
+      # 这个配置项用于启用或禁用 Spring Cloud Bus 功能。如果您希望通过消息总线发送和接收消息，比如自动刷新配置或广播自定义事件，您需要启用这项功能。
+      # 当设置为 true 时，启用 Spring Cloud Bus，允许应用通过消息代理与其他服务实例通信。
+      # 禁用Spring Cloud Bus后，服务将无法使用Spring Cloud Bus提供的功能，比如配置更新的广播和接收将不会发生。
+      enabled: true
+      trace:
+        # 这个配置项用于启用或禁用消息跟踪。开启后，可以记录通过 Spring Cloud Bus 发送和接收的消息的轨迹，有助于调试和监控。
+        # 禁用事件跟踪后，/trace端点将不再提供通过Spring Cloud Bus传递的消息的详细信息。这可能会让调试消息传递相关的问题变得更加困难，因为您将无法从/trace端点获取到帮助理解问题的信息。
+        enabled: true
   config:
     # 指定应用是否应该导入配置服务器的配置。这里使用了 optional 前缀，表示如果配置服务器不可用，应用也可以正常启动。
     import: "optional:configserver:"
   profiles:
     # 指定当前应用的活动配置文件为 dev，这意味着应用将会加载名为 application-dev.yml 或 application-dev.properties 的配置文件。
     active: dev
+  rabbitmq:
+    username: rabbitmq
+    password: rabbitmq
+    virtual-host: /
+    addresses: 192.168.80.128
+    port: 5672
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:12000/eureka/
 server:
   port: 9161
+management:
+  #  这是用于配置 Spring Boot Actuator 端点的管理端口属性。
+  #  默认情况下，Actuator 端点使用与主服务相同的端口（即 server.port）。但是，如果你想要为 Actuator 端点配置一个不同的端口，你可以使用 management.server.port 属性来指定。
+  #  server:
+  #    port: 9161
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+#  endpoint:
+#    refresh:
+#      # management.endpoint.refresh.enabled 是 Spring Boot Actuator 的配置选项之一，用于启用或禁用刷新配置的端点。当这个配置项被设置为 true 时，Actuator 将会暴露一个 /actuator/refresh 的端点，允许通过发送 POST 请求来刷新应用程序的配置。
+#      enabled: true
 
-
+refresh: "124"
+# 想要刷新配置需要使用post方法调用 curl -X POST http://localhost:9161/actuator/busrefresh
+# curl -X POST http://localhost:9161/actuator/refresh

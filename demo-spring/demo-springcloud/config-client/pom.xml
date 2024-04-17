@@ -35,10 +35,19 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-        <!-- <dependency> -->
-        <!--     <groupId>org.springframework.cloud</groupId> -->
-        <!--     <artifactId>spring-cloud-starter-bus-amqp</artifactId> -->
-        <!-- </dependency> -->
+        <!-- 使用spring cloud bus来做到实时刷新配置 -->
+        <!--
+         Spring Cloud Bus 出现的契机主要是为了解决微服务架构中的服务实例需要及时响应配置更改、共享事件等场景的需要。在传统部署模式下，当配置信息改变时，可能需要手动重启服务来加载新的配置，这在动态的云环境和容器化部署中显得不够灵活和高效。
+
+        解决的主要问题包括：
+        动态配置更新：结合 Spring Cloud Config 使用时，Spring Cloud Bus 允许配置更新时自动通知服务实例，实现配置的动态刷新，无需重新启动服务。
+        事件广播：在微服务架构中，服务实例之间可能需要基于某些事件做出响应或通信。Spring Cloud Bus 提供了一条消息通道，使得事件可以被广播到所有订阅了这些事件的服务实例。
+        解耦服务通信：通过使用轻量级消息代理，Spring Cloud Bus 有助于实现服务实例之间的解耦通信，增加系统的灵活性和可扩展性。
+         -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bus-amqp</artifactId>
+        </dependency>
     </dependencies>
 
     <profiles>

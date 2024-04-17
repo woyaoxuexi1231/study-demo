@@ -25,4 +25,12 @@ public class HiController {
     public String getFooBar() {
         return fooBar;
     }
+
+    @Value("${refresh}")
+    String refresh;
+
+    @GetMapping("/refresh")
+    public String getRefresh() {
+        return refresh;
+    }
 }
