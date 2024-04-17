@@ -23,6 +23,12 @@ import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 public class EurekaServerApplication {
 
     public static void main(String[] args) {
+        /*
+        eureka注册页面报错
+        1. EMERGENCY! EUREKA MAY BE INCORRECTLY CLAIMING INSTANCES ARE UP WHEN THEY'RE NOT. RENEWALS ARE LESSER THAN THRESHOLD AND HENCE THE INSTANCES ARE NOT BEING EXPIRED JUST TO BE SAFE.
+        Renewals are lesser than threshold：这表明注册到Eureka的服务实例发送的续约（心跳）消息数量低于预设的阈值。在Eureka中，服务实例需要定期发送心跳来表明自己仍然存活。如果在一定时间内接收到的心跳数量低于预期，这通常表明有些服务实例可能已经下线或失去响应。
+        Instances are not being expired just to be safe：这意味着尽管心跳数量不足，但Eureka服务器选择不将这些实例标记为下线状态。这是一种安全措施，以防误删仍在运行的实例（可能是因为网络问题或其他原因导致的心跳失败）。
+         */
         SpringApplication.run(EurekaServerApplication.class, args);
     }
 }
