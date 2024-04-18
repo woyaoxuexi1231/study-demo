@@ -4,8 +4,11 @@ spring:
   application:
     name: security
   thymeleaf:
+    # 这一行配置了Thymeleaf模板引擎的模式为HTML5。
     mode: HTML5
+    # 这一行配置了Thymeleaf模板引擎的字符编码为UTF-8。
     encoding: UTF-8
+    # 这一行配置了Thymeleaf模板引擎的缓存为关闭状态。
     cache: false
   datasource:
     url: jdbc:mysql://192.168.175.128:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai

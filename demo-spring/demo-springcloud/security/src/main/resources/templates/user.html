@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>401 Unauthorized</title>
-    <link th:href="@{css/bootstrap.min.css}" href="/css/bootstrap.min.css" rel="stylesheet" />
+    <title>User Page</title>
+    <link th:href="@{/css/bootstrap.min.css}" href="/css/bootstrap.min.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="container">
-    <h2 class="mt-5">401 - Unauthorized</h2>
-    <p>You do not have permission to view this page.</p>
+    <h2 class="mt-5">User Page</h2>
+    <p>Welcome <span th:text="${username}">User</span>!</p>
     <form th:action="@{/logout}" method="post">
         <input type="submit" class="btn btn-danger" value="Logout"/>
     </form>
