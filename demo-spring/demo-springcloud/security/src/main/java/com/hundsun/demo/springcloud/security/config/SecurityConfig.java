@@ -1,6 +1,7 @@
 package com.hundsun.demo.springcloud.security.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -8,8 +9,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -23,11 +27,20 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
  * @createDate: 2023/5/9 0:05
  */
 
+//  允许在方法级别进行安全验证。prePostEnabled 参数设置为 true 启用了 Pre 和 Post 注解。这意味着你可以在方法上使用 @PreAuthorize 和 @PostAuthorize 注解进行访问控制的设置。
+//  例如，你可以在方法上使用 @PreAuthorize 注解来指定需要的权限或角色。
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+//  启用了 Spring Security 的 Web 安全功能。它会自动配置 Spring Security 的过滤器链。
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    /**
+     * 这是一个完整的内存验证配置
+     *
+     * @param auth AuthenticationManagerBuilder
+     * @throws Exception ..
+     */
     // @Autowired
     // public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
     //     auth.inMemoryAuthentication() // 这是AuthenticationManagerBuilder对象的一个方法调用，它表示将在内存中进行身份验证配置。
@@ -43,24 +56,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     //     // .roles("ADMIN", "USER");
     // }
 
-    // @Autowired
-    // UserDetailsService userDetailsService;
-    //
-
+    @Autowired
+    UserDetailsService userDetailsService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+        // 配置密码编码器（PasswordEncoder）
+        // 密码编码器没有进行实际的加密操作，它只是将密码以明文形式存储
         return NoOpPasswordEncoder.getInstance();
     }
 
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(inMemoryUserDetailsManager());
+    public void configureGlobal(
+            AuthenticationManagerBuilder auth,
+            @Qualifier(value = "userDetailsService") UserDetailsService userDetailsService
+    ) throws Exception {
+        auth.userDetailsService(userDetailsService);
     }
 
-
-    @Bean
+    @Bean(name = "inMemoryUserDetailsManager")
     public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
         UserDetails user = User.builder()
                 .username("user")
@@ -71,7 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         UserDetails admin = User.builder()
                 .username("admin")
                 .password(passwordEncoder().encode("123456"))
-                .roles("ADMIN")
+                .roles("USER", "ADMIN")
                 .build();
         return new InMemoryUserDetailsManager(user, admin);
     }
@@ -99,26 +114,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/user").hasRole("USER")
-                .antMatchers("/", "/login", "/bootstrap/**").permitAll()
-                .anyRequest().authenticated()
+                .antMatchers("/css/**", "/fonts/**").permitAll()  // 仅允许样式静态资源的无限制访问
+                .antMatchers("/", "/index", "/error", "/401").permitAll() // 配置主页无限制访问
+                // .antMatchers("/user").hasRole("USER") // 配置user路径仅user角色可以访问
+                .antMatchers("/user/**").hasAnyRole("USER", "ADMIN") // 配置user路径仅user角色可以访问
+                .anyRequest().authenticated() // 对于除了上述配置外的所有请求，要求用户进行身份验证。
                 .and()
-                .formLogin()
-                .loginPage("/login")
-                .defaultSuccessUrl("/user", true)
-                .permitAll()
-                // .and()
-                // .logout()
-                // .logoutUrl("/logout") // 指定登出路径
-                // .logoutSuccessUrl("/index") // 指定登出成功后跳转的页面
-                // .invalidateHttpSession(true) // 使 HTTP Session 失效
-                // .deleteCookies("JSESSIONID") // 删除指定的 Cookie
+                .formLogin().loginPage("/login")
+                .defaultSuccessUrl("/user/index", true)
+                .failureForwardUrl("/error")
                 .permitAll()
                 .and()
                 .exceptionHandling()
-                .accessDeniedPage("/401");
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                    String username = authentication.getName(); // 获取登录用户的账户名
+                    request.setAttribute("username", username);
+                    request.setAttribute("isLogin", true);
+                    request.getRequestDispatcher("/401").forward(request, response);
+                })
+                // .accessDeniedPage("/401") // 这个方法是用来处理已经通过身份验证但是没有足够权限访问特定资源的用户。
+                .authenticationEntryPoint((request, response, authException) -> {
+                    request.setAttribute("isLogin", false);
+                    request.getRequestDispatcher("/401").forward(request, response);
+                }) // 这个方法是用来处理未经身份验证就试图访问受保护资源的用户
+        ;
         http.logout().logoutSuccessUrl("/"); // 这一行配置了退出登录，指定了退出成功后跳转到"/"路径。
     }
-
 
 }

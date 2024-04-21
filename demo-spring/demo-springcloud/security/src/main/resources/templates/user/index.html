@@ -1,18 +1,23 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <title>Hello Spring Security</title>
-    <meta charset="utf-8"/>
-    <link rel="stylesheet" href="/css/main.css" th:href="@{/css/main.css}"/>
+    <title>User Page</title>
+    <link th:href="@{/css/bootstrap.min.css}" href="/css/bootstrap.min.css" rel="stylesheet"/>
 </head>
 <body>
-<div th:substituteby="index::logout"></div>
-<h1>这个界面是被保护的界面</h1>
-<p><a href="/index" th:href="@{/index}">返回首页</a></p>
+<div class="container">
+    <h2 class="mt-5">User Page</h2>
+    <p>Welcome <span th:text="${username}">User</span>!</p>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" class="btn btn-danger" value="Logout"/>
+    </form>
+    <p></p>
+    <a href="/blogs" class="btn btn-primary">blogs</a>
+    <p></p>
+<!--    <a href="/index" class="btn btn-primary">BACK</a>-->
+</div>
 
-<p><a href="/blogs" th:href="@{/blogs}">管理博客</a></p>
-
-
+<!--<script th:src="@{/js/jquery.min.js}"></script>-->
+<!--<script th:src="@{/js/bootstrap.min.js}"></script>-->
 </body>
 </html>
-

@@ -19,7 +19,7 @@ import javax.annotation.Resource;
  * @createDate: 2023/5/9 21:06
  */
 
-@Service
+@Service(value = "userDetailsService")
 public class UserService implements UserDetailsService {
 
     @Resource

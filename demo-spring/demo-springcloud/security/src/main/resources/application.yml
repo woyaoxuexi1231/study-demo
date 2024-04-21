@@ -11,7 +11,7 @@ spring:
     # 这一行配置了Thymeleaf模板引擎的缓存为关闭状态。
     cache: false
   datasource:
-    url: jdbc:mysql://192.168.175.128:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://192.168.80.128:3306/yiibaidb?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
 
