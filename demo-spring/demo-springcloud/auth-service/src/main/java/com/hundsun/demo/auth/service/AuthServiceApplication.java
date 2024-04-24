@@ -27,6 +27,10 @@ import tk.mybatis.spring.annotation.MapperScan;
 public class AuthServiceApplication {
 
     public static void main(String[] args) {
+        /*
+        获取 token
+        curl -i -X POST -d "username=fzp&password=123456&grant_type=password&client_id=service-hi&client_secret=123456" http://localhost:5000/uaa/oauth/token
+         */
         SpringApplication.run(AuthServiceApplication.class);
     }
 
