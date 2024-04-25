@@ -61,6 +61,9 @@
         <!-- dubbo -->
         <apache.dubbo.springboot.starter.version>3.2.7</apache.dubbo.springboot.starter.version>
 
+        <!-- 某些springcloud依赖 -->
+        <spring-cloud-starter-eureka.version>1.4.7.RELEASE</spring-cloud-starter-eureka.version>
+        <spring-cloud-starter-security.version>2.2.5.RELEASE</spring-cloud-starter-security.version>
 
         <!-- 数据库相关 -->
         <mysql.connector.java.version>8.0.19</mysql.connector.java.version>
@@ -334,7 +337,7 @@
 
 
             <!--......................................................................................................-->
-            <!--...............................................springcloud新版本已经抛弃的部分依赖....................................................-->
+            <!--................................springcloud新版本已经抛弃的部分依赖.......................................-->
             <!--......................................................................................................-->
             <!-- springcloud新版本已经抛弃的部分依赖(由于Netflix不再维护) -->
             <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-turbine -->
@@ -385,6 +388,30 @@
                 <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
                 <version>2.2.9.RELEASE</version>
             </dependency>
+
+
+            <!--......................................................................................................-->
+            <!--......................................springcloud的一些其他依赖.........................................-->
+            <!--......................................................................................................-->
+            <!-- Spring Cloud Starter Eureka (deprecated, please use spring-cloud-starter-netflix-eureka-client -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-eureka</artifactId>
+                <version>${spring-cloud-starter-eureka.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-security</artifactId>
+                <version>${spring-cloud-starter-security.version}</version>
+            </dependency>
+            <!-- Spring Cloud Starter Feign (deprecated, please use spring-cloud-starter-openfeign) -->
+            <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-feign -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-feign</artifactId>
+                <version>1.4.7.RELEASE</version>
+            </dependency>
+
 
 
             <!--......................................................................................................-->
