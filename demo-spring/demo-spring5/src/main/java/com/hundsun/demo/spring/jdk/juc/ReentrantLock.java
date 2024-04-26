@@ -2,6 +2,7 @@ package com.hundsun.demo.spring.jdk.juc;
 
 import lombok.SneakyThrows;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
 /**
@@ -25,7 +26,8 @@ public class ReentrantLock {
 
     @SneakyThrows
     public static void reentrantLock() {
-        // 创建一个 ReentrantLock 实例
+        // Lock lock = new java.util.concurrent.locks.ReentrantLock(true);
+        // 默认非公平锁
         Lock lock = new java.util.concurrent.locks.ReentrantLock();
 
         // 创建一个线程，模拟对共享资源的访问
@@ -52,8 +54,12 @@ public class ReentrantLock {
         thread.start();
 
         Thread.sleep(100);
-        lock.lock();
-        System.out.println("this is main");
-        lock.unlock();
+        // ReentrantLock的等待可中断: 如果其他线程已经持有锁，当前线程可以选择等待一段时间后放弃获取锁，而不是一直等待下去
+        if (lock.tryLock(6, TimeUnit.SECONDS)) {
+            System.out.println("this is main");
+            lock.unlock();
+        } else {
+            System.out.println("timeout!");
+        }
     }
 }
