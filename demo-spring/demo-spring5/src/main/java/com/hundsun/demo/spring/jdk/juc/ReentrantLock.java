@@ -33,6 +33,7 @@ public class ReentrantLock {
         // 创建一个线程，模拟对共享资源的访问
         Thread thread = new Thread(() -> {
             // 获取锁
+            // CAS->入列->入列成功park当前线程->被唤醒后尝试获取锁,重复这个操作直到获取到锁
             lock.lock();
             // 多次获取锁会使重入次数增加,需要相应的增加释放次数
             // lock.lock();
