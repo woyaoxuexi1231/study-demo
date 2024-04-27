@@ -5,14 +5,8 @@ public class SynchronizedExample {
     private int count = 0;
 
     /**
-     * 使用synchronized关键字修饰实例方法1
-     * JDK5之前
-     * 1.
+     * 使用synchronized关键字
      */
-    // public synchronized void increment() {
-    //     count++; //  增加计数器的值
-    // }
-
     public void increment() {
         // 字节码文件里可以看到这一段代码会被 MONITORENTER,MONITOREXIT 这两个关键字包裹
         synchronized (this) {

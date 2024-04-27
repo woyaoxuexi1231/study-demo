@@ -6,16 +6,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
 /**
- * @ProductName: Hundsun amust
- * @ProjectName: study-demo
- * @Package: com.hundsun.demo.spring.jdk.juc
- * @Description:
- * @Author: hulei42031
- * @Date: 2024-04-26 16:33
- * @UpdateRemark:
- * @Version: 1.0
- * <p>
- * Copyright 2023 Hundsun Technologies Inc. All Rights Reserved
+ * {@link java.util.concurrent.locks.AbstractQueuedSynchronizer}
+ *
+ * @author hulei42031
+ * @since 2024-04-26 16:33
  */
 
 public class ReentrantLock {

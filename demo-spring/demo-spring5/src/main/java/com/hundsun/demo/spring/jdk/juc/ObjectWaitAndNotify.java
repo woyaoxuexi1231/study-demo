@@ -3,16 +3,8 @@ package com.hundsun.demo.spring.jdk.juc;
 import lombok.SneakyThrows;
 
 /**
- * @ProductName: Hundsun amust
- * @ProjectName: study-demo
- * @Package: com.hundsun.demo.spring.jdk.juc
- * @Description:
- * @Author: hulei42031
- * @Date: 2024-04-26 16:00
- * @UpdateRemark:
- * @Version: 1.0
- * <p>
- * Copyright 2023 Hundsun Technologies Inc. All Rights Reserved
+ * @author hulei42031
+ * @since 2024-04-26 16:00
  */
 
 public class ObjectWaitAndNotify {
@@ -30,6 +22,7 @@ public class ObjectWaitAndNotify {
                 System.out.println("准备wait()");
                 try {
                     // 这个操作会释放synchronized获取到的锁
+                    // 当然使用这个方法的前提是走到这一步的时候已经获取到这个对象的锁了
                     lock.wait();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
