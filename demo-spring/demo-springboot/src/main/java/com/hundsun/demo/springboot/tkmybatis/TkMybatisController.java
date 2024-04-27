@@ -1,11 +1,22 @@
 package com.hundsun.demo.springboot.tkmybatis;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.hundsun.demo.commom.core.model.EmployeeDO;
 import com.hundsun.demo.springboot.common.mapper.EmployeeMapper;
+import com.hundsun.demo.springboot.common.model.req.EmployeeQryReqDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+import java.util.Date;
+import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * @author hulei42031
@@ -28,5 +39,23 @@ public class TkMybatisController {
         // 基本类型的临界值情况是直接为null
         String s = employeeMapper.selectLastNameById(id);
         System.out.println(s);
+    }
+
+    @PostMapping(value = "/getEmployees")
+    public PageInfo<EmployeeDO> getEmployees(@Valid @RequestBody EmployeeQryReqDTO req) {
+        PageHelper.startPage(req.getPageNum(), req.getPageSize());
+        return new PageInfo<>(employeeMapper.selectAll());
+    }
+
+    @PostMapping("/change")
+    public Map<String, Object> change(@RequestBody Map<String, Object> map) {
+        // 设置时区为东八区（北京时间）
+        TimeZone timeZone = TimeZone.getTimeZone("Asia/Shanghai");
+        // 获取当前时间
+        Date now = new Date();
+        // 根据指定时区获取当前时间
+        Date nowInTimeZone = new Date(now.getTime() + timeZone.getRawOffset());
+        map.put("response-tag", nowInTimeZone);
+        return map;
     }
 }

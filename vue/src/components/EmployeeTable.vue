@@ -48,7 +48,7 @@ export default {
       };
       // 假设你有一个获取员工列表的API endpoint是 '/api/employees'
       // 使用 axios 或者 Vue resource 发送请求 (这里以axios为例)
-      this.$axios.post('/api/employee/getEmployees', jsonData, {
+      this.$axios.post('/api/tkmybatis/getEmployees', jsonData, {
         headers: {
           'Content-Type': 'application/json',
         },
