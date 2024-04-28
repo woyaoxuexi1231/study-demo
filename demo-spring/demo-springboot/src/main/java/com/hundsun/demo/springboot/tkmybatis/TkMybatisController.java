@@ -7,6 +7,15 @@ import com.hundsun.demo.springboot.common.mapper.EmployeeMapper;
 import com.hundsun.demo.springboot.common.model.req.EmployeeQryReqDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CachingConfigurerSupport;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,6 +50,7 @@ public class TkMybatisController {
         System.out.println(s);
     }
 
+    @Cacheable(value = "myCache", key = "#req")
     @PostMapping(value = "/getEmployees")
     public PageInfo<EmployeeDO> getEmployees(@Valid @RequestBody EmployeeQryReqDTO req) {
         PageHelper.startPage(req.getPageNum(), req.getPageSize());
@@ -58,4 +68,23 @@ public class TkMybatisController {
         map.put("response-tag", nowInTimeZone);
         return map;
     }
+}
+
+@Configuration
+@EnableCaching
+class CacheConfig extends CachingConfigurerSupport {
+
+    @Autowired
+    private RedisConnectionFactory redisConnectionFactory;
+
+    @Bean
+    public CacheManager cacheManager() {
+        return RedisCacheManager.create(redisConnectionFactory);
+    }
+
+    // 这是一个本地缓存
+    // @Bean
+    // public CacheManager cacheManager() {
+    //     return new ConcurrentMapCacheManager("myCache");
+    // }
 }

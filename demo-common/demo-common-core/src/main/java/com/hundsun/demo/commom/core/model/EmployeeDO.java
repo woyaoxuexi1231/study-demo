@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 /**
  * @projectName: study-demo
@@ -22,7 +23,7 @@ import javax.persistence.Table;
 @Data
 @Table(name = "employees")
 @TableName(value = "employees")
-public class EmployeeDO {
+public class EmployeeDO implements Serializable {
 
     /**
      *

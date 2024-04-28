@@ -2,6 +2,8 @@ package com.hundsun.demo.springboot.common.model.req;
 
 import com.hundsun.demo.commom.core.model.req.PageQryReqDTO;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * @projectName: study-demo
@@ -12,6 +14,8 @@ import lombok.Data;
  * @createDate: 2024/3/10 14:23
  */
 
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class EmployeeQryReqDTO extends PageQryReqDTO {
 }
