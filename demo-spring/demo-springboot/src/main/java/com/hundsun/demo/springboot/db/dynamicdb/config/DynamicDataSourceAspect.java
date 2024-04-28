@@ -7,6 +7,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 /**
  * @projectName: study-demo
@@ -17,6 +18,7 @@ import org.springframework.core.annotation.Order;
  * @createDate: 2023/2/25 18:33
  */
 
+@Component
 @Aspect
 @Order(-1)
 public class DynamicDataSourceAspect {
@@ -25,7 +27,7 @@ public class DynamicDataSourceAspect {
     public void point(TargetDataSource targetDataSource) {
     }
 
-    @Around(value = "point(targetDataSource)")
+    @Around(value = "point(targetDataSource)", argNames = "joinPoint,targetDataSource")
     public Object around(ProceedingJoinPoint joinPoint, TargetDataSource targetDataSource) throws Throwable {
 
         try {

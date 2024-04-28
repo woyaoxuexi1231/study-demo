@@ -5,16 +5,23 @@ import com.hundsun.demo.commom.core.model.EmployeeDO;
 import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
 import com.hundsun.demo.springboot.common.mapper.EmployeeMapper;
+import com.hundsun.demo.springboot.db.dynamicdb.annotation.TargetDataSource;
 import com.hundsun.demo.springboot.db.dynamicdb.core.DynamicDataSourceType;
 import com.hundsun.demo.springboot.db.dynamicdb.core.DynamicDataSourceTypeManager;
-import com.hundsun.demo.springboot.db.dynamicdb.annotation.TargetDataSource;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -34,9 +41,23 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Service
 public class DynamicdbServiceimpl implements DynamicdbService {
 
+    @Autowired
+    ThreadPoolExecutor singlePool;
+
+    @Autowired
+    ThreadPoolExecutor singleTransactionPool;
 
     @Resource
     EmployeeMapper employeeMapper;
+
+    @Autowired
+    private RedissonClient redissonClient;
+
+    @Autowired
+    RedisTemplate<String, String> stringRedisTemplate;
+
+    @Autowired
+    DynamicdbService dynamicdbService;
 
     @Override
     public ResultDTO<?> multiDataSourceSingleTransaction() {
@@ -69,57 +90,66 @@ public class DynamicdbServiceimpl implements DynamicdbService {
         */
 
         // 1. 确保单个服务同时已有一个线程在执行, 且不阻塞
-        // singlepool.execute(() -> {
-        //
-        //     log.info("尝试获取分布式锁...");
-        //     RLock rLock = redissonClient.getLock("multidatasource::singletransaction::lock");
-        //
-        //     // 2. 确保多个服务同时只有一个能获取锁
-        //     if (rLock.tryLock()) {
-        //
-        //         // 这里同时只会有一个线程操作, 判断状态
-        //         if (stringRedisTemplate.opsForValue().get("multidatasource::singletransaction::state") != null) {
-        //             // 直接释放锁
-        //             log.info("60s内已完成, 请稍后再试! ");
-        //             rLock.unlock();
-        //             return;
-        //         }
-        //
-        //         // 锁释放的计时器
-        //         CountDownLatch count = new CountDownLatch(2);
-        //
-        //         // 需要插入的数据
-        //         List<EmployeeDO> employeeDOS = new ArrayList<>();
-        //         // 控制主数据源流程
-        //         Semaphore masterSemaphore = new Semaphore(0);
-        //         // 控制从数据源流程
-        //         Semaphore slaveSemaphore = new Semaphore(1);
-        //         // 整个流程是否结束
-        //         AtomicBoolean isFinished = new AtomicBoolean(false);
-        //         log.info("获取分布式锁成功, 开始执行流程. ");
-        //
-        //         // 从数据源操作
-        //         SINGLE_TRANSACTION_POOL.execute(() -> {
-        //             simpleService.selectFromSlave(employeeDOS, masterSemaphore, slaveSemaphore, isFinished);
-        //             count.countDown();
-        //         });
-        //
-        //         // 主数据源操作
-        //         SINGLE_TRANSACTION_POOL.execute(() -> {
-        //             simpleService.copySlaveToMaster(employeeDOS, masterSemaphore, slaveSemaphore, isFinished);
-        //             count.countDown();
-        //         });
-        //
-        //         try {
-        //             count.await();
-        //             stringRedisTemplate.opsForValue().set("multidatasource::singletransaction::state", "Initializing", 60, TimeUnit.SECONDS);
-        //             rLock.unlock();
-        //             log.info("释放分布式锁完成. ");
-        //         } catch (Exception e) {
-        //             log.error("释放分布式锁出现异常! ", e);
-        //         }
-        //     }
-        // });
+        singlePool.execute(() -> {
+
+            log.info("尝试获取分布式锁...");
+            RLock rLock = redissonClient.getLock("multidatasource::singletransaction::lock");
+
+            // 2. 确保多个服务同时只有一个能获取锁
+            if (rLock.tryLock()) {
+
+                // // 这里同时只会有一个线程操作, 判断状态
+                // if (stringRedisTemplate.opsForValue().get("multidatasource::singletransaction::state") != null) {
+                //     // 直接释放锁
+                //     log.info("60s内已完成, 请稍后再试! ");
+                //     rLock.unlock();
+                //     return;
+                // }
+                // 锁释放的计时器,只有当两个任务都完成之后,整个任务才停止
+                CountDownLatch count = new CountDownLatch(2);
+
+                // 这是两个操作共享的一个数据列表, 操作A查数据插入这个list, 操作B从这个list取数据插入数据库
+                // 这个列表不用考虑并发,同时只会有一个线程操作他
+                List<EmployeeDO> employeeDOS = new ArrayList<>();
+
+                // 控制主数据源流程的信号量(插入数据), 先不执行, 等待从流程触发这个信号量让主流程获得执行权限
+                Semaphore masterSemaphore = new Semaphore(0);
+                // 控制从数据源流程, 先执行这个流程
+                Semaphore slaveSemaphore = new Semaphore(1);
+
+                // 整个流程是否结束,至于为什么需要这个变量,考虑下面的场景
+                // 流程A查询结束了,等待流程B来激活,但是流程B却因为异常而中断了,那么流程A将永远等待
+                AtomicBoolean isFinished = new AtomicBoolean(false);
+                log.info("获取分布式锁成功, 开始执行流程. ");
+
+                // 从数据源操作
+                singleTransactionPool.execute(() -> {
+                    try {
+                        dynamicdbService.selectFromSlave(employeeDOS, masterSemaphore, slaveSemaphore, isFinished);
+                    } finally {
+                        count.countDown();
+                    }
+                });
+
+                // 主数据源操作
+                singleTransactionPool.execute(() -> {
+                    try {
+                        dynamicdbService.copySlaveToMaster(employeeDOS, masterSemaphore, slaveSemaphore, isFinished);
+                    } finally {
+                        count.countDown();
+                    }
+                });
+
+                try {
+                    count.await();
+                    // stringRedisTemplate.opsForValue().set("multidatasource::singletransaction::state", "Initializing", 60, TimeUnit.SECONDS);
+                    rLock.unlock();
+                    log.info("释放分布式锁完成. ");
+                } catch (Exception e) {
+                    log.error("释放分布式锁出现异常! ", e);
+                }
+            }
+        });
 
         return ResultDTOBuild.resultDefaultBuild();
     }
@@ -129,13 +159,29 @@ public class DynamicdbServiceimpl implements DynamicdbService {
     @TargetDataSource(dataSourceType = DynamicDataSourceType.MASTER)
     public void copySlaveToMaster(List<EmployeeDO> employeeDOS, Semaphore masterSemaphore, Semaphore slaveSemaphore, AtomicBoolean isFinished) {
 
-        employeeMapper.delete(new EmployeeDO());
+        try {
+            // 尝试获取一个信号量
+            masterSemaphore.acquire();
+            employeeMapper.delete(new EmployeeDO());
+            // 操作成功后,返还这个信号量
+            masterSemaphore.release();
+        } catch (Exception e) {
+            log.error("删除数据异常! ", e);
+            // 插入数据出现异常, 终止整个流程
+            isFinished.set(true);
+            // 唤醒从数据源, 让其终止操作
+            log.info("唤醒从数据源");
+            slaveSemaphore.release();
+            // 抛出异常是为了能够正常回滚
+            throw new RuntimeException(e);
+        }
+
 
         while (true) {
 
             try {
 
-                // 等待被唤醒
+                // 尝试获取一个信号量
                 masterSemaphore.acquire();
 
                 // 判断整个流程是否结束
@@ -182,13 +228,14 @@ public class DynamicdbServiceimpl implements DynamicdbService {
 
             try {
 
-                // 等待被唤醒
+                // 尝试获取一个信号量
                 slaveSemaphore.acquire();
 
                 // 流程结束
                 if (isFinished.get()) {
                     break;
                 }
+
                 log.info("开始查询从数据源数据");
                 PageHelper.startPage(pageNum, pageSize);
                 employeeDOS.addAll(employeeMapper.selectAll());

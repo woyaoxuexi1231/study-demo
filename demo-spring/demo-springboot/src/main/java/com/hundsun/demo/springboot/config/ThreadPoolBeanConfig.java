@@ -44,4 +44,16 @@ public class ThreadPoolBeanConfig {
                 new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
+    @Bean
+    public ThreadPoolExecutor singleTransactionPool() {
+        return new ThreadPoolExecutor(
+                2,
+                2,
+                60,
+                TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(50),
+                new ThreadFactoryBuilder().setNamePrefix("singleTransactionPool-").build(),
+                new ThreadPoolExecutor.CallerRunsPolicy());
+    }
+
 }

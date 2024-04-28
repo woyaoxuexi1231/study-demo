@@ -13,7 +13,7 @@ package com.hundsun.demo.spring.jdk.juc;
  * Copyright 2023 Hundsun Technologies Inc. All Rights Reserved
  */
 
-public class LockSupport {
+public class LockSupportTest {
 
     public static void main(String[] args) {
         lockSupport();

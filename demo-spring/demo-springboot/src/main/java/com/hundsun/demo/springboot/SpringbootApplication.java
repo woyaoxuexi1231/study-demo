@@ -1,6 +1,7 @@
 package com.hundsun.demo.springboot;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -33,6 +34,9 @@ public class SpringbootApplication {
 
     public static ApplicationContext applicationContext;
 
+    @Value("${server.port}")
+    String port;
+
     public static void main(String[] args) {
         // System.setProperty("cglib.debugLocation","C:\\Project\\study-demo\\demo-spring\\demo-springboot\\target\\classes");
         /*
@@ -46,5 +50,8 @@ public class SpringbootApplication {
          */
         applicationContext = SpringApplication.run(SpringbootApplication.class);
         log.info("启动完成");
+        // Open the homepage URL in default browser
+        String homepageURL = "http://localhost:10001"; // Update with your homepage URL
+        System.out.println("Please navigate to: " + homepageURL);
     }
 }

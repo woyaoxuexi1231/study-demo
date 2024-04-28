@@ -12,7 +12,7 @@ import java.util.concurrent.locks.Lock;
  * @since 2024-04-26 16:33
  */
 
-public class ReentrantLock {
+public class ReentrantLockTest {
 
     public static void main(String[] args) {
         reentrantLock();

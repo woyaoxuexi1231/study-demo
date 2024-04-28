@@ -19,7 +19,7 @@ import java.util.concurrent.ArrayBlockingQueue;
  */
 
 @Slf4j
-public class BlockQueue {
+public class BlockQueueTest {
 
     public static void main(String[] args) {
         blockQueue();

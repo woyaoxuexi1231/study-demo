@@ -41,10 +41,14 @@ export default {
   },
   methods: {
     connectWebSocket() {
-      this.socket = new WebSocket("ws://localhost:10088/myWsSpring");
+      this.socket = new WebSocket("ws://localhost:10001/myWsSpring");
 
       this.socket.onopen = () => {
         console.log('WebSocket连接已建立');
+        this.$message({
+          message: 'WebSocket连接已建立',
+          type: 'success'
+        });
         this.setConnected(true);
       };
 
@@ -55,11 +59,16 @@ export default {
 
       this.socket.onclose = () => {
         console.log('WebSocket连接已关闭');
+        this.$message({
+          message: 'WebSocket连接已关闭',
+          type: 'warning'
+        });
         this.setConnected(false);
       };
 
       this.socket.onerror = (error) => {
         console.error('WebSocket发生错误:', error);
+        this.$message.error('WebSocket发生错误: ' + error);
       };
     },
     disconnectWebSocket() {

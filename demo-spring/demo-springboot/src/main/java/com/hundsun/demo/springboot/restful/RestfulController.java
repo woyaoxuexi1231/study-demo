@@ -29,7 +29,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class RestfulController {
 
     @Autowired
-    @Qualifier("singlePool")
+    @Qualifier("singleTransactionPool")
     ThreadPoolExecutor single;
 
     @Autowired
