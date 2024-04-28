@@ -46,9 +46,10 @@ export default {
         pageNum: this.currentPage,
         pageSize: this.pageSize
       };
+      const url = '/api/tkmybatis/getEmployees';
       // 假设你有一个获取员工列表的API endpoint是 '/api/employees'
       // 使用 axios 或者 Vue resource 发送请求 (这里以axios为例)
-      this.$axios.post('/api/tkmybatis/getEmployees', jsonData, {
+      this.$axios.post(url, jsonData, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -60,6 +61,7 @@ export default {
       }).catch(error => {
         // 处理错误
         console.error('Error:', error);
+        this.$message.error(url + ': ' + error);
       });
     },
     handleSizeChange(val) {

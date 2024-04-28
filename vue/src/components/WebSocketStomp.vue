@@ -91,10 +91,14 @@ export default {
       // Connect to WebSocket server
       this.stompClient.connect(
         {},
-        frame => {
+        success => {
 
           this.connected = true;
-          console.log('Connected: ' + frame);
+          console.log('Connected: ' + success);
+          this.$message({
+            message: 'WebSocketStomp连接已建立',
+            type: 'success'
+          });
 
           // Subscribe to a topic
           this.stompClient.subscribe('/topic/greetings', message => {
@@ -112,6 +116,7 @@ export default {
         error => {
           // 在这里处理连接错误或连接断开的情况
           console.log('Connection error or disconnected:', error);
+          this.$message.error('WebSocketStomp发生错误或断开连接:' + error);
           this.connected = false;
         }
       );

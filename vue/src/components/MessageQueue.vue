@@ -28,8 +28,9 @@ export default {
       // 模拟请求发出前的进度
       this.progressValue = 10;
       this.progressStatus = 'success';
+      const url = '/api/rabbit/sentSampleMsg';
       // 使用 axios 发送 GET 请求
-      this.$axios.get('/api/rabbit/sentSampleMsg')
+      this.$axios.get(url)
         .then(response => {
           // 请求成功时的处理
           console.log('响应数据:', response.data);
@@ -42,6 +43,7 @@ export default {
           // 请求失败，设置百分比为 50%，并显示失败状态
           this.progressValue = 50;
           this.progressStatus = 'exception';
+          this.$message.error(url + ': ' + error);
         });
     },
   },
