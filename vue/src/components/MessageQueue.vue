@@ -28,12 +28,16 @@ export default {
       // 模拟请求发出前的进度
       this.progressValue = 10;
       this.progressStatus = 'success';
-      const url = '/api/rabbit/sentSampleMsg';
+      const url = '/api/rabbimq/sendMsg';
       // 使用 axios 发送 GET 请求
       this.$axios.get(url)
         .then(response => {
           // 请求成功时的处理
           console.log('响应数据:', response.data);
+          this.$message({
+            message: '消息发送成功',
+            type: 'success'
+          });
           // 请求成功，设置百分比为 100%
           this.progressValue = 100;
         })

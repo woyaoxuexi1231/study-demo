@@ -84,8 +84,8 @@ public class RabbiMQListener {
                     key = MQConfig.TOPIC_MASTER_ROUTE_KEY // 用于定义绑定键（routing key），这是一个字符串，决定了消息如何路由到队列。
             ))
     public void receiveMasterMsg(Message msg, Channel channel) {
-        // log.info("receiveMasterMsg => msg: {}", msg);
-        System.out.println("receiveMasterMsg#Received string message: " + msg);
+        log.info("{} 收到消息: {}", MQConfig.TOPIC_MASTER_ROUTE_KEY, msg);
+        // System.out.println("receiveMasterMsg#Received string message: " + msg);
         try {
             // Thread.sleep(5000);
             channel.basicAck(msg.getMessageProperties().getDeliveryTag(), false);

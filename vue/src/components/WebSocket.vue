@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     connectWebSocket() {
-      this.socket = new WebSocket("ws://localhost:10088/myWsSpring");
+      this.socket = new WebSocket("ws://localhost:10001/myWsSpring");
 
       this.socket.onopen = () => {
         console.log('WebSocket连接已建立');

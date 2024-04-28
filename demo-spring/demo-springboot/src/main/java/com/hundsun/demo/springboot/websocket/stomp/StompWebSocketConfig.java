@@ -3,15 +3,9 @@ package com.hundsun.demo.springboot.websocket.stomp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.WebSocketHandler;
-import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
-import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
-import org.springframework.web.socket.handler.WebSocketHandlerDecoratorFactory;
 
 /**
  * @ProductName: Hundsun amust
@@ -63,8 +57,18 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
+
         // 表示注册了一个 STOMP 端点，客户端可以使用这个端点来建立 WebSocket 连接。
-        registry.addEndpoint("/gs-guide-websocket");
+        // registry.addEndpoint("/gs-guide-websocket");
+
+        registry.addEndpoint("/gs-guide-websocket")
+                // 使用*通配符会报错
+                // java.lang.IllegalArgumentException: When allowCredentials is true, allowedOrigins cannot contain the special value "*" since that cannot be set on the "Access-Control-Allow-Origin" response header. To allow credentials to a set of origins, list them explicitly or consider using "allowedOriginPatterns" instead.
+                // .setAllowedOrigins("*")
+                // 这行代码设置允许的跨域来源。* 是一个特殊的通配符，表示允许来自任何域的请求。但是，这在 allowCredentials 设置为 true 时是无效的，因为浏览器会阻止使用凭证的请求从任意域接受。
+                .setAllowedOrigins("http://localhost:10099")
+                // 启用 SockJS 支持。这是一种备选方案，可以在浏览器不支持原生 WebSocket 时使用，提供更好的兼容性。
+                .withSockJS();
     }
 
 }
