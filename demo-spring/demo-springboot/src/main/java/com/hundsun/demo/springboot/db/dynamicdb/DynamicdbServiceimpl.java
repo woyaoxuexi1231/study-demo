@@ -189,11 +189,11 @@ public class DynamicdbServiceimpl implements DynamicdbService {
                     break;
                 }
 
-                Thread.sleep(5 * 1000);
+                // Thread.sleep(5 * 1000);
                 // 正常插入数据
                 log.info("开始插入数据");
                 if (!employeeDOS.isEmpty()) {
-                    employeeMapper.insertList(employeeDOS);
+                    employeeDOS.forEach(employeeMapper::saveOne);
                 }
                 // 插入完成后清空数组
                 employeeDOS.clear();

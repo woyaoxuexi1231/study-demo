@@ -71,7 +71,7 @@ public class SimpleServiceImpl implements SimpleService {
         employeeDO.setOfficeCode("'?'");
         employeeDO.setReportsTo(1002);
         employeeDO.setJobTitle("'?'");
-        employeeMapper.insertWithDollar(employeeDO);
+        employeeMapper.saveOne(employeeDO);
     }
 
 

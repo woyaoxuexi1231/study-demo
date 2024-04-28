@@ -21,7 +21,7 @@ public interface EmployeeMapper extends BaseMapper<EmployeeDO>, ConditionMapper<
     /**
      * mybatis 使用 $符号
      */
-    void insertWithDollar(EmployeeDO employeeDO);
+    void saveOne(EmployeeDO employeeDO);
 
     List<EmployeeDO> selectAll2();
 
