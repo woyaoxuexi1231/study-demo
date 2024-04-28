@@ -13,7 +13,7 @@ package com.hundsun.demo.spring.jdk.juc;
  * Copyright 2023 Hundsun Technologies Inc. All Rights Reserved
  */
 
-public class Semaphore {
+public class SemaphoreTest {
 
 
     public static void main(String[] args) {
