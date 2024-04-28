@@ -1,5 +1,6 @@
 package com.hundsun.demo.springboot.redis.pub;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +16,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
+@Slf4j
 @Configuration
 public class RedisConfig {
 
@@ -42,7 +44,7 @@ public class RedisConfig {
             String channel = serializer.deserialize(message.getChannel());
             String msg = serializer.deserialize(message.getBody());
 
-            System.out.println(String.format("Received message: %s from channel: %s, pattern %s", msg, channel, Objects.isNull(pattern) ? null : new String(pattern, StandardCharsets.UTF_8)));
+            log.info(String.format("Received message: %s from channel: %s, pattern %s", msg, channel, Objects.isNull(pattern) ? null : new String(pattern, StandardCharsets.UTF_8)));
         };
     }
 
