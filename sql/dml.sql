@@ -7,18 +7,18 @@ Link: http://www.yiibai.com/mysql/sample-database.html
 *********************************************************************
 */
 
-/*!40101 SET NAMES utf8 */;
-
-/*!40101 SET SQL_MODE = ''*/;
-
-/*!40014 SET @OLD_UNIQUE_CHECKS = @@UNIQUE_CHECKS, UNIQUE_CHECKS = 0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS = @@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0 */;
-/*!40101 SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES = @@SQL_NOTES, SQL_NOTES = 0 */;
-
-CREATE DATABASE /*!32312 IF NOT EXISTS */`yiibaidb` /*!40100 DEFAULT CHARACTER SET utf8 */;
-
-USE `yiibaidb`;
+# /*!40101 SET NAMES utf8 */;
+#
+# /*!40101 SET SQL_MODE = ''*/;
+#
+# /*!40014 SET @OLD_UNIQUE_CHECKS = @@UNIQUE_CHECKS, UNIQUE_CHECKS = 0 */;
+# /*!40014 SET @OLD_FOREIGN_KEY_CHECKS = @@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0 */;
+# /*!40101 SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO' */;
+# /*!40111 SET @OLD_SQL_NOTES = @@SQL_NOTES, SQL_NOTES = 0 */;
+#
+# CREATE DATABASE /*!32312 IF NOT EXISTS */`yiibaidb` /*!40100 DEFAULT CHARACTER SET utf8 */;
+#
+# USE `yiibaidb`;
 
 
 /*
@@ -36,406 +36,482 @@ File Encoding         : 65001
 Date: 2017-07-20 21:08:41
 */
 
-SET FOREIGN_KEY_CHECKS = 0;
-
--- ----------------------------
--- Table structure for `customers`
--- ----------------------------
-DROP TABLE IF EXISTS `customers`;
-CREATE TABLE `customers`
-(
-    `customerNumber`         int(11)     NOT NULL,
-    `customerName`           varchar(50) NOT NULL,
-    `contactLastName`        varchar(50) NOT NULL,
-    `contactFirstName`       varchar(50) NOT NULL,
-    `phone`                  varchar(50) NOT NULL,
-    `addressLine1`           varchar(50) NOT NULL,
-    `addressLine2`           varchar(50)    DEFAULT NULL,
-    `city`                   varchar(50) NOT NULL,
-    `state`                  varchar(50)    DEFAULT NULL,
-    `postalCode`             varchar(15)    DEFAULT NULL,
-    `country`                varchar(50) NOT NULL,
-    `salesRepEmployeeNumber` int(11)        DEFAULT NULL,
-    `creditLimit`            decimal(10, 2) DEFAULT NULL,
-    PRIMARY KEY (`customerNumber`),
-    KEY `salesRepEmployeeNumber` (`salesRepEmployeeNumber`),
-    CONSTRAINT `customers_ibfk_1` FOREIGN KEY (`salesRepEmployeeNumber`) REFERENCES `employees` (`employeeNumber`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+# SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
 -- Records of customers
 -- ----------------------------
 INSERT INTO `customers`
-VALUES ('103', 'Atelier graphique', 'Schmitt', 'Carine ', '40.32.2555', '54, rue Royale', null, 'Nantes', null, '44000', 'France', '1370',
+VALUES ('103', 'Atelier graphique', 'Schmitt', 'Carine ', '40.32.2555', '54, rue Royale', null, 'Nantes', null, '44000',
+        'France', '1370',
         '21000.00');
 INSERT INTO `customers`
-VALUES ('112', 'Signal Gift Stores', 'King', 'Jean', '7025551838', '8489 Strong St.', null, 'Las Vegas', 'NV', '83030', 'USA', '1166', '71800.00');
+VALUES ('112', 'Signal Gift Stores', 'King', 'Jean', '7025551838', '8489 Strong St.', null, 'Las Vegas', 'NV', '83030',
+        'USA', '1166', '71800.00');
 INSERT INTO `customers`
-VALUES ('114', 'Australian Collectors, Co.', 'Ferguson', 'Peter', '03 9520 4555', '636 St Kilda Road', 'Level 3', 'Melbourne', 'Victoria', '3004',
+VALUES ('114', 'Australian Collectors, Co.', 'Ferguson', 'Peter', '03 9520 4555', '636 St Kilda Road', 'Level 3',
+        'Melbourne', 'Victoria', '3004',
         'Australia', '1611', '117300.00');
 INSERT INTO `customers`
-VALUES ('119', 'La Rochelle Gifts', 'Labrune', 'Janine ', '40.67.8555', '67, rue des Cinquante Otages', null, 'Nantes', null, '44000', 'France',
+VALUES ('119', 'La Rochelle Gifts', 'Labrune', 'Janine ', '40.67.8555', '67, rue des Cinquante Otages', null, 'Nantes',
+        null, '44000', 'France',
         '1370', '118200.00');
 INSERT INTO `customers`
-VALUES ('121', 'Baane Mini Imports', 'Bergulfsen', 'Jonas ', '07-98 9555', 'Erling Skakkes gate 78', null, 'Stavern', null, '4110', 'Norway', '1504',
+VALUES ('121', 'Baane Mini Imports', 'Bergulfsen', 'Jonas ', '07-98 9555', 'Erling Skakkes gate 78', null, 'Stavern',
+        null, '4110', 'Norway', '1504',
         '81700.00');
 INSERT INTO `customers`
-VALUES ('124', 'Mini Gifts Distributors Ltd.', 'Nelson', 'Susan', '4155551450', '5677 Strong St.', null, 'San Rafael', 'CA', '97562', 'USA', '1165',
+VALUES ('124', 'Mini Gifts Distributors Ltd.', 'Nelson', 'Susan', '4155551450', '5677 Strong St.', null, 'San Rafael',
+        'CA', '97562', 'USA', '1165',
         '210500.00');
 INSERT INTO `customers`
-VALUES ('125', 'Havel & Zbyszek Co', 'Piestrzeniewicz', 'Zbyszek ', '(26) 642-7555', 'ul. Filtrowa 68', null, 'Warszawa', null, '01-012', 'Poland',
+VALUES ('125', 'Havel & Zbyszek Co', 'Piestrzeniewicz', 'Zbyszek ', '(26) 642-7555', 'ul. Filtrowa 68', null,
+        'Warszawa', null, '01-012', 'Poland',
         null, '0.00');
 INSERT INTO `customers`
-VALUES ('128', 'Blauer See Auto, Co.', 'Keitel', 'Roland', '+49 69 66 90 2555', 'Lyonerstr. 34', null, 'Frankfurt', null, '60528', 'Germany', '1504',
+VALUES ('128', 'Blauer See Auto, Co.', 'Keitel', 'Roland', '+49 69 66 90 2555', 'Lyonerstr. 34', null, 'Frankfurt',
+        null, '60528', 'Germany', '1504',
         '59700.00');
 INSERT INTO `customers`
-VALUES ('129', 'Mini Wheels Co.', 'Murphy', 'Julie', '6505555787', '5557 North Pendale Street', null, 'San Francisco', 'CA', '94217', 'USA', '1165',
+VALUES ('129', 'Mini Wheels Co.', 'Murphy', 'Julie', '6505555787', '5557 North Pendale Street', null, 'San Francisco',
+        'CA', '94217', 'USA', '1165',
         '64600.00');
 INSERT INTO `customers`
-VALUES ('131', 'Land of Toys Inc.', 'Lee', 'Kwai', '2125557818', '897 Long Airport Avenue', null, 'NYC', 'NY', '10022', 'USA', '1323', '114900.00');
+VALUES ('131', 'Land of Toys Inc.', 'Lee', 'Kwai', '2125557818', '897 Long Airport Avenue', null, 'NYC', 'NY', '10022',
+        'USA', '1323', '114900.00');
 INSERT INTO `customers`
-VALUES ('141', 'Euro+ Shopping Channel', 'Freyre', 'Diego ', '(91) 555 94 44', 'C/ Moralzarzal, 86', null, 'Madrid', null, '28034', 'Spain', '1370',
+VALUES ('141', 'Euro+ Shopping Channel', 'Freyre', 'Diego ', '(91) 555 94 44', 'C/ Moralzarzal, 86', null, 'Madrid',
+        null, '28034', 'Spain', '1370',
         '227600.00');
 INSERT INTO `customers`
-VALUES ('144', 'Volvo Model Replicas, Co', 'Berglund', 'Christina ', '0921-12 3555', 'Berguvsv gen  8', null, 'Lule', null, 'S-958 22', 'Sweden',
+VALUES ('144', 'Volvo Model Replicas, Co', 'Berglund', 'Christina ', '0921-12 3555', 'Berguvsv gen  8', null, 'Lule',
+        null, 'S-958 22', 'Sweden',
         '1504', '53100.00');
 INSERT INTO `customers`
-VALUES ('145', 'Danish Wholesale Imports', 'Petersen', 'Jytte ', '31 12 3555', 'Vinb ltet 34', null, 'Kobenhavn', null, '1734', 'Denmark', '1401',
+VALUES ('145', 'Danish Wholesale Imports', 'Petersen', 'Jytte ', '31 12 3555', 'Vinb ltet 34', null, 'Kobenhavn', null,
+        '1734', 'Denmark', '1401',
         '83400.00');
 INSERT INTO `customers`
-VALUES ('146', 'Saveley & Henriot, Co.', 'Saveley', 'Mary ', '78.32.5555', '2, rue du Commerce', null, 'Lyon', null, '69004', 'France', '1337',
+VALUES ('146', 'Saveley & Henriot, Co.', 'Saveley', 'Mary ', '78.32.5555', '2, rue du Commerce', null, 'Lyon', null,
+        '69004', 'France', '1337',
         '123900.00');
 INSERT INTO `customers`
-VALUES ('148', 'Dragon Souveniers, Ltd.', 'Natividad', 'Eric', '+65 221 7555', 'Bronz Sok.', 'Bronz Apt. 3/6 Tesvikiye', 'Singapore', null, '079903',
+VALUES ('148', 'Dragon Souveniers, Ltd.', 'Natividad', 'Eric', '+65 221 7555', 'Bronz Sok.', 'Bronz Apt. 3/6 Tesvikiye',
+        'Singapore', null, '079903',
         'Singapore', '1621', '103800.00');
 INSERT INTO `customers`
-VALUES ('151', 'Muscle Machine Inc', 'Young', 'Jeff', '2125557413', '4092 Furth Circle', 'Suite 400', 'NYC', 'NY', '10022', 'USA', '1286',
+VALUES ('151', 'Muscle Machine Inc', 'Young', 'Jeff', '2125557413', '4092 Furth Circle', 'Suite 400', 'NYC', 'NY',
+        '10022', 'USA', '1286',
         '138500.00');
 INSERT INTO `customers`
-VALUES ('157', 'Diecast Classics Inc.', 'Leong', 'Kelvin', '2155551555', '7586 Pompton St.', null, 'Allentown', 'PA', '70267', 'USA', '1216',
+VALUES ('157', 'Diecast Classics Inc.', 'Leong', 'Kelvin', '2155551555', '7586 Pompton St.', null, 'Allentown', 'PA',
+        '70267', 'USA', '1216',
         '100600.00');
 INSERT INTO `customers`
-VALUES ('161', 'Technics Stores Inc.', 'Hashimoto', 'Juri', '6505556809', '9408 Furth Circle', null, 'Burlingame', 'CA', '94217', 'USA', '1165',
+VALUES ('161', 'Technics Stores Inc.', 'Hashimoto', 'Juri', '6505556809', '9408 Furth Circle', null, 'Burlingame', 'CA',
+        '94217', 'USA', '1165',
         '84600.00');
 INSERT INTO `customers`
-VALUES ('166', 'Handji Gifts& Co', 'Victorino', 'Wendy', '+65 224 1555', '106 Linden Road Sandown', '2nd Floor', 'Singapore', null, '069045',
+VALUES ('166', 'Handji Gifts& Co', 'Victorino', 'Wendy', '+65 224 1555', '106 Linden Road Sandown', '2nd Floor',
+        'Singapore', null, '069045',
         'Singapore', '1612', '97900.00');
 INSERT INTO `customers`
-VALUES ('167', 'Herkku Gifts', 'Oeztan', 'Veysel', '+47 2267 3215', 'Brehmen St. 121', 'PR 334 Sentrum', 'Bergen', null, 'N 5804', 'Norway  ', '1504',
+VALUES ('167', 'Herkku Gifts', 'Oeztan', 'Veysel', '+47 2267 3215', 'Brehmen St. 121', 'PR 334 Sentrum', 'Bergen', null,
+        'N 5804', 'Norway  ', '1504',
         '96800.00');
 INSERT INTO `customers`
-VALUES ('168', 'American Souvenirs Inc', 'Franco', 'Keith', '2035557845', '149 Spinnaker Dr.', 'Suite 101', 'New Haven', 'CT', '97823', 'USA', '1286',
+VALUES ('168', 'American Souvenirs Inc', 'Franco', 'Keith', '2035557845', '149 Spinnaker Dr.', 'Suite 101', 'New Haven',
+        'CT', '97823', 'USA', '1286',
         '0.00');
 INSERT INTO `customers`
-VALUES ('169', 'Porto Imports Co.', 'de Castro', 'Isabel ', '(1) 356-5555', 'Estrada da sade n. 58', null, 'Lisboa', null, '1756', 'Portugal', null,
+VALUES ('169', 'Porto Imports Co.', 'de Castro', 'Isabel ', '(1) 356-5555', 'Estrada da sade n. 58', null, 'Lisboa',
+        null, '1756', 'Portugal', null,
         '0.00');
 INSERT INTO `customers`
-VALUES ('171', 'Daedalus Designs Imports', 'Ranc', 'Martine ', '20.16.1555', '184, chausse de Tournai', null, 'Lille', null, '59000', 'France',
+VALUES ('171', 'Daedalus Designs Imports', 'Ranc', 'Martine ', '20.16.1555', '184, chausse de Tournai', null, 'Lille',
+        null, '59000', 'France',
         '1370', '82900.00');
 INSERT INTO `customers`
-VALUES ('172', 'La Corne D\'abondance, Co.', 'Bertrand', 'Marie', '(1) 42.34.2555', '265, boulevard Charonne', null, 'Paris', null, '75012', 'France',
+VALUES ('172', 'La Corne D\'abondance, Co.', 'Bertrand', 'Marie', '(1) 42.34.2555', '265, boulevard Charonne', null,
+        'Paris', null, '75012', 'France',
         '1337', '84300.00');
 INSERT INTO `customers`
-VALUES ('173', 'Cambridge Collectables Co.', 'Tseng', 'Jerry', '6175555555', '4658 Baden Av.', null, 'Cambridge', 'MA', '51247', 'USA', '1188',
+VALUES ('173', 'Cambridge Collectables Co.', 'Tseng', 'Jerry', '6175555555', '4658 Baden Av.', null, 'Cambridge', 'MA',
+        '51247', 'USA', '1188',
         '43400.00');
 INSERT INTO `customers`
-VALUES ('175', 'Gift Depot Inc.', 'King', 'Julie', '2035552570', '25593 South Bay Ln.', null, 'Bridgewater', 'CT', '97562', 'USA', '1323',
+VALUES ('175', 'Gift Depot Inc.', 'King', 'Julie', '2035552570', '25593 South Bay Ln.', null, 'Bridgewater', 'CT',
+        '97562', 'USA', '1323',
         '84300.00');
 INSERT INTO `customers`
-VALUES ('177', 'Osaka Souveniers Co.', 'Kentary', 'Mory', '+81 06 6342 5555', '1-6-20 Dojima', null, 'Kita-ku', 'Osaka', ' 530-0003', 'Japan', '1621',
+VALUES ('177', 'Osaka Souveniers Co.', 'Kentary', 'Mory', '+81 06 6342 5555', '1-6-20 Dojima', null, 'Kita-ku', 'Osaka',
+        ' 530-0003', 'Japan', '1621',
         '81200.00');
 INSERT INTO `customers`
-VALUES ('181', 'Vitachrome Inc.', 'Frick', 'Michael', '2125551500', '2678 Kingston Rd.', 'Suite 101', 'NYC', 'NY', '10022', 'USA', '1286',
+VALUES ('181', 'Vitachrome Inc.', 'Frick', 'Michael', '2125551500', '2678 Kingston Rd.', 'Suite 101', 'NYC', 'NY',
+        '10022', 'USA', '1286',
         '76400.00');
 INSERT INTO `customers`
-VALUES ('186', 'Toys of Finland, Co.', 'Karttunen', 'Matti', '90-224 8555', 'Keskuskatu 45', null, 'Helsinki', null, '21240', 'Finland', '1501',
+VALUES ('186', 'Toys of Finland, Co.', 'Karttunen', 'Matti', '90-224 8555', 'Keskuskatu 45', null, 'Helsinki', null,
+        '21240', 'Finland', '1501',
         '96500.00');
 INSERT INTO `customers`
-VALUES ('187', 'AV Stores, Co.', 'Ashworth', 'Rachel', '(171) 555-1555', 'Fauntleroy Circus', null, 'Manchester', null, 'EC2 5NT', 'UK', '1501',
+VALUES ('187', 'AV Stores, Co.', 'Ashworth', 'Rachel', '(171) 555-1555', 'Fauntleroy Circus', null, 'Manchester', null,
+        'EC2 5NT', 'UK', '1501',
         '136800.00');
 INSERT INTO `customers`
-VALUES ('189', 'Clover Collections, Co.', 'Cassidy', 'Dean', '+353 1862 1555', '25 Maiden Lane', 'Floor No. 4', 'Dublin', null, '2', 'Ireland',
+VALUES ('189', 'Clover Collections, Co.', 'Cassidy', 'Dean', '+353 1862 1555', '25 Maiden Lane', 'Floor No. 4',
+        'Dublin', null, '2', 'Ireland',
         '1504', '69400.00');
 INSERT INTO `customers`
-VALUES ('198', 'Auto-Moto Classics Inc.', 'Taylor', 'Leslie', '6175558428', '16780 Pompton St.', null, 'Brickhaven', 'MA', '58339', 'USA', '1216',
+VALUES ('198', 'Auto-Moto Classics Inc.', 'Taylor', 'Leslie', '6175558428', '16780 Pompton St.', null, 'Brickhaven',
+        'MA', '58339', 'USA', '1216',
         '23000.00');
 INSERT INTO `customers`
-VALUES ('201', 'UK Collectables, Ltd.', 'Devon', 'Elizabeth', '(171) 555-2282', '12, Berkeley Gardens Blvd', null, 'Liverpool', null, 'WX1 6LT', 'UK',
+VALUES ('201', 'UK Collectables, Ltd.', 'Devon', 'Elizabeth', '(171) 555-2282', '12, Berkeley Gardens Blvd', null,
+        'Liverpool', null, 'WX1 6LT', 'UK',
         '1501', '92700.00');
 INSERT INTO `customers`
-VALUES ('202', 'Canadian Gift Exchange Network', 'Tamuri', 'Yoshi ', '(604) 555-3392', '1900 Oak St.', null, 'Vancouver', 'BC', 'V3F 2K1', 'Canada',
+VALUES ('202', 'Canadian Gift Exchange Network', 'Tamuri', 'Yoshi ', '(604) 555-3392', '1900 Oak St.', null,
+        'Vancouver', 'BC', 'V3F 2K1', 'Canada',
         '1323', '90300.00');
 INSERT INTO `customers`
-VALUES ('204', 'Online Mini Collectables', 'Barajas', 'Miguel', '6175557555', '7635 Spinnaker Dr.', null, 'Brickhaven', 'MA', '58339', 'USA', '1188',
+VALUES ('204', 'Online Mini Collectables', 'Barajas', 'Miguel', '6175557555', '7635 Spinnaker Dr.', null, 'Brickhaven',
+        'MA', '58339', 'USA', '1188',
         '68700.00');
 INSERT INTO `customers`
-VALUES ('205', 'Toys4GrownUps.com', 'Young', 'Julie', '6265557265', '78934 Hillside Dr.', null, 'Pasadena', 'CA', '90003', 'USA', '1166', '90700.00');
+VALUES ('205', 'Toys4GrownUps.com', 'Young', 'Julie', '6265557265', '78934 Hillside Dr.', null, 'Pasadena', 'CA',
+        '90003', 'USA', '1166', '90700.00');
 INSERT INTO `customers`
-VALUES ('206', 'Asian Shopping Network, Co', 'Walker', 'Brydey', '+612 9411 1555', 'Suntec Tower Three', '8 Temasek', 'Singapore', null, '038988',
+VALUES ('206', 'Asian Shopping Network, Co', 'Walker', 'Brydey', '+612 9411 1555', 'Suntec Tower Three', '8 Temasek',
+        'Singapore', null, '038988',
         'Singapore', null, '0.00');
 INSERT INTO `customers`
-VALUES ('209', 'Mini Caravy', 'Citeaux', 'Frdrique ', '88.60.1555', '24, place Klber', null, 'Strasbourg', null, '67000', 'France', '1370',
+VALUES ('209', 'Mini Caravy', 'Citeaux', 'Frdrique ', '88.60.1555', '24, place Klber', null, 'Strasbourg', null,
+        '67000', 'France', '1370',
         '53800.00');
 INSERT INTO `customers`
-VALUES ('211', 'King Kong Collectables, Co.', 'Gao', 'Mike', '+852 2251 1555', 'Bank of China Tower', '1 Garden Road', 'Central Hong Kong', null,
+VALUES ('211', 'King Kong Collectables, Co.', 'Gao', 'Mike', '+852 2251 1555', 'Bank of China Tower', '1 Garden Road',
+        'Central Hong Kong', null,
         null, 'Hong Kong', '1621', '58600.00');
 INSERT INTO `customers`
-VALUES ('216', 'Enaco Distributors', 'Saavedra', 'Eduardo ', '(93) 203 4555', 'Rambla de Catalua, 23', null, 'Barcelona', null, '08022', 'Spain',
+VALUES ('216', 'Enaco Distributors', 'Saavedra', 'Eduardo ', '(93) 203 4555', 'Rambla de Catalua, 23', null,
+        'Barcelona', null, '08022', 'Spain',
         '1702', '60300.00');
 INSERT INTO `customers`
-VALUES ('219', 'Boards & Toys Co.', 'Young', 'Mary', '3105552373', '4097 Douglas Av.', null, 'Glendale', 'CA', '92561', 'USA', '1166', '11000.00');
+VALUES ('219', 'Boards & Toys Co.', 'Young', 'Mary', '3105552373', '4097 Douglas Av.', null, 'Glendale', 'CA', '92561',
+        'USA', '1166', '11000.00');
 INSERT INTO `customers`
-VALUES ('223', 'Natrlich Autos', 'Kloss', 'Horst ', '0372-555188', 'Taucherstrae 10', null, 'Cunewalde', null, '01307', 'Germany', null, '0.00');
+VALUES ('223', 'Natrlich Autos', 'Kloss', 'Horst ', '0372-555188', 'Taucherstrae 10', null, 'Cunewalde', null, '01307',
+        'Germany', null, '0.00');
 INSERT INTO `customers`
-VALUES ('227', 'Heintze Collectables', 'Ibsen', 'Palle', '86 21 3555', 'Smagsloget 45', null, 'Brhus', null, '8200', 'Denmark', '1401', '120800.00');
+VALUES ('227', 'Heintze Collectables', 'Ibsen', 'Palle', '86 21 3555', 'Smagsloget 45', null, 'Brhus', null, '8200',
+        'Denmark', '1401', '120800.00');
 INSERT INTO `customers`
-VALUES ('233', 'Qubec Home Shopping Network', 'Fresnire', 'Jean ', '(514) 555-8054', '43 rue St. Laurent', null, 'Montral', 'Qubec', 'H1J 1C3',
+VALUES ('233', 'Qubec Home Shopping Network', 'Fresnire', 'Jean ', '(514) 555-8054', '43 rue St. Laurent', null,
+        'Montral', 'Qubec', 'H1J 1C3',
         'Canada', '1286', '48700.00');
 INSERT INTO `customers`
-VALUES ('237', 'ANG Resellers', 'Camino', 'Alejandra ', '(91) 745 6555', 'Gran Va, 1', null, 'Madrid', null, '28001', 'Spain', null, '0.00');
+VALUES ('237', 'ANG Resellers', 'Camino', 'Alejandra ', '(91) 745 6555', 'Gran Va, 1', null, 'Madrid', null, '28001',
+        'Spain', null, '0.00');
 INSERT INTO `customers`
-VALUES ('239', 'Collectable Mini Designs Co.', 'Thompson', 'Valarie', '7605558146', '361 Furth Circle', null, 'San Diego', 'CA', '91217', 'USA',
+VALUES ('239', 'Collectable Mini Designs Co.', 'Thompson', 'Valarie', '7605558146', '361 Furth Circle', null,
+        'San Diego', 'CA', '91217', 'USA',
         '1166', '105000.00');
 INSERT INTO `customers`
-VALUES ('240', 'giftsbymail.co.uk', 'Bennett', 'Helen ', '(198) 555-8888', 'Garden House', 'Crowther Way 23', 'Cowes', 'Isle of Wight', 'PO31 7PJ',
+VALUES ('240', 'giftsbymail.co.uk', 'Bennett', 'Helen ', '(198) 555-8888', 'Garden House', 'Crowther Way 23', 'Cowes',
+        'Isle of Wight', 'PO31 7PJ',
         'UK', '1501', '93900.00');
 INSERT INTO `customers`
-VALUES ('242', 'Alpha Cognac', 'Roulet', 'Annette ', '61.77.6555', '1 rue Alsace-Lorraine', null, 'Toulouse', null, '31000', 'France', '1370',
+VALUES ('242', 'Alpha Cognac', 'Roulet', 'Annette ', '61.77.6555', '1 rue Alsace-Lorraine', null, 'Toulouse', null,
+        '31000', 'France', '1370',
         '61100.00');
 INSERT INTO `customers`
-VALUES ('247', 'Messner Shopping Network', 'Messner', 'Renate ', '069-0555984', 'Magazinweg 7', null, 'Frankfurt', null, '60528', 'Germany', null,
+VALUES ('247', 'Messner Shopping Network', 'Messner', 'Renate ', '069-0555984', 'Magazinweg 7', null, 'Frankfurt', null,
+        '60528', 'Germany', null,
         '0.00');
 INSERT INTO `customers`
-VALUES ('249', 'Amica Models & Co.', 'Accorti', 'Paolo ', '011-4988555', 'Via Monte Bianco 34', null, 'Torino', null, '10100', 'Italy', '1401',
+VALUES ('249', 'Amica Models & Co.', 'Accorti', 'Paolo ', '011-4988555', 'Via Monte Bianco 34', null, 'Torino', null,
+        '10100', 'Italy', '1401',
         '113000.00');
 INSERT INTO `customers`
-VALUES ('250', 'Lyon Souveniers', 'Da Silva', 'Daniel', '+33 1 46 62 7555', '27 rue du Colonel Pierre Avia', null, 'Paris', null, '75508', 'France',
+VALUES ('250', 'Lyon Souveniers', 'Da Silva', 'Daniel', '+33 1 46 62 7555', '27 rue du Colonel Pierre Avia', null,
+        'Paris', null, '75508', 'France',
         '1337', '68100.00');
 INSERT INTO `customers`
-VALUES ('256', 'Auto Associs & Cie.', 'Tonini', 'Daniel ', '30.59.8555', '67, avenue de l\'Europe', null, 'Versailles', null, '78000', 'France',
+VALUES ('256', 'Auto Associs & Cie.', 'Tonini', 'Daniel ', '30.59.8555', '67, avenue de l\'Europe', null, 'Versailles',
+        null, '78000', 'France',
         '1370', '77900.00');
 INSERT INTO `customers`
-VALUES ('259', 'Toms Spezialitten, Ltd', 'Pfalzheim', 'Henriette ', '0221-5554327', 'Mehrheimerstr. 369', null, 'Kln', null, '50739', 'Germany',
+VALUES ('259', 'Toms Spezialitten, Ltd', 'Pfalzheim', 'Henriette ', '0221-5554327', 'Mehrheimerstr. 369', null, 'Kln',
+        null, '50739', 'Germany',
         '1504', '120400.00');
 INSERT INTO `customers`
-VALUES ('260', 'Royal Canadian Collectables, Ltd.', 'Lincoln', 'Elizabeth ', '(604) 555-4555', '23 Tsawassen Blvd.', null, 'Tsawassen', 'BC',
+VALUES ('260', 'Royal Canadian Collectables, Ltd.', 'Lincoln', 'Elizabeth ', '(604) 555-4555', '23 Tsawassen Blvd.',
+        null, 'Tsawassen', 'BC',
         'T2F 8M4', 'Canada', '1323', '89600.00');
 INSERT INTO `customers`
-VALUES ('273', 'Franken Gifts, Co', 'Franken', 'Peter ', '089-0877555', 'Berliner Platz 43', null, 'Mnchen', null, '80805', 'Germany', null, '0.00');
+VALUES ('273', 'Franken Gifts, Co', 'Franken', 'Peter ', '089-0877555', 'Berliner Platz 43', null, 'Mnchen', null,
+        '80805', 'Germany', null, '0.00');
 INSERT INTO `customers`
-VALUES ('276', 'Anna\'s Decorations, Ltd', 'O\'Hara', 'Anna', '02 9936 8555', '201 Miller Street', 'Level 15', 'North Sydney', 'NSW', '2060',
+VALUES ('276', 'Anna\'s Decorations, Ltd', 'O\'Hara', 'Anna', '02 9936 8555', '201 Miller Street', 'Level 15',
+        'North Sydney', 'NSW', '2060',
         'Australia', '1611', '107800.00');
 INSERT INTO `customers`
-VALUES ('278', 'Rovelli Gifts', 'Rovelli', 'Giovanni ', '035-640555', 'Via Ludovico il Moro 22', null, 'Bergamo', null, '24100', 'Italy', '1401',
+VALUES ('278', 'Rovelli Gifts', 'Rovelli', 'Giovanni ', '035-640555', 'Via Ludovico il Moro 22', null, 'Bergamo', null,
+        '24100', 'Italy', '1401',
         '119600.00');
 INSERT INTO `customers`
-VALUES ('282', 'Souveniers And Things Co.', 'Huxley', 'Adrian', '+61 2 9495 8555', 'Monitor Money Building', '815 Pacific Hwy', 'Chatswood', 'NSW',
+VALUES ('282', 'Souveniers And Things Co.', 'Huxley', 'Adrian', '+61 2 9495 8555', 'Monitor Money Building',
+        '815 Pacific Hwy', 'Chatswood', 'NSW',
         '2067', 'Australia', '1611', '93300.00');
 INSERT INTO `customers`
-VALUES ('286', 'Marta\'s Replicas Co.', 'Hernandez', 'Marta', '6175558555', '39323 Spinnaker Dr.', null, 'Cambridge', 'MA', '51247', 'USA', '1216',
+VALUES ('286', 'Marta\'s Replicas Co.', 'Hernandez', 'Marta', '6175558555', '39323 Spinnaker Dr.', null, 'Cambridge',
+        'MA', '51247', 'USA', '1216',
         '123700.00');
 INSERT INTO `customers`
-VALUES ('293', 'BG&E Collectables', 'Harrison', 'Ed', '+41 26 425 50 01', 'Rte des Arsenaux 41 ', null, 'Fribourg', null, '1700', 'Switzerland', null,
+VALUES ('293', 'BG&E Collectables', 'Harrison', 'Ed', '+41 26 425 50 01', 'Rte des Arsenaux 41 ', null, 'Fribourg',
+        null, '1700', 'Switzerland', null,
         '0.00');
 INSERT INTO `customers`
-VALUES ('298', 'Vida Sport, Ltd', 'Holz', 'Mihael', '0897-034555', 'Grenzacherweg 237', null, 'Genve', null, '1203', 'Switzerland', '1702',
+VALUES ('298', 'Vida Sport, Ltd', 'Holz', 'Mihael', '0897-034555', 'Grenzacherweg 237', null, 'Genve', null, '1203',
+        'Switzerland', '1702',
         '141300.00');
 INSERT INTO `customers`
-VALUES ('299', 'Norway Gifts By Mail, Co.', 'Klaeboe', 'Jan', '+47 2212 1555', 'Drammensveien 126A', 'PB 211 Sentrum', 'Oslo', null, 'N 0106',
+VALUES ('299', 'Norway Gifts By Mail, Co.', 'Klaeboe', 'Jan', '+47 2212 1555', 'Drammensveien 126A', 'PB 211 Sentrum',
+        'Oslo', null, 'N 0106',
         'Norway  ', '1504', '95100.00');
 INSERT INTO `customers`
-VALUES ('303', 'Schuyler Imports', 'Schuyler', 'Bradley', '+31 20 491 9555', 'Kingsfordweg 151', null, 'Amsterdam', null, '1043 GR', 'Netherlands',
+VALUES ('303', 'Schuyler Imports', 'Schuyler', 'Bradley', '+31 20 491 9555', 'Kingsfordweg 151', null, 'Amsterdam',
+        null, '1043 GR', 'Netherlands',
         null, '0.00');
 INSERT INTO `customers`
-VALUES ('307', 'Der Hund Imports', 'Andersen', 'Mel', '030-0074555', 'Obere Str. 57', null, 'Berlin', null, '12209', 'Germany', null, '0.00');
+VALUES ('307', 'Der Hund Imports', 'Andersen', 'Mel', '030-0074555', 'Obere Str. 57', null, 'Berlin', null, '12209',
+        'Germany', null, '0.00');
 INSERT INTO `customers`
-VALUES ('311', 'Oulu Toy Supplies, Inc.', 'Koskitalo', 'Pirkko', '981-443655', 'Torikatu 38', null, 'Oulu', null, '90110', 'Finland', '1501',
+VALUES ('311', 'Oulu Toy Supplies, Inc.', 'Koskitalo', 'Pirkko', '981-443655', 'Torikatu 38', null, 'Oulu', null,
+        '90110', 'Finland', '1501',
         '90500.00');
 INSERT INTO `customers`
-VALUES ('314', 'Petit Auto', 'Dewey', 'Catherine ', '(02) 5554 67', 'Rue Joseph-Bens 532', null, 'Bruxelles', null, 'B-1180', 'Belgium', '1401',
+VALUES ('314', 'Petit Auto', 'Dewey', 'Catherine ', '(02) 5554 67', 'Rue Joseph-Bens 532', null, 'Bruxelles', null,
+        'B-1180', 'Belgium', '1401',
         '79900.00');
 INSERT INTO `customers`
-VALUES ('319', 'Mini Classics', 'Frick', 'Steve', '9145554562', '3758 North Pendale Street', null, 'White Plains', 'NY', '24067', 'USA', '1323',
+VALUES ('319', 'Mini Classics', 'Frick', 'Steve', '9145554562', '3758 North Pendale Street', null, 'White Plains', 'NY',
+        '24067', 'USA', '1323',
         '102700.00');
 INSERT INTO `customers`
-VALUES ('320', 'Mini Creations Ltd.', 'Huang', 'Wing', '5085559555', '4575 Hillside Dr.', null, 'New Bedford', 'MA', '50553', 'USA', '1188',
+VALUES ('320', 'Mini Creations Ltd.', 'Huang', 'Wing', '5085559555', '4575 Hillside Dr.', null, 'New Bedford', 'MA',
+        '50553', 'USA', '1188',
         '94500.00');
 INSERT INTO `customers`
-VALUES ('321', 'Corporate Gift Ideas Co.', 'Brown', 'Julie', '6505551386', '7734 Strong St.', null, 'San Francisco', 'CA', '94217', 'USA', '1165',
+VALUES ('321', 'Corporate Gift Ideas Co.', 'Brown', 'Julie', '6505551386', '7734 Strong St.', null, 'San Francisco',
+        'CA', '94217', 'USA', '1165',
         '105000.00');
 INSERT INTO `customers`
-VALUES ('323', 'Down Under Souveniers, Inc', 'Graham', 'Mike', '+64 9 312 5555', '162-164 Grafton Road', 'Level 2', 'Auckland  ', null, null,
+VALUES ('323', 'Down Under Souveniers, Inc', 'Graham', 'Mike', '+64 9 312 5555', '162-164 Grafton Road', 'Level 2',
+        'Auckland  ', null, null,
         'New Zealand', '1612', '88000.00');
 INSERT INTO `customers`
-VALUES ('324', 'Stylish Desk Decors, Co.', 'Brown', 'Ann ', '(171) 555-0297', '35 King George', null, 'London', null, 'WX3 6FW', 'UK', '1501',
+VALUES ('324', 'Stylish Desk Decors, Co.', 'Brown', 'Ann ', '(171) 555-0297', '35 King George', null, 'London', null,
+        'WX3 6FW', 'UK', '1501',
         '77000.00');
 INSERT INTO `customers`
-VALUES ('328', 'Tekni Collectables Inc.', 'Brown', 'William', '2015559350', '7476 Moss Rd.', null, 'Newark', 'NJ', '94019', 'USA', '1323',
+VALUES ('328', 'Tekni Collectables Inc.', 'Brown', 'William', '2015559350', '7476 Moss Rd.', null, 'Newark', 'NJ',
+        '94019', 'USA', '1323',
         '43000.00');
 INSERT INTO `customers`
-VALUES ('333', 'Australian Gift Network, Co', 'Calaghan', 'Ben', '61-7-3844-6555', '31 Duncan St. West End', null, 'South Brisbane', 'Queensland',
+VALUES ('333', 'Australian Gift Network, Co', 'Calaghan', 'Ben', '61-7-3844-6555', '31 Duncan St. West End', null,
+        'South Brisbane', 'Queensland',
         '4101', 'Australia', '1611', '51600.00');
 INSERT INTO `customers`
-VALUES ('334', 'Suominen Souveniers', 'Suominen', 'Kalle', '+358 9 8045 555', 'Software Engineering Center', 'SEC Oy', 'Espoo', null, 'FIN-02271',
+VALUES ('334', 'Suominen Souveniers', 'Suominen', 'Kalle', '+358 9 8045 555', 'Software Engineering Center', 'SEC Oy',
+        'Espoo', null, 'FIN-02271',
         'Finland', '1501', '98800.00');
 INSERT INTO `customers`
-VALUES ('335', 'Cramer Spezialitten, Ltd', 'Cramer', 'Philip ', '0555-09555', 'Maubelstr. 90', null, 'Brandenburg', null, '14776', 'Germany', null,
+VALUES ('335', 'Cramer Spezialitten, Ltd', 'Cramer', 'Philip ', '0555-09555', 'Maubelstr. 90', null, 'Brandenburg',
+        null, '14776', 'Germany', null,
         '0.00');
 INSERT INTO `customers`
-VALUES ('339', 'Classic Gift Ideas, Inc', 'Cervantes', 'Francisca', '2155554695', '782 First Street', null, 'Philadelphia', 'PA', '71270', 'USA',
+VALUES ('339', 'Classic Gift Ideas, Inc', 'Cervantes', 'Francisca', '2155554695', '782 First Street', null,
+        'Philadelphia', 'PA', '71270', 'USA',
         '1188', '81100.00');
 INSERT INTO `customers`
-VALUES ('344', 'CAF Imports', 'Fernandez', 'Jesus', '+34 913 728 555', 'Merchants House', '27-30 Merchant\'s Quay', 'Madrid', null, '28023', 'Spain',
+VALUES ('344', 'CAF Imports', 'Fernandez', 'Jesus', '+34 913 728 555', 'Merchants House', '27-30 Merchant\'s Quay',
+        'Madrid', null, '28023', 'Spain',
         '1702', '59600.00');
 INSERT INTO `customers`
-VALUES ('347', 'Men \'R\' US Retailers, Ltd.', 'Chandler', 'Brian', '2155554369', '6047 Douglas Av.', null, 'Los Angeles', 'CA', '91003', 'USA',
+VALUES ('347', 'Men \'R\' US Retailers, Ltd.', 'Chandler', 'Brian', '2155554369', '6047 Douglas Av.', null,
+        'Los Angeles', 'CA', '91003', 'USA',
         '1166', '57700.00');
 INSERT INTO `customers`
-VALUES ('348', 'Asian Treasures, Inc.', 'McKenna', 'Patricia ', '2967 555', '8 Johnstown Road', null, 'Cork', 'Co. Cork', null, 'Ireland', null,
+VALUES ('348', 'Asian Treasures, Inc.', 'McKenna', 'Patricia ', '2967 555', '8 Johnstown Road', null, 'Cork',
+        'Co. Cork', null, 'Ireland', null,
         '0.00');
 INSERT INTO `customers`
-VALUES ('350', 'Marseille Mini Autos', 'Lebihan', 'Laurence ', '91.24.4555', '12, rue des Bouchers', null, 'Marseille', null, '13008', 'France',
+VALUES ('350', 'Marseille Mini Autos', 'Lebihan', 'Laurence ', '91.24.4555', '12, rue des Bouchers', null, 'Marseille',
+        null, '13008', 'France',
         '1337', '65000.00');
 INSERT INTO `customers`
-VALUES ('353', 'Reims Collectables', 'Henriot', 'Paul ', '26.47.1555', '59 rue de l\'Abbaye', null, 'Reims', null, '51100', 'France', '1337',
+VALUES ('353', 'Reims Collectables', 'Henriot', 'Paul ', '26.47.1555', '59 rue de l\'Abbaye', null, 'Reims', null,
+        '51100', 'France', '1337',
         '81100.00');
 INSERT INTO `customers`
-VALUES ('356', 'SAR Distributors, Co', 'Kuger', 'Armand', '+27 21 550 3555', '1250 Pretorius Street', null, 'Hatfield', 'Pretoria', '0028',
+VALUES ('356', 'SAR Distributors, Co', 'Kuger', 'Armand', '+27 21 550 3555', '1250 Pretorius Street', null, 'Hatfield',
+        'Pretoria', '0028',
         'South Africa', null, '0.00');
 INSERT INTO `customers`
-VALUES ('357', 'GiftsForHim.com', 'MacKinlay', 'Wales', '64-9-3763555', '199 Great North Road', null, 'Auckland', null, null, 'New Zealand', '1612',
+VALUES ('357', 'GiftsForHim.com', 'MacKinlay', 'Wales', '64-9-3763555', '199 Great North Road', null, 'Auckland', null,
+        null, 'New Zealand', '1612',
         '77700.00');
 INSERT INTO `customers`
-VALUES ('361', 'Kommission Auto', 'Josephs', 'Karin', '0251-555259', 'Luisenstr. 48', null, 'Minster', null, '44087', 'Germany', null, '0.00');
+VALUES ('361', 'Kommission Auto', 'Josephs', 'Karin', '0251-555259', 'Luisenstr. 48', null, 'Minster', null, '44087',
+        'Germany', null, '0.00');
 INSERT INTO `customers`
-VALUES ('362', 'Gifts4AllAges.com', 'Yoshido', 'Juri', '6175559555', '8616 Spinnaker Dr.', null, 'Boston', 'MA', '51003', 'USA', '1216', '41900.00');
+VALUES ('362', 'Gifts4AllAges.com', 'Yoshido', 'Juri', '6175559555', '8616 Spinnaker Dr.', null, 'Boston', 'MA',
+        '51003', 'USA', '1216', '41900.00');
 INSERT INTO `customers`
-VALUES ('363', 'Online Diecast Creations Co.', 'Young', 'Dorothy', '6035558647', '2304 Long Airport Avenue', null, 'Nashua', 'NH', '62005', 'USA',
+VALUES ('363', 'Online Diecast Creations Co.', 'Young', 'Dorothy', '6035558647', '2304 Long Airport Avenue', null,
+        'Nashua', 'NH', '62005', 'USA',
         '1216', '114200.00');
 INSERT INTO `customers`
-VALUES ('369', 'Lisboa Souveniers, Inc', 'Rodriguez', 'Lino ', '(1) 354-2555', 'Jardim das rosas n. 32', null, 'Lisboa', null, '1675', 'Portugal',
+VALUES ('369', 'Lisboa Souveniers, Inc', 'Rodriguez', 'Lino ', '(1) 354-2555', 'Jardim das rosas n. 32', null, 'Lisboa',
+        null, '1675', 'Portugal',
         null, '0.00');
 INSERT INTO `customers`
-VALUES ('376', 'Precious Collectables', 'Urs', 'Braun', '0452-076555', 'Hauptstr. 29', null, 'Bern', null, '3012', 'Switzerland', '1702', '0.00');
+VALUES ('376', 'Precious Collectables', 'Urs', 'Braun', '0452-076555', 'Hauptstr. 29', null, 'Bern', null, '3012',
+        'Switzerland', '1702', '0.00');
 INSERT INTO `customers`
-VALUES ('379', 'Collectables For Less Inc.', 'Nelson', 'Allen', '6175558555', '7825 Douglas Av.', null, 'Brickhaven', 'MA', '58339', 'USA', '1188',
+VALUES ('379', 'Collectables For Less Inc.', 'Nelson', 'Allen', '6175558555', '7825 Douglas Av.', null, 'Brickhaven',
+        'MA', '58339', 'USA', '1188',
         '70700.00');
 INSERT INTO `customers`
-VALUES ('381', 'Royale Belge', 'Cartrain', 'Pascale ', '(071) 23 67 2555', 'Boulevard Tirou, 255', null, 'Charleroi', null, 'B-6000', 'Belgium',
+VALUES ('381', 'Royale Belge', 'Cartrain', 'Pascale ', '(071) 23 67 2555', 'Boulevard Tirou, 255', null, 'Charleroi',
+        null, 'B-6000', 'Belgium',
         '1401', '23500.00');
 INSERT INTO `customers`
-VALUES ('382', 'Salzburg Collectables', 'Pipps', 'Georg ', '6562-9555', 'Geislweg 14', null, 'Salzburg', null, '5020', 'Austria', '1401', '71700.00');
+VALUES ('382', 'Salzburg Collectables', 'Pipps', 'Georg ', '6562-9555', 'Geislweg 14', null, 'Salzburg', null, '5020',
+        'Austria', '1401', '71700.00');
 INSERT INTO `customers`
-VALUES ('385', 'Cruz & Sons Co.', 'Cruz', 'Arnold', '+63 2 555 3587', '15 McCallum Street', 'NatWest Center #13-03', 'Makati City', null, '1227 MM',
+VALUES ('385', 'Cruz & Sons Co.', 'Cruz', 'Arnold', '+63 2 555 3587', '15 McCallum Street', 'NatWest Center #13-03',
+        'Makati City', null, '1227 MM',
         'Philippines', '1621', '81500.00');
 INSERT INTO `customers`
-VALUES ('386', 'L\'ordine Souveniers', 'Moroni', 'Maurizio ', '0522-556555', 'Strada Provinciale 124', null, 'Reggio Emilia', null, '42100', 'Italy',
+VALUES ('386', 'L\'ordine Souveniers', 'Moroni', 'Maurizio ', '0522-556555', 'Strada Provinciale 124', null,
+        'Reggio Emilia', null, '42100', 'Italy',
         '1401', '121400.00');
 INSERT INTO `customers`
-VALUES ('398', 'Tokyo Collectables, Ltd', 'Shimamura', 'Akiko', '+81 3 3584 0555', '2-2-8 Roppongi', null, 'Minato-ku', 'Tokyo', '106-0032', 'Japan',
+VALUES ('398', 'Tokyo Collectables, Ltd', 'Shimamura', 'Akiko', '+81 3 3584 0555', '2-2-8 Roppongi', null, 'Minato-ku',
+        'Tokyo', '106-0032', 'Japan',
         '1621', '94400.00');
 INSERT INTO `customers`
-VALUES ('406', 'Auto Canal+ Petit', 'Perrier', 'Dominique', '(1) 47.55.6555', '25, rue Lauriston', null, 'Paris', null, '75016', 'France', '1337',
+VALUES ('406', 'Auto Canal+ Petit', 'Perrier', 'Dominique', '(1) 47.55.6555', '25, rue Lauriston', null, 'Paris', null,
+        '75016', 'France', '1337',
         '95000.00');
 INSERT INTO `customers`
-VALUES ('409', 'Stuttgart Collectable Exchange', 'Mller', 'Rita ', '0711-555361', 'Adenauerallee 900', null, 'Stuttgart', null, '70563', 'Germany',
+VALUES ('409', 'Stuttgart Collectable Exchange', 'Mller', 'Rita ', '0711-555361', 'Adenauerallee 900', null,
+        'Stuttgart', null, '70563', 'Germany',
         null, '0.00');
 INSERT INTO `customers`
-VALUES ('412', 'Extreme Desk Decorations, Ltd', 'McRoy', 'Sarah', '04 499 9555', '101 Lambton Quay', 'Level 11', 'Wellington', null, null,
+VALUES ('412', 'Extreme Desk Decorations, Ltd', 'McRoy', 'Sarah', '04 499 9555', '101 Lambton Quay', 'Level 11',
+        'Wellington', null, null,
         'New Zealand', '1612', '86800.00');
 INSERT INTO `customers`
-VALUES ('415', 'Bavarian Collectables Imports, Co.', 'Donnermeyer', 'Michael', ' +49 89 61 08 9555', 'Hansastr. 15', null, 'Munich', null, '80686',
+VALUES ('415', 'Bavarian Collectables Imports, Co.', 'Donnermeyer', 'Michael', ' +49 89 61 08 9555', 'Hansastr. 15',
+        null, 'Munich', null, '80686',
         'Germany', '1504', '77000.00');
 INSERT INTO `customers`
-VALUES ('424', 'Classic Legends Inc.', 'Hernandez', 'Maria', '2125558493', '5905 Pompton St.', 'Suite 750', 'NYC', 'NY', '10022', 'USA', '1286',
+VALUES ('424', 'Classic Legends Inc.', 'Hernandez', 'Maria', '2125558493', '5905 Pompton St.', 'Suite 750', 'NYC', 'NY',
+        '10022', 'USA', '1286',
         '67500.00');
 INSERT INTO `customers`
-VALUES ('443', 'Feuer Online Stores, Inc', 'Feuer', 'Alexander ', '0342-555176', 'Heerstr. 22', null, 'Leipzig', null, '04179', 'Germany', null,
+VALUES ('443', 'Feuer Online Stores, Inc', 'Feuer', 'Alexander ', '0342-555176', 'Heerstr. 22', null, 'Leipzig', null,
+        '04179', 'Germany', null,
         '0.00');
 INSERT INTO `customers`
-VALUES ('447', 'Gift Ideas Corp.', 'Lewis', 'Dan', '2035554407', '2440 Pompton St.', null, 'Glendale', 'CT', '97561', 'USA', '1323', '49700.00');
+VALUES ('447', 'Gift Ideas Corp.', 'Lewis', 'Dan', '2035554407', '2440 Pompton St.', null, 'Glendale', 'CT', '97561',
+        'USA', '1323', '49700.00');
 INSERT INTO `customers`
-VALUES ('448', 'Scandinavian Gift Ideas', 'Larsson', 'Martha', '0695-34 6555', 'kergatan 24', null, 'Brcke', null, 'S-844 67', 'Sweden', '1504',
+VALUES ('448', 'Scandinavian Gift Ideas', 'Larsson', 'Martha', '0695-34 6555', 'kergatan 24', null, 'Brcke', null,
+        'S-844 67', 'Sweden', '1504',
         '116400.00');
 INSERT INTO `customers`
-VALUES ('450', 'The Sharp Gifts Warehouse', 'Frick', 'Sue', '4085553659', '3086 Ingle Ln.', null, 'San Jose', 'CA', '94217', 'USA', '1165',
+VALUES ('450', 'The Sharp Gifts Warehouse', 'Frick', 'Sue', '4085553659', '3086 Ingle Ln.', null, 'San Jose', 'CA',
+        '94217', 'USA', '1165',
         '77600.00');
 INSERT INTO `customers`
-VALUES ('452', 'Mini Auto Werke', 'Mendel', 'Roland ', '7675-3555', 'Kirchgasse 6', null, 'Graz', null, '8010', 'Austria', '1401', '45300.00');
+VALUES ('452', 'Mini Auto Werke', 'Mendel', 'Roland ', '7675-3555', 'Kirchgasse 6', null, 'Graz', null, '8010',
+        'Austria', '1401', '45300.00');
 INSERT INTO `customers`
-VALUES ('455', 'Super Scale Inc.', 'Murphy', 'Leslie', '2035559545', '567 North Pendale Street', null, 'New Haven', 'CT', '97823', 'USA', '1286',
+VALUES ('455', 'Super Scale Inc.', 'Murphy', 'Leslie', '2035559545', '567 North Pendale Street', null, 'New Haven',
+        'CT', '97823', 'USA', '1286',
         '95400.00');
 INSERT INTO `customers`
-VALUES ('456', 'Microscale Inc.', 'Choi', 'Yu', '2125551957', '5290 North Pendale Street', 'Suite 200', 'NYC', 'NY', '10022', 'USA', '1286',
+VALUES ('456', 'Microscale Inc.', 'Choi', 'Yu', '2125551957', '5290 North Pendale Street', 'Suite 200', 'NYC', 'NY',
+        '10022', 'USA', '1286',
         '39800.00');
 INSERT INTO `customers`
-VALUES ('458', 'Corrida Auto Replicas, Ltd', 'Sommer', 'Martn ', '(91) 555 22 82', 'C/ Araquil, 67', null, 'Madrid', null, '28023', 'Spain', '1702',
+VALUES ('458', 'Corrida Auto Replicas, Ltd', 'Sommer', 'Martn ', '(91) 555 22 82', 'C/ Araquil, 67', null, 'Madrid',
+        null, '28023', 'Spain', '1702',
         '104600.00');
 INSERT INTO `customers`
-VALUES ('459', 'Warburg Exchange', 'Ottlieb', 'Sven ', '0241-039123', 'Walserweg 21', null, 'Aachen', null, '52066', 'Germany', null, '0.00');
+VALUES ('459', 'Warburg Exchange', 'Ottlieb', 'Sven ', '0241-039123', 'Walserweg 21', null, 'Aachen', null, '52066',
+        'Germany', null, '0.00');
 INSERT INTO `customers`
-VALUES ('462', 'FunGiftIdeas.com', 'Benitez', 'Violeta', '5085552555', '1785 First Street', null, 'New Bedford', 'MA', '50553', 'USA', '1216',
+VALUES ('462', 'FunGiftIdeas.com', 'Benitez', 'Violeta', '5085552555', '1785 First Street', null, 'New Bedford', 'MA',
+        '50553', 'USA', '1216',
         '85800.00');
 INSERT INTO `customers`
-VALUES ('465', 'Anton Designs, Ltd.', 'Anton', 'Carmen', '+34 913 728555', 'c/ Gobelas, 19-1 Urb. La Florida', null, 'Madrid', null, '28023', 'Spain',
+VALUES ('465', 'Anton Designs, Ltd.', 'Anton', 'Carmen', '+34 913 728555', 'c/ Gobelas, 19-1 Urb. La Florida', null,
+        'Madrid', null, '28023', 'Spain',
         null, '0.00');
 INSERT INTO `customers`
-VALUES ('471', 'Australian Collectables, Ltd', 'Clenahan', 'Sean', '61-9-3844-6555', '7 Allen Street', null, 'Glen Waverly', 'Victoria', '3150',
+VALUES ('471', 'Australian Collectables, Ltd', 'Clenahan', 'Sean', '61-9-3844-6555', '7 Allen Street', null,
+        'Glen Waverly', 'Victoria', '3150',
         'Australia', '1611', '60300.00');
 INSERT INTO `customers`
-VALUES ('473', 'Frau da Collezione', 'Ricotti', 'Franco', '+39 022515555', '20093 Cologno Monzese', 'Alessandro Volta 16', 'Milan', null, null,
+VALUES ('473', 'Frau da Collezione', 'Ricotti', 'Franco', '+39 022515555', '20093 Cologno Monzese',
+        'Alessandro Volta 16', 'Milan', null, null,
         'Italy', '1401', '34800.00');
 INSERT INTO `customers`
-VALUES ('475', 'West Coast Collectables Co.', 'Thompson', 'Steve', '3105553722', '3675 Furth Circle', null, 'Burbank', 'CA', '94019', 'USA', '1166',
+VALUES ('475', 'West Coast Collectables Co.', 'Thompson', 'Steve', '3105553722', '3675 Furth Circle', null, 'Burbank',
+        'CA', '94019', 'USA', '1166',
         '55400.00');
 INSERT INTO `customers`
-VALUES ('477', 'Mit Vergngen & Co.', 'Moos', 'Hanna ', '0621-08555', 'Forsterstr. 57', null, 'Mannheim', null, '68306', 'Germany', null, '0.00');
+VALUES ('477', 'Mit Vergngen & Co.', 'Moos', 'Hanna ', '0621-08555', 'Forsterstr. 57', null, 'Mannheim', null, '68306',
+        'Germany', null, '0.00');
 INSERT INTO `customers`
-VALUES ('480', 'Kremlin Collectables, Co.', 'Semenov', 'Alexander ', '+7 812 293 0521', '2 Pobedy Square', null, 'Saint Petersburg', null, '196143',
+VALUES ('480', 'Kremlin Collectables, Co.', 'Semenov', 'Alexander ', '+7 812 293 0521', '2 Pobedy Square', null,
+        'Saint Petersburg', null, '196143',
         'Russia', null, '0.00');
 INSERT INTO `customers`
-VALUES ('481', 'Raanan Stores, Inc', 'Altagar,G M', 'Raanan', '+ 972 9 959 8555', '3 Hagalim Blv.', null, 'Herzlia', null, '47625', 'Israel', null,
+VALUES ('481', 'Raanan Stores, Inc', 'Altagar,G M', 'Raanan', '+ 972 9 959 8555', '3 Hagalim Blv.', null, 'Herzlia',
+        null, '47625', 'Israel', null,
         '0.00');
 INSERT INTO `customers`
-VALUES ('484', 'Iberia Gift Imports, Corp.', 'Roel', 'JosPedro ', '(95) 555 82 82', 'C/ Romero, 33', null, 'Sevilla', null, '41101', 'Spain', '1702',
+VALUES ('484', 'Iberia Gift Imports, Corp.', 'Roel', 'JosPedro ', '(95) 555 82 82', 'C/ Romero, 33', null, 'Sevilla',
+        null, '41101', 'Spain', '1702',
         '65700.00');
 INSERT INTO `customers`
-VALUES ('486', 'Motor Mint Distributors Inc.', 'Salazar', 'Rosa', '2155559857', '11328 Douglas Av.', null, 'Philadelphia', 'PA', '71270', 'USA',
+VALUES ('486', 'Motor Mint Distributors Inc.', 'Salazar', 'Rosa', '2155559857', '11328 Douglas Av.', null,
+        'Philadelphia', 'PA', '71270', 'USA',
         '1323', '72600.00');
 INSERT INTO `customers`
-VALUES ('487', 'Signal Collectibles Ltd.', 'Taylor', 'Sue', '4155554312', '2793 Furth Circle', null, 'Brisbane', 'CA', '94217', 'USA', '1165',
+VALUES ('487', 'Signal Collectibles Ltd.', 'Taylor', 'Sue', '4155554312', '2793 Furth Circle', null, 'Brisbane', 'CA',
+        '94217', 'USA', '1165',
         '60300.00');
 INSERT INTO `customers`
-VALUES ('489', 'Double Decker Gift Stores, Ltd', 'Smith', 'Thomas ', '(171) 555-7555', '120 Hanover Sq.', null, 'London', null, 'WA1 1DP', 'UK',
+VALUES ('489', 'Double Decker Gift Stores, Ltd', 'Smith', 'Thomas ', '(171) 555-7555', '120 Hanover Sq.', null,
+        'London', null, 'WA1 1DP', 'UK',
         '1501', '43300.00');
 INSERT INTO `customers`
-VALUES ('495', 'Diecast Collectables', 'Franco', 'Valarie', '6175552555', '6251 Ingle Ln.', null, 'Boston', 'MA', '51003', 'USA', '1188', '85100.00');
+VALUES ('495', 'Diecast Collectables', 'Franco', 'Valarie', '6175552555', '6251 Ingle Ln.', null, 'Boston', 'MA',
+        '51003', 'USA', '1188', '85100.00');
 INSERT INTO `customers`
-VALUES ('496', 'Kelly\'s Gift Shop', 'Snowden', 'Tony', '+64 9 5555500', 'Arenales 1938 3\'A\'', null, 'Auckland  ', null, null, 'New Zealand',
+VALUES ('496', 'Kelly\'s Gift Shop', 'Snowden', 'Tony', '+64 9 5555500', 'Arenales 1938 3\'A\'', null, 'Auckland  ',
+        null, null, 'New Zealand',
         '1612', '110000.00');
 
--- ----------------------------
--- Table structure for `employees`
--- ----------------------------
-DROP TABLE IF EXISTS `employees`;
-CREATE TABLE `employees`
-(
-    `employeeNumber` int(11)      NOT NULL,
-    `lastName`       varchar(50)  NOT NULL,
-    `firstName`      varchar(50)  NOT NULL,
-    `extension`      varchar(10)  NOT NULL,
-    `email`          varchar(100) NOT NULL,
-    `officeCode`     varchar(10)  NOT NULL,
-    `reportsTo`      int(11) DEFAULT NULL,
-    `jobTitle`       varchar(50)  NOT NULL,
-    PRIMARY KEY (`employeeNumber`),
-    KEY `reportsTo` (`reportsTo`),
-    KEY `officeCode` (`officeCode`),
-    CONSTRAINT `employees_ibfk_1` FOREIGN KEY (`reportsTo`) REFERENCES `employees` (`employeeNumber`),
-    CONSTRAINT `employees_ibfk_2` FOREIGN KEY (`officeCode`) REFERENCES `offices` (`officeCode`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
 
 -- ----------------------------
 -- Records of employees
@@ -487,18 +563,6 @@ VALUES ('1625', 'Kato', 'Yoshimi', 'x102', 'ykato@gmail.com', '5', '1621', 'Sale
 INSERT INTO `employees`
 VALUES ('1702', 'Gerard', 'Martin', 'x2312', 'mgerard@gmail.com', '4', '1102', 'Sales Rep');
 
--- ----------------------------
--- Table structure for `items`
--- ----------------------------
-DROP TABLE IF EXISTS `items`;
-CREATE TABLE `items`
-(
-    `id`      int(11)      NOT NULL AUTO_INCREMENT,
-    `item_no` varchar(255) NOT NULL,
-    PRIMARY KEY (`id`)
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 10
-  DEFAULT CHARSET = utf8;
 
 -- ----------------------------
 -- Records of items
@@ -522,24 +586,6 @@ VALUES ('8', 'A-20');
 INSERT INTO `items`
 VALUES ('9', 'A-30');
 
--- ----------------------------
--- Table structure for `offices`
--- ----------------------------
-DROP TABLE IF EXISTS `offices`;
-CREATE TABLE `offices`
-(
-    `officeCode`   varchar(10) NOT NULL,
-    `city`         varchar(50) NOT NULL,
-    `phone`        varchar(50) NOT NULL,
-    `addressLine1` varchar(50) NOT NULL,
-    `addressLine2` varchar(50) DEFAULT NULL,
-    `state`        varchar(50) DEFAULT NULL,
-    `country`      varchar(50) NOT NULL,
-    `postalCode`   varchar(15) NOT NULL,
-    `territory`    varchar(10) NOT NULL,
-    PRIMARY KEY (`officeCode`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
 
 -- ----------------------------
 -- Records of offices
@@ -559,23 +605,6 @@ VALUES ('6', 'Sydney', '+61 2 9264 2451', '5-11 Wentworth Avenue', 'Floor #2', n
 INSERT INTO `offices`
 VALUES ('7', 'London', '+44 20 7877 2041', '25 Old Broad Street', 'Level 7', null, 'UK', 'EC2N 1HN', 'EMEA');
 
--- ----------------------------
--- Table structure for `orderdetails`
--- ----------------------------
-DROP TABLE IF EXISTS `orderdetails`;
-CREATE TABLE `orderdetails`
-(
-    `orderNumber`     int(11)        NOT NULL,
-    `productCode`     varchar(15)    NOT NULL,
-    `quantityOrdered` int(11)        NOT NULL,
-    `priceEach`       decimal(10, 2) NOT NULL,
-    `orderLineNumber` smallint(6)    NOT NULL,
-    PRIMARY KEY (`orderNumber`, `productCode`),
-    KEY `productCode` (`productCode`),
-    CONSTRAINT `orderdetails_ibfk_1` FOREIGN KEY (`orderNumber`) REFERENCES `orders` (`orderNumber`),
-    CONSTRAINT `orderdetails_ibfk_2` FOREIGN KEY (`productCode`) REFERENCES `products` (`productCode`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
 
 -- ----------------------------
 -- Records of orderdetails
@@ -6573,24 +6602,6 @@ VALUES ('10425', 'S32_2509', '11', '50.32', '6');
 INSERT INTO `orderdetails`
 VALUES ('10425', 'S50_1392', '18', '94.92', '2');
 
--- ----------------------------
--- Table structure for `orders`
--- ----------------------------
-DROP TABLE IF EXISTS `orders`;
-CREATE TABLE `orders`
-(
-    `orderNumber`    int(11)     NOT NULL,
-    `orderDate`      date        NOT NULL,
-    `requiredDate`   date        NOT NULL,
-    `shippedDate`    date DEFAULT NULL,
-    `status`         varchar(15) NOT NULL,
-    `comments`       text,
-    `customerNumber` int(11)     NOT NULL,
-    PRIMARY KEY (`orderNumber`),
-    KEY `customerNumber` (`customerNumber`),
-    CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`customerNumber`) REFERENCES `customers` (`customerNumber`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
 
 -- ----------------------------
 -- Records of orders
@@ -6610,12 +6621,14 @@ VALUES ('10105', '2013-02-11', '2013-02-21', '2013-02-12', 'Shipped', null, '145
 INSERT INTO `orders`
 VALUES ('10106', '2013-02-17', '2013-02-24', '2013-02-21', 'Shipped', null, '278');
 INSERT INTO `orders`
-VALUES ('10107', '2013-02-24', '2013-03-03', '2013-02-26', 'Shipped', 'Difficult to negotiate with customer. We need more marketing materials',
+VALUES ('10107', '2013-02-24', '2013-03-03', '2013-02-26', 'Shipped',
+        'Difficult to negotiate with customer. We need more marketing materials',
         '131');
 INSERT INTO `orders`
 VALUES ('10108', '2013-03-03', '2013-03-12', '2013-03-08', 'Shipped', null, '385');
 INSERT INTO `orders`
-VALUES ('10109', '2013-03-10', '2013-03-19', '2013-03-11', 'Shipped', 'Customer requested that FedEx Ground is used for this shipping', '486');
+VALUES ('10109', '2013-03-10', '2013-03-19', '2013-03-11', 'Shipped',
+        'Customer requested that FedEx Ground is used for this shipping', '486');
 INSERT INTO `orders`
 VALUES ('10110', '2013-03-18', '2013-03-24', '2013-03-20', 'Shipped', null, '187');
 INSERT INTO `orders`
@@ -6674,7 +6687,8 @@ VALUES ('10134', '2013-07-01', '2013-07-10', '2013-07-05', 'Shipped', null, '250
 INSERT INTO `orders`
 VALUES ('10135', '2013-07-02', '2013-07-12', '2013-07-03', 'Shipped', null, '124');
 INSERT INTO `orders`
-VALUES ('10136', '2013-07-04', '2013-07-14', '2013-07-06', 'Shipped', 'Customer is interested in buying more Ferrari models', '242');
+VALUES ('10136', '2013-07-04', '2013-07-14', '2013-07-06', 'Shipped',
+        'Customer is interested in buying more Ferrari models', '242');
 INSERT INTO `orders`
 VALUES ('10137', '2013-07-10', '2013-07-20', '2013-07-14', 'Shipped', null, '353');
 INSERT INTO `orders`
@@ -6688,7 +6702,8 @@ VALUES ('10141', '2013-08-01', '2013-08-09', '2013-08-04', 'Shipped', null, '334
 INSERT INTO `orders`
 VALUES ('10142', '2013-08-08', '2013-08-16', '2013-08-13', 'Shipped', null, '124');
 INSERT INTO `orders`
-VALUES ('10143', '2013-08-10', '2013-08-18', '2013-08-12', 'Shipped', 'Can we deliver the new Ford Mustang models by end-of-quarter?', '320');
+VALUES ('10143', '2013-08-10', '2013-08-18', '2013-08-12', 'Shipped',
+        'Can we deliver the new Ford Mustang models by end-of-quarter?', '320');
 INSERT INTO `orders`
 VALUES ('10144', '2013-08-13', '2013-08-21', '2013-08-14', 'Shipped', null, '381');
 INSERT INTO `orders`
@@ -6698,11 +6713,13 @@ VALUES ('10146', '2013-09-03', '2013-09-13', '2013-09-06', 'Shipped', null, '447
 INSERT INTO `orders`
 VALUES ('10147', '2013-09-05', '2013-09-12', '2013-09-09', 'Shipped', null, '379');
 INSERT INTO `orders`
-VALUES ('10148', '2013-09-11', '2013-09-21', '2013-09-15', 'Shipped', 'They want to reevaluate their terms agreement with Finance.', '276');
+VALUES ('10148', '2013-09-11', '2013-09-21', '2013-09-15', 'Shipped',
+        'They want to reevaluate their terms agreement with Finance.', '276');
 INSERT INTO `orders`
 VALUES ('10149', '2013-09-12', '2013-09-18', '2013-09-17', 'Shipped', null, '487');
 INSERT INTO `orders`
-VALUES ('10150', '2013-09-19', '2013-09-27', '2013-09-21', 'Shipped', 'They want to reevaluate their terms agreement with Finance.', '148');
+VALUES ('10150', '2013-09-19', '2013-09-27', '2013-09-21', 'Shipped',
+        'They want to reevaluate their terms agreement with Finance.', '148');
 INSERT INTO `orders`
 VALUES ('10151', '2013-09-21', '2013-09-30', '2013-09-24', 'Shipped', null, '311');
 INSERT INTO `orders`
@@ -6731,10 +6748,12 @@ INSERT INTO `orders`
 VALUES ('10163', '2013-10-20', '2013-10-27', '2013-10-24', 'Shipped', null, '424');
 INSERT INTO `orders`
 VALUES ('10164', '2013-10-21', '2013-10-30', '2013-10-23', 'Resolved',
-        'This order was disputed, but resolved on 11/1/2003; Customer doesn\'t like the colors and precision of the models.', '452');
+        'This order was disputed, but resolved on 11/1/2003; Customer doesn\'t like the colors and precision of the models.',
+        '452');
 INSERT INTO `orders`
 VALUES ('10165', '2013-10-22', '2013-10-31', '2013-12-26', 'Shipped',
-        'This order was on hold because customers\'s credit limit had been exceeded. Order will ship when payment is received', '148');
+        'This order was on hold because customers\'s credit limit had been exceeded. Order will ship when payment is received',
+        '148');
 INSERT INTO `orders`
 VALUES ('10166', '2013-10-21', '2013-10-30', '2013-10-27', 'Shipped', null, '462');
 INSERT INTO `orders`
@@ -6764,7 +6783,8 @@ VALUES ('10176', '2013-11-06', '2013-11-15', '2013-11-12', 'Shipped', null, '386
 INSERT INTO `orders`
 VALUES ('10177', '2013-11-07', '2013-11-17', '2013-11-12', 'Shipped', null, '344');
 INSERT INTO `orders`
-VALUES ('10178', '2013-11-08', '2013-11-16', '2013-11-10', 'Shipped', 'Custom shipping instructions sent to warehouse', '242');
+VALUES ('10178', '2013-11-08', '2013-11-16', '2013-11-10', 'Shipped', 'Custom shipping instructions sent to warehouse',
+        '242');
 INSERT INTO `orders`
 VALUES ('10179', '2013-11-11', '2013-11-17', '2013-11-13', 'Cancelled',
         'Customer cancelled due to urgent budgeting issues. Must be cautious when dealing with them in the future. Since order shipped already we must discuss who would cover the shipping charges.',
@@ -6777,19 +6797,22 @@ INSERT INTO `orders`
 VALUES ('10182', '2013-11-12', '2013-11-21', '2013-11-18', 'Shipped', null, '124');
 INSERT INTO `orders`
 VALUES ('10183', '2013-11-13', '2013-11-22', '2013-11-15', 'Shipped',
-        'We need to keep in close contact with their Marketing VP. He is the decision maker for all their purchases.', '339');
+        'We need to keep in close contact with their Marketing VP. He is the decision maker for all their purchases.',
+        '339');
 INSERT INTO `orders`
 VALUES ('10184', '2013-11-14', '2013-11-22', '2013-11-20', 'Shipped', null, '484');
 INSERT INTO `orders`
 VALUES ('10185', '2013-11-14', '2013-11-21', '2013-11-20', 'Shipped', null, '320');
 INSERT INTO `orders`
-VALUES ('10186', '2013-11-14', '2013-11-20', '2013-11-18', 'Shipped', 'They want to reevaluate their terms agreement with the VP of Sales', '489');
+VALUES ('10186', '2013-11-14', '2013-11-20', '2013-11-18', 'Shipped',
+        'They want to reevaluate their terms agreement with the VP of Sales', '489');
 INSERT INTO `orders`
 VALUES ('10187', '2013-11-15', '2013-11-24', '2013-11-16', 'Shipped', null, '211');
 INSERT INTO `orders`
 VALUES ('10188', '2013-11-18', '2013-11-26', '2013-11-24', 'Shipped', null, '167');
 INSERT INTO `orders`
-VALUES ('10189', '2013-11-18', '2013-11-25', '2013-11-24', 'Shipped', 'They want to reevaluate their terms agreement with Finance.', '205');
+VALUES ('10189', '2013-11-18', '2013-11-25', '2013-11-24', 'Shipped',
+        'They want to reevaluate their terms agreement with Finance.', '205');
 INSERT INTO `orders`
 VALUES ('10190', '2013-11-19', '2013-11-29', '2013-11-20', 'Shipped', null, '141');
 INSERT INTO `orders`
@@ -6806,7 +6829,8 @@ VALUES ('10195', '2013-11-25', '2013-12-01', '2013-11-28', 'Shipped', null, '319
 INSERT INTO `orders`
 VALUES ('10196', '2013-11-26', '2013-12-03', '2013-12-01', 'Shipped', null, '455');
 INSERT INTO `orders`
-VALUES ('10197', '2013-11-26', '2013-12-02', '2013-12-01', 'Shipped', 'Customer inquired about remote controlled models and gold models.', '216');
+VALUES ('10197', '2013-11-26', '2013-12-02', '2013-12-01', 'Shipped',
+        'Customer inquired about remote controlled models and gold models.', '216');
 INSERT INTO `orders`
 VALUES ('10198', '2013-11-27', '2013-12-06', '2013-12-03', 'Shipped', null, '385');
 INSERT INTO `orders`
@@ -6822,7 +6846,8 @@ VALUES ('10203', '2013-12-02', '2013-12-11', '2013-12-07', 'Shipped', null, '141
 INSERT INTO `orders`
 VALUES ('10204', '2013-12-02', '2013-12-10', '2013-12-04', 'Shipped', null, '151');
 INSERT INTO `orders`
-VALUES ('10205', '2013-12-03', '2013-12-09', '2013-12-07', 'Shipped', ' I need all the information I can get on our competitors.', '141');
+VALUES ('10205', '2013-12-03', '2013-12-09', '2013-12-07', 'Shipped',
+        ' I need all the information I can get on our competitors.', '141');
 INSERT INTO `orders`
 VALUES ('10206', '2013-12-05', '2013-12-13', '2013-12-08', 'Shipped', 'Can we renegotiate this one?', '202');
 INSERT INTO `orders`
@@ -6838,12 +6863,14 @@ VALUES ('10211', '2014-01-15', '2014-01-25', '2014-01-18', 'Shipped', null, '406
 INSERT INTO `orders`
 VALUES ('10212', '2014-01-16', '2014-01-24', '2014-01-18', 'Shipped', null, '141');
 INSERT INTO `orders`
-VALUES ('10213', '2014-01-22', '2014-01-28', '2014-01-27', 'Shipped', 'Difficult to negotiate with customer. We need more marketing materials',
+VALUES ('10213', '2014-01-22', '2014-01-28', '2014-01-27', 'Shipped',
+        'Difficult to negotiate with customer. We need more marketing materials',
         '489');
 INSERT INTO `orders`
 VALUES ('10214', '2014-01-26', '2014-02-04', '2014-01-29', 'Shipped', null, '458');
 INSERT INTO `orders`
-VALUES ('10215', '2014-01-29', '2014-02-08', '2014-02-01', 'Shipped', 'Customer requested that FedEx Ground is used for this shipping', '475');
+VALUES ('10215', '2014-01-29', '2014-02-08', '2014-02-01', 'Shipped',
+        'Customer requested that FedEx Ground is used for this shipping', '475');
 INSERT INTO `orders`
 VALUES ('10216', '2014-02-02', '2014-02-10', '2014-02-04', 'Shipped', null, '256');
 INSERT INTO `orders`
@@ -6902,7 +6929,8 @@ VALUES ('10240', '2014-04-13', '2014-04-20', '2014-04-20', 'Shipped', null, '177
 INSERT INTO `orders`
 VALUES ('10241', '2014-04-13', '2014-04-20', '2014-04-19', 'Shipped', null, '209');
 INSERT INTO `orders`
-VALUES ('10242', '2014-04-20', '2014-04-28', '2014-04-25', 'Shipped', 'Customer is interested in buying more Ferrari models', '456');
+VALUES ('10242', '2014-04-20', '2014-04-28', '2014-04-25', 'Shipped',
+        'Customer is interested in buying more Ferrari models', '456');
 INSERT INTO `orders`
 VALUES ('10243', '2014-04-26', '2014-05-03', '2014-04-28', 'Shipped', null, '495');
 INSERT INTO `orders`
@@ -6914,10 +6942,12 @@ VALUES ('10246', '2014-05-05', '2014-05-13', '2014-05-06', 'Shipped', null, '141
 INSERT INTO `orders`
 VALUES ('10247', '2014-05-05', '2014-05-11', '2014-05-08', 'Shipped', null, '334');
 INSERT INTO `orders`
-VALUES ('10248', '2014-05-07', '2014-05-14', null, 'Cancelled', 'Order was mistakenly placed. The warehouse noticed the lack of documentation.',
+VALUES ('10248', '2014-05-07', '2014-05-14', null, 'Cancelled',
+        'Order was mistakenly placed. The warehouse noticed the lack of documentation.',
         '131');
 INSERT INTO `orders`
-VALUES ('10249', '2014-05-08', '2014-05-17', '2014-05-11', 'Shipped', 'Can we deliver the new Ford Mustang models by end-of-quarter?', '173');
+VALUES ('10249', '2014-05-08', '2014-05-17', '2014-05-11', 'Shipped',
+        'Can we deliver the new Ford Mustang models by end-of-quarter?', '173');
 INSERT INTO `orders`
 VALUES ('10250', '2014-05-11', '2014-05-19', '2014-05-15', 'Shipped', null, '450');
 INSERT INTO `orders`
@@ -6929,7 +6959,8 @@ VALUES ('10253', '2014-06-01', '2014-06-09', '2014-06-02', 'Cancelled',
         'Customer disputed the order and we agreed to cancel it. We must be more cautions with this customer going forward, since they are very hard to please. We must cover the shipping fees.',
         '201');
 INSERT INTO `orders`
-VALUES ('10254', '2014-06-03', '2014-06-13', '2014-06-04', 'Shipped', 'Customer requested that DHL is used for this shipping', '323');
+VALUES ('10254', '2014-06-03', '2014-06-13', '2014-06-04', 'Shipped',
+        'Customer requested that DHL is used for this shipping', '323');
 INSERT INTO `orders`
 VALUES ('10255', '2014-06-04', '2014-06-12', '2014-06-09', 'Shipped', null, '209');
 INSERT INTO `orders`
@@ -6942,7 +6973,8 @@ INSERT INTO `orders`
 VALUES ('10259', '2014-06-15', '2014-06-22', '2014-06-17', 'Shipped', null, '166');
 INSERT INTO `orders`
 VALUES ('10260', '2014-06-16', '2014-06-22', null, 'Cancelled',
-        'Customer heard complaints from their customers and called to cancel this order. Will notify the Sales Manager.', '357');
+        'Customer heard complaints from their customers and called to cancel this order. Will notify the Sales Manager.',
+        '357');
 INSERT INTO `orders`
 VALUES ('10261', '2014-06-17', '2014-06-25', '2014-06-22', 'Shipped', null, '233');
 INSERT INTO `orders`
@@ -6951,7 +6983,8 @@ VALUES ('10262', '2014-06-24', '2014-07-01', null, 'Cancelled',
 INSERT INTO `orders`
 VALUES ('10263', '2014-06-28', '2014-07-04', '2014-07-02', 'Shipped', null, '175');
 INSERT INTO `orders`
-VALUES ('10264', '2014-06-30', '2014-07-06', '2014-07-01', 'Shipped', 'Customer will send a truck to our local warehouse on 7/1/2004', '362');
+VALUES ('10264', '2014-06-30', '2014-07-06', '2014-07-01', 'Shipped',
+        'Customer will send a truck to our local warehouse on 7/1/2004', '362');
 INSERT INTO `orders`
 VALUES ('10265', '2014-07-02', '2014-07-09', '2014-07-07', 'Shipped', null, '471');
 INSERT INTO `orders`
@@ -6993,7 +7026,8 @@ VALUES ('10282', '2014-08-20', '2014-08-26', '2014-08-22', 'Shipped', null, '124
 INSERT INTO `orders`
 VALUES ('10283', '2014-08-20', '2014-08-30', '2014-08-23', 'Shipped', null, '260');
 INSERT INTO `orders`
-VALUES ('10284', '2014-08-21', '2014-08-29', '2014-08-26', 'Shipped', 'Custom shipping instructions sent to warehouse', '299');
+VALUES ('10284', '2014-08-21', '2014-08-29', '2014-08-26', 'Shipped', 'Custom shipping instructions sent to warehouse',
+        '299');
 INSERT INTO `orders`
 VALUES ('10285', '2014-08-27', '2014-09-04', '2014-08-31', 'Shipped', null, '286');
 INSERT INTO `orders`
@@ -7004,19 +7038,22 @@ INSERT INTO `orders`
 VALUES ('10288', '2014-09-01', '2014-09-11', '2014-09-05', 'Shipped', null, '166');
 INSERT INTO `orders`
 VALUES ('10289', '2014-09-03', '2014-09-13', '2014-09-04', 'Shipped',
-        'We need to keep in close contact with their Marketing VP. He is the decision maker for all their purchases.', '167');
+        'We need to keep in close contact with their Marketing VP. He is the decision maker for all their purchases.',
+        '167');
 INSERT INTO `orders`
 VALUES ('10290', '2014-09-07', '2014-09-15', '2014-09-13', 'Shipped', null, '198');
 INSERT INTO `orders`
 VALUES ('10291', '2014-09-08', '2014-09-17', '2014-09-14', 'Shipped', null, '448');
 INSERT INTO `orders`
-VALUES ('10292', '2014-09-08', '2014-09-18', '2014-09-11', 'Shipped', 'They want to reevaluate their terms agreement with Finance.', '131');
+VALUES ('10292', '2014-09-08', '2014-09-18', '2014-09-11', 'Shipped',
+        'They want to reevaluate their terms agreement with Finance.', '131');
 INSERT INTO `orders`
 VALUES ('10293', '2014-09-09', '2014-09-18', '2014-09-14', 'Shipped', null, '249');
 INSERT INTO `orders`
 VALUES ('10294', '2014-09-10', '2014-09-17', '2014-09-14', 'Shipped', null, '204');
 INSERT INTO `orders`
-VALUES ('10295', '2014-09-10', '2014-09-17', '2014-09-14', 'Shipped', 'They want to reevaluate their terms agreement with Finance.', '362');
+VALUES ('10295', '2014-09-10', '2014-09-17', '2014-09-14', 'Shipped',
+        'They want to reevaluate their terms agreement with Finance.', '362');
 INSERT INTO `orders`
 VALUES ('10296', '2014-09-15', '2014-09-22', '2014-09-16', 'Shipped', null, '415');
 INSERT INTO `orders`
@@ -7033,7 +7070,8 @@ VALUES ('10301', '2013-10-05', '2013-10-15', '2013-10-08', 'Shipped', null, '299
 INSERT INTO `orders`
 VALUES ('10302', '2013-10-06', '2013-10-16', '2013-10-07', 'Shipped', null, '201');
 INSERT INTO `orders`
-VALUES ('10303', '2014-10-06', '2014-10-14', '2014-10-09', 'Shipped', 'Customer inquired about remote controlled models and gold models.', '484');
+VALUES ('10303', '2014-10-06', '2014-10-14', '2014-10-09', 'Shipped',
+        'Customer inquired about remote controlled models and gold models.', '484');
 INSERT INTO `orders`
 VALUES ('10304', '2014-10-11', '2014-10-20', '2014-10-17', 'Shipped', null, '256');
 INSERT INTO `orders`
@@ -7043,18 +7081,21 @@ VALUES ('10306', '2014-10-14', '2014-10-21', '2014-10-17', 'Shipped', null, '187
 INSERT INTO `orders`
 VALUES ('10307', '2014-10-14', '2014-10-23', '2014-10-20', 'Shipped', null, '339');
 INSERT INTO `orders`
-VALUES ('10308', '2014-10-15', '2014-10-24', '2014-10-20', 'Shipped', 'Customer requested that FedEx Ground is used for this shipping', '319');
+VALUES ('10308', '2014-10-15', '2014-10-24', '2014-10-20', 'Shipped',
+        'Customer requested that FedEx Ground is used for this shipping', '319');
 INSERT INTO `orders`
 VALUES ('10309', '2014-10-15', '2014-10-24', '2014-10-18', 'Shipped', null, '121');
 INSERT INTO `orders`
 VALUES ('10310', '2014-10-16', '2014-10-24', '2014-10-18', 'Shipped', null, '259');
 INSERT INTO `orders`
-VALUES ('10311', '2014-10-16', '2014-10-23', '2014-10-20', 'Shipped', 'Difficult to negotiate with customer. We need more marketing materials',
+VALUES ('10311', '2014-10-16', '2014-10-23', '2014-10-20', 'Shipped',
+        'Difficult to negotiate with customer. We need more marketing materials',
         '141');
 INSERT INTO `orders`
 VALUES ('10312', '2014-10-21', '2014-10-27', '2014-10-23', 'Shipped', null, '124');
 INSERT INTO `orders`
-VALUES ('10313', '2014-10-22', '2014-10-28', '2014-10-25', 'Shipped', 'Customer requested that FedEx Ground is used for this shipping', '202');
+VALUES ('10313', '2014-10-22', '2014-10-28', '2014-10-25', 'Shipped',
+        'Customer requested that FedEx Ground is used for this shipping', '202');
 INSERT INTO `orders`
 VALUES ('10314', '2014-10-22', '2014-11-01', '2014-10-23', 'Shipped', null, '227');
 INSERT INTO `orders`
@@ -7067,7 +7108,8 @@ VALUES ('10317', '2014-11-02', '2014-11-12', '2014-11-08', 'Shipped', null, '161
 INSERT INTO `orders`
 VALUES ('10318', '2014-11-02', '2014-11-09', '2014-11-07', 'Shipped', null, '157');
 INSERT INTO `orders`
-VALUES ('10319', '2014-11-03', '2014-11-11', '2014-11-06', 'Shipped', 'Customer requested that DHL is used for this shipping', '456');
+VALUES ('10319', '2014-11-03', '2014-11-11', '2014-11-06', 'Shipped',
+        'Customer requested that DHL is used for this shipping', '456');
 INSERT INTO `orders`
 VALUES ('10320', '2014-11-03', '2014-11-13', '2014-11-07', 'Shipped', null, '144');
 INSERT INTO `orders`
@@ -7104,11 +7146,13 @@ INSERT INTO `orders`
 VALUES ('10333', '2014-11-18', '2014-11-27', '2014-11-20', 'Shipped', null, '129');
 INSERT INTO `orders`
 VALUES ('10334', '2014-11-19', '2014-11-28', null, 'On Hold',
-        'The outstaniding balance for this customer exceeds their credit limit. Order will be shipped when a payment is received.', '144');
+        'The outstaniding balance for this customer exceeds their credit limit. Order will be shipped when a payment is received.',
+        '144');
 INSERT INTO `orders`
 VALUES ('10335', '2014-11-19', '2014-11-29', '2014-11-23', 'Shipped', null, '124');
 INSERT INTO `orders`
-VALUES ('10336', '2014-11-20', '2014-11-26', '2014-11-24', 'Shipped', 'Customer requested that DHL is used for this shipping', '172');
+VALUES ('10336', '2014-11-20', '2014-11-26', '2014-11-24', 'Shipped',
+        'Customer requested that DHL is used for this shipping', '172');
 INSERT INTO `orders`
 VALUES ('10337', '2014-11-21', '2014-11-30', '2014-11-26', 'Shipped', null, '424');
 INSERT INTO `orders`
@@ -7116,7 +7160,8 @@ VALUES ('10338', '2014-11-22', '2014-12-02', '2014-11-27', 'Shipped', null, '381
 INSERT INTO `orders`
 VALUES ('10339', '2014-11-23', '2014-11-30', '2014-11-30', 'Shipped', null, '398');
 INSERT INTO `orders`
-VALUES ('10340', '2014-11-24', '2014-12-01', '2014-11-25', 'Shipped', 'Customer is interested in buying more Ferrari models', '216');
+VALUES ('10340', '2014-11-24', '2014-12-01', '2014-11-25', 'Shipped',
+        'Customer is interested in buying more Ferrari models', '216');
 INSERT INTO `orders`
 VALUES ('10341', '2014-11-24', '2014-12-01', '2014-11-29', 'Shipped', null, '382');
 INSERT INTO `orders`
@@ -7130,7 +7175,8 @@ VALUES ('10345', '2014-11-25', '2014-12-01', '2014-11-26', 'Shipped', null, '103
 INSERT INTO `orders`
 VALUES ('10346', '2014-11-29', '2014-12-05', '2014-11-30', 'Shipped', null, '112');
 INSERT INTO `orders`
-VALUES ('10347', '2014-11-29', '2014-12-07', '2014-11-30', 'Shipped', 'Can we deliver the new Ford Mustang models by end-of-quarter?', '114');
+VALUES ('10347', '2014-11-29', '2014-12-07', '2014-11-30', 'Shipped',
+        'Can we deliver the new Ford Mustang models by end-of-quarter?', '114');
 INSERT INTO `orders`
 VALUES ('10348', '2014-11-01', '2014-11-08', '2014-11-05', 'Shipped', null, '458');
 INSERT INTO `orders`
@@ -7152,7 +7198,8 @@ VALUES ('10356', '2014-12-09', '2014-12-15', '2014-12-12', 'Shipped', null, '250
 INSERT INTO `orders`
 VALUES ('10357', '2014-12-10', '2014-12-16', '2014-12-14', 'Shipped', null, '124');
 INSERT INTO `orders`
-VALUES ('10358', '2014-12-10', '2014-12-16', '2014-12-16', 'Shipped', 'Customer requested that DHL is used for this shipping', '141');
+VALUES ('10358', '2014-12-10', '2014-12-16', '2014-12-16', 'Shipped',
+        'Customer requested that DHL is used for this shipping', '141');
 INSERT INTO `orders`
 VALUES ('10359', '2014-12-15', '2014-12-23', '2014-12-18', 'Shipped', null, '353');
 INSERT INTO `orders`
@@ -7204,7 +7251,8 @@ VALUES ('10380', '2015-02-16', '2015-02-24', '2015-02-18', 'Shipped', null, '141
 INSERT INTO `orders`
 VALUES ('10381', '2015-02-17', '2015-02-25', '2015-02-18', 'Shipped', null, '321');
 INSERT INTO `orders`
-VALUES ('10382', '2015-02-17', '2015-02-23', '2015-02-18', 'Shipped', 'Custom shipping instructions sent to warehouse', '124');
+VALUES ('10382', '2015-02-17', '2015-02-23', '2015-02-18', 'Shipped', 'Custom shipping instructions sent to warehouse',
+        '124');
 INSERT INTO `orders`
 VALUES ('10383', '2015-02-22', '2015-03-02', '2015-02-25', 'Shipped', null, '141');
 INSERT INTO `orders`
@@ -7216,19 +7264,22 @@ VALUES ('10386', '2015-03-01', '2015-03-09', '2015-03-06', 'Resolved',
         'Disputed then Resolved on 3/15/2005. Customer doesn\'t like the craftsmaship of the models.', '141');
 INSERT INTO `orders`
 VALUES ('10387', '2015-03-02', '2015-03-09', '2015-03-06', 'Shipped',
-        'We need to keep in close contact with their Marketing VP. He is the decision maker for all their purchases.', '148');
+        'We need to keep in close contact with their Marketing VP. He is the decision maker for all their purchases.',
+        '148');
 INSERT INTO `orders`
 VALUES ('10388', '2015-03-03', '2015-03-11', '2015-03-09', 'Shipped', null, '462');
 INSERT INTO `orders`
 VALUES ('10389', '2015-03-03', '2015-03-09', '2015-03-08', 'Shipped', null, '448');
 INSERT INTO `orders`
-VALUES ('10390', '2015-03-04', '2015-03-11', '2015-03-07', 'Shipped', 'They want to reevaluate their terms agreement with Finance.', '124');
+VALUES ('10390', '2015-03-04', '2015-03-11', '2015-03-07', 'Shipped',
+        'They want to reevaluate their terms agreement with Finance.', '124');
 INSERT INTO `orders`
 VALUES ('10391', '2015-03-09', '2015-03-20', '2015-03-15', 'Shipped', null, '276');
 INSERT INTO `orders`
 VALUES ('10392', '2015-03-10', '2015-03-18', '2015-03-12', 'Shipped', null, '452');
 INSERT INTO `orders`
-VALUES ('10393', '2015-03-11', '2015-03-22', '2015-03-14', 'Shipped', 'They want to reevaluate their terms agreement with Finance.', '323');
+VALUES ('10393', '2015-03-11', '2015-03-22', '2015-03-14', 'Shipped',
+        'They want to reevaluate their terms agreement with Finance.', '323');
 INSERT INTO `orders`
 VALUES ('10394', '2015-03-15', '2015-03-25', '2015-03-19', 'Shipped', null, '141');
 INSERT INTO `orders`
@@ -7243,9 +7294,11 @@ VALUES ('10398', '2015-03-30', '2015-04-09', '2015-03-31', 'Shipped', null, '353
 INSERT INTO `orders`
 VALUES ('10399', '2015-04-01', '2015-04-12', '2015-04-03', 'Shipped', null, '496');
 INSERT INTO `orders`
-VALUES ('10400', '2015-04-01', '2015-04-11', '2015-04-04', 'Shipped', 'Customer requested that DHL is used for this shipping', '450');
+VALUES ('10400', '2015-04-01', '2015-04-11', '2015-04-04', 'Shipped',
+        'Customer requested that DHL is used for this shipping', '450');
 INSERT INTO `orders`
-VALUES ('10401', '2015-04-03', '2015-04-14', null, 'On Hold', 'Customer credit limit exceeded. Will ship when a payment is received.', '328');
+VALUES ('10401', '2015-04-03', '2015-04-14', null, 'On Hold',
+        'Customer credit limit exceeded. Will ship when a payment is received.', '328');
 INSERT INTO `orders`
 VALUES ('10402', '2015-04-07', '2015-04-14', '2015-04-12', 'Shipped', null, '406');
 INSERT INTO `orders`
@@ -7256,9 +7309,11 @@ INSERT INTO `orders`
 VALUES ('10405', '2015-04-14', '2015-04-24', '2015-04-20', 'Shipped', null, '209');
 INSERT INTO `orders`
 VALUES ('10406', '2015-04-15', '2015-04-25', '2015-04-21', 'Disputed',
-        'Customer claims container with shipment was damaged during shipping and some items were missing. I am talking to FedEx about this.', '145');
+        'Customer claims container with shipment was damaged during shipping and some items were missing. I am talking to FedEx about this.',
+        '145');
 INSERT INTO `orders`
-VALUES ('10407', '2015-04-22', '2015-05-04', null, 'On Hold', 'Customer credit limit exceeded. Will ship when a payment is received.', '450');
+VALUES ('10407', '2015-04-22', '2015-05-04', null, 'On Hold',
+        'Customer credit limit exceeded. Will ship when a payment is received.', '450');
 INSERT INTO `orders`
 VALUES ('10408', '2015-04-22', '2015-04-29', '2015-04-27', 'Shipped', null, '398');
 INSERT INTO `orders`
@@ -7270,16 +7325,20 @@ VALUES ('10411', '2015-05-01', '2015-05-08', '2015-05-06', 'Shipped', null, '233
 INSERT INTO `orders`
 VALUES ('10412', '2015-05-03', '2015-05-13', '2015-05-05', 'Shipped', null, '141');
 INSERT INTO `orders`
-VALUES ('10413', '2015-05-05', '2015-05-14', '2015-05-09', 'Shipped', 'Customer requested that DHL is used for this shipping', '175');
+VALUES ('10413', '2015-05-05', '2015-05-14', '2015-05-09', 'Shipped',
+        'Customer requested that DHL is used for this shipping', '175');
 INSERT INTO `orders`
-VALUES ('10414', '2015-05-06', '2015-05-13', null, 'On Hold', 'Customer credit limit exceeded. Will ship when a payment is received.', '362');
+VALUES ('10414', '2015-05-06', '2015-05-13', null, 'On Hold',
+        'Customer credit limit exceeded. Will ship when a payment is received.', '362');
 INSERT INTO `orders`
 VALUES ('10415', '2015-05-09', '2015-05-20', '2015-05-12', 'Disputed',
-        'Customer claims the scales of the models don\'t match what was discussed. I keep all the paperwork though to prove otherwise', '471');
+        'Customer claims the scales of the models don\'t match what was discussed. I keep all the paperwork though to prove otherwise',
+        '471');
 INSERT INTO `orders`
 VALUES ('10416', '2015-05-10', '2015-05-16', '2015-05-14', 'Shipped', null, '386');
 INSERT INTO `orders`
-VALUES ('10417', '2015-05-13', '2015-05-19', '2015-05-19', 'Disputed', 'Customer doesn\'t like the colors and precision of the models.', '141');
+VALUES ('10417', '2015-05-13', '2015-05-19', '2015-05-19', 'Disputed',
+        'Customer doesn\'t like the colors and precision of the models.', '141');
 INSERT INTO `orders`
 VALUES ('10418', '2015-05-16', '2015-05-24', '2015-05-20', 'Shipped', null, '412');
 INSERT INTO `orders`
@@ -7287,7 +7346,8 @@ VALUES ('10419', '2015-05-17', '2015-05-28', '2015-05-19', 'Shipped', null, '382
 INSERT INTO `orders`
 VALUES ('10420', '2015-05-29', '2015-06-07', null, 'In Process', null, '282');
 INSERT INTO `orders`
-VALUES ('10421', '2015-05-29', '2015-06-06', null, 'In Process', 'Custom shipping instructions were sent to warehouse', '124');
+VALUES ('10421', '2015-05-29', '2015-06-06', null, 'In Process', 'Custom shipping instructions were sent to warehouse',
+        '124');
 INSERT INTO `orders`
 VALUES ('10422', '2015-05-30', '2015-06-11', null, 'In Process', null, '157');
 INSERT INTO `orders`
@@ -7297,20 +7357,6 @@ VALUES ('10424', '2015-05-31', '2015-06-08', null, 'In Process', null, '141');
 INSERT INTO `orders`
 VALUES ('10425', '2015-05-31', '2015-06-07', null, 'In Process', null, '119');
 
--- ----------------------------
--- Table structure for `payments`
--- ----------------------------
-DROP TABLE IF EXISTS `payments`;
-CREATE TABLE `payments`
-(
-    `customerNumber` int(11)        NOT NULL,
-    `checkNumber`    varchar(50)    NOT NULL,
-    `paymentDate`    date           NOT NULL,
-    `amount`         decimal(10, 2) NOT NULL,
-    PRIMARY KEY (`customerNumber`, `checkNumber`),
-    CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`customerNumber`) REFERENCES `customers` (`customerNumber`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
 
 -- ----------------------------
 -- Records of payments
@@ -7862,19 +7908,6 @@ VALUES ('496', 'MB342426', '2013-07-16', '32077.44');
 INSERT INTO `payments`
 VALUES ('496', 'MN89921', '2014-12-31', '52166.00');
 
--- ----------------------------
--- Table structure for `productlines`
--- ----------------------------
-DROP TABLE IF EXISTS `productlines`;
-CREATE TABLE `productlines`
-(
-    `productLine`     varchar(50) NOT NULL,
-    `textDescription` varchar(4000) DEFAULT NULL,
-    `htmlDescription` mediumtext,
-    `image`           mediumblob,
-    PRIMARY KEY (`productLine`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
 
 -- ----------------------------
 -- Records of productlines
@@ -7908,26 +7941,6 @@ VALUES ('Vintage Cars',
         'Our Vintage Car models realistically portray automobiles produced from the early 1900s through the 1940s. Materials used include Bakelite, diecast, plastic and wood. Most of the replicas are in the 1:18 and 1:24 scale sizes, which provide the optimum in detail and accuracy. Prices range from $30.00 up to $180.00 for some special limited edition replicas. All models include a certificate of authenticity from their manufacturers and come fully assembled and ready for display in the home or office.',
         null, null);
 
--- ----------------------------
--- Table structure for `products`
--- ----------------------------
-DROP TABLE IF EXISTS `products`;
-CREATE TABLE `products`
-(
-    `productCode`        varchar(15)    NOT NULL DEFAULT '' COMMENT '产品代码',
-    `productName`        varchar(70)    NOT NULL COMMENT '产品名称',
-    `productLine`        varchar(50)    NOT NULL COMMENT '产品线',
-    `productScale`       varchar(10)    NOT NULL,
-    `productVendor`      varchar(50)    NOT NULL,
-    `productDescription` text           NOT NULL,
-    `quantityInStock`    smallint(6)    NOT NULL COMMENT '库存',
-    `buyPrice`           decimal(10, 2) NOT NULL COMMENT '价格',
-    `MSRP`               decimal(10, 2) NOT NULL COMMENT '建议零售价',
-    PRIMARY KEY (`productCode`),
-    KEY `productLine` (`productLine`),
-    CONSTRAINT `products_ibfk_1` FOREIGN KEY (`productLine`) REFERENCES `productlines` (`productLine`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
 
 -- ----------------------------
 -- Records of products
@@ -7966,14 +7979,16 @@ VALUES ('S12_1108', '2001 Ferrari Enzo', 'Classic Cars', '1:12', 'Second Gear Di
         '3619', '95.59', '207.80');
 INSERT INTO `products`
 VALUES ('S12_1666', '1958 Setra Bus', 'Trucks and Buses', '1:12', 'Welly Diecast Productions',
-        'Model features 30 windows, skylights & glare resistant glass, working steering system, original logos', '1579', '77.90', '136.67');
+        'Model features 30 windows, skylights & glare resistant glass, working steering system, original logos', '1579',
+        '77.90', '136.67');
 INSERT INTO `products`
 VALUES ('S12_2823', '2002 Suzuki XREO', 'Motorcycles', '1:12', 'Unimax Art Galleries',
         'Official logos and insignias, saddle bags located on side of motorcycle, detailed engine, working steering, working suspension, two leather seats, luggage rack, dual exhaust pipes, small saddle bag located on handle bars, two-tone paint with chrome accents, superior die-cast detail , rotating wheels , working kick stand, diecast metal with plastic parts and baked enamel finish.',
         '9997', '66.27', '150.62');
 INSERT INTO `products`
 VALUES ('S12_3148', '1969 Corvair Monza', 'Classic Cars', '1:18', 'Welly Diecast Productions',
-        '1:18 scale die-cast about 10\" long doors open, hood opens, trunk opens and wheels roll', '6906', '89.14', '151.08');
+        '1:18 scale die-cast about 10\" long doors open, hood opens, trunk opens and wheels roll', '6906', '89.14',
+        '151.08');
 INSERT INTO `products`
 VALUES ('S12_3380', '1968 Dodge Charger', 'Classic Cars', '1:12', 'Welly Diecast Productions',
         '1:12 scale model of a 1968 Dodge Charger. Hood, doors and trunk all open to reveal highly detailed interior features. Steering wheel actually turns the front wheels. Color black',
@@ -7987,7 +8002,8 @@ VALUES ('S12_3990', '1970 Plymouth Hemi Cuda', 'Classic Cars', '1:12', 'Studio M
         'Very detailed 1970 Plymouth Cuda model in 1:12 scale. The Cuda is generally accepted as one of the fastest original muscle cars from the 1970s. This model is a reproduction of one of the orginal 652 cars built in 1970. Red color.',
         '5663', '31.92', '79.80');
 INSERT INTO `products`
-VALUES ('S12_4473', '1957 Chevy Pickup', 'Trucks and Buses', '1:12', 'Exoto Designs', '1:12 scale die-cast about 20\" long Hood opens, Rubber wheels',
+VALUES ('S12_4473', '1957 Chevy Pickup', 'Trucks and Buses', '1:12', 'Exoto Designs',
+        '1:12 scale die-cast about 20\" long Hood opens, Rubber wheels',
         '6125', '55.70', '118.50');
 INSERT INTO `products`
 VALUES ('S12_4675', '1969 Dodge Charger', 'Classic Cars', '1:12', 'Welly Diecast Productions',
@@ -8034,7 +8050,8 @@ VALUES ('S18_2238', '1998 Chrysler Plymouth Prowler', 'Classic Cars', '1:18', 'G
         '4724', '101.51', '163.73');
 INSERT INTO `products`
 VALUES ('S18_2248', '1911 Ford Town Car', 'Vintage Cars', '1:18', 'Motor City Art Classics',
-        'Features opening hood, opening doors, opening trunk, wide white wall tires, front door arm rests, working steering system.', '540', '33.30',
+        'Features opening hood, opening doors, opening trunk, wide white wall tires, front door arm rests, working steering system.',
+        '540', '33.30',
         '60.54');
 INSERT INTO `products`
 VALUES ('S18_2319', '1964 Mercedes Tour Bus', 'Trucks and Buses', '1:18', 'Unimax Art Galleries',
@@ -8045,14 +8062,17 @@ VALUES ('S18_2325', '1932 Model A Ford J-Coupe', 'Vintage Cars', '1:18', 'Autoar
         '9354', '58.48', '127.13');
 INSERT INTO `products`
 VALUES ('S18_2432', '1926 Ford Fire Engine', 'Trucks and Buses', '1:18', 'Carousel DieCast Legends',
-        'Gleaming red handsome appearance. Everything is here the fire hoses, ladder, axes, bells, lanterns, ready to fight any inferno.', '2018',
+        'Gleaming red handsome appearance. Everything is here the fire hoses, ladder, axes, bells, lanterns, ready to fight any inferno.',
+        '2018',
         '24.92', '60.77');
 INSERT INTO `products`
-VALUES ('S18_2581', 'P-51-D Mustang', 'Planes', '1:72', 'Gearbox Collectibles', 'Has retractable wheels and comes with a stand', '992', '49.00',
+VALUES ('S18_2581', 'P-51-D Mustang', 'Planes', '1:72', 'Gearbox Collectibles',
+        'Has retractable wheels and comes with a stand', '992', '49.00',
         '84.48');
 INSERT INTO `products`
 VALUES ('S18_2625', '1936 Harley Davidson El Knucklehead', 'Motorcycles', '1:18', 'Welly Diecast Productions',
-        'Intricately detailed with chrome accents and trim, official die-struck logos and baked enamel finish.', '4357', '24.23', '60.57');
+        'Intricately detailed with chrome accents and trim, official die-struck logos and baked enamel finish.', '4357',
+        '24.23', '60.57');
 INSERT INTO `products`
 VALUES ('S18_2795', '1928 Mercedes-Benz SSK', 'Vintage Cars', '1:18', 'Gearbox Collectibles',
         'This 1:18 replica features grille-mounted chrome horn, lift-up louvered hood, fold-down rumble seat, working steering system, chrome-covered spare, opening doors, detailed and wired engine. Color black.',
@@ -8066,7 +8086,8 @@ VALUES ('S18_2949', '1913 Ford Model T Speedster', 'Vintage Cars', '1:18', 'Caro
         '4189', '60.78', '101.31');
 INSERT INTO `products`
 VALUES ('S18_2957', '1934 Ford V8 Coupe', 'Vintage Cars', '1:18', 'Min Lin Diecast',
-        'Chrome Trim, Chrome Grille, Opening Hood, Opening Doors, Opening Trunk, Detailed Engine, Working Steering System', '5649', '34.35', '62.46');
+        'Chrome Trim, Chrome Grille, Opening Hood, Opening Doors, Opening Trunk, Detailed Engine, Working Steering System',
+        '5649', '34.35', '62.46');
 INSERT INTO `products`
 VALUES ('S18_3029', '1999 Yamaha Speed Boat', 'Ships', '1:18', 'Min Lin Diecast',
         'Exact replica. Wood and Metal. Many extras including rigging, long boats, pilot house, anchors, etc. Comes with three masts, all square-rigged.',
@@ -8076,7 +8097,8 @@ VALUES ('S18_3136', '18th Century Vintage Horse Carriage', 'Vintage Cars', '1:18
         'Hand crafted diecast-like metal horse carriage is re-created in about 1:18 scale of antique horse carriage. This antique style metal Stagecoach is all hand-assembled with many different parts.\r\n\r\nThis collectible metal horse carriage is painted in classic Red, and features turning steering wheel and is entirely hand-finished.',
         '5992', '60.74', '104.72');
 INSERT INTO `products`
-VALUES ('S18_3140', '1903 Ford Model A', 'Vintage Cars', '1:18', 'Unimax Art Galleries', 'Features opening trunk,  working steering system', '3913',
+VALUES ('S18_3140', '1903 Ford Model A', 'Vintage Cars', '1:18', 'Unimax Art Galleries',
+        'Features opening trunk,  working steering system', '3913',
         '68.30', '136.59');
 INSERT INTO `products`
 VALUES ('S18_3232', '1992 Ferrari 360 Spider red', 'Classic Cars', '1:18', 'Unimax Art Galleries',
@@ -8114,14 +8136,16 @@ VALUES ('S18_3856', '1941 Chevrolet Special Deluxe Cabriolet', 'Vintage Cars', '
         'Features opening hood, opening doors, opening trunk, wide white wall tires, front door arm rests, working steering system, leather upholstery. Color black.',
         '2378', '64.58', '105.87');
 INSERT INTO `products`
-VALUES ('S18_4027', '1970 Triumph Spitfire', 'Classic Cars', '1:18', 'Min Lin Diecast', 'Features include opening and closing doors. Color: White.',
+VALUES ('S18_4027', '1970 Triumph Spitfire', 'Classic Cars', '1:18', 'Min Lin Diecast',
+        'Features include opening and closing doors. Color: White.',
         '5545', '91.92', '143.62');
 INSERT INTO `products`
 VALUES ('S18_4409', '1932 Alfa Romeo 8C2300 Spider Sport', 'Vintage Cars', '1:18', 'Exoto Designs',
         'This 1:18 scale precision die cast replica features the 6 front headlights of the original, plus a detailed version of the 142 horsepower straight 8 engine, dual spares and their famous comprehensive dashboard. Color black.',
         '6553', '43.26', '92.03');
 INSERT INTO `products`
-VALUES ('S18_4522', '1904 Buick Runabout', 'Vintage Cars', '1:18', 'Exoto Designs', 'Features opening trunk,  working steering system', '8290',
+VALUES ('S18_4522', '1904 Buick Runabout', 'Vintage Cars', '1:18', 'Exoto Designs',
+        'Features opening trunk,  working steering system', '8290',
         '52.66', '87.77');
 INSERT INTO `products`
 VALUES ('S18_4600', '1940s Ford truck', 'Trucks and Buses', '1:18', 'Motor City Art Classics',
@@ -8154,7 +8178,8 @@ VALUES ('S24_1628', '1966 Shelby Cobra 427 S/C', 'Classic Cars', '1:24', 'Carous
         'This diecast model of the 1966 Shelby Cobra 427 S/C includes many authentic details and operating parts. The 1:24 scale model of this iconic lighweight sports car from the 1960s comes in silver and it\'s own display case.',
         '8197', '29.18', '50.31');
 INSERT INTO `products`
-VALUES ('S24_1785', '1928 British Royal Navy Airplane', 'Planes', '1:24', 'Classic Metal Creations', 'Official logos and insignias', '3627', '66.74',
+VALUES ('S24_1785', '1928 British Royal Navy Airplane', 'Planes', '1:24', 'Classic Metal Creations',
+        'Official logos and insignias', '3627', '66.74',
         '109.42');
 INSERT INTO `products`
 VALUES ('S24_1937', '1939 Chevrolet Deluxe Coupe', 'Vintage Cars', '1:24', 'Motor City Art Classics',
@@ -8177,7 +8202,8 @@ VALUES ('S24_2300', '1962 Volkswagen Microbus', 'Trucks and Buses', '1:24', 'Aut
         '2327', '61.34', '127.79');
 INSERT INTO `products`
 VALUES ('S24_2360', '1982 Ducati 900 Monster', 'Motorcycles', '1:24', 'Highway 66 Mini Classics',
-        'Features two-tone paint with chrome accents, superior die-cast detail , rotating wheels , working kick stand', '6840', '47.10', '69.26');
+        'Features two-tone paint with chrome accents, superior die-cast detail , rotating wheels , working kick stand',
+        '6840', '47.10', '69.26');
 INSERT INTO `products`
 VALUES ('S24_2766', '1949 Jaguar XK 120', 'Classic Cars', '1:24', 'Classic Metal Creations',
         'Precision-engineered from original Jaguar specification in perfect scale ratio. Features opening doors, superb detail and craftsmanship, working steering system, opening forward compartment, opening rear trunk with removable spare, 4 wheel independent spring suspension as well as factory baked enamel finish.',
@@ -8212,7 +8238,8 @@ VALUES ('S24_3371', '1971 Alpine Renault 1600s', 'Classic Cars', '1:24', 'Welly 
         '7995', '38.58', '61.23');
 INSERT INTO `products`
 VALUES ('S24_3420', '1937 Horch 930V Limousine', 'Vintage Cars', '1:24', 'Autoart Studio Design',
-        'Features opening hood, opening doors, opening trunk, wide white wall tires, front door arm rests, working steering system', '2902', '26.30',
+        'Features opening hood, opening doors, opening trunk, wide white wall tires, front door arm rests, working steering system',
+        '2902', '26.30',
         '65.75');
 INSERT INTO `products`
 VALUES ('S24_3432', '2002 Chevy Corvette', 'Classic Cars', '1:24', 'Gearbox Collectibles',
@@ -8220,7 +8247,8 @@ VALUES ('S24_3432', '2002 Chevy Corvette', 'Classic Cars', '1:24', 'Gearbox Coll
         '9446', '62.11', '107.08');
 INSERT INTO `products`
 VALUES ('S24_3816', '1940 Ford Delivery Sedan', 'Vintage Cars', '1:24', 'Carousel DieCast Legends',
-        'Chrome Trim, Chrome Grille, Opening Hood, Opening Doors, Opening Trunk, Detailed Engine, Working Steering System. Color black.', '6621',
+        'Chrome Trim, Chrome Grille, Opening Hood, Opening Doors, Opening Trunk, Detailed Engine, Working Steering System. Color black.',
+        '6621',
         '48.64', '83.86');
 INSERT INTO `products`
 VALUES ('S24_3856', '1956 Porsche 356A Coupe', 'Classic Cars', '1:18', 'Classic Metal Creations',
@@ -8260,7 +8288,8 @@ VALUES ('S32_2206', '1982 Ducati 996 R', 'Motorcycles', '1:32', 'Gearbox Collect
         'Features rotating wheels , working kick stand. Comes with stand.', '9241', '24.14', '40.23');
 INSERT INTO `products`
 VALUES ('S32_2509', '1954 Greyhound Scenicruiser', 'Trucks and Buses', '1:32', 'Classic Metal Creations',
-        'Model features bi-level seating, 50 windows, skylights & glare resistant glass, working steering system, original logos', '2874', '25.98',
+        'Model features bi-level seating, 50 windows, skylights & glare resistant glass, working steering system, original logos',
+        '2874', '25.98',
         '54.11');
 INSERT INTO `products`
 VALUES ('S32_3207', '1950\'s Chicago Surface Lines Streetcar', 'Trains', '1:32', 'Gearbox Collectibles',
@@ -8272,14 +8301,17 @@ VALUES ('S32_3522', '1996 Peterbilt 379 Stake Bed with Outrigger', 'Trucks and B
         '814', '33.61', '64.64');
 INSERT INTO `products`
 VALUES ('S32_4289', '1928 Ford Phaeton Deluxe', 'Vintage Cars', '1:32', 'Highway 66 Mini Classics',
-        'This model features grille-mounted chrome horn, lift-up louvered hood, fold-down rumble seat, working steering system', '136', '33.02',
+        'This model features grille-mounted chrome horn, lift-up louvered hood, fold-down rumble seat, working steering system',
+        '136', '33.02',
         '68.79');
 INSERT INTO `products`
 VALUES ('S32_4485', '1974 Ducati 350 Mk3 Desmo', 'Motorcycles', '1:32', 'Second Gear Diecast',
-        'This model features two-tone paint with chrome accents, superior die-cast detail , rotating wheels , working kick stand', '3341', '56.13',
+        'This model features two-tone paint with chrome accents, superior die-cast detail , rotating wheels , working kick stand',
+        '3341', '56.13',
         '102.05');
 INSERT INTO `products`
-VALUES ('S50_1341', '1930 Buick Marquette Phaeton', 'Vintage Cars', '1:50', 'Studio M Art Models', 'Features opening trunk,  working steering system',
+VALUES ('S50_1341', '1930 Buick Marquette Phaeton', 'Vintage Cars', '1:50', 'Studio M Art Models',
+        'Features opening trunk,  working steering system',
         '7062', '27.06', '43.64');
 INSERT INTO `products`
 VALUES ('S50_1392', 'Diamond T620 Semi-Skirted Tanker', 'Trucks and Buses', '1:50', 'Highway 66 Mini Classics',
@@ -8316,7 +8348,8 @@ VALUES ('S700_2610', 'The USS Constitution Ship', 'Ships', '1:700', 'Red Start D
         '7083', '33.97', '72.28');
 INSERT INTO `products`
 VALUES ('S700_2824', '1982 Camaro Z28', 'Classic Cars', '1:18', 'Carousel DieCast Legends',
-        'Features include opening and closing doors. Color: White. \r\nMeasures approximately 9 1/2\" Long.', '6934', '46.53', '101.15');
+        'Features include opening and closing doors. Color: White. \r\nMeasures approximately 9 1/2\" Long.', '6934',
+        '46.53', '101.15');
 INSERT INTO `products`
 VALUES ('S700_2834', 'ATA: B757-300', 'Planes', '1:700', 'Highway 66 Mini Classics',
         'Exact replia with official logos and insignias and retractable wheels', '7106', '59.33', '118.65');
@@ -8325,7 +8358,8 @@ VALUES ('S700_3167', 'F/A 18 Hornet 1/72', 'Planes', '1:72', 'Motor City Art Cla
         '10\" Wingspan with retractable landing gears.Comes with pilot', '551', '54.40', '80.00');
 INSERT INTO `products`
 VALUES ('S700_3505', 'The Titanic', 'Ships', '1:700', 'Carousel DieCast Legends',
-        'Completed model measures 19 1/2 inches long, 9 inches high, 3inches wide and is in barn red/black. All wood and metal.', '1956', '51.09',
+        'Completed model measures 19 1/2 inches long, 9 inches high, 3inches wide and is in barn red/black. All wood and metal.',
+        '1956', '51.09',
         '100.17');
 INSERT INTO `products`
 VALUES ('S700_3962', 'The Queen Mary', 'Ships', '1:700', 'Welly Diecast Productions',
@@ -8333,24 +8367,17 @@ VALUES ('S700_3962', 'The Queen Mary', 'Ships', '1:700', 'Welly Diecast Producti
         '5088', '53.63', '99.31');
 INSERT INTO `products`
 VALUES ('S700_4002', 'American Airlines: MD-11S', 'Planes', '1:700', 'Second Gear Diecast',
-        'Polished finish. Exact replia with official logos and insignias and retractable wheels', '8820', '36.27', '74.03');
+        'Polished finish. Exact replia with official logos and insignias and retractable wheels', '8820', '36.27',
+        '74.03');
 INSERT INTO `products`
-VALUES ('S72_1253', 'Boeing X-32A JSF', 'Planes', '1:72', 'Motor City Art Classics', '10\" Wingspan with retractable landing gears.Comes with pilot',
+VALUES ('S72_1253', 'Boeing X-32A JSF', 'Planes', '1:72', 'Motor City Art Classics',
+        '10\" Wingspan with retractable landing gears.Comes with pilot',
         '4857', '32.77', '49.66');
 INSERT INTO `products`
 VALUES ('S72_3212', 'Pont Yacht', 'Ships', '1:72', 'Unimax Art Galleries',
         'Measures 38 inches Long x 33 3/4 inches High. Includes a stand.\r\nMany extras including rigging, long boats, pilot house, anchors, etc. Comes with 2 masts, all square-rigged',
         '414', '33.30', '54.60');
 
--- ----------------------------
--- Table structure for `tokens`
--- ----------------------------
-DROP TABLE IF EXISTS `tokens`;
-CREATE TABLE `tokens`
-(
-    `s` varchar(6) DEFAULT NULL
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
 
 -- ----------------------------
 -- Records of tokens
@@ -8358,55 +8385,6 @@ CREATE TABLE `tokens`
 INSERT INTO `tokens`
 VALUES ('abcdef');
 
-DROP TABLE IF EXISTS `autokeytest`;
-CREATE TABLE `autokeytest`
-(
-    `id` int NOT NULL AUTO_INCREMENT,
-    `a`  varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
-    `b`  varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
-    PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 0
-  DEFAULT CHARSET = utf8mb3
-  ROW_FORMAT = DYNAMIC;
-
-DROP TABLE IF EXISTS `rabbitmq_test`;
-CREATE TABLE `rabbitmq_test`
-(
-    `uuid`   varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-    `msg`    varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin          DEFAULT NULL,
-    `time`   timestamp                                              NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `status` varchar(255) COLLATE utf8mb4_bin                                DEFAULT NULL,
-    PRIMARY KEY (`uuid`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_bin;
-
-
--- auto-generated definition
-create table rabbitmq_log
-(
-    uuid varchar(255)                        not null
-        primary key,
-    msg  varchar(255)                        null,
-    time timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP
-)
-    collate = utf8mb4_bin;
-
--- auto-generated definition
-create table sequence
-(
-    `key` varchar(32) not null,
-    value int         not null,
-    constraint sequence_uindex
-        unique (`key`)
-);
-
-CREATE TABLE users
-(
-    id   INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100)
-);
 
 INSERT INTO users (name)
 VALUES ('Alice'),

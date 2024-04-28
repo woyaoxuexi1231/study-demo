@@ -1,7 +1,5 @@
 package com.hundsun.demo.springboot.redis;
 
-import com.hundsun.demo.springboot.common.mapper.EmployeeMapper;
-import com.hundsun.demo.springboot.config.BeanConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -11,9 +9,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.Resource;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
@@ -34,7 +30,7 @@ public class RedisController {
     RedissonClient redissonClient;
 
     @Autowired
-    @Qualifier("singlePool")
+    @Qualifier("singleTransactionPool")
     ThreadPoolExecutor single;
 
     @Autowired

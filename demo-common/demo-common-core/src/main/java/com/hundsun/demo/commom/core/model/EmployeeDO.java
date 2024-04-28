@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -26,6 +28,7 @@ public class EmployeeDO {
      *
      */
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "Mysql")
     @Column(name = "employeeNumber")
     @TableField(value = "employeeNumber")
     private Long employeeNumber;
