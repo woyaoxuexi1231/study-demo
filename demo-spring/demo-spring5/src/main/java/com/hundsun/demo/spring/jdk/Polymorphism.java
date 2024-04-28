@@ -9,7 +9,7 @@ package com.hundsun.demo.spring.jdk;
  * @createDate: 2023/2/5 22:57
  */
 
-public class Polymorphism {
+public class Polymorphism implements Interface {
 
     /*
     Java三大特性 (封装、继承、多态)
@@ -22,4 +22,29 @@ public class Polymorphism {
     设计时多态可以体现在方法的重载(overload)上, 方法名相同而参数不同
     运行时多态体现在方法的重写(override)上, 主要通过继承或者实现接口来达到这个目的, 在运行时根据具体的类来决定调用方法
      */
+
+    String string;
+
+    public String getString() {
+        return string;
+    }
+
+    @Override
+    public void print() {
+
+    }
+}
+
+class SubClass extends Polymorphism implements Interface {
+
+    Integer integer;
+
+    public void print() {
+        Interface anInterface = new SubClass();
+        // super.getString();
+    }
+}
+
+interface Interface {
+    void print();
 }
