@@ -1,4 +1,4 @@
-package com.hundsun.demo.spring.zk;
+package com.hundsun.demo.spring.zk.curator;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;

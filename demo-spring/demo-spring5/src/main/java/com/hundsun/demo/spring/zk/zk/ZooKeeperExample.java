@@ -1,4 +1,4 @@
-package com.hundsun.demo.spring.zk;
+package com.hundsun.demo.spring.zk.zk;
 
 import org.apache.zookeeper.*;
 import java.io.IOException;
