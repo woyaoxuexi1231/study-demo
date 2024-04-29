@@ -9,6 +9,11 @@
       <el-table-column prop="officeCode" label="Office Code"></el-table-column>
       <el-table-column prop="reportsTo" label="Reports To"></el-table-column>
       <el-table-column prop="jobTitle" label="Job Title"></el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button type="text" size="small" @click="handleEdit(scope.row)">Edit</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <div class="block">
       <el-pagination
@@ -18,15 +23,29 @@
         :page-sizes="[10, 20, 30, 40]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="totalEmployees"
-      >
+        :total="totalEmployees">
       </el-pagination>
     </div>
+
+    <el-dialog :visible.sync="editDialogVisible" title="Edit Employee">
+      <el-form :model="editFormData" label-width="120px">
+        <el-form-item label="First Name">
+          <el-input v-model="editFormData.firstName"></el-input>
+        </el-form-item>
+        <el-form-item label="Last Name">
+          <el-input v-model="editFormData.lastName"></el-input>
+        </el-form-item>
+        <!-- Add additional fields as necessary -->
+      </el-form>
+      <div slot="footer">
+        <el-button @click="editDialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="submitEdit">Save</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-
 export default {
   name: 'EmployeeTable',
   data() {
@@ -34,7 +53,9 @@ export default {
       employeeList: [],
       currentPage: 1,
       pageSize: 10,
-      totalEmployees: 0
+      totalEmployees: 0,
+      editDialogVisible: false,
+      editFormData: {}  // The form data that will be bound to edit form inputs
     };
   },
   mounted() {
@@ -42,27 +63,18 @@ export default {
   },
   methods: {
     fetchEmployees() {
-      const jsonData = {
-        pageNum: this.currentPage,
-        pageSize: this.pageSize
-      };
-      const url = '/api/tkmybatis/getEmployees';
-      // 假设你有一个获取员工列表的API endpoint是 '/api/employees'
-      // 使用 axios 或者 Vue resource 发送请求 (这里以axios为例)
-      this.$axios.post(url, jsonData, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }).then(response => {
-        // 处理成功的响应
-        console.log('Response:', response.data);
-        this.employeeList = response.data.list;
-        this.totalEmployees = response.data.total;
-      }).catch(error => {
-        // 处理错误
-        console.error('Error:', error);
-        this.$message.error(url + ': ' + error);
-      });
+      const jsonData = {pageNum: this.currentPage, pageSize: this.pageSize};
+      const url = '/api/tkmybatis/getEmployees';      // Should be adjusted to your actual API endpoint
+      this.$axios.post(url, jsonData, {headers: {'Content-Type': 'application/json'}})
+        .then(response => {
+          console.log('Response:', response.data);
+          this.employeeList = response.data.list;
+          this.totalEmployees = response.data.total;
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          this.$message.error('Failed to fetch employees: ' + error);
+        });
     },
     handleSizeChange(val) {
       this.pageSize = val;
@@ -71,6 +83,23 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val;
       this.fetchEmployees();
+    },
+    handleEdit(row) {
+      this.editFormData = Object.assign({}, row);  // Copies row data to form data
+      this.editDialogVisible = true;
+    },
+    submitEdit() {
+      const url = '/api/tkmybatis/employees/update';  // Adjust this API endpoint to match your requirements
+      this.$axios.post(url, this.editFormData, {headers: {'Content-Type': 'application/json'}})
+        .then(response => {
+          this.editDialogVisible = false;
+          this.$message.success('Employee updated successfully');
+          this.fetchEmployees();  // Refresh the employee list
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          this.$message.error('Failed to update employee: ' + error);
+        });
     }
   }
 }
