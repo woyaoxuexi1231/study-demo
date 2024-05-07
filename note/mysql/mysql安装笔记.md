@@ -52,8 +52,14 @@ A:
 从数据执行操作:
 
 ~~~ sql
+
+开启从库的复制功能
 CHANGE MASTER TO MASTER_HOST='192.168.80.128',MASTER_USER='root',MASTER_PASSWORD='123456',MASTER_LOG_FILE='mysql-bin.000027',MASTER_LOG_POS=152;  
 start slave;
+
+若出错，则清理掉之前的配置，执行以下命令
+stop slave;
+reset slave all;
 ~~~
 
 问题:
@@ -65,4 +71,12 @@ start slave;
 
 2. 从数据库并不会直接复制现有数据库的schema,所以进行主从复制的前置操作:我们需要对从库进行初始化操作(导入主库的数据)
 
-
+3. 我操作从库之后,让主从的数据不一致,再操作主库同一张表之后Slave_SOL_Running变为NO,由于复制SQL语句的时候出现错误导致.
+   我清理了之前的配置,执行stop slave和reset slave all,不一致的数据依然存在.  
+   当我清理掉不一致的数据之后,再次尝试复制却发现丢掉的数据没有了.所以我只能手工维护之前丢掉的数据了  
+   为了解决这个问题,我们需要限制从库的写能力:
+    - 直接设置从库的只读模式,在my.cnf配置文件中设置read_only=1
+    - 设置用户的权限,仅开放一些拥有读权限的用户
+      CREATE USER 'readonly_user'@'%' IDENTIFIED BY 'password';
+      GRANT SELECT ON *.* TO 'readonly_user'@'%';
+    - 应用本身控制 或者 使用数据库中间件或代理服务器如ProxySQL、MaxScale等，可以帮助实现读写分离，自动将写请求定向到主数据库，而读请求则可以定向到从数据库
