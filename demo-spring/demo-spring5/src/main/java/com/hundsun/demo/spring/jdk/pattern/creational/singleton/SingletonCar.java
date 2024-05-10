@@ -63,6 +63,10 @@ public class SingletonCar extends Car {
  * 懒汉式+双重检查锁定
  */
 class Singleton {
+
+    /**
+     * 防止指令重排序,需要使用volatile来保护代码不被重排序
+     */
     private static volatile Singleton instance;
 
     private Singleton() {
