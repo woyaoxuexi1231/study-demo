@@ -125,19 +125,4 @@ public class MybatisPlusController extends ServiceImpl<UserMapper, User> {
     public void batchCommit() {
         batchCommitTest.batchCommit();
     }
-
-
-    @Autowired
-    TransactionTest transactionTest;
-
-    @SneakyThrows
-    @GetMapping("/testTransaction")
-    public void testTransaction(String name) {
-        transactionTest.testTransaction(name);
-    }
-
-    @RequestMapping("/sqlSessionTransaction")
-    public void sqlSessionTransaction() {
-        transactionTest.sqlSessionTransaction();
-    }
 }
