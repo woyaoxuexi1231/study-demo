@@ -53,5 +53,15 @@ public class SpringbootApplication {
         // Open the homepage URL in default browser
         String homepageURL = "http://localhost:10001"; // Update with your homepage URL
         System.out.println("Please navigate to: " + homepageURL);
+
+        /*
+        内存参数 -Xmx40m -Xms40m
+        启动报错了  java.lang.OutOfMemoryError: GC overhead limit exceeded, 分配的内存太少,不停的GC来创建新的对象然而GC又回收不了对象就导致报错了
+
+        -XX:+PrintCommandLineFlags 可以打印JVM 启动时所有的命令行参数，包括默认值和用户自定义值
+        启动之后可以使用 jps -l 和 jmap -heap <pid> | grep GC 来查看使用的 GC
+
+        -XX:+UseG1GC 开启G1垃圾收集器
+         */
     }
 }
