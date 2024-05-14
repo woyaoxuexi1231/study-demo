@@ -229,3 +229,14 @@ CREATE TABLE users
     name VARCHAR(100)
 );
 
+DROP TABLE IF EXISTS `product_info`;
+CREATE TABLE product_info
+(
+    product_id   INT AUTO_INCREMENT PRIMARY KEY,
+    product_name VARCHAR(100) NOT NULL,
+    category     VARCHAR(50),
+    price        DECIMAL(10, 2),
+    description  TEXT,
+    UNIQUE INDEX unique_product (product_name, category)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 0;

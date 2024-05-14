@@ -1,8 +1,11 @@
 package com.hundsun.demo.springboot.spring.transactional;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.github.jsonzou.jmockdata.JMockData;
 import com.hundsun.demo.commom.core.model.EmployeeDO;
+import com.hundsun.demo.commom.core.model.ProductInfoDO;
 import com.hundsun.demo.commom.core.model.User;
+import com.hundsun.demo.springboot.common.mapper.ProductInfoMapper;
 import com.hundsun.demo.springboot.config.ThreadPoolBeanConfig;
 import com.hundsun.demo.springboot.mybatisplus.BatchCommitTest;
 import com.hundsun.demo.springboot.mybatisplus.TestServiceImpl;
@@ -18,7 +21,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author woaixuexi
@@ -205,6 +212,36 @@ public class TransactionTest {
      */
     public void transactionalInherited() {
         subUserService.save(new User("hulei"));
+    }
+
+    @Autowired
+    ProductInfoMapper productInfoMapper;
+
+    @Autowired
+    ThreadPoolExecutor commonPool;
+
+    public void deadLock() {
+        /*
+        一张表: id为主键(自增) 还有一个唯一索引(由两个字符类型的字段组成)
+        并发操作: 可能存在一个在删除的线程, 两个同时在插入的线程
+        错误: 数据库发生死锁,死锁发生在某一个插入的线程
+
+        我这里复现不出来
+         */
+        for (int i = 0; i < 10; i++) {
+            commonPool.execute(() -> {
+                List<ProductInfoDO> list = new ArrayList<>();
+                for (int j = 0; j < 1000; j++) {
+                    list.add(ProductInfoDO.builder()
+                            .productName(JMockData.mock(String.class) + JMockData.mock(String.class))
+                            .category(JMockData.mock(String.class) + JMockData.mock(String.class))
+                            .price(BigDecimal.valueOf(JMockData.mock(Double.class)))
+                            .description(JMockData.mock(String.class) + JMockData.mock(String.class))
+                            .build());
+                }
+                productInfoMapper.batchInsert(list);
+            });
+        }
     }
 }
 

@@ -41,4 +41,9 @@ public class TransactionController {
     public void transactionalInherited() {
         transactionTest.transactionalInherited();
     }
+
+    @RequestMapping(value = "/deadLock")
+    public void deadLock() {
+        transactionTest.deadLock();
+    }
 }
