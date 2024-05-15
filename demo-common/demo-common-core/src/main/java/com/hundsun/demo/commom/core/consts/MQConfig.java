@@ -1,4 +1,4 @@
-package com.hundsun.demo.spring.mq.rabbit.config;
+package com.hundsun.demo.commom.core.consts;
 
 /**
  * @projectName: study-demo

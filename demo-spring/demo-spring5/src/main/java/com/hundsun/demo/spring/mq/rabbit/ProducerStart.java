@@ -1,6 +1,6 @@
 package com.hundsun.demo.spring.mq.rabbit;
 
-import com.hundsun.demo.spring.mq.rabbit.config.MQConfig;
+import com.hundsun.demo.commom.core.consts.MQConfig;
 import com.hundsun.demo.spring.mq.rabbit.work.MsgProducer;
 import lombok.extern.slf4j.Slf4j;
 

@@ -1,7 +1,7 @@
 package com.hundsun.demo.spring.mq.rabbit;
 
 import com.hundsun.demo.spring.mq.rabbit.config.ConnectFactory;
-import com.hundsun.demo.spring.mq.rabbit.config.MQConfig;
+import com.hundsun.demo.commom.core.consts.MQConfig;
 import com.hundsun.demo.spring.mq.rabbit.work.MsgPushConsumerA;
 import com.hundsun.demo.spring.mq.rabbit.work.MsgPushConsumerB;
 import lombok.SneakyThrows;

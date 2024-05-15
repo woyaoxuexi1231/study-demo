@@ -22,11 +22,11 @@
     <dependencies>
 
         <!-- 内部 -->
-        <dependency>
-            <groupId>com.hundsun</groupId>
-            <artifactId>demo-java</artifactId>
-            <version>1.0.0.0-SNAPSHOT</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.hundsun</groupId>-->
+<!--            <artifactId>demo-java</artifactId>-->
+<!--            <version>1.0.0.0-SNAPSHOT</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.hundsun</groupId>
             <artifactId>demo-common-core</artifactId>
@@ -238,8 +238,9 @@
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-maven-plugin</artifactId>
                         <configuration>
-                            <!--使得打出的包是可执行的-->
+                            <!--使打的包是可执行的-->
                             <executable>true</executable>
+                            <mainClass>com.hundsun.demo.spring.SpringApplication</mainClass>
                         </configuration>
                         <executions>
                             <execution>

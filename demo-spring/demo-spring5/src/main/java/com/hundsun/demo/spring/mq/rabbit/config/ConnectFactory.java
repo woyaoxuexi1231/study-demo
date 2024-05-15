@@ -1,5 +1,6 @@
 package com.hundsun.demo.spring.mq.rabbit.config;
 
+import com.hundsun.demo.commom.core.consts.MQConfig;
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;

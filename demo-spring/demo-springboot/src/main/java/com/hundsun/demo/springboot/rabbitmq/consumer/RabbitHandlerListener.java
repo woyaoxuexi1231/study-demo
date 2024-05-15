@@ -1,6 +1,6 @@
 package com.hundsun.demo.springboot.rabbitmq.consumer;
 
-import com.hundsun.demo.spring.mq.rabbit.config.MQConfig;
+import com.hundsun.demo.commom.core.consts.MQConfig;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;

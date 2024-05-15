@@ -1,6 +1,6 @@
 package com.hundsun.demo.spring.mq.rabbit.rpc;// RPCClient.java
 
-import com.hundsun.demo.spring.mq.rabbit.config.MQConfig;
+import com.hundsun.demo.commom.core.consts.MQConfig;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
