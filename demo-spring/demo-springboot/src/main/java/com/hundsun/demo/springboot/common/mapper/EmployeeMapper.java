@@ -19,11 +19,24 @@ import java.util.List;
 
 public interface EmployeeMapper extends BaseMapper<EmployeeDO>, ConditionMapper<EmployeeDO>, MySqlMapper<EmployeeDO> {
     /**
-     * mybatis 使用 $符号
+     * 保存
+     *
+     * @param employeeDO do
      */
     void saveOne(EmployeeDO employeeDO);
 
-    List<EmployeeDO> selectAll2();
+    /**
+     * 查询所有数据,所有字段
+     *
+     * @return all data
+     */
+    List<EmployeeDO> selectAllData();
 
+    /**
+     * 通过 id 查询 name
+     *
+     * @param employeeNumber id
+     * @return rsp
+     */
     String selectLastNameById(@Param(value = "id") Long employeeNumber);
 }
