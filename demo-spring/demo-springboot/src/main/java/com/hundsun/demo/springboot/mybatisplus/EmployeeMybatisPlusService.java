@@ -1,5 +1,7 @@
 package com.hundsun.demo.springboot.mybatisplus;
 
+import com.hundsun.demo.commom.core.annotation.DoneTime;
+
 /**
  * @ProductName: Hundsun amust
  * @ProjectName: study-demo
@@ -13,5 +15,6 @@ package com.hundsun.demo.springboot.mybatisplus;
  * Copyright 2023 Hundsun Technologies Inc. All Rights Reserved
  */
 
-public interface TestService {
+public interface EmployeeMybatisPlusService {
+    void printSelectAll();
 }

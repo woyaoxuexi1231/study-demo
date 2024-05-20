@@ -1,12 +1,15 @@
 package com.hundsun.demo.springboot.aop;
 
 import cn.hutool.core.date.StopWatch;
+import com.hundsun.demo.commom.core.annotation.DoneTime;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
+
+import java.lang.annotation.Annotation;
 
 /**
  * @projectName: study-demo
@@ -28,7 +31,8 @@ public class SimpleAspect {
      * author: hulei42031
      * date: 2024-02-21 16:47
      */
-    @Pointcut(value = "execution(* com.hundsun.demo.springboot.aop.*.*(..)) && !execution(* com.hundsun.demo.springboot.aop.AopTestController.*(..))")
+    // @Pointcut(value = "execution(* com.hundsun.demo.springboot.aop.service.*.*(..)) && !execution(* com.hundsun.demo.springboot.aop.AopTestController.*(..))")
+    @Pointcut(value = "execution(* com.hundsun.demo.springboot.aop.service.*.*(..)) || execution(* com.hundsun.demo.springboot.aop.service.impl.AopServiceWithOutInterface.*(..))")
     public void point() {
     }
 

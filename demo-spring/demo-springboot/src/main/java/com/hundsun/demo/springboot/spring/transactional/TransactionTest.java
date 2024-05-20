@@ -8,7 +8,7 @@ import com.hundsun.demo.commom.core.model.User;
 import com.hundsun.demo.springboot.common.mapper.ProductInfoMapper;
 import com.hundsun.demo.springboot.config.ThreadPoolBeanConfig;
 import com.hundsun.demo.springboot.mybatisplus.BatchCommitTest;
-import com.hundsun.demo.springboot.mybatisplus.TestServiceImpl;
+import com.hundsun.demo.springboot.mybatisplus.EmployeeMybatisPlusServiceImpl;
 import com.hundsun.demo.springboot.mybatisplus.mapper.EmployeeMapperPlus;
 import com.hundsun.demo.springboot.mybatisplus.mapper.UserMapper;
 import com.hundsun.demo.springboot.tkmybatis.mapper.TkUserMapper;
@@ -53,7 +53,7 @@ public class TransactionTest {
     TransactionTest transactionTest;
 
     @Autowired
-    TestServiceImpl testService;
+    EmployeeMybatisPlusServiceImpl testService;
 
     /**
      * 测试注解失效的场景

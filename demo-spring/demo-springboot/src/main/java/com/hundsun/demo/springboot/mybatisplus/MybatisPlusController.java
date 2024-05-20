@@ -125,4 +125,12 @@ public class MybatisPlusController extends ServiceImpl<UserMapper, User> {
     public void batchCommit() {
         batchCommitTest.batchCommit();
     }
+
+    @Autowired
+    EmployeeMybatisPlusService employeeMybatisPlusService;
+
+    @GetMapping("/printSelectAll")
+    public void printSelectAll() {
+        employeeMybatisPlusService.printSelectAll();
+    }
 }

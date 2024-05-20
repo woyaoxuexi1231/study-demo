@@ -1,5 +1,9 @@
 package com.hundsun.demo.springboot.aop;
 
+import com.hundsun.demo.springboot.aop.service.AopService;
+import com.hundsun.demo.springboot.aop.service.impl.AopServiceImpl;
+import com.hundsun.demo.springboot.aop.service.impl.AopServiceSubImpl;
+import com.hundsun.demo.springboot.aop.service.impl.AopServiceWithOutInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +30,10 @@ public class AopTestController {
      * 有接口实现的bean
      */
     @Autowired
-    AopService aopService;
+    AopServiceImpl aopServiceImpl;
+
+    @Autowired
+    AopServiceSubImpl aopServiceSubImpl;
     /**
      * 没有实现接口的一个bean
      */
@@ -36,7 +43,8 @@ public class AopTestController {
     @GetMapping("/test")
     public void test() {
         // 代理的实现不会拘泥于是否有接口实现
-        aopService.print(); // 有接口实现则使用Java自带的代理
-        aopServiceWithOutInterface.print(); // 没有实现接口的会使用cglib来代理
+        aopServiceImpl.print(); // 有接口实现则使用Java自带的代理
+        aopServiceSubImpl.print(); // 有接口实现则使用Java自带的代理
+        // aopServiceWithOutInterface.print(); // 没有实现接口的会使用cglib来代理
     }
 }

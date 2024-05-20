@@ -1,5 +1,7 @@
 package com.hundsun.demo.springboot.mybatisplus;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.hundsun.demo.commom.core.annotation.DoneTime;
 import com.hundsun.demo.commom.core.model.EmployeeDO;
 import com.hundsun.demo.springboot.mybatisplus.mapper.EmployeeMapperPlus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 
 @Service
-public class TestServiceImpl implements TestService {
+public class EmployeeMybatisPlusServiceImpl implements EmployeeMybatisPlusService {
 
     /**
      * author: hulei42031
@@ -36,5 +38,11 @@ public class TestServiceImpl implements TestService {
         employeeDO.setFirstName(name + "service");
         employeeMapperPlus.updateById(employeeDO);
         throw new RuntimeException("error");
+    }
+
+    @DoneTime
+    @Override
+    public void printSelectAll() {
+        employeeMapperPlus.selectList(new QueryWrapper<>()).forEach(System.out::println);
     }
 }
