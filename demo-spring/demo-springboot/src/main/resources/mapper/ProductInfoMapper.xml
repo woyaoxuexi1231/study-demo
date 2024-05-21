@@ -6,9 +6,9 @@
         values
         <foreach collection="list" index="index" separator="," item="item">
             (#{item.productName},
-            #{item.category},
-            #{item.price},
-            #{item.description})
+             #{item.category},
+             #{item.price},
+             #{item.description})
         </foreach>
     </insert>
 </mapper>

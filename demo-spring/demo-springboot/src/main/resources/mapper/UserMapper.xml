@@ -17,14 +17,14 @@
             <trim prefix="name =case" suffix="end,">
                 <foreach collection="list" item="item" index="index">
                     <if test="item.name != null">
-                        when id=#{item.id} then #{item.name}
+                        when id = #{item.id} then #{item.name}
                     </if>
                 </foreach>
             </trim>
             <trim prefix="age =case" suffix="end,">
                 <foreach collection="list" item="item" index="index">
                     <if test="item.age != null">
-                        when id=#{item.id} then #{item.age}
+                        when id = #{item.id} then #{item.age}
                     </if>
                 </foreach>
             </trim>
@@ -40,7 +40,9 @@
 
     <update id="updateBatch">
         <foreach collection="list" index="index" item="item" separator=";" open="" close="">
-            update user set name = #{item.name} where id = #{item.id}
+            update user
+            set name = #{item.name}
+            where id = #{item.id}
         </foreach>
     </update>
 </mapper>

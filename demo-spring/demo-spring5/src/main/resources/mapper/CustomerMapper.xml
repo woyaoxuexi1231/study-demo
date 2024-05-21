@@ -1,72 +1,49 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hundsun.demo.spring.mybatis.mapper.CustomerMapper">
-    <resultMap id="BaseResultMap" type="com.hundsun.demo.commom.core.model.CustomerDO">
-        <id property="customernumber" column="customerNumber" jdbcType="INTEGER"/>
-        <result property="customername" column="customerName" jdbcType="VARCHAR"/>
-        <result property="contactlastname" column="contactLastName" jdbcType="VARCHAR"/>
-        <result property="contactfirstname" column="contactFirstName" jdbcType="VARCHAR"/>
-        <result property="phone" column="phone" jdbcType="VARCHAR"/>
-        <result property="addressline1" column="addressLine1" jdbcType="VARCHAR"/>
-        <result property="addressline2" column="addressLine2" jdbcType="VARCHAR"/>
-        <result property="city" column="city" jdbcType="VARCHAR"/>
-        <result property="state" column="state" jdbcType="VARCHAR"/>
-        <result property="postalcode" column="postalCode" jdbcType="VARCHAR"/>
-        <result property="country" column="country" jdbcType="VARCHAR"/>
-        <result property="salesrepemployeenumber" column="salesRepEmployeeNumber" jdbcType="INTEGER"/>
-        <result property="creditlimit" column="creditLimit" jdbcType="DECIMAL"/>
-    </resultMap>
-
-    <sql id="Base_Column_List">
-        customerNumber
-        ,customerName,contactLastName,
-        contactFirstName,phone,addressLine1,
-        addressLine2,city,state,
-        postalCode,country,salesRepEmployeeNumber,
-        creditLimit
-    </sql>
-
     <update id="updateOne" parameterType="com.hundsun.demo.commom.core.model.CustomerDO">
         update customers
         <set>
             <if test="customername != null">
-                customername = #{customername}
+                customername = #{customername},
             </if>
             <if test="contactlastname != null">
-                contactlastname = #{contactlastname}
+                contactlastname = #{contactlastname},
             </if>
             <if test="contactfirstname != null">
-                contactfirstname = #{contactfirstname}
+                contactfirstname = #{contactfirstname},
             </if>
             <if test="phone != null">
-                phone = #{phone}
+                phone = #{phone},
             </if>
             <if test="addressline1 != null">
-                addressline1 = #{addressline1}
+                addressline1 = #{addressline1},
             </if>
             <if test="addressline2 != null">
-                addressline2 = #{addressline2}
+                addressline2 = #{addressline2},
             </if>
             <if test="city != null">
-                city = #{city}
+                city = #{city},
             </if>
             <if test="state != null">
-                state = #{state}
+                state = #{state},
             </if>
             <if test="postalcode != null">
-                postalcode = #{postalcode}
+                postalcode = #{postalcode},
             </if>
             <if test="country != null">
-                country = #{country}
+                country = #{country},
             </if>
             <if test="salesrepemployeenumber != null">
-                salesrepemployeenumber = #{salesrepemployeenumber}
+                salesrepemployeenumber = #{salesrepemployeenumber},
             </if>
             <if test="creditlimit != null">
                 creditlimit = #{creditlimit}
             </if>
         </set>
-        where customernumber = #{customernumber}
+        <where>
+            customernumber = #{customernumber}
+        </where>
     </update>
 
     <select id="selectAll" resultType="com.hundsun.demo.commom.core.model.CustomerDO">

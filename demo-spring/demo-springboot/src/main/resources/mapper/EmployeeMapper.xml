@@ -3,8 +3,8 @@
 <mapper namespace="com.hundsun.demo.springboot.common.mapper.EmployeeMapper">
     <insert id="saveOne" parameterType="com.hundsun.demo.commom.core.model.EmployeeDO">
         insert into employees(employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle)
-        values ( #{employeeNumber}, #{lastName}, #{firstName}, #{extension}, #{email} , #{officeCode}, #{reportsTo},
-        #{jobTitle})
+        values (#{employeeNumber}, #{lastName}, #{firstName}, #{extension}, #{email}, #{officeCode}, #{reportsTo},
+                #{jobTitle})
         <!--        values ( ${employeeNumber}, ${lastName}, ${firstName}, ${extension}, ${email}, ${officeCode}, ${reportsTo},-->
         <!--        ${jobTitle})-->
     </insert>
