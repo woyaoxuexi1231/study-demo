@@ -5,11 +5,6 @@ import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 
-/**
- * 使用分布式缓存（如Redis）的原子操作（如SETNX）来实现分布式锁。
- * 优点：性能较高，易于实现。
- * 缺点：可能会出现死锁，无法保证强一致性，锁的释放可能不及时。
- */
 
 public class DistributedLockExample {
 

@@ -5,12 +5,6 @@ import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 
-/**
- * 使用 ZooKeeper 的临时顺序节点和Watch机制来实现分布式锁。
- * 优点：提供了良好的一致性和可靠性，能够避免死锁和脑裂问题。
- * 缺点：性能较低，依赖于 ZooKeeper 集群。
- */
-
 public class CuratorDistributedLock {
 
     private static final String ZK_CONNECTION_STRING = "192.168.80.128:2181";
