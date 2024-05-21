@@ -38,10 +38,6 @@ public class MyBatisDynamicdbServiceImpl implements MyBatisDynamicdbService {
         System.out.println("当前绑定的数据源为 " + dynamicDataSourceType + " - 执行 " + myBatisOperationType + " 操作");
         // select
         if (myBatisOperationType.equals(MyBatisOperationType.SELECT)) {
-                /*
-                pageHelper
-                pageSizeZero 参数 - pageSize 为 0 的时候会查出所有数据而不进行分页, 在稍低版本中 pageNum 为 0 不会影响这个参数的使用, 稍新版本中 pageNum 为 0 不会查数据(这里使用 5.2.0 版本)
-                 */
             PageHelper.startPage(1, 10);
             // 通过 spring Bean 的方式使用 Mybatis
             List<CustomerDO> customerDOS = customerMapper.selectAll();
