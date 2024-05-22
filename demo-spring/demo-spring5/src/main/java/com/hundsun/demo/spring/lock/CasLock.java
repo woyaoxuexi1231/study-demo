@@ -2,7 +2,7 @@ package com.hundsun.demo.spring.lock;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-public class Example {
+public class CasLock {
     private static int counter = 0;
     private static SpinLock spinLock = new SpinLock();
 

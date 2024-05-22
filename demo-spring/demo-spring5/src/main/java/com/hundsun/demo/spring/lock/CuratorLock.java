@@ -5,7 +5,7 @@ import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 
-public class CuratorDistributedLock {
+public class CuratorLock {
 
     private static final String ZK_CONNECTION_STRING = "192.168.80.128:2181";
     private static final int SESSION_TIMEOUT_MS = 5000;

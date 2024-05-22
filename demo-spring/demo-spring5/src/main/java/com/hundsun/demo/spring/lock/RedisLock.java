@@ -1,10 +1,7 @@
 package com.hundsun.demo.spring.lock;
 
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.jedis.params.SetParams;
-
-import java.util.List;
 
 /**
  * 使用分布式缓存（如Redis）的<b>原子操作（如SETNX）</b>来实现分布式锁。
@@ -14,12 +11,19 @@ import java.util.List;
  * 缺点：可能会出现死锁[无超时时间导致的]，无法保证强一致性和锁的释放可能不及时[有超时时间导致的]。
  */
 
-public class RedisDistributedLock {
+public class RedisLock {
 
     private final Jedis jedis;
 
-    public RedisDistributedLock(Jedis jedis) {
+    public RedisLock() {
+        // 连接到 Redis 服务器
+        Jedis jedis = new Jedis("192.168.80.128", 6379);
+        jedis.auth("123456");
         this.jedis = jedis;
+    }
+
+    public void close() {
+        jedis.close();
     }
 
     public boolean acquireLock() {
@@ -62,13 +66,9 @@ public class RedisDistributedLock {
 
     public static void main(String[] args) {
 
-        // 连接到 Redis 服务器
-        Jedis jedis = new Jedis("192.168.80.128", 6379);
-        jedis.auth("123456");
-
+        RedisLock lock = new RedisLock();
 
         boolean isLocked = false;
-        RedisDistributedLock lock = new RedisDistributedLock(jedis);
         try {
             // 1. 尝试获取锁
             if (lock.acquireLock()) {
@@ -86,7 +86,7 @@ public class RedisDistributedLock {
             if (isLocked) {
                 lock.releaseLock();
             }
-            jedis.close();
+            lock.close();
         }
     }
 }
