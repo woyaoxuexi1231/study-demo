@@ -20,24 +20,34 @@ import java.util.Objects;
 @Configuration
 public class RedisConfig {
 
+    /**
+     * 创建一个消息通道类
+     * <p>
+     * ChannelTopic 是 Spring Data Redis 中用于表示消息通道的类。
+     * 它提供了一种简单的方式来定义和操作 Redis 中的消息通道。
+     * 通常在使用 Redis 进行消息发布和订阅时，你需要指定一个通道（channel）来发送和接收消息。ChannelTopic 就是用来表示这个通道的。
+     *
+     * @return ChannelTopic
+     */
     @Bean
     public ChannelTopic channelTopic() {
-        /*
-        ChannelTopic 是 Spring Data Redis 中用于表示消息通道的类。
-        它提供了一种简单的方式来定义和操作 Redis 中的消息通道。
-        通常在使用 Redis 进行消息发布和订阅时，你需要指定一个通道（channel）来发送和接收消息。ChannelTopic 就是用来表示这个通道的。
-         */
         return new ChannelTopic("message_channel");
     }
 
+    /**
+     * 创建一个 MessageListener, 用于指示收到消息后如何处理这个消息, 即一个监听回调类
+     * <p>
+     * MessageListener 是 Spring Data Redis 中用于监听 Redis 消息的接口。它定义了处理接收到的消息的方法。
+     * 在使用 Redis 进行消息订阅时，你通常会创建一个类来实现 MessageListener 接口，并实现 onMessage 方法来处理接收到的消息。
+     * <p>
+     *
+     * @return MessageListener
+     */
     @Bean(name = "redisMessageSubscriber")
     public MessageListener redisMessageSubscriber() {
         /*
-        MessageListener 是 Spring Data Redis 中用于监听 Redis 消息的接口。它定义了处理接收到的消息的方法。
-        在使用 Redis 进行消息订阅时，你通常会创建一个类来实现 MessageListener 接口，并实现 onMessage 方法来处理接收到的消息。
-
-        Message message: 这是接收到的消息对象。在 Spring Data Redis 中，Message 是一个包含了消息内容的对象，通常是字节数组（byte array）。你可以通过调用 message.getBody() 方法来获取消息的内容。
-        byte[] pattern: 这是匹配的模式，用于指示消息是由哪个模式匹配的。在 Redis 中，你可以使用订阅模式（subscribe pattern）来订阅多个通道，当消息到达时，Redis 会通知所有匹配模式的订阅者。如果你没有使用订阅模式，这个参数通常为 null。
+         * Message message: 这是接收到的消息对象。在 Spring Data Redis 中，Message 是一个包含了消息内容的对象，通常是字节数组（byte array）。你可以通过调用 message.getBody() 方法来获取消息的内容。
+         * byte[] pattern: 这是匹配的模式，用于指示消息是由哪个模式匹配的。在 Redis 中，你可以使用订阅模式（subscribe pattern）来订阅多个通道，当消息到达时，Redis 会通知所有匹配模式的订阅者。如果你没有使用订阅模式，这个参数通常为 null。
          */
         return (message, pattern) -> {
             StringRedisSerializer serializer = new StringRedisSerializer();
