@@ -17,10 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 @Component
 public class RedisMessagePublisher {
 
+    /**
+     * redis操作类
+     */
     @Autowired
-    @Qualifier(value = "stringObjRedisTemplate")
+    @Qualifier(value = "strObjRedisTemplate")
     private RedisTemplate<String, Object> redisTemplate;
 
+    /**
+     * 消息通道类,这里通过这个类进行发送消息
+     */
     @Autowired
     private ChannelTopic channelTopic;
 
