@@ -29,7 +29,7 @@ CREATE TABLE `customers`
 DROP TABLE IF EXISTS `employees`;
 CREATE TABLE `employees`
 (
-    `employeeNumber` int(11)      NOT NULL,
+    `employeeNumber` bigint       NOT NULL,
     `lastName`       varchar(50)  NOT NULL,
     `firstName`      varchar(50)  NOT NULL,
     `extension`      varchar(10)  NOT NULL,
