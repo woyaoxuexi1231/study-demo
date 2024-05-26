@@ -47,7 +47,7 @@ import java.util.Map;
 public class RedisController {
 
     @Autowired
-    RedisTemplate<String, String> StringRedisTemplate;
+    RedisTemplate<String, String> stringRedisTemplate;
 
     @GetMapping("redisTemplate")
     public void redisTemplate() {
@@ -55,7 +55,9 @@ public class RedisController {
         // Boolean map = redisTemplate.opsForHash().putIfAbsent("map", "1", UUID.randomUUID().toString());
         // Boolean map = StringRedisTemplate.opsForHash().putIfAbsent("map", "1", UUID.randomUUID().toString());
         // System.out.println(map);
-        StringRedisTemplate.opsForValue().set("hello", "redis");
+        stringRedisTemplate.opsForValue().set("hello", "redis");
+
+        stringRedisTemplate.opsForList().leftPush("hello-list", "no1");
     }
 
     @Autowired
@@ -110,7 +112,7 @@ class CacheConfig extends CachingConfigurerSupport {
     @Override
     public CacheManager cacheManager() {
         return RedisCacheManager.builder(redisConnectionFactory)
-                .withCacheConfiguration(RedisController.key, RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(10)))
+                // .withCacheConfiguration(RedisController.key, RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(10)))
                 // If you have a customizer bean, you don't need this line, just ensure your customizer is called
                 .build();
     }
