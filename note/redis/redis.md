@@ -1,4 +1,4 @@
-# redis基础
+# 1.redis基础
 
 ## 什么是redis
 
@@ -267,9 +267,9 @@ Spring 提供了两个可使用的 RedisTemplate
 3. Jackson2JsonRedisSerializer - 利用 jackson-json 工具, 将 pojo 实例序列化为 json 格式存储
    GenericJackson2JsonRedisSerializer,GenericToStringSerializer
 
-# redis高可用
+# 2.redis高可用
 
-## redis复制
+## 1.redis复制
 
 **命令操作**
 
@@ -306,7 +306,7 @@ Spring 提供了两个可使用的 RedisTemplate
        主从节点之间出现网络问题时,如果超过了repl-timeout时间,主节点会认为从节点出现了问题->主节点会把断连期间的命令写入复制积压缓冲区
        ->当主从连接恢复之后,从节点会把runid和复制偏移量发给主节点,主节点收到后会检验runid,之后根据复制偏移量把复制就挤压缓冲区的数据发给从节点
 
-## redis复制的问题
+## 2.redis复制的问题
 
 1. **读写分离(从节点不主动删除数据)**
     - 数据延迟 由于复制是异步的,延迟无法避免,如果延迟过大,可以采用监听redis主节点的info replication的偏移量信息,过大时更换策略读取主节点数据
@@ -315,11 +315,14 @@ Spring 提供了两个可使用的 RedisTemplate
 
 2. **主从配置不一致**
 
+有些配置主从之间是可以不一致的,主节点可以关闭AOF持久化而在丛节点开启.
+但是内存相关的配置如果不一致可能会导致数据不一致,比如maxmemory如果从节点更小,那么从节点达到最大值的时候将按照maxmemory-policy执行内存溢出策略.
+
 3. **规避全量复制**
 
-4. **规避复制风暴**
+4. **规避复制风暴**`
 
-## redis哨兵机制
+## 3.redis哨兵机制
 
 鉴于主从复制的一些问题:
 
@@ -347,9 +350,9 @@ sentinel实现原理：
     3. sentinel向剩余的从节点发出命令，让他们成为新的主节点的从节点
     4. sentinel把原来的主节点更新为从节点，关注到其恢复之后，让其复制新的主节点
 
-## redis集群
+## 4.redis集群
 
-# redis 问题
+# 3.redis 问题
 
 ## redis和数据库保持一致性
 
