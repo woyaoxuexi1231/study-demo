@@ -2,10 +2,11 @@ package com.hundsun.demo.springboot.redis;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.jsonzou.jmockdata.JMockData;
-import com.github.pagehelper.PageInfo;
 import com.hundsun.demo.commom.core.model.EmployeeDO;
+import com.hundsun.demo.springboot.SpringbootApplication;
 import com.hundsun.demo.springboot.common.mapper.EmployeeMapper;
 import com.hundsun.demo.springboot.mybatisplus.mapper.EmployeeMapperPlus;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
@@ -16,15 +17,26 @@ import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.cache.RedisCacheWriter;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.lang.reflect.Field;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @projectName: study-demo
@@ -62,16 +74,25 @@ public class RedisController {
     EmployeeMapperPlus employeeMapperPlus;
 
     // public static final String key = "employees::getEmployees";
-    public static final String key = "employees";
+    public static final String local = "local";
+    public static final String redis = "redis";
 
-    @Cacheable(value = key, key = "#employeeNumber")
+    /**
+     * Cacheable: value作为缓存的命名空间(即一个前缀), key作为完整实际的键值
+     * 举例: 在使用ConcurrentMapCache的时候,value作为ConcurrentMapCache的名字 key作为这个cache内部map的key
+     *
+     * @param employeeNumber id
+     * @return object
+     */
+    @Cacheable(value = {local}, key = "#employeeNumber", cacheManager = "localCacheManager")
     @GetMapping(value = "/getEmployees")
-    public PageInfo<EmployeeDO> getEmployees(Long employeeNumber) {
+    public EmployeeDO getEmployees(Long employeeNumber) {
         // @Valid @RequestBody EmployeeQryReqDTO req
         // PageHelper.startPage(req.getPageNum(), req.getPageSize());
         LambdaQueryWrapper<EmployeeDO> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(EmployeeDO::getEmployeeNumber, employeeNumber);
-        return new PageInfo<>(employeeMapperPlus.selectList(wrapper));
+        List<EmployeeDO> doList = employeeMapperPlus.selectList(wrapper);
+        return CollectionUtils.isEmpty(doList) ? null : doList.get(0);
     }
 
     // @CacheEvict(value = key, allEntries = true)
@@ -89,7 +110,13 @@ public class RedisController {
         employeeMapper.insertSelective(employeeDO);
     }
 
-    @CachePut(value = key, key = "#req.getEmployeeNumber()")
+    /**
+     * CachePut: value和key与Cacheable的相同,这个会更新 value命名空间下键为key的数据
+     *
+     * @param req 更新信息
+     * @return 修改后的对象
+     */
+    @CachePut(value = local, key = "#req.getEmployeeNumber()", cacheManager = "localCacheManager")
     @PostMapping("/updateEmployee")
     public EmployeeDO updateEmployee(@RequestBody EmployeeDO req) {
         EmployeeDO employeeDO = new EmployeeDO();
@@ -104,6 +131,23 @@ public class RedisController {
         employeeDO.setJobTitle(JMockData.mock(String.class));
         employeeMapper.updateByPrimaryKey(employeeDO);
         return employeeDO;
+    }
+
+    @SneakyThrows
+    @GetMapping("/getCache")
+    public void getCache() {
+        CacheManager cacheManager = SpringbootApplication.applicationContext.getBean(CacheManager.class);
+        for (String cacheName : cacheManager.getCacheNames()) {
+            if (RedisController.local.equals(cacheName)) {
+                ConcurrentMapCache cache = (ConcurrentMapCache) cacheManager.getCache(cacheName);
+                Field store = ConcurrentMapCache.class.getDeclaredField("store");
+                store.setAccessible(true);
+                ConcurrentMap<?, ?> map = (ConcurrentMap<?, ?>) store.get(cache);
+                map.forEach((k, v) -> {
+                    log.info("k:{}, v:{}", k, v);
+                });
+            }
+        }
     }
 }
 //
@@ -148,13 +192,30 @@ public class RedisController {
 class CacheConfig {
 
     @Bean
-    public CacheManager cacheManager() {
+    public CacheManager localCacheManager() {
         SimpleCacheManager cacheManager = new SimpleCacheManager();
         cacheManager.setCaches(Collections.singletonList(
-                new ConcurrentMapCache(RedisController.key)
-                // 其他缓存...
+                // 本地内存缓存
+                new ConcurrentMapCache(RedisController.local)
         ));
         return cacheManager;
+    }
+
+    @Bean
+    public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
+
+        RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory);
+
+        RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(60)) // 设置缓存过期时间
+                .disableCachingNullValues()
+                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.string()))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.json()));
+
+        return RedisCacheManager.builder(redisCacheWriter)
+                .withCacheConfiguration(RedisController.redis, defaultCacheConfig)
+                // .cacheDefaults(defaultCacheConfig)
+                .build();
     }
 }
 

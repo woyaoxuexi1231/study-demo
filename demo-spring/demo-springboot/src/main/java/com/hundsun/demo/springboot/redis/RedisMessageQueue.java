@@ -67,13 +67,19 @@ public class RedisMessageQueue {
                     this.produce(Calendar.getInstance().getTime().toString());
                     Thread.sleep(10000);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("消息发送异常,线程将停止", e);
+                    break;
                 }
             }
         }).start();
         new Thread(() -> {
             while (true) {
-                log.info(consumeWithBlock());
+                try {
+                    log.info(consumeWithBlock());
+                } catch (Exception e) {
+                    log.error("消息接收异常,线程将停止", e);
+                    break;
+                }
             }
         }).start();
     }
