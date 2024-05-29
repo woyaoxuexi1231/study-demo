@@ -1,8 +1,11 @@
 #!/bin/sh
 #Configurations injected by install_server below....
 
+# 设置服务启动程序路径
 EXEC=/root/redis-6.2.14/src/redis-server
+# 设置服务客户端程序路径
 CLIEXEC=/root/redis-6.2.14/src/redis-cli
+#
 PIDFILE=/var/run/redis_6379.pid
 CONF="/root/redis-6.2.14/redis.conf"
 # 如果是哨兵模式加上下面这个
