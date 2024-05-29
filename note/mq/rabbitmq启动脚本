@@ -1,0 +1,31 @@
+#!/bin/bash
+#chkconfig:2345 61 61
+
+export HOME=/usr/local/rabbitmq/
+export PATH=$PATH:/usr/local/erlang/bin
+export PATH=$PATH:/usr/local/rabbitmq/sbin
+
+case "$1" in
+    start)
+    echo "Starting RabbitMQ ..."
+    rabbitmq-server  -detached
+    ;;
+stop)
+    echo "Stopping RabbitMQ ..."
+    rabbitmqctl stop
+    ;;
+status)
+    echo "Status RabbitMQ ..."
+    rabbitmqctl status
+    ;;
+restart)
+    echo "Restarting RabbitMQ ..."
+    rabbitmqctl stop
+    rabbitmq-server  restart
+    ;;
+
+*)
+    echo "Usage: $prog {start|stop|status|restart}"
+    ;;
+esac
+exit 0
