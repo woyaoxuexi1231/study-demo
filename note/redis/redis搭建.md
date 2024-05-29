@@ -18,12 +18,12 @@ replicaof 192.168.1.100 6379
 masterauth <master-password>
 ```
 
-#### 优点：
+#### 优点
 
 1. **持久性**：该配置是持久的，Redis 服务器每次启动时都会自动读取配置文件并建立主从关系。
 2. **简化操作**：适用于需要长期保持主从关系的场景，减少了每次重启后手动配置的步骤。
 
-#### 缺点：
+#### 缺点
 
 1. **灵活性较低**：如果需要临时更改主从关系，修改配置文件后需要重启 Redis 服务器，可能导致服务中断。
 
@@ -34,12 +34,12 @@ redis-cli -p 6380
 > SLAVEOF 192.168.1.100 6379
 ```
 
-#### 优点：
+#### 优点
 
 1. **灵活性高**：可以动态调整主从关系，无需重启 Redis 服务器，适用于需要临时切换或调整主从关系的情况。
 2. **即时生效**：命令执行后立即生效，无需重启服务器。
 
-#### 缺点：
+#### 缺点
 
 1. **非持久性**：该配置在 Redis 服务器重启后会失效，需要在每次启动后重新设置。如果需要持久性，还需要额外处理，例如通过启动脚本自动执行 `SLAVEOF` 命令。
 2. **手动操作**：每次修改主从关系时需要手动执行命令，适用于较小规模或变化频繁的场景。
@@ -56,3 +56,81 @@ redis-cli -p 6380
 
 # 哨兵搭建
 
+## 配置
+
+```
+主要更改下面两个配置
+sentinel monitor test 192.168.80.130 6379 2
+sentinel auth-pass test 123456
+
+这里的主机别名是可以自定义的，只需要保证这几个哨兵之间使用相同的名字就可以了。如果使用的名字不同可能会出现问题。
+
+然后启动程序 
+[root@node-129 src]# ./redis-sentinel ../sentinel.conf
+```
+
+# 启动脚本
+
+``` 
+
+#!/bin/sh
+#Configurations injected by install_server below....
+
+EXEC=/root/redis-6.2.14/src/redis-server
+CLIEXEC=/root/redis-6.2.14/src/redis-cli
+PIDFILE=/var/run/redis_6379.pid
+CONF="/root/redis-6.2.14/redis.conf"
+# 如果是哨兵模式加上下面这个
+# SENTINELCONF="/root/redis-6.2.14/sentinel.conf"
+REDISPORT="6379"
+
+# 接收脚本的第一个参数来决定执行什么命令
+case "$1" in
+    start)
+        # 判断pid文件是否存在
+        if [ -f $PIDFILE ]
+        then
+            echo "$PIDFILE exists, process is already running or crashed"
+        else
+            echo "Starting Redis server..."
+            $EXEC $CONF
+            # 哨兵模式加上下面这个
+            # $EXEC $SENTINELCONF --sentinel
+        fi
+        ;;
+    stop)
+        if [ ! -f $PIDFILE ]
+        then
+            echo "$PIDFILE does not exist, process is not running"
+        else
+            PID=$(cat $PIDFILE)
+            echo "Stopping ..."
+            $CLIEXEC -p $REDISPORT shutdown
+            # -x用于检查路径是否存在且可执行
+            while [ -x /proc/${PID} ]
+            do
+                echo "Waiting for Redis to shutdown ..."
+                sleep 1
+            done
+            echo "Redis stopped"
+        fi
+        ;;
+    status)
+        PID=$(cat $PIDFILE)
+        if [ ! -x /proc/${PID} ]
+        then
+            echo 'Redis is not running'
+        else
+            echo "Redis is running ($PID)"
+        fi
+        ;;
+    restart)
+        $0 stop
+        $0 start
+        ;;
+    *)
+        echo "Please use start, stop, restart or status as first argument"
+        ;;
+esac
+
+```
