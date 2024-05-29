@@ -17,6 +17,7 @@ import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.cache.RedisCacheWriter;
@@ -190,6 +191,23 @@ public class RedisController {
 
 @Configuration
 class CacheConfig {
+
+    /**
+     * 定义一个默认的缓存管理器,spring需要一个作为默认
+     *
+     * @return defaultManager
+     */
+    @Primary
+    @Bean
+    public CacheManager cacheManager() {
+        SimpleCacheManager cacheManager = new SimpleCacheManager();
+        cacheManager.setCaches(Collections.singletonList(
+                // 本地内存缓存
+                new ConcurrentMapCache("default")
+        ));
+        return cacheManager;
+    }
+
 
     @Bean
     public CacheManager localCacheManager() {
