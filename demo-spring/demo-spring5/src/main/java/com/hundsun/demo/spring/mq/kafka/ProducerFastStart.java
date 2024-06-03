@@ -15,16 +15,14 @@ import java.util.Properties;
 
 public class ProducerFastStart {
 
-    public static final String brokerList = "192.168.80.131:9092";
+    public static final String brokerList = "192.168.80.128:9092";
     public static final String topic = "topic-demo";
 
     public static void main(String[] args) {
 
         Properties properties = new Properties();
-        properties.put("key.serializer",
-                "org.apache.kafka.common.serialization.StringSerializer");
-        properties.put("value.serializer",
-                "org.apache.kafka.common.serialization.StringSerializer");
+        properties.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        properties.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         properties.put("bootstrap.servers", brokerList);
 
 
@@ -34,7 +32,7 @@ public class ProducerFastStart {
                 new ProducerRecord<>(topic, "hello, Kafka!");
         try {
             producer.send(record);
-//            producer.send(record).get();
+            // producer.send(record).get();
         } catch (Exception e) {
             e.printStackTrace();
         }

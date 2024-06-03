@@ -18,16 +18,14 @@ import java.util.Properties;
 
 public class ConsumerFastStart {
 
-    public static final String brokerList = "192.168.80.131:9092";
+    public static final String brokerList = "192.168.80.128:9092";
     public static final String topic = "topic-demo";
     public static final String groupId = "group.demo1";
 
     public static void main(String[] args) {
         Properties properties = new Properties();
-        properties.put("key.deserializer",
-                "org.apache.kafka.common.serialization.StringDeserializer");
-        properties.put("value.deserializer",
-                "org.apache.kafka.common.serialization.StringDeserializer");
+        properties.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        properties.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         properties.put("bootstrap.servers", brokerList);
         properties.put("group.id", groupId);
 

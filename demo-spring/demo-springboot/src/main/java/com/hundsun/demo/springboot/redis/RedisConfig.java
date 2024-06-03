@@ -1,4 +1,4 @@
-package com.hundsun.demo.springboot.redis.pub;
+package com.hundsun.demo.springboot.redis;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,7 +89,9 @@ public class RedisConfig {
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
+        template.setKeySerializer(RedisSerializer.string());
         template.setValueSerializer(RedisSerializer.json());
+        template.setEnableTransactionSupport(true);
         return template;
     }
 }

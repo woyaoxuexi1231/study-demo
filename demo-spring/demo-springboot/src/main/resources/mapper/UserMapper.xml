@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hundsun.demo.springboot.mybatisplus.mapper.UserMapper">
     <select id="pageList" resultType="com.hundsun.demo.commom.core.model.User">
-        SELECT id, name, age, email
-        FROM {h- schema} user
+        <!--        SELECT id, name, age, email-->
+        <!--        FROM {h- schema} user-->
     </select>
     <!--
      prefix - 拼接前缀
@@ -12,19 +12,12 @@
      suffixOverrides - 去除 sql 语句后面的关键字或者字符, 该关键字或者字符由 suffixOverrides 属性指定
      -->
     <update id="updateBatchByCaseWhen">
-        update user
+        update users
         <trim prefix="set" suffixOverrides=",">
             <trim prefix="name =case" suffix="end,">
                 <foreach collection="list" item="item" index="index">
                     <if test="item.name != null">
                         when id = #{item.id} then #{item.name}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="age =case" suffix="end,">
-                <foreach collection="list" item="item" index="index">
-                    <if test="item.age != null">
-                        when id = #{item.id} then #{item.age}
                     </if>
                 </foreach>
             </trim>
@@ -40,7 +33,7 @@
 
     <update id="updateBatch">
         <foreach collection="list" index="index" item="item" separator=";" open="" close="">
-            update user
+            update users
             set name = #{item.name}
             where id = #{item.id}
         </foreach>

@@ -9,6 +9,7 @@ import com.hundsun.demo.springboot.mybatisplus.mapper.EmployeeMapperPlus;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.Field;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -57,15 +59,22 @@ public class RedisController {
     @Autowired
     RedisTemplate<String, String> stringRedisTemplate;
 
+    @Qualifier(value = "strObjRedisTemplate")
+    @Autowired
+    RedisTemplate<String, Object> redisTemplate;
+
     @GetMapping("redisTemplate")
     public void redisTemplate() {
         // redisTemplate.opsForValue().set("hello", "redis");
         // Boolean map = redisTemplate.opsForHash().putIfAbsent("map", "1", UUID.randomUUID().toString());
         // Boolean map = StringRedisTemplate.opsForHash().putIfAbsent("map", "1", UUID.randomUUID().toString());
         // System.out.println(map);
-        stringRedisTemplate.opsForValue().set("hello", "redis");
 
-        stringRedisTemplate.opsForList().leftPush("hello-list", "no1");
+        redisTemplate.setEnableTransactionSupport(true);
+        redisTemplate.multi();
+        redisTemplate.opsForValue().set("hello", "redis");
+        redisTemplate.opsForList().leftPush("hello-list", "no1");
+        System.out.println(Arrays.toString(redisTemplate.exec().toArray()));
     }
 
     @Autowired

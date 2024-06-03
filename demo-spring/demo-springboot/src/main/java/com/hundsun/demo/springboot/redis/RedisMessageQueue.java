@@ -65,7 +65,7 @@ public class RedisMessageQueue {
             while (true) {
                 try {
                     this.produce(Calendar.getInstance().getTime().toString());
-                    Thread.sleep(10000);
+                    Thread.sleep(1000 * 60);
                 } catch (Exception e) {
                     log.error("消息发送异常,线程将停止", e);
                     break;
