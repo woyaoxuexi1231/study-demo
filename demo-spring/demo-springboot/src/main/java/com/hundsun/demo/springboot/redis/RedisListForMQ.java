@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
-public class RedisMessageQueue {
+public class RedisListForMQ {
 
     /**
      * 使用到的消息队列名

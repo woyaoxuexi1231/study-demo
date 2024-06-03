@@ -19,11 +19,14 @@ import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.util.CollectionUtils;
@@ -35,7 +38,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.Field;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -50,11 +52,58 @@ import java.util.concurrent.ConcurrentMap;
  * @createDate: 2023-04-23 09:56
  */
 
+@Configuration
 @EnableCaching
 @Slf4j
 @RestController
 @RequestMapping("/redis")
-public class RedisController {
+public class RedisCacheController {
+
+    /*========================================== 配置相关 =======================================*/
+
+    /**
+     * 定义一个默认的缓存管理器,spring需要一个作为默认
+     *
+     * @return defaultManager
+     */
+    @Primary
+    @Bean
+    public CacheManager cacheManager() {
+        SimpleCacheManager cacheManager = new SimpleCacheManager();
+        cacheManager.setCaches(Collections.singletonList(
+                // 本地内存缓存
+                new ConcurrentMapCache("default")
+        ));
+        return cacheManager;
+    }
+
+    @Bean
+    public CacheManager localCacheManager() {
+        SimpleCacheManager cacheManager = new SimpleCacheManager();
+        cacheManager.setCaches(Collections.singletonList(
+                // 本地内存缓存
+                new ConcurrentMapCache(RedisCacheController.local)
+        ));
+        return cacheManager;
+    }
+
+    @Bean
+    public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
+
+        RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory);
+
+        RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(60)) // 设置缓存过期时间
+                .disableCachingNullValues()
+                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.string()))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.json()));
+
+        return RedisCacheManager.builder(redisCacheWriter)
+                .withCacheConfiguration(RedisCacheController.redis, defaultCacheConfig)
+                // .cacheDefaults(defaultCacheConfig)
+                .build();
+    }
+
 
     @Autowired
     RedisTemplate<String, String> stringRedisTemplate;
@@ -69,12 +118,37 @@ public class RedisController {
         // Boolean map = redisTemplate.opsForHash().putIfAbsent("map", "1", UUID.randomUUID().toString());
         // Boolean map = StringRedisTemplate.opsForHash().putIfAbsent("map", "1", UUID.randomUUID().toString());
         // System.out.println(map);
-
-        redisTemplate.setEnableTransactionSupport(true);
-        redisTemplate.multi();
         redisTemplate.opsForValue().set("hello", "redis");
         redisTemplate.opsForList().leftPush("hello-list", "no1");
-        System.out.println(Arrays.toString(redisTemplate.exec().toArray()));
+    }
+
+
+    @GetMapping(value = "redisTransaction")
+    public void redisTransaction() {
+        /*
+        下面这个代码例子是不可行的,执行将会报错,这是因为这几个操作都不是在一个连接完成的。
+        org.springframework.dao.InvalidDataAccessApiUsageException: Not in transaction mode. Please invoke multi method
+
+        redisTemplate.multi();
+        redisTemplate.opsForValue().set("key1", "value1");
+        redisTemplate.opsForValue().set("key2", "value2");
+        redisTemplate.exec();
+         */
+
+        List<Object> r = redisTemplate.execute(new SessionCallback<List<Object>>() {
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public List<Object> execute(RedisOperations operations) throws DataAccessException {
+                operations.multi();
+                operations.opsForValue().set("hxm", "9999");
+                // 此处打印null，因为事务还没真正执行
+                System.out.println(operations.opsForValue().get("hxm"));
+                return operations.exec();
+            }
+        });
+
+        System.out.println(r);
     }
 
     @Autowired
@@ -148,7 +222,7 @@ public class RedisController {
     public void getCache() {
         CacheManager cacheManager = SpringbootApplication.applicationContext.getBean(CacheManager.class);
         for (String cacheName : cacheManager.getCacheNames()) {
-            if (RedisController.local.equals(cacheName)) {
+            if (RedisCacheController.local.equals(cacheName)) {
                 ConcurrentMapCache cache = (ConcurrentMapCache) cacheManager.getCache(cacheName);
                 Field store = ConcurrentMapCache.class.getDeclaredField("store");
                 store.setAccessible(true);
@@ -196,53 +270,3 @@ public class RedisController {
 //     //     return new ConcurrentMapCacheManager("myCache");
 //     // }
 // }
-
-
-@Configuration
-class CacheConfig {
-
-    /**
-     * 定义一个默认的缓存管理器,spring需要一个作为默认
-     *
-     * @return defaultManager
-     */
-    @Primary
-    @Bean
-    public CacheManager cacheManager() {
-        SimpleCacheManager cacheManager = new SimpleCacheManager();
-        cacheManager.setCaches(Collections.singletonList(
-                // 本地内存缓存
-                new ConcurrentMapCache("default")
-        ));
-        return cacheManager;
-    }
-
-
-    @Bean
-    public CacheManager localCacheManager() {
-        SimpleCacheManager cacheManager = new SimpleCacheManager();
-        cacheManager.setCaches(Collections.singletonList(
-                // 本地内存缓存
-                new ConcurrentMapCache(RedisController.local)
-        ));
-        return cacheManager;
-    }
-
-    @Bean
-    public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
-
-        RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory);
-
-        RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(60)) // 设置缓存过期时间
-                .disableCachingNullValues()
-                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.string()))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.json()));
-
-        return RedisCacheManager.builder(redisCacheWriter)
-                .withCacheConfiguration(RedisController.redis, defaultCacheConfig)
-                // .cacheDefaults(defaultCacheConfig)
-                .build();
-    }
-}
-
