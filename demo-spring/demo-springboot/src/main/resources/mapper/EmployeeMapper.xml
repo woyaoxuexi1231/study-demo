@@ -9,7 +9,6 @@
         <!--        ${jobTitle})-->
     </insert>
     <select id="selectAllData" resultType="com.hundsun.demo.commom.core.model.EmployeeDO">
-        --         select * from {h-schema}employees
         select *
         from employees
     </select>

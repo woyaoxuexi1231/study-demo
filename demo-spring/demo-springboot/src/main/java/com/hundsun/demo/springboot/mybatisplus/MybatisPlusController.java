@@ -143,6 +143,7 @@ public class MybatisPlusController extends ServiceImpl<UserMapper, User> {
     /**
      * 分页参数 startPage 的两个参数测试
      */
+    // @Transactional
     @GetMapping(value = "/pageHelper")
     public void pageHelper(@RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize) {
         /*
@@ -157,5 +158,17 @@ public class MybatisPlusController extends ServiceImpl<UserMapper, User> {
         log.info("pageNum: {}, pageSize: {}", pageNum, pageSize);
         PageHelper.startPage(pageNum, pageSize);
         System.out.println(Arrays.toString(employeeMapper.selectAllData().toArray()));
+        PageHelper.startPage(pageNum, pageSize);
+        System.out.println(Arrays.toString(employeeMapper.selectAllData().toArray()));
+    }
+
+    /**
+     * 获取插入数据的主键
+     */
+    @RequestMapping(value = "insertAndGetId")
+    public void insertAndGetId() {
+        User user = new User("hulei");
+        userMapper.insertOne(user);
+        log.info("数据插入成功, 返回的id为: " + user.getId());
     }
 }

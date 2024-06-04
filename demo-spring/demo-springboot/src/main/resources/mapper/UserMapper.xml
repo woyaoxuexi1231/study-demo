@@ -38,4 +38,14 @@
             where id = #{item.id}
         </foreach>
     </update>
+
+    <!--
+     keyProperty：指定实体类中属性名，用于接收数据库自动生成的主键值。
+     keyColumn：指定数据库表中主键列名，用于告知 MyBatis 应该从哪个列获取自动生成的主键值。
+     -->
+    <insert id="insertOne" parameterType="com.hundsun.demo.commom.core.model.User" useGeneratedKeys="true"
+            keyColumn="id" keyProperty="id">
+        insert into users(name)
+        values (#{name})
+    </insert>
 </mapper>

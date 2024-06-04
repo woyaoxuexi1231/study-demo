@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.hundsun.demo.commom.core.model.User;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
@@ -45,4 +44,11 @@ public interface UserMapper extends BaseMapper<User> {
      * date: 2023-11-23 19:47
      */
     void selectAll();
+
+    /**
+     * 插入一个用户,并返回主键
+     *
+     * @param user user
+     */
+    void insertOne(User user);
 }
