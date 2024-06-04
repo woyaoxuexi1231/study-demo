@@ -1,15 +1,16 @@
 package com.hundsun.demo.springboot.aop;
 
-import cn.hutool.core.date.StopWatch;
-import com.hundsun.demo.commom.core.annotation.DoneTime;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
-
-import java.lang.annotation.Annotation;
 
 /**
  * @projectName: study-demo
@@ -36,18 +37,30 @@ public class SimpleAspect {
     public void point() {
     }
 
+    @Before(value = "point()")
+    public void before(JoinPoint joinPoint) {
+        // 进入方法之前调用, 这个在各个通知中是最先执行的
+        System.out.println("this is before aop");
+    }
+
     @Around(value = "point()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
-        // 计时器
-        StopWatch stopWatch = new StopWatch();
-        // 方法参数
-        Object[] param = joinPoint.getArgs();
-        try {
-            stopWatch.start();
-            return joinPoint.proceed();
-        } finally {
-            stopWatch.stop();
-            log.info("SimpleAspect => Method {}, Param: {}, Time: {}ms", joinPoint.getSignature(), param, stopWatch.getTotalTimeMillis());
-        }
+        System.out.println("this is around aop");
+        return joinPoint.proceed();
+    }
+
+    @After(value = "point()")
+    public void after(JoinPoint joinPoint) {
+        System.out.println("this is after aop");
+    }
+
+    @AfterReturning(value = "point()", returning = "object")
+    public void afterReturning(Object object) {
+        System.out.printf("this is afterReturning aop, return: %s%n", object);
+    }
+
+    @AfterThrowing(value = "point()", throwing = "exception")
+    public void afterThrowing(Exception exception) {
+        System.out.printf("this is afterThrowing aop, exception: %s%n", exception.getMessage());
     }
 }

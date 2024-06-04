@@ -12,4 +12,5 @@ package com.hundsun.demo.springboot.aop.service;
 
 public interface AopService {
     void print();
+    String hello();
 }

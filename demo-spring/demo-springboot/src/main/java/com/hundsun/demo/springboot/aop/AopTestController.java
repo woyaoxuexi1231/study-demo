@@ -43,8 +43,9 @@ public class AopTestController {
     @GetMapping("/test")
     public void test() {
         // 代理的实现不会拘泥于是否有接口实现
-        aopServiceImpl.print(); // 有接口实现则使用Java自带的代理
-        aopServiceSubImpl.print(); // 有接口实现则使用Java自带的代理
+        // aopServiceImpl.print(); // 有接口实现则使用Java自带的代理
+        // aopServiceSubImpl.print(); // 有接口实现则使用Java自带的代理
         // aopServiceWithOutInterface.print(); // 没有实现接口的会使用cglib来代理
+        System.out.println(aopServiceImpl.hello());
     }
 }
