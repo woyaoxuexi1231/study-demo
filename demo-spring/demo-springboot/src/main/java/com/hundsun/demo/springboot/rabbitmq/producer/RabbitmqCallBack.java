@@ -12,13 +12,11 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 /**
- * @projectName: study-demo
- * @package: com.hundsun.demo.dubbo.provider.callback
- * @className: MyConfirmCallBack
- * @description:
- * @author: h1123
- * @createDate: 2023/3/19 17:22
+ * 发送消息的回调类,用于消息可靠性
+ * ① 实现了 ConfirmCallback 和 ReturnsCallback
+ * ② 类完成了自我注册
  */
+
 @Slf4j
 @Component
 public class RabbitmqCallBack implements RabbitTemplate.ConfirmCallback, RabbitTemplate.ReturnsCallback {
@@ -84,7 +82,7 @@ public class RabbitmqCallBack implements RabbitTemplate.ConfirmCallback, RabbitT
     @Override
     public void confirm(CorrelationData correlationData, boolean ack, String cause) {
         // ack = true 交换机收到了消息, ack = false 交换机没收到消息
-        log.info("confirm => correlationData: {}, ack: {}, cause: {}", correlationData, ack, cause);
+        log.info("回调函数收到通知,消息已经发出去了, correlationData: {}, ack: {}, cause: {}", correlationData, ack, cause);
     }
 
 
@@ -105,6 +103,6 @@ public class RabbitmqCallBack implements RabbitTemplate.ConfirmCallback, RabbitT
 
     @Override
     public void returnedMessage(ReturnedMessage returned) {
-        log.info("returnedMessage => returned: {}", returned);
+        log.info("回调函数收到通知,消息并没有发送到任何有效的队列中, returned: {}", returned);
     }
 }
