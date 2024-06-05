@@ -29,6 +29,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,7 +58,7 @@ import java.util.concurrent.ConcurrentMap;
 @Slf4j
 @RestController
 @RequestMapping("/redis")
-public class RedisCacheController {
+public class RedisController {
 
     /*========================================== 配置相关 =======================================*/
 
@@ -82,7 +83,7 @@ public class RedisCacheController {
         SimpleCacheManager cacheManager = new SimpleCacheManager();
         cacheManager.setCaches(Collections.singletonList(
                 // 本地内存缓存
-                new ConcurrentMapCache(RedisCacheController.local)
+                new ConcurrentMapCache(RedisController.local)
         ));
         return cacheManager;
     }
@@ -99,11 +100,13 @@ public class RedisCacheController {
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.json()));
 
         return RedisCacheManager.builder(redisCacheWriter)
-                .withCacheConfiguration(RedisCacheController.redis, defaultCacheConfig)
+                .withCacheConfiguration(RedisController.redis, defaultCacheConfig)
                 // .cacheDefaults(defaultCacheConfig)
                 .build();
     }
 
+
+    /*========================================== 事务相关 =======================================*/
 
     @Autowired
     RedisTemplate<String, String> stringRedisTemplate;
@@ -118,11 +121,13 @@ public class RedisCacheController {
         // Boolean map = redisTemplate.opsForHash().putIfAbsent("map", "1", UUID.randomUUID().toString());
         // Boolean map = StringRedisTemplate.opsForHash().putIfAbsent("map", "1", UUID.randomUUID().toString());
         // System.out.println(map);
-        redisTemplate.opsForValue().set("hello", "redis");
-        redisTemplate.opsForList().leftPush("hello-list", "no1");
+        stringRedisTemplate.opsForValue().set("hello", "redis");
+        stringRedisTemplate.opsForList().leftPush("hello-list", "no1");
     }
 
-
+    /**
+     * 使用 RedisTemplate.execute 和 SessionCallback 来进行事务管理
+     */
     @GetMapping(value = "redisTransaction")
     public void redisTransaction() {
         /*
@@ -135,7 +140,7 @@ public class RedisCacheController {
         redisTemplate.exec();
          */
 
-        List<Object> r = redisTemplate.execute(new SessionCallback<List<Object>>() {
+        List<Object> r = stringRedisTemplate.execute(new SessionCallback<List<Object>>() {
 
             @SuppressWarnings("unchecked")
             @Override
@@ -150,6 +155,21 @@ public class RedisCacheController {
 
         System.out.println(r);
     }
+
+    /**
+     * 使用 template.setEnableTransactionSupport(true) 和 @Transactional 来完成事务管理
+     */
+    @Transactional
+    @GetMapping(value = "redisTransaction2")
+    public void redisTransaction2() {
+        redisTemplate.opsForValue().set("hello1", "redis");
+        redisTemplate.opsForValue().set("hello2", "redis");
+        redisTemplate.opsForValue().set("hello3", "redis");
+        throw new RuntimeException("error");
+    }
+
+
+    /*========================================== 缓存相关 =======================================*/
 
     @Autowired
     EmployeeMapper employeeMapper;
@@ -222,7 +242,7 @@ public class RedisCacheController {
     public void getCache() {
         CacheManager cacheManager = SpringbootApplication.applicationContext.getBean(CacheManager.class);
         for (String cacheName : cacheManager.getCacheNames()) {
-            if (RedisCacheController.local.equals(cacheName)) {
+            if (RedisController.local.equals(cacheName)) {
                 ConcurrentMapCache cache = (ConcurrentMapCache) cacheManager.getCache(cacheName);
                 Field store = ConcurrentMapCache.class.getDeclaredField("store");
                 store.setAccessible(true);

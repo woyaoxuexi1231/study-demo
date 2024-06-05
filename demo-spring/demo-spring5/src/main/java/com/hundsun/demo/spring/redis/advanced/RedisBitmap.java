@@ -6,7 +6,7 @@ import redis.clients.jedis.Jedis;
 位图 应用于布隆过滤器
  */
 
-public class RedisBitmapExample {
+public class RedisBitmap {
 
     public static void main(String[] args) {
         // 创建 Jedis 客户端连接

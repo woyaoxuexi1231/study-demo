@@ -4,7 +4,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 import redis.clients.jedis.exceptions.JedisDataException;
 
-public class RedisTransactionExample {
+public class RedisTransaction {
     public static void main(String[] args) {
         // 创建 Jedis 客户端连接
         Jedis jedis = new Jedis("192.168.80.128", 6379);

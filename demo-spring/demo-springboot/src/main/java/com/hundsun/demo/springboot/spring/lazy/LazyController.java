@@ -1,6 +1,7 @@
 package com.hundsun.demo.springboot.spring.lazy;
 
-import com.hundsun.demo.springboot.SpringbootApplication;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,9 +15,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class LazyController {
 
+    LazyBean lazyBean;
+
+    @Lazy
+    @Autowired
+    public void setLazyBean(LazyBean lazyBean) {
+        System.out.println("LazyController开始加载lazyBean");
+        this.lazyBean = lazyBean;
+    }
+
     @GetMapping("/test")
     public void test() {
-        LazyBean bean = SpringbootApplication.applicationContext.getBean(LazyBean.class);
-        bean.print();
+        // LazyBean bean = SpringbootApplication.applicationContext.getBean(LazyBean.class);
+        lazyBean.print();
     }
 }

@@ -5,7 +5,7 @@ import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 
-public class DistributedLockExample {
+public class RedisLock {
 
     public static void main(String[] args) {
         // 创建 Redisson 配置对象

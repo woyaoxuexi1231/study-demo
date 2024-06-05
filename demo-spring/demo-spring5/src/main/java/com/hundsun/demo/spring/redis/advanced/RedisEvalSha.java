@@ -4,7 +4,8 @@ import redis.clients.jedis.Jedis;
 
 import java.util.Arrays;
 
-public class RedisEvalShaExample {
+public class RedisEvalSha {
+
     public static void main(String[] args) {
         // 创建 Jedis 客户端连接
         Jedis jedis = new Jedis("192.168.80.128", 6379);
