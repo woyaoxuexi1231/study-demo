@@ -25,7 +25,7 @@ public class UUIDExample {
         System.out.println("UUID variant: " + variant);
 
         UUID uuid = UUID.randomUUID();
-        System.out.println(String.format("%s-%s", uuid, new Date().getTime()));
+        System.out.println(String.format("%s-%s", uuid, System.currentTimeMillis()));
     }
 }
 

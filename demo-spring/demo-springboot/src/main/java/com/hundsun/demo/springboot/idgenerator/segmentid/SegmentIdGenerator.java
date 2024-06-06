@@ -27,8 +27,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -150,12 +150,12 @@ public class SegmentIdGenerator implements ApplicationContextAware {
      * 定时更新缓存, 这个是必要的, 需要定时更新 key
      */
     private void updateCacheFromDbAtEveryMinute() {
-        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(r -> {
+        scheduledExecutorService = new ScheduledThreadPoolExecutor(1, r -> {
             Thread t = new Thread(r);
             t.setName("check-idCache-thread");
             t.setDaemon(true);
             return t;
-        });
+        }, new ThreadPoolExecutor.AbortPolicy());
         scheduledExecutorService.scheduleWithFixedDelay(SegmentIdGenerator.this::updateCacheFromDb, 60L, 60L, TimeUnit.SECONDS);
     }
 

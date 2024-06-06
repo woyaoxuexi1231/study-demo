@@ -203,7 +203,7 @@ public class RedisController {
     @PostMapping("/addOneEmployee")
     public void addOneEmployee() {
         EmployeeDO employeeDO = new EmployeeDO();
-        employeeDO.setEmployeeNumber(new Date().getTime());
+        employeeDO.setEmployeeNumber(System.currentTimeMillis());
         employeeDO.setLastName(JMockData.mock(String.class));
         employeeDO.setFirstName(JMockData.mock(String.class));
         employeeDO.setExtension(JMockData.mock(String.class));
@@ -225,7 +225,7 @@ public class RedisController {
     public EmployeeDO updateEmployee(@RequestBody EmployeeDO req) {
         EmployeeDO employeeDO = new EmployeeDO();
         employeeDO.setEmployeeNumber(req.getEmployeeNumber());
-        employeeDO.setEmployeeNumber(new Date().getTime());
+        employeeDO.setEmployeeNumber(System.currentTimeMillis());
         employeeDO.setLastName(JMockData.mock(String.class));
         employeeDO.setFirstName(JMockData.mock(String.class));
         employeeDO.setExtension(JMockData.mock(String.class));
