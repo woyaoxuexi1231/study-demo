@@ -73,21 +73,6 @@
 </body>
 
 <script>
-    // Java注解形式
-    // let ws = new WebSocket("ws://localhost:10001/myWs");
-    // spring形式
-    // let ws = new WebSocket("ws://localhost:10001/myWsSpring");
-    // ws.onopen = function () {
-    //     ws.send("hello, this is client");
-    // }
-    // ws.onmessage = function (message) {
-    //     console.log(message.data);
-    // }
-    //
-    // function goToPage(pageUrl) {
-    //     window.location.href = pageUrl;
-    // }
-
 
     let socket;
 
@@ -95,7 +80,8 @@
     function connect() {
 
         // 创建WebSocket对象，指定服务器的URL
-        socket = new WebSocket("ws://localhost:10001/myWsSpring");
+        // socket = new WebSocket("ws://localhost:10008/myWs");
+        socket = new WebSocket("ws://localhost:9015/myWsSpring");
 
         // 当WebSocket连接成功时触发的事件处理程序
         socket.onopen = function (event) {
