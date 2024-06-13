@@ -81,16 +81,16 @@
 
         // 创建WebSocket对象，指定服务器的URL
         // socket =  new WebSocket("ws://localhost:10008/myWs");
-        // socket = new WebSocket("ws://localhost:10008/myWsSpring");
+        socket = new WebSocket("ws://localhost:10008/myWsSpring");
 
-        if ('WebSocket' in window) {
-            // 后端服务port为22900
-            socket = new WebSocket("ws://localhost:10008/websocket/server");
-        } else if ('MozWebSocket' in window) {
-            socket = new MozWebSocket("ws://localhost:10008/websocket/server");
-        } else {
-            socket = new SockJS("http://localhost:10008/sockjs/server");
-        }
+        // if ('WebSocket' in window) {
+        //     // 后端服务port为22900
+        //     socket = new WebSocket("ws://localhost:10008/websocket/server");
+        // } else if ('MozWebSocket' in window) {
+        //     socket = new MozWebSocket("ws://localhost:10008/websocket/server");
+        // } else {
+        //     socket = new SockJS("http://localhost:10008/sockjs/server");
+        // }
 
         // 当WebSocket连接成功时触发的事件处理程序
         socket.onopen = function (event) {
