@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.hundsun</groupId>
+        <artifactId>demo-parent</artifactId>
+        <version>1.0.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>demo-maven</artifactId>
+    <version>${revision}</version>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <revision>1.0.0.0-SNAPSHOT</revision>
+        <maven-flatten-version>1.1.0</maven-flatten-version>
+    </properties>
+
+    <build>
+        <!--
+        在整个声明周期内,maven提供了一系列的默认插件
+        1. maven-clean-plugin: 用于清理项目
+        2. maven-resources-plugin: 用于复制和过滤资源文件。
+        3. maven-compiler-plugin: 用于编译源代码。
+        4. maven-surefire-plugin: 用于执行单元测试。
+        5. maven-jar-plugin: 用于创建 JAR 包。
+           maven-war-plugin: 用于创建 war 包, 需要新增<packaging>war</packaging>,新增后其实可以不用显示配置该插件
+        6. maven-install-plugin: 用于将构建的 artifact 安装到本地仓库。
+        7. maven-deploy-plugin: 用于将构建的 artifact 部署到远程仓库。
+        8. maven-site-plugin: 用于生成项目站点。
+        9. maven-project-info-reports-plugin: 用于生成项目的各类报告，如依赖报告、插件报告等。
+        10. maven-assembly-plugin: 用于创建自定义的分发包。
+        11. maven-shade-plugin: 用于打包并重定位类，创建包含所有依赖项的可执行 JAR 包。
+
+        其他插件
+        1. spring-boot-maven-plugin
+            1 - 打包 Spring Boot 应用：将 Spring Boot 应用打包成可执行的 JAR 或 WAR 文件，其中包含所有依赖项。(胖jar)
+            2 - 运行 Spring Boot 应用：通过命令行运行 Spring Boot 应用，而无需复杂的部署步骤。
+            3 - 重启功能：在开发过程中支持应用的自动重启，以提高开发效率。
+
+        2. flatten-maven-plugin
+            1 - 扁平化 POM 文件：将父 POM、属性、依赖管理和插件管理等信息展开，生成一个扁平化的 pom.xml 文件。
+            2 - 发布和部署：生成的扁平化 POM 文件更易于发布到 Maven 中央仓库或其他仓库，因为它是一个独立的文件，包含所有必要的信息。
+            3 - 减少 POM 文件复杂性：通过去除继承和变量引用，使 POM 文件更简单和易读。
+            *4 - 自 Maven 3.5.0-beta-1 开始，可以使用 ${revision}, ${sha1} and/or ${changelist} 这样的变量作为版本占位符。
+                 但是呢 Install / Deploy 时，版本占位符将不能被替换。这将导致 Install / Deploy 后， maven 不能识别。
+                 使用 flatten-maven-plugin 可以解决这个问题。
+        3. jacoco-maven-plugin
+            1 - 代码覆盖率分析：通过在运行单元测试时插入代理，收集代码覆盖率数据。
+            2 - 覆盖率报告生成：生成详细的代码覆盖率报告，通常包括 HTML、XML 等格式。
+
+        4. sorter-maven-plugin
+            1 - 排序：按字母顺序或自定义规则排序 pom.xml 文件中的元素，例如依赖、插件等。
+            2 - 清理：去除不必要的空行、格式化 pom.xml 文件，使其结构更加清晰。
+
+        5. maven-checkstyle-plugin: 是一个用于执行代码风格检查的 Maven 插件。它使用 Checkstyle 工具来分析和报告 Java 代码中的风格和格式问题。
+
+         -->
+
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>${maven-flatten-version}</version>
+                <configuration>
+                    <!-- 设置为 true 表示在执行 flatten 操作时更新 POM 文件。 -->
+                    <updatePomFile>true</updatePomFile>
+                    <!-- 设置为 resolveCiFriendliesOnly，表示在扁平化过程中仅解析 CI 友好变量（如 ${revision}、${sha1} 和 ${changelist}）。 -->
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                    <!-- 设置为 expand 表示在扁平化过程中展开依赖项。 -->
+                    <pomElements>
+                        <dependencies>expand</dependencies>
+                    </pomElements>
+                </configuration>
+                <executions>
+                    <execution>
+                        <!-- 执行扁平化操作 -->
+                        <id>flatten</id>
+                        <!-- 指定要执行的目标，这里是 flatten。 -->
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                        <!-- 指定在构建生命周期的哪个阶段执行这个目标，这里是在 process-resources 阶段。 -->
+                        <phase>process-resources</phase>
+                    </execution>
+                    <execution>
+                        <!-- 清理操作 -->
+                        <id>flatten.clean</id>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                        <phase>clean</phase>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
