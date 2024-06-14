@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements.  See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to You under the Apache License, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~  he License.  You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>spring-vue</artifactId>
+        <groupId>com.hundsun</groupId>
+        <version>1.0.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>vue</artifactId>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <frontend-maven-plugin.version>1.11.0</frontend-maven-plugin.version>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>ui</id>
+            <activation>
+                <!-- 这个部分配置了该profile在默认情况下是激活的，即使没有明确指定profile id，这个profile也会被激活。 -->
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <!-- build用于配置构建相关的信息 -->
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.eirslett</groupId>
+                        <artifactId>frontend-maven-plugin</artifactId>
+                        <version>${frontend-maven-plugin.version}</version>
+                        <executions>
+
+                            <execution>
+                                <id>install node and npm</id>
+                                <!-- 定义了要执行的目标。在这个例子中，目标是 install-node-and-npm，即安装 Node.js 和 npm。 -->
+                                <goals>
+                                    <goal>install-node-and-npm</goal>
+                                </goals>
+                                <!-- 指定要安装的 Node.js -->
+                                <configuration>
+
+                                    <!-- <npmVersion>10.5.0</npmVersion> -->
+                                    <!-- <nodeVersion>v18.20.2</nodeVersion> -->
+
+                                    <npmVersion>8.5.5</npmVersion>
+                                    <nodeVersion>v14.17.3</nodeVersion>
+                                </configuration>
+                            </execution>
+
+                            <!-- Install all project dependencies -->
+                            <execution>
+                                <id>npm install</id>
+                                <!-- 目标是 npm，即运行 npm 命令。 -->
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                                <!-- optional: default phase is "generate-resources" -->
+                                <!-- 指定在 generate-resources 阶段执行。 -->
+                                <phase>generate-resources</phase>
+                                <!-- Optional configuration which provides for running any npm command -->
+                                <!-- 运行 npm install 命令以安装项目依赖。 -->
+                                <configuration>
+                                    <arguments>install</arguments>
+                                </configuration>
+                            </execution>
+
+                            <!-- Build and minify static files -->
+                            <execution>
+                                <id>npm run build</id>
+                                <!-- 目标是 npm，即运行 npm 命令。 -->
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                                <!-- 运行 npm run build 命令以构建和压缩静态文件。 -->
+                                <configuration>
+                                    <arguments>run build</arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
