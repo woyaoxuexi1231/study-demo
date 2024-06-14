@@ -3,16 +3,16 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>demo-spring</artifactId>
+        <artifactId>spring-vue</artifactId>
         <groupId>com.hundsun</groupId>
         <version>1.0.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>springboot-js</artifactId>
+    <artifactId>springboot</artifactId>
 
     <properties>
-        <build.finalName>springboot-js</build.finalName>
+        <build.finalName>springboot</build.finalName>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
@@ -27,12 +27,12 @@
         </dependency>
         <dependency>
             <groupId>com.hundsun</groupId>
-            <artifactId>demo-common-curator-starter</artifactId>
+            <artifactId>demo-common-starter</artifactId>
             <version>1.0.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.hundsun</groupId>
-            <artifactId>demo-common-starter</artifactId>
+            <artifactId>demo-common-curator-starter</artifactId>
             <version>1.0.0.0-SNAPSHOT</version>
         </dependency>
 
@@ -68,11 +68,15 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
 
-<!--         <dependency> -->
-<!--             <groupId>org.springframework.boot</groupId> -->
-<!--             <artifactId>spring-boot-starter-actuator</artifactId> -->
-<!--         </dependency> -->
 
         <!-- jdbc -->
         <dependency>
@@ -108,25 +112,19 @@
             <version>1.6.1</version>
         </dependency>
 
-
-        <!-- 整合 JSP -->
-        <!-- 记得在 idea 设置的启动项里面编辑 working-directory 为 $MODULE_DIR$ -->
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.tomcat.embed</groupId>-->
-        <!--            <artifactId>tomcat-embed-jasper</artifactId>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>javax.servlet</groupId>-->
-        <!--            <artifactId>jstl</artifactId>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>javax.servlet</groupId>-->
-        <!--            <artifactId>javax.servlet-api</artifactId>-->
-        <!--        </dependency>-->
+        <!-- <dependency> -->
+        <!--     <groupId>io.github.lognet</groupId> -->
+        <!--     <artifactId>grpc-spring-boot-starter</artifactId> -->
+        <!-- </dependency> -->
 
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.jsonzou</groupId>
+            <artifactId>jmockdata</artifactId>
+            <version>4.2.0</version>
         </dependency>
 
         <!--测试-->

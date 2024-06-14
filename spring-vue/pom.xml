@@ -10,15 +10,11 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>demo-spring</artifactId>
+    <artifactId>spring-vue</artifactId>
     <packaging>pom</packaging>
 
     <modules>
-        <module>demo-spring5</module>
-        <module>demo-springboot</module>
-        <module>demo-springcloud</module>
-        <module>springboot-js</module>
-        <module>springboot-thymeleaf</module>
+        <module>springboot</module>
     </modules>
 
     <properties>
