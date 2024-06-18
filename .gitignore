@@ -6,3 +6,4 @@ vue/package-lock.json
 /demo-java/src/main/resources/fileResource
 /helloapp-tomcat/out
 /*.log
+out
