@@ -4,5 +4,5 @@
 *.iml
 vue/package-lock.json
 /demo-java/src/main/resources/fileResource
-/helloapp/out
+/helloapp-tomcat/out
 /*.log
