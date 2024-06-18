@@ -280,9 +280,9 @@
         <!-- 指定了MyBatis将用于数据库操作的数据源 -->
         <property name="dataSource" ref="dataSource"/>
         <!-- 指定了MyBatis的全局配置文件的位置。这个文件通常包含了MyBatis的配置信息，如类型别名、类型处理器、设置等。通过这个配置，MyBatis知道如何连接数据库以及如何生成SQL语句。 -->
-        <property name="configLocation" value="spring-mybatis-config.xml"/>
+        <property name="configLocation" value="/springmvc/spring-mybatis-config.xml"/>
         <!-- 定义了MyBatis mapper XML文件的位置 -->
-        <property name="mapperLocations" value="mapper/*.xml"/>
+        <property name="mapperLocations" value="mapper/CustomerMapper.xml"/>
     </bean>
     <!-- 这个类的作用是自动扫描指定包下的Mapper接口，并为它们创建代理对象，这些代理对象实际上就是执行SQL操作的MyBatis mapper -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">

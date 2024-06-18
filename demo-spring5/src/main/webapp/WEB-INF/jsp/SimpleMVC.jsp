@@ -12,6 +12,6 @@
 </head>
 <body>
 ${data}
-<p><a href="/demo-spring5/">Back to Home</a></p>
+<p><a href="${pageContext.request.contextPath}">Back to Home</a></p>
 </body>
 </html>

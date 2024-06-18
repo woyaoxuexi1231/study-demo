@@ -67,8 +67,8 @@
 
         <!-- 数据库相关 -->
         <mysql.connector.java.version>8.0.19</mysql.connector.java.version>
-        <ojdbc8.version>19.3.0.0</ojdbc8.version>
-        <orai18n.version>19.3.0.0</orai18n.version>
+        <ojdbc8.version>21.3.0.0</ojdbc8.version>
+        <orai18n.version>21.3.0.0</orai18n.version>
         <!-- <redisson.version>3.12.4</redisson.version> -->
         <!-- Redisson 在 3.13.0 and 3.19.0 更换了默认的协议，会报错Unsupported protocol version 118 -->
         <!-- <redisson.spring.boot.starter.verison>3.12.4</redisson.spring.boot.starter.verison> -->

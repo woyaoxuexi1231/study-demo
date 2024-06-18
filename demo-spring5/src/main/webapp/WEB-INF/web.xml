@@ -17,47 +17,50 @@
     7. 环境变量的定义
     -->
 
-    <!-- 可以考虑使用这种配置方式来配置多个配置文件 -->
+    <!--
+    监听事件, 在Servlet容器启动或者销毁Web应用的时候会触发
+
+    ① 它将为整个 Web 应用程序加载顶层的 WebApplicationContext, 加载的 WebApplicationContext 的默认配置文件路径为 /WEB-INF/applicationContext.xml
+        后续可以使用 org.springframework.web.context.support.WebApplicationContextUtils 来获取我们绑定的 WebApplicationContext
+        1. WebApplicationContextUtils.getWebApplicationContext(getServletContext());
+        2. XmlWebApplicationContext 配置了默认文件
+
+    ② AbstractRefreshableWebApplicationContext有两个子类
+        1.XmlWebApplicationContext
+            配置XmlWebApplicationContext以及指定配置文件路径
+            <context-param>
+                <param-name>contextClass</param-name>
+                <param-value>org.springframework.web.context.support.XmlWebApplicationContext</param-value>
+            </context-param>
+            <context-param>
+                <param-name>contextConfigLocation</param-name>
+                <param-value>/WEB-INF/applicationContext.xml</param-value>
+            </context-param>
+
+        2.AnnotationConfigWebApplicationContext
+            配置AnnotationConfigWebApplicationContext以及配置文件路径
+            <context-param>
+                <param-name>contextClass</param-name>
+                <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+            </context-param>
+            <context-param>
+                <param-name>contextConfigLocation</param-name>
+                <param-value>com.hundsun.demo.spring.mvc.AppConfig</param-value>
+            </context-param>
+    -->
+<!--     <listener> -->
+<!--         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class> -->
+<!--     </listener> -->
+
+    <!-- 可以考虑使用这种配置方式来配置多个配置文件或者使用下面配置servlet的方式来加载配置文件 -->
     <!--    <context-param>-->
     <!--        <param-name>contextConfigLocation</param-name>-->
     <!--        <param-value>**.xml,**.xml</param-value>-->
     <!--    </context-param>-->
 
-    <!--
-    它将为整个 Web 应用程序加载顶层的 WebApplicationContext
-    加载的 WebApplicationContext 的默认配置文件路径为 /WEB-INF/applicationContext.xml
-    后续可以使用 org.springframework.web.context.support.WebApplicationContextUtils 来获取我们绑定的 WebApplicationContext
-    WebApplicationContextUtils.getWebApplicationContext(getServletContext());
-    在 XmlWebApplicationContext 配置了默认文件
-    AbstractRefreshableWebApplicationContext有两个子类 1.XmlWebApplicationContext 2.AnnotationConfigWebApplicationContext
-    -->
-    <!-- 监听事件, 在Servlet容器启动或者销毁Web应用的时候会触发 -->
-    <listener>
-        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-    </listener>
-
-    <!-- 配置XmlWebApplicationContext以及指定配置文件路径 -->
-    <!-- <context-param> -->
-    <!--     <param-name>contextClass</param-name> -->
-    <!--     <param-value>org.springframework.web.context.support.XmlWebApplicationContext</param-value> -->
-    <!-- </context-param> -->
-    <!-- <context-param> -->
-    <!--     <param-name>contextConfigLocation</param-name> -->
-    <!--     <param-value>/WEB-INF/applicationContext1.xml</param-value> -->
-    <!-- </context-param> -->
-
-    <!-- 配置AnnotationConfigWebApplicationContext以及配置文件路径 -->
-    <!-- <context-param> -->
-    <!--     <param-name>contextClass</param-name> -->
-    <!--     <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value> -->
-    <!-- </context-param> -->
-    <!-- <context-param> -->
-    <!--     <param-name>contextConfigLocation</param-name> -->
-    <!--     <param-value>com.hundsun.demo.spring.mvc.AppConfig</param-value> -->
-    <!-- </context-param> -->
-
     <!-- 为 Servlet 类定义名字 -->
     <servlet>
+        <!-- 如果这里配置了servlet的名字,那么意味着一定要有一个 xxx-servlet.xml 的文件, 除非像下面配置 init-param -->
         <servlet-name>controller</servlet-name>
         <!-- 配置 Spring MVC 的前端控制器 DispatcherServlet -->
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>

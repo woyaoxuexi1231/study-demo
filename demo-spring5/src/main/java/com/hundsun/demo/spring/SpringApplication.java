@@ -1,15 +1,11 @@
 package com.hundsun.demo.spring;
 
-import com.hundsun.demo.commom.core.model.User;
 import com.hundsun.demo.spring.aop.annotation.MyService;
-import com.hundsun.demo.spring.aop.annotation.MyServiceImpl;
 import com.hundsun.demo.spring.aop.xml.PrintService;
 import com.hundsun.demo.spring.db.dynamicdb.DynamicDataSourceType;
 import com.hundsun.demo.spring.db.dynamicdb.MultipleDataSourceTestEvent;
 import com.hundsun.demo.spring.db.transaction.AnnotationTransaction;
-import com.hundsun.demo.spring.db.transaction.AopTransaction;
 import com.hundsun.demo.spring.init.PrototypeBean;
-import com.hundsun.demo.spring.mvc.springdao.UserDAO;
 import com.hundsun.demo.spring.mvc.springdao.UserDAOImpl;
 import com.hundsun.demo.spring.mvc.springdao.UserDAOJdbcTemplate;
 import com.hundsun.demo.spring.init.listener.SimpleEvent;
@@ -19,8 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import java.util.List;
 
 /**
  * @ProductName: Hundsun amust
@@ -49,7 +43,7 @@ public class SpringApplication {
 
     public static void main(String[] args) {
         // 创建容器,以读取配置文件的方式开启容器
-        applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml", "simple.xml");
+        applicationContext = new ClassPathXmlApplicationContext("springmvc/applicationContext.xml", "springmvc/simple.xml");
 
         prototypeBean();
         // springListener();
