@@ -12,7 +12,7 @@
     <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-icon-144x144.png">
     <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-icon-152x152.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/icon/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="/icon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon/android-icon-192x192.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/icon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="96x96" href="/icon/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/icon/favicon-16x16.png">
@@ -28,6 +28,10 @@
     <style>
         .button-wrapper {
             margin-bottom: 10px;
+        }
+
+        body {
+            margin: 20px;
         }
     </style>
     <title>Interactive Web Page</title>
@@ -45,7 +49,7 @@
                 // 这里使用 e.preventDefault() 是为了阻止这种行为，让JavaScript可以控制表单数据的提交。
                 e.preventDefault(); // 阻止表单的默认提交行为
                 // 接着，这行代码通过ID获取输入框（文本框）元素，并提取用户输入的值（即 name）。
-                var name = document.getElementById('name').value;
+                const name = document.getElementById('name').value;
                 // 这一行使用 Fetch API 发送一个GET请求到后端的 /greeting 路由。
                 // encodeURIComponent(name) 确保用户输入被正确编码到URL中，防止特殊字符导致的问题。
                 // 比如，如果用户输入了包含空格或特殊字符的名字，编码确保服务器接收到的是格式正确的查询字符串。
@@ -68,20 +72,19 @@
 <!--被用来显示表单的标题——"Greeting Form"-->
 <h1>Greeting Form</h1>
 
-
-<button onclick="alert('Hello, World!')">Click me</button>
-<script>
-    // JavaScript代码
-    function greet() {
-        alert('Hello, World!');
-    }
-</script>
+<!--<button onclick="alert('Hello, World!')">Click me</button>-->
+<p>
+    <button onclick="greet()">Click me</button>
+</p>
 
 <!--开始一个 form 元素，并赋予它一个ID "greeting-form"。这使得我们可以在JavaScript中通过这个ID来查找这个表单元素，以便处理表单提交事件。-->
 <form id="greeting-form">
-    <input type="text" id="name" placeholder="Enter your name" required>
+    <label for="name">
+        <input type="text" id="name" placeholder="Enter your name" required>
+    </label>
     <button type="submit">Greet</button>
 </form>
+
 
 <!-- 最后，这是一个段落元素，被赋予ID “greeting-result”。它被用来展示从服务器返回的问候消息。我们之前解读的JavaScript代码中，这个元素会显示服务器HTTP请求的回应。-->
 <p id="greeting-result"></p>
@@ -97,9 +100,20 @@
 </div>
 
 <script type="text/javascript">
+
     function goToPage(pageUrl) {
         window.location.href = pageUrl;
     }
+
+    // JavaScript代码
+    function greet() {
+        alert('Hello, World!');
+    }
+
+    let person = new Object();
+    person.name = "Nicholas";
+    console.log(person.name); // "Nicholas"
+
 </script>
 </body>
 </html>
