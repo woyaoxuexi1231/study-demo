@@ -7,3 +7,6 @@ vue/package-lock.json
 /helloapp-tomcat/out
 /*.log
 out
+**/*.log
+**/*.log.gz
+

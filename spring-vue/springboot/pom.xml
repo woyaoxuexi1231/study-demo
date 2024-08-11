@@ -279,7 +279,7 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <artifactId>vue</artifactId>
+                    <artifactId>vue2</artifactId>
                     <groupId>com.hundsun</groupId>
                     <version>1.0.0.0-SNAPSHOT</version>
                 </dependency>

@@ -325,7 +325,7 @@ public class ElasticsearchClientMain {
         // {
         //   "size": 0,
         //   "aggs": {
-        //     "cityagg": {
+        //     "cityagg": { 
         //       "terms": {
         //         "field": "city",
         //         "size": 20,
