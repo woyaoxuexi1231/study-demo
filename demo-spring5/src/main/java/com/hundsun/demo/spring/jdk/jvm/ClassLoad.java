@@ -48,11 +48,17 @@ public class ClassLoad {
         });
         thread.setContextClassLoader(ClassLoader.getSystemClassLoader());
         thread.start();
-        CustomJarClassLoader customJarClassLoader = new CustomJarClassLoader("C:\\Users\\h1123\\.m2\\repository\\org\\springframework\\spring-context\\5.2.7.RELEASE\\spring-context-5.2.7.RELEASE.jar", ClassLoader.getSystemClassLoader());
+        CustomJarClassLoader customJarClassLoader = new CustomJarClassLoader("C:\\Users\\h1123\\.m2\\repository\\org\\springframework\\spring-context\\5.3.30\\spring-context-5.3.30.jar", ClassLoader.getSystemClassLoader());
         System.out.println(customJarClassLoader.loadClass("org.springframework.context.annotation.AdviceMode").getName());
     }
 }
 
+/**
+ * 一个自定义的类加载器
+ *
+ * @author hulei
+ * @since 2024/8/12 17:59
+ */
 class CustomJarClassLoader extends URLClassLoader {
 
     private final String jarPath;
@@ -62,9 +68,18 @@ class CustomJarClassLoader extends URLClassLoader {
         this.jarPath = jarPath;
     }
 
+    /**
+     * 此方法在jdk1.2之前就存在,而双亲委派机制在1.2才开始出现
+     * 为了兼容之前已经存在的用户自定义的类加载器,Java设计者做出妥协,声明了另一个方法 {@link URLClassLoader#findClass(String)},并且引导用户尽可能地重写这个方法来进行类加载的逻辑
+     * 而loadClass这个方法则在 {@link java.lang.ClassLoader} 这个类中实现了双亲委派机制的具体逻辑
+     * 我们这里重写一下这个方法来干预一下我们加载类的行为
+     */
     @Override
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+
+
         synchronized (getClassLoadingLock(name)) {
+
             // 先检查是否已经加载
             Class<?> loadedClass = findLoadedClass(name);
             if (loadedClass != null) {
@@ -73,6 +88,8 @@ class CustomJarClassLoader extends URLClassLoader {
 
             // 不在指定 JAR 包中的类委托给父类加载器加载
             if (!name.startsWith("org.springframework.context")) {
+                // 在java.lang.ClassLoader.loadClass(java.lang.String, boolean)这个方法内,可以看到双亲委派模型
+                // 1.首先检查是否已经加载对应的类信息 2.如果没有加载交给父类加载器(一直往上递交) 3.父类加载器如果找不到,则由当前的加载器加载
                 return super.loadClass(name, resolve);
             }
 

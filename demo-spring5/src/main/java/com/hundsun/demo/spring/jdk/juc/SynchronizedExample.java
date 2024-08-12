@@ -1,5 +1,8 @@
-package com.hundsun.demo.spring.lock;
+package com.hundsun.demo.spring.jdk.juc;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class SynchronizedExample {
 
     private int count = 0;
@@ -35,7 +38,7 @@ public class SynchronizedExample {
             t1.join();
             t2.join();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
 
         System.out.println("Count is: " + count);
