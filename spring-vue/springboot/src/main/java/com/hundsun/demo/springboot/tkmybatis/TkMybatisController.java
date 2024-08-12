@@ -1,6 +1,5 @@
 package com.hundsun.demo.springboot.tkmybatis;
 
-import com.github.jsonzou.jmockdata.JMockData;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hundsun.demo.commom.core.model.EmployeeDO;
@@ -8,7 +7,6 @@ import com.hundsun.demo.springboot.common.mapper.EmployeeMapper;
 import com.hundsun.demo.springboot.common.model.req.EmployeeQryReqDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -59,5 +57,10 @@ public class TkMybatisController {
     public PageInfo<EmployeeDO> getEmployees(@Valid @RequestBody EmployeeQryReqDTO req) {
         PageHelper.startPage(req.getPageNum(), req.getPageSize());
         return new PageInfo<>(employeeMapper.selectAll());
+    }
+
+    @PostMapping(value = "/employees/update")
+    public void employeesUpdate(@Valid @RequestBody EmployeeDO req) {
+        employeeMapper.updateByPrimaryKey(req);
     }
 }

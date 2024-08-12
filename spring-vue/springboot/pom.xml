@@ -286,7 +286,7 @@
                                     <overwrite>true</overwrite>
                                     <resources>
                                         <resource>
-                                            <directory>${project.parent.basedir}/dubbo-admin-ui/target/dist</directory>
+                                            <directory>${project.parent.basedir}/vue2/dist</directory>
                                         </resource>
                                     </resources>
                                 </configuration>
