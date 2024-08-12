@@ -44,27 +44,37 @@
             <build>
                 <plugins>
                     <plugin>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <configuration>
+                            <filesets>
+                                <fileset>
+                                    <directory>dist</directory>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </plugin>
+                    <plugin>
                         <groupId>com.github.eirslett</groupId>
                         <artifactId>frontend-maven-plugin</artifactId>
                         <version>${frontend-maven-plugin.version}</version>
                         <executions>
 
-                            <execution>
-                                <id>install node and npm</id>
-                                <!-- 定义了要执行的目标。在这个例子中，目标是 install-node-and-npm，即安装 Node.js 和 npm。 -->
-                                <goals>
-                                    <goal>install-node-and-npm</goal>
-                                </goals>
-                                <!-- 指定要安装的 Node.js -->
-                                <configuration>
+                            <!-- 不指定安装node和npm,直接使用系统自带的 -->
+                            <!--                             <execution> -->
+                            <!--                                 <id>install node and npm</id> -->
+                            <!--                                 &lt;!&ndash; 定义了要执行的目标。在这个例子中，目标是 install-node-and-npm，即安装 Node.js 和 npm。 &ndash;&gt; -->
+                            <!--                                 <goals> -->
+                            <!--                                     <goal>install-node-and-npm</goal> -->
+                            <!--                                 </goals> -->
+                            <!--                                 &lt;!&ndash; 指定要安装的 Node.js &ndash;&gt; -->
+                            <!--                                 <configuration> -->
+                            <!--                                     &lt;!&ndash; <npmVersion>10.5.0</npmVersion> &ndash;&gt; -->
+                            <!--                                     &lt;!&ndash; <nodeVersion>v18.20.2</nodeVersion> &ndash;&gt; -->
 
-                                    <!-- <npmVersion>10.5.0</npmVersion> -->
-                                    <!-- <nodeVersion>v18.20.2</nodeVersion> -->
-
-                                    <npmVersion>8.5.5</npmVersion>
-                                    <nodeVersion>v14.17.3</nodeVersion>
-                                </configuration>
-                            </execution>
+                            <!--                                     &lt;!&ndash; <npmVersion>8.5.5</npmVersion> &ndash;&gt; -->
+                            <!--                                     &lt;!&ndash; <nodeVersion>v14.17.3</nodeVersion> &ndash;&gt; -->
+                            <!--                                 </configuration> -->
+                            <!--                             </execution> -->
 
                             <!-- Install all project dependencies -->
                             <execution>

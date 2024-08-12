@@ -31,12 +31,12 @@ module.exports = {
 
         proxyTable: {
             '/api': {
-                // target: 'http://localhost:10001',// 设置你调用的接口域名和端口号
+                target: 'http://localhost:10001',// 设置你调用的接口域名和端口号
                 //secure: false, // 如果是https接口，需要配置这个参数
                 changeOrigin: true, //是否跨域
-                pathRewrite: {
-                    '^/api': '', // 将请求路径中的 '/api' 替换为空字符串
-                }
+                // pathRewrite: {
+                //     '^/api': '', // 将请求路径中的 '/api' 替换为空字符串
+                // }
             }
         },
 
