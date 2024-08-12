@@ -72,7 +72,7 @@
         <!-- <redisson.version>3.12.4</redisson.version> -->
         <!-- Redisson 在 3.13.0 and 3.19.0 更换了默认的协议，会报错Unsupported protocol version 118 -->
         <!-- <redisson.spring.boot.starter.verison>3.12.4</redisson.spring.boot.starter.verison> -->
-        <redisson.spring.boot.starter.verison>3.15.6</redisson.spring.boot.starter.verison>
+        <redisson.spring.boot.starter.verison>3.17.7</redisson.spring.boot.starter.verison>
 
 
         <!-- Mybatis框架 -->
@@ -92,6 +92,12 @@
         <apache.curator.framework.version>2.13.0</apache.curator.framework.version>
         <apache.curator.recipes.version>2.13.0</apache.curator.recipes.version>
 
+
+        <!-- es -->
+        <elasticsearch-java.version>8.11.4</elasticsearch-java.version>
+        <elasticsearch-rest-client.version>8.11.4</elasticsearch-rest-client.version>
+        <jackson-databind.version>2.13.5</jackson-databind.version>
+        <jakarta.json-api.version>2.0.1</jakarta.json-api.version>
 
         <!--第三方依赖-->
         <spring-boot-admin-starter-server.version>2.6.11</spring-boot-admin-starter-server.version>
@@ -448,6 +454,31 @@
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson-spring-boot-starter</artifactId>
                 <version>${redisson.spring.boot.starter.verison}</version>
+            </dependency>
+
+
+            <!--......................................................................................................-->
+            <!--...............................................es...................................................-->
+            <!--......................................................................................................-->
+            <dependency>
+                <groupId>co.elastic.clients</groupId>
+                <artifactId>elasticsearch-java</artifactId>
+                <version>${elasticsearch-java.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch.client</groupId>
+                <artifactId>elasticsearch-rest-client</artifactId>
+                <version>${elasticsearch-rest-client.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson-databind.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.json</groupId>
+                <artifactId>jakarta.json-api</artifactId>
+                <version>${jakarta.json-api.version}</version>
             </dependency>
 
 

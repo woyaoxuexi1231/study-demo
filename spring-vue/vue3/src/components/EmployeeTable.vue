@@ -89,7 +89,7 @@ export default {
       this.editDialogVisible = true;
     },
     submitEdit() {
-      const url = '/api/tkmybatis/employees/update';  // Adjust this API endpoint to match your requirements
+      const url = '/api/redis/employees/update';  // Adjust this API endpoint to match your requirements
       this.$axios.post(url, this.editFormData, {headers: {'Content-Type': 'application/json'}})
         .then(response => {
           this.editDialogVisible = false;

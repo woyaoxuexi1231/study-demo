@@ -1,20 +1,14 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
-import EmployeeTable from "../components/EmployeeTable";
-import Calendar from "../components/Calendar";
-import MessageQueue from "../components/MessageQueue";
-import WebSocket from "../components/WebSocket";
-import WebSocketStomp from "../components/WebSocketStomp";
+import { createRouter, createWebHistory } from 'vue-router'
+import HelloWorld from '../components/HelloWorld.vue'
+import EmployeeTable from "../components/EmployeeTable.vue";
+import Calendar from "../components/Calendar.vue";
+import MessageQueue from "../components/MessageQueue.vue";
+import WebSocket from "../components/WebSocket.vue";
+import WebSocketStomp from "../components/WebSocketStomp.vue";
 
-Vue.use(Router)
 
-export default new Router({
-  /*
-  * 1. 创建路由组件
-  * 2. 将路由与组件进行映射
-  * 3. 创建router示例
-  * */
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
@@ -48,3 +42,5 @@ export default new Router({
     }
   ]
 })
+
+export default router

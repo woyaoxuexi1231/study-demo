@@ -68,8 +68,8 @@ GET http://localhost:10099/api/gs-guide-websocket/iframe.html 404 (Not Found)  i
 * */
 
 import SockJS from 'sockjs-client';
-// import Stomp from 'stompjs';
-import Stomp from 'webstomp-client';
+import Stomp from 'stompjs';
+// import Stomp from 'webstomp-client';
 
 export default {
   data() {
@@ -135,11 +135,11 @@ export default {
       if (this.stompClient && this.connected) {
 
         // 使用 sockjs-client
-        // this.stompClient.send('/app/hello', {}, JSON.stringify({name: this.name}));
+        this.stompClient.send('/app/hello', {}, JSON.stringify({name: this.name}));
 
         // 使用 webstomp-client
-        const message = JSON.stringify({name: this.name});
-        this.stompClient.send('/app/hello', message);
+        // const message = JSON.stringify({name: this.name});
+        // this.stompClient.send('/app/hello', message);
         // 使用json格式传输
         // this.stompClient.send('/app/hello', message, {'content-type': 'application/json'});
       }

@@ -1,4 +1,4 @@
-package com.hundsun.demo.springboot.es;
+package com.hundsun.demo.spring.es;
 
 
 import lombok.AllArgsConstructor;

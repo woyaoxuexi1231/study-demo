@@ -1,4 +1,4 @@
-package com.hundsun.demo.springboot.es;
+package com.hundsun.demo.spring;
 
 import cn.hutool.core.collection.CollectionUtil;
 import co.elastic.clients.elasticsearch.ElasticsearchAsyncClient;
@@ -23,7 +23,7 @@ import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.endpoints.BooleanResponse;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 import co.elastic.clients.util.NamedValue;
-import com.hundsun.demo.commom.core.model.CustomerDO;
+import com.hundsun.demo.spring.es.Product;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
@@ -37,7 +37,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 

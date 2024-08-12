@@ -69,11 +69,13 @@
       </el-container>
     </el-container>
   </div>
+
 </template>
 
 <script>
+// vue3引入这个的时候报错了 global is not defined
 import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
+import Stomp from "stompjs";
 
 export default {
   name: 'App',

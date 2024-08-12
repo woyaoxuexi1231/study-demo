@@ -40,7 +40,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.lang.reflect.Field;
 import java.time.Duration;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
@@ -189,7 +188,7 @@ public class RedisController {
      * @return object
      */
     @Cacheable(value = {local}, key = "#employeeNumber", cacheManager = "localCacheManager")
-    @GetMapping(value = "/getEmployees")
+    @PostMapping(value = "/getEmployees")
     public EmployeeDO getEmployees(Long employeeNumber) {
         // @Valid @RequestBody EmployeeQryReqDTO req
         // PageHelper.startPage(req.getPageNum(), req.getPageSize());
@@ -254,7 +253,7 @@ public class RedisController {
         }
     }
 }
-//
+
 // @Configuration
 // @EnableCaching
 // class CacheConfig extends CachingConfigurerSupport {
@@ -262,31 +261,30 @@ public class RedisController {
 //     @Autowired
 //     private RedisConnectionFactory redisConnectionFactory;
 //
-//     @Bean
-//     @Override
-//     public CacheManager cacheManager() {
-//         return RedisCacheManager.builder(redisConnectionFactory)
-//                 // .withCacheConfiguration(RedisController.key, RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(10)))
-//                 // If you have a customizer bean, you don't need this line, just ensure your customizer is called
-//                 .build();
-//     }
-//
-//
-//     @Bean
-//     public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
-//         return builder -> {
-//             Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
-//             cacheConfigurations.put(RedisController.key, RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(5)));
-//             // Add more cache configurations if needed
-//
-//             builder.withInitialCacheConfigurations(cacheConfigurations);
-//         };
-//     }
-//
+//     // @Bean
+//     // @Override
+//     // public CacheManager cacheManager() {
+//     //     return RedisCacheManager.builder(redisConnectionFactory)
+//     //             // .withCacheConfiguration(RedisController.key, RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(10)))
+//     //             // If you have a customizer bean, you don't need this line, just ensure your customizer is called
+//     //             .build();
+//     // }
+//     //
+//     // @Bean
+//     // public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
+//     //     return builder -> {
+//     //         Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
+//     //         cacheConfigurations.put(RedisController.key, RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(5)));
+//     //         // Add more cache configurations if needed
+//     //
+//     //         builder.withInitialCacheConfigurations(cacheConfigurations);
+//     //     };
+//     // }
 //
 //     // 这是一个本地缓存
-//     // @Bean
-//     // public CacheManager cacheManager() {
-//     //     return new ConcurrentMapCacheManager("myCache");
-//     // }
+//     @Bean
+//     public CacheManager cacheManager() {
+//         return new ConcurrentMapCacheManager("myCache");
+//     }
+//
 // }
