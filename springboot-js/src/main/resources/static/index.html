@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- 用于提供有关文档的元数据（metadata）,这里设置文档编码为 UTF-8 -->
     <meta charset="UTF-8">
+
+    <!-- 设置网页图标 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-icon-60x60.png">
@@ -21,10 +24,13 @@
     <meta name="msapplication-TileImage" content="/icon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
 
+    <!-- 网页标题 -->
+    <title>Interactive Web Page</title>
+
+    <!-- 引入两个 css 样式文件 -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link href="/css/main.css" rel="stylesheet">
-    <script src="/js/jquery.min.js"></script>
-    <script src="/js/stomp.umd.min.js"></script>
+    <link rel="stylesheet" href="/css/main.css">
+    <!-- 预设置两个样式 -->
     <style>
         .button-wrapper {
             margin-bottom: 10px;
@@ -34,19 +40,30 @@
             margin: 20px;
         }
     </style>
-    <title>Interactive Web Page</title>
+
+    <!-- js脚本放在head意味着脚本会在文档渲染之前加载,可能会阻塞页面渲染 -->
+    <!-- js脚本放在body中可以减少这种阻塞,但是如果dom依赖于js,那么可能导致dom不可用 -->
+    <!-- 引入两个js脚本文件 -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/stomp.umd.min.js"></script>
+    <!-- 预设置一个函数 -->
     <script>
         /*
-        * AJAX是一种通过后台与服务器进行数据交换的技术，它允许在不重新加载整个网页的情况下，动态地更新部分页面内容。AJAX通过JavaScript和XMLHttpRequest对象实现异步的HTTP请求。
+        * 三种用于发起http请求的js库和方法:
+        * 1. fetch - JavaScript 的一部分，由浏览器原生支持。
+        * 2. Ajax - 通过 XMLHttpRequest 对象来实现的三方类库,存在时间已经很长了
+        * 3. axios - 基于 Promise 的 HTTP 库, 可以用在浏览器和 node.js 中, 是请求资源的模块, 通过promise对ajax的封装
+        *
+        *
         * document.addEventListener('DOMContentLoaded', function ()
         *   它监听网页的 ‘DOMContentLoaded’ 事件，表示网页的文档已完全加载和解析，不需要等待样式表、图像和子框架的加载完成。这意味着一旦DOM结构构建完毕，这个函数里的代码就会被执行。
         * */
         document.addEventListener('DOMContentLoaded', function () {
             // 这里向ID为 'greeting-form' 的 HTML 元素（此处是一个表单）添加一个 'submit' 事件的监听器。当用户提交这个表单时，会运行提供的函数。
             document.getElementById('greeting-form').addEventListener('submit', function (e) {
-                // 当表单提交事件发生时，这行代码将阻止表单的默认提交行为。
-                // 对于一个没有添加 action 属性的表单，它的默认行为是将数据发送到当前页面的地址，可能会引起页面刷新。
+                // 当表单提交事件发生时，这行代码将阻止表单的默认提交行为。 - 对于一个没有添加 action 属性的表单，它的默认行为是将数据发送到当前页面的地址，可能会引起页面刷新。
                 // 这里使用 e.preventDefault() 是为了阻止这种行为，让JavaScript可以控制表单数据的提交。
+                // 阻止页面的刷新行为主要是为了我们渲染 greeting-result 这个元素
                 e.preventDefault(); // 阻止表单的默认提交行为
                 // 接着，这行代码通过ID获取输入框（文本框）元素，并提取用户输入的值（即 name）。
                 const name = document.getElementById('name').value;
@@ -63,6 +80,42 @@
                     })
                     // 如果在请求或处理响应过程中发生错误，.catch() 方法会捕获这些错误，并将错误信息打印到控制台。这有助于开发者诊断问题。
                     .catch(error => console.error('Error:', error));
+
+                /* 如果是一个post请求参考如下代码
+                // 定义要请求的 URL
+                const url = 'https://api.example.com/data';
+
+                // 定义请求数据
+                const data = {
+                  key: 'value',
+                  anotherKey: 42
+                };
+
+                // 将数据转换为 JSON 字符串
+                const jsonData = JSON.stringify(data);
+
+                // 发起 POST 请求
+                fetch(url, {
+                  method: 'POST', // 或 'PUT'
+                  headers: {
+                    'Content-Type': 'application/json',
+                    // 'Content-Type': 'application/x-www-form-urlencoded',
+                  },
+                  body: jsonData // 数据体
+                })
+                  .then(response => {
+                    if (!response.ok) {
+                      throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json(); // 解析响应体为 JSON
+                  })
+                  .then(data => {
+                    console.log(data);
+                  })
+                  .catch(error => {
+                    console.error('Fetch Error:', error);
+                  });
+                 */
             });
         });
     </script>
@@ -90,17 +143,13 @@
 <p id="greeting-result"></p>
 
 <p>Check out this <a href="image-page.html">image page</a>.</p>
-<p>Check out this <a href="userlist.html">userlist page</a>.</p>
-<p>Check out this <a href="userlist-bootstrap.html">userlist-bootstrap page</a>.</p>
+<p>Check out this <a href="userList.html">user list page</a>.</p>
+<p>Check out this <a href="userList-bootstrap.html">user list page(bootstrap)</a>.</p>
 <div class="button-wrapper">
     <button class="btn btn-default" onclick="goToPage('websocket-spring.html')">websocket-spring.html</button>
 </div>
 <div class="button-wrapper">
     <button class="btn btn-default" onclick="goToPage('websocket-STOMP.html')">websocket-STOMP.html</button>
-</div>
-
-<div>
-    <img src="images/微信图片_20240802153050.jpg" alt="Sample Image" width="400"/>
 </div>
 
 <script type="text/javascript">

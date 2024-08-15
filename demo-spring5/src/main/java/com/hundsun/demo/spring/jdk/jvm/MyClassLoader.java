@@ -15,7 +15,7 @@ import java.net.URLClassLoader;
  * @createDate: 2023/10/27 23:34
  */
 
-public class ClassLoad {
+public class MyClassLoader {
     /*
     假设有如下的 Java 代码片段：
     ```java
@@ -72,6 +72,11 @@ class CustomJarClassLoader extends URLClassLoader {
      * 此方法在jdk1.2之前就存在,而双亲委派机制在1.2才开始出现
      * 为了兼容之前已经存在的用户自定义的类加载器,Java设计者做出妥协,声明了另一个方法 {@link URLClassLoader#findClass(String)},并且引导用户尽可能地重写这个方法来进行类加载的逻辑
      * 而loadClass这个方法则在 {@link java.lang.ClassLoader} 这个类中实现了双亲委派机制的具体逻辑
+     * <p>
+     * <b>启动类加载器(Bootstrap ClassLoader)</b>
+     * <b>扩展类加载器(Extension ClassLoader)</b>
+     * <b>应用程序类加载器(Application ClassLoader)</b>
+     * <p>
      * 我们这里重写一下这个方法来干预一下我们加载类的行为
      */
     @Override
