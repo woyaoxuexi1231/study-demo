@@ -81,7 +81,9 @@
 
         // 创建WebSocket对象，指定服务器的URL
         // socket =  new WebSocket("ws://localhost:10008/myWs");
-        socket = new WebSocket("ws://localhost:10008/myWsSpring");
+        let host = window.location.host;
+        let url = "ws://" + host + "/myWsSpring";
+        socket = new WebSocket(url);
 
         // if ('WebSocket' in window) {
         //     // 后端服务port为22900

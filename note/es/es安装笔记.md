@@ -49,3 +49,15 @@ qNQwXe9TV1gLFRImusVi
 ⁃ Start Elasticsearch with `bin/elasticsearch --enrollment-token <token>`, using the enrollment token that you generated.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+https://cloud.tencent.com/developer/article/2216722
+
+1. 启动es
+   nohup ./elasticsearch &
+2. 启动kibana
+   nohup ./kibana &
+
+
+ELK架构 - Elasticsearch、Logstash和Kibana
+- Elasticsearch，担任数据持久层的角色，负责储存数据
+- Logstash，担任控制层的角色，负责搜集和过滤数据
+- Kibana，担任视图层角色，拥有各种维度的查询和分析，并使用图形化的界面展示存放在Elasticsearch中的数据
