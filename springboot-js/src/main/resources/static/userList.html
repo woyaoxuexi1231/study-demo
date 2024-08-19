@@ -25,17 +25,38 @@
     let currentPage = 1;
 
     function getUsers(pageSize, pageNum) {
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'getUsers', true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                const users = JSON.parse(xhr.responseText);
-                displayUsers(users);
+        // const xhr = new XMLHttpRequest();
+        // xhr.open('POST', 'getUsers', true);
+        // xhr.setRequestHeader('Content-Type', 'application/json');
+        // xhr.onreadystatechange = function () {
+        //     if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+        //         const users = JSON.parse(xhr.responseText);
+        //         displayUsers(users);
+        //     }
+        // };
+        // const data = JSON.stringify({pageSize: pageSize, pageNum: pageNum});
+        // xhr.send(data);
+
+        fetch('http://localhost:10008/getUsers', { // 替换为您的 API URL
+            method: 'post',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+
+            body: JSON.stringify({pageSize: pageSize, pageNum: pageNum}),
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
-        };
-        const data = JSON.stringify({pageSize: pageSize, pageNum: pageNum});
-        xhr.send(data);
+            response.json().then(data => {
+                console.log(data);
+                // const users = JSON.parse(data);
+                displayUsers(data);
+            })
+        }).catch(error => {
+            console.error('Error occurred while fetching data:', error);
+        });
     }
 
     function displayUsers(users) {
