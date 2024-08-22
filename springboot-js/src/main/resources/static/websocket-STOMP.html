@@ -73,8 +73,10 @@
 
 
 <script>
+    let host = window.location.host;
+    let url = "ws://" + host + "/gs-guide-websocket";
     const stompClient = new StompJs.Client({
-        brokerURL: 'ws://localhost:10008/gs-guide-websocket'
+        brokerURL: url
     });
 
     stompClient.onConnect = (frame) => {
