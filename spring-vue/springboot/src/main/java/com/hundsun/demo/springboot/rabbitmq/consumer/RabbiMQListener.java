@@ -342,7 +342,7 @@ public class RabbiMQListener {
                 validation.setTime(exploreTime);
                 /*
                 这里是否依旧存在问题? 如果就是另一台机器单纯的慢呢? 正好执行了十分零一秒, 那是否意味着依旧存在重复消费的问题?
-                这个没办法避免
+                这里要引入过期时间的更新机制，正在消费的线程如果由于处理时间过于长则需要整个过程中不断的调整过期时间
                  */
                 // 删除过期时间之外的消息
                 int i = mqIdempotencyMapper.deleteByTime(validation);
@@ -387,6 +387,7 @@ public class RabbiMQListener {
      */
     private ConsumerStatus msgConsumableByRedis(MQIdempotency validation) {
 
+        // TODO 这里应该设置成锁的结果，而不应该是这个键值对
         // 执行设置键值对操作的结果 (false表示设置不成功[有其他线程在消费], true表示当前线程可以消费)
         boolean flag = Boolean.TRUE.equals(
                 stringRedisTemplate.execute( // 执行一个Redis操作的通用方法
