@@ -1,5 +1,7 @@
 package com.hundsun.demo.spring.jdk.network;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -23,26 +25,47 @@ import java.net.UnknownHostException;
  * Copyright 2023 Hundsun Technologies Inc. All Rights Reserved
  */
 
+@Slf4j
 public class Client {
     public static void main(String[] args) {
         try {
             Socket s = new Socket("127.0.0.1", 8888);
 
-            //构建IO
+            // 构建IO
             InputStream is = s.getInputStream();
             OutputStream os = s.getOutputStream();
 
+            // 发送缓冲
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os));
-            //向服务器端发送一条消息
-            bw.write("测试客户端和服务器通信，服务器接收到消息返回到客户端\n");
-            bw.flush();
-
-            //读取服务器返回的消息
+            // 读取缓冲
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            String mess = br.readLine();
-            System.out.println("服务器：" + mess);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
+
+            // 增加一个读取用户输入的部分
+            BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
+
+            while (true) {
+                // 从控制台读取用户输入
+                System.out.print("输入发送到服务器的消息: ");
+                String userMessage = userInput.readLine();
+
+                // 向服务器端发送消息
+                bw.write(userMessage + "\n");
+                bw.flush();
+
+                // 读取服务器端返回的消息
+                String mess = br.readLine();
+                System.out.println("服务器：" + mess);
+
+                // 可以加入退出条件，比如用户输入 "exit" 时退出循环
+                if ("exit".equalsIgnoreCase(userMessage)) {
+                    break;
+                }
+            }
+
+            // 关闭资源
+            br.close();
+            bw.close();
+            s.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

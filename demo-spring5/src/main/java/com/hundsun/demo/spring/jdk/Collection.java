@@ -243,20 +243,49 @@ public class Collection {
     }
 
     public static void main(String[] args) {
-        // 循环中操作数组
-        foreach();
-        // 这个可以获得一个线程安全的数据 - SynchronizedCollection使用了装饰器模式
-        java.util.Collection<Object> synchronizedCollection = Collections.synchronizedCollection(new ArrayList<>());
-        // 同样的此方法返回一个只读集合, 使用了装饰器模式
-        java.util.Collection<Object> unmodifiableCollection = Collections.unmodifiableCollection(new ArrayList<>());
+        // // 循环中操作数组
+        // foreach();
+        // // 这个可以获得一个线程安全的数据 - SynchronizedCollection使用了装饰器模式
+        // java.util.Collection<Object> synchronizedCollection = Collections.synchronizedCollection(new ArrayList<>());
+        // // 同样的此方法返回一个只读集合, 使用了装饰器模式
+        // java.util.Collection<Object> unmodifiableCollection = Collections.unmodifiableCollection(new ArrayList<>());
+        //
+        // // Arrays.asList生成的数组为不可变数组, 数组内部为 final E[]
+        // List<Integer> asList = Arrays.asList(1);
+        // // asList.add(2); //这里会直接抛出异常 java.lang.UnsupportedOperationException
+        // log.info("asList: {}", asList);
+        //
+        // Arrays.sort(new int[]{1, 2});
+        //
+        // testCopyOnWriteArrayList();
 
-        // Arrays.asList生成的数组为不可变数组, 数组内部为 final E[]
-        List<Integer> asList = Arrays.asList(1);
-        // asList.add(2); //这里会直接抛出异常 java.lang.UnsupportedOperationException
-        log.info("asList: {}", asList);
+        List a = new ArrayList();
+        a.add(1);
+        a.add(2);
+        a.add(3);
+        a.add(4);
+        a.add(5);
 
-        Arrays.sort(new int[]{1, 2});
+        List b = new ArrayList();
+        b.add(3);
+        b.add(4);
+        b.add(5);
+        b.add(6);
+        b.add(7);
+        b.add(8);
+        b.add(9);
+        b.add(10);
+        b.add(11);
+        b.add(12);
+        b.add(13);
+        b.add(14);
+        b.add(15);
+        b.add(16);
+        b.add(17);
 
-        testCopyOnWriteArrayList();
+        a.addAll(b);
+
+        System.out.println(Arrays.toString(a.toArray()));
+
     }
 }
