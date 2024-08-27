@@ -14,9 +14,9 @@
     <packaging>pom</packaging>
 
     <modules>
-<!--         <module>vue2</module> -->
-<!--         <module>vue3</module> -->
-<!--         <module>springboot</module> -->
+        <module>vue2</module>
+        <!--         <module>vue3</module> -->
+        <module>springboot</module>
     </modules>
 
     <properties>

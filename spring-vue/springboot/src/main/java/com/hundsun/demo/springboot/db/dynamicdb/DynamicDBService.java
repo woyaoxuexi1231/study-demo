@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Copyright 2023 Hundsun Technologies Inc. All Rights Reserved
  */
 
-public interface DynamicdbService {
+public interface DynamicDBService {
     /**
      * 双数据源不使用分布式事务如何保证事务
      */

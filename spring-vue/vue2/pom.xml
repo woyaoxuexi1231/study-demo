@@ -43,6 +43,7 @@
             <!-- build用于配置构建相关的信息 -->
             <build>
                 <plugins>
+                    <!-- 这个插件在clean阶段会使用 -->
                     <plugin>
                         <artifactId>maven-clean-plugin</artifactId>
                         <configuration>
@@ -50,31 +51,35 @@
                                 <fileset>
                                     <directory>dist</directory>
                                 </fileset>
+<!--                                 <fileset> -->
+<!--                                     <directory>node_modules</directory> -->
+<!--                                 </fileset> -->
                             </filesets>
                         </configuration>
                     </plugin>
                     <plugin>
+                        <!-- 这个插件的github文档明确指出了这个插件不支持使用本地的node进行构建,原文:Notice: This plugin does not support already installed Node or npm versions. Use the exec-maven-plugin instead. -->
                         <groupId>com.github.eirslett</groupId>
                         <artifactId>frontend-maven-plugin</artifactId>
                         <version>${frontend-maven-plugin.version}</version>
                         <executions>
 
                             <!-- 不指定安装node和npm,直接使用系统自带的 -->
-                            <!--                             <execution> -->
-                            <!--                                 <id>install node and npm</id> -->
-                            <!--                                 &lt;!&ndash; 定义了要执行的目标。在这个例子中，目标是 install-node-and-npm，即安装 Node.js 和 npm。 &ndash;&gt; -->
-                            <!--                                 <goals> -->
-                            <!--                                     <goal>install-node-and-npm</goal> -->
-                            <!--                                 </goals> -->
-                            <!--                                 &lt;!&ndash; 指定要安装的 Node.js &ndash;&gt; -->
-                            <!--                                 <configuration> -->
-                            <!--                                     &lt;!&ndash; <npmVersion>10.5.0</npmVersion> &ndash;&gt; -->
-                            <!--                                     &lt;!&ndash; <nodeVersion>v18.20.2</nodeVersion> &ndash;&gt; -->
-
-                            <!--                                     &lt;!&ndash; <npmVersion>8.5.5</npmVersion> &ndash;&gt; -->
-                            <!--                                     &lt;!&ndash; <nodeVersion>v14.17.3</nodeVersion> &ndash;&gt; -->
-                            <!--                                 </configuration> -->
-                            <!--                             </execution> -->
+                            <execution>
+                                <id>install node and npm</id>
+                                <!-- 定义了要执行的目标。在这个例子中，目标是 install-node-and-npm，即安装 Node.js 和 npm。 -->
+                                <goals>
+                                    <goal>install-node-and-npm</goal>
+                                </goals>
+                                <!-- 指定要安装的 Node.js -->
+                                <configuration>
+                                    <npmVersion>10.7.0</npmVersion>
+                                    <nodeVersion>v18.20.4</nodeVersion>
+                                </configuration>
+                                <!-- optional: default phase is "generate-resources" -->
+                                <!-- 这个操作默认就在generate-resources这个极端,所以在compile的时候会安装node和npm -->
+                                <phase>generate-resources</phase>
+                            </execution>
 
                             <!-- Install all project dependencies -->
                             <execution>

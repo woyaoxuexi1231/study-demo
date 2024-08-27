@@ -2,8 +2,8 @@ package com.hundsun.demo.springboot.mysql;
 
 import com.hundsun.demo.commom.core.model.EmployeeDO;
 import com.hundsun.demo.springboot.common.mapper.EmployeeMapper;
-import com.hundsun.demo.springboot.db.dynamicdb.core.DynamicDataSourceType;
-import com.hundsun.demo.springboot.db.dynamicdb.core.DynamicDataSourceTypeManager;
+import com.hundsun.demo.springboot.db.dynamicdb.config.coding.DataSourceTag;
+import com.hundsun.demo.springboot.db.dynamicdb.core.DataSourceToggleUtil;
 import com.hundsun.demo.springboot.mysql.mapper.AutoKeyTestMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -138,7 +138,7 @@ public class MysqlController {
             }
 
             new Thread(() -> {
-                DynamicDataSourceTypeManager.set(DynamicDataSourceType.SECOND);
+                DataSourceToggleUtil.set(DataSourceTag.SECOND.getTag());
                 autoKeyTestMapper.insertList(list);
             }).start();
 

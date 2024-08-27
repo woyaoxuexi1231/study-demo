@@ -1,11 +1,14 @@
 package com.hundsun.demo.springboot;
 
+import com.hundsun.demo.springboot.db.dynamicdb.config.parsing.EnableDynamicDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 import tk.mybatis.spring.annotation.MapperScan;
 
 /**
@@ -17,19 +20,15 @@ import tk.mybatis.spring.annotation.MapperScan;
  * @Date: 2022-07-25 20:20
  */
 
+
+@RestController("/application")
 @SpringBootApplication
-@MapperScan(basePackages = {
-        "com.hundsun.demo.springboot.common.mapper",
-        "com.hundsun.demo.springboot.rabbitmq.consumer.mapper",
-        "com.hundsun.demo.springboot.mysql.mapper",
-        "com.hundsun.demo.springboot.tkmybatis.mapper"
-})
-@org.mybatis.spring.annotation.MapperScan(basePackages = {
-        "com.hundsun.demo.springboot.mybatisplus.mapper"
-})
+@MapperScan(basePackages = {"com.hundsun.demo.springboot.common.mapper", "com.hundsun.demo.springboot.rabbitmq.consumer.mapper", "com.hundsun.demo.springboot.mysql.mapper", "com.hundsun.demo.springboot.tkmybatis.mapper"})
+@org.mybatis.spring.annotation.MapperScan(basePackages = {"com.hundsun.demo.springboot.mybatisplus.mapper"})
 @Slf4j
 // @ServletComponentScan
 @EnableScheduling
+@EnableDynamicDataSource
 public class SpringbootApplication {
 
     public static ApplicationContext applicationContext;
@@ -62,6 +61,13 @@ public class SpringbootApplication {
         启动之后可以使用 jps -l 和 jmap -heap <pid> | grep GC 来查看使用的 GC
 
         -XX:+UseG1GC 开启G1垃圾收集器
+
+         -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCCause -XX:+PrintGCTimeStamps -XX:+PrintHeapAtGC -XX:+UseG1GC
          */
+    }
+
+    @GetMapping("/debug")
+    public void applicationApi() {
+        System.out.println("debug mode");
     }
 }

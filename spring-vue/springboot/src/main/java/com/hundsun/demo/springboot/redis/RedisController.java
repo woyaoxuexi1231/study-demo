@@ -1,5 +1,7 @@
 package com.hundsun.demo.springboot.redis;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.jsonzou.jmockdata.JMockData;
 import com.hundsun.demo.commom.core.model.EmployeeDO;
@@ -40,7 +42,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.lang.reflect.Field;
 import java.time.Duration;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
 /**
@@ -72,8 +78,7 @@ public class RedisController {
         SimpleCacheManager cacheManager = new SimpleCacheManager();
         cacheManager.setCaches(Collections.singletonList(
                 // 本地内存缓存
-                new ConcurrentMapCache("default")
-        ));
+                new ConcurrentMapCache("default")));
         return cacheManager;
     }
 
@@ -82,8 +87,7 @@ public class RedisController {
         SimpleCacheManager cacheManager = new SimpleCacheManager();
         cacheManager.setCaches(Collections.singletonList(
                 // 本地内存缓存
-                new ConcurrentMapCache(RedisController.local)
-        ));
+                new ConcurrentMapCache(RedisController.local)));
         return cacheManager;
     }
 
@@ -92,14 +96,10 @@ public class RedisController {
 
         RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory);
 
-        RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(60)) // 设置缓存过期时间
-                .disableCachingNullValues()
-                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.string()))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.json()));
+        RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(60)) // 设置缓存过期时间
+                .disableCachingNullValues().serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.string())).serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.json()));
 
-        return RedisCacheManager.builder(redisCacheWriter)
-                .withCacheConfiguration(RedisController.redis, defaultCacheConfig)
+        return RedisCacheManager.builder(redisCacheWriter).withCacheConfiguration(RedisController.redis, defaultCacheConfig)
                 // .cacheDefaults(defaultCacheConfig)
                 .build();
     }
@@ -252,6 +252,46 @@ public class RedisController {
             }
         }
     }
+
+
+
+
+
+
+
+    /*========================================== redis的基本使用 =======================================*/
+
+    /**
+     * 使用redis集合获得集合交集
+     *
+     * @return
+     */
+    @RequestMapping("/redisForList")
+    public String redisForList() {
+
+        // 对于用户 Aurelia 来说,这算是他的关注列表,他一共关注了四个人
+        redisTemplate.opsForSet().add("Aurelia", "Nou", "Tyhesha", "Darrion", "Saroeun");
+
+        // 对于用户 Nou 来说,这算是他的关注列表,他也关注了四个人
+        redisTemplate.opsForSet().add("Nou", "Sulaiman", "Tyhesha", "Darrion", "Crystle");
+
+        // 现在的问题是,要求这两个人的共同关注,这其实redis有提供这相关api可以使用
+        Set<Object> intersect = redisTemplate.opsForSet().intersect("Aurelia", "Nou");
+
+
+        // 扩展一下
+        // 1.求并集
+        Set<Object> union = redisTemplate.opsForSet().union("Aurelia", "Nou");
+        // 2.求差集
+        Set<Object> difference = redisTemplate.opsForSet().difference("Aurelia", "Nou");
+
+        Map<String, String> resultMap = new HashMap<>();
+        resultMap.put("intersect", CollectionUtils.isEmpty(intersect) ? "null" : intersect.toString());
+        resultMap.put("union", CollectionUtils.isEmpty(union) ? "null" : union.toString());
+        resultMap.put("difference", CollectionUtils.isEmpty(difference) ? "null" : difference.toString());
+        return JSONObject.toJSONString(resultMap);
+    }
+
 }
 
 // @Configuration

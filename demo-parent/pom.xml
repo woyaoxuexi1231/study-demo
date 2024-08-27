@@ -606,6 +606,40 @@
 
     <!--defines the project build.-->
     <build>
+
+
+        <!-- maven的一些常见的生命周期如下: -->
+        <!--
+            validate - 验证项目是否正确、所有必要的信息是否可用。
+            initialize - 初始化构建状态，比如设置属性。
+            generate-sources - 生成任何所需的源代码。
+            process-sources - 处理项目的源代码，例如过滤。
+            generate-resources - 生成任何所需的资源。
+            process-resources - 复制和处理资源到目标目录，准备打包。
+            compile - 编译项目的源代码。
+            process-classes - 对已编译的类文件进行处理，例如字节码增强。
+            generate-test-sources - 生成任何所需的测试源代码。
+            process-test-sources - 处理测试源代码。
+            generate-test-resources - 生成任何所需的测试资源。
+            process-test-resources - 复制和处理测试资源到目标目录。
+            test-compile - 编译测试源代码。
+            process-test-classes - 处理已编译的测试类文件。
+            test - 使用适当的单元测试框架运行测试。
+            prepare-package - 执行任何需要在包之前准备工作的任务。
+            package - 接受编译好的代码并将其打包成可分发的格式，如 JAR 或 WAR。
+            pre-integration-test - 执行集成测试前所需的操作。
+            integration-test - 如有必要，处理并部署包到集成测试环境中。
+            post-integration-test - 执行集成测试后所需的操作。
+            verify - 运行任何检查以验证包是否有效且符合质量标准。
+            install - 将包安装到本地 Maven 仓库中，这样可以在其他本地项目中使用。
+            deploy - 将最终的包复制到远程仓库以便与其他开发人员和项目共享。
+         -->
+
+
+
+
+
+
         <!--parent element for one or more <plugin> elements.-->
         <plugins>
 

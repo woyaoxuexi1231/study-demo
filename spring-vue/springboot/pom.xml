@@ -127,6 +127,15 @@
             <version>4.2.0</version>
         </dependency>
 
+
+
+        <dependency>
+            <groupId>com.github.f4b6a3</groupId>
+            <artifactId>uuid-creator</artifactId>
+            <version>5.2.0</version>
+        </dependency>
+
+
         <!--测试-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -321,6 +330,7 @@
                                 <phase>generate-resources</phase>
                                 <configuration>
                                     <outputDirectory>src/main/resources/public</outputDirectory>
+                                    <!-- true表示覆盖目标文件中已经存在的文件 -->
                                     <overwrite>true</overwrite>
                                     <resources>
                                         <resource>
@@ -329,6 +339,22 @@
                                     </resources>
                                 </configuration>
                             </execution>
+<!--                             <execution> -->
+<!--                                 <id>copy markdown file</id> -->
+<!--                                 <goals> -->
+<!--                                     <goal>copy-resources</goal> -->
+<!--                                 </goals> -->
+<!--                                 <phase>generate-resources</phase> -->
+<!--                                 <configuration> -->
+<!--                                     <outputDirectory>src/main/resources/public/note</outputDirectory> -->
+<!--                                     <overwrite>true</overwrite> -->
+<!--                                     <resources> -->
+<!--                                         <resource> -->
+<!--                                             <directory>${project.parent.parent.basedir}/note</directory> -->
+<!--                                         </resource> -->
+<!--                                     </resources> -->
+<!--                                 </configuration> -->
+<!--                             </execution> -->
                         </executions>
                     </plugin>
                 </plugins>

@@ -6,6 +6,7 @@ import Calendar from "../components/Calendar";
 import MessageQueue from "../components/MessageQueue";
 import WebSocket from "../components/WebSocket";
 import WebSocketStomp from "../components/WebSocketStomp";
+import Markdown from "../components/Markdown.vue";
 
 Vue.use(Router)
 
@@ -45,6 +46,11 @@ export default new Router({
       path: '/webSocketStomp',
       name: 'WebSocketStomp',
       component: WebSocketStomp
+    },
+    {
+      path: '/markdown',
+      name: 'Markdown',
+      component: Markdown
     }
   ]
 })

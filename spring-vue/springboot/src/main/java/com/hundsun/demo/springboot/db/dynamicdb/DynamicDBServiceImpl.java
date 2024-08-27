@@ -6,8 +6,8 @@ import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
 import com.hundsun.demo.springboot.common.mapper.EmployeeMapper;
 import com.hundsun.demo.springboot.db.dynamicdb.annotation.TargetDataSource;
-import com.hundsun.demo.springboot.db.dynamicdb.core.DynamicDataSourceType;
-import com.hundsun.demo.springboot.db.dynamicdb.core.DynamicDataSourceTypeManager;
+import com.hundsun.demo.springboot.db.dynamicdb.config.coding.DataSourceTag;
+import com.hundsun.demo.springboot.db.dynamicdb.core.DataSourceToggleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Service
-public class DynamicdbServiceimpl implements DynamicdbService {
+public class DynamicDBServiceImpl implements DynamicDBService {
 
     @Autowired
     ThreadPoolExecutor singlePool;
@@ -57,7 +57,7 @@ public class DynamicdbServiceimpl implements DynamicdbService {
     RedisTemplate<String, String> stringRedisTemplate;
 
     @Autowired
-    DynamicdbService dynamicdbService;
+    DynamicDBService dynamicdbService;
 
     @Override
     public ResultDTO<?> multiDataSourceSingleTransaction() {
@@ -156,7 +156,7 @@ public class DynamicdbServiceimpl implements DynamicdbService {
 
     @Override
     @Transactional
-    @TargetDataSource(dataSourceType = DynamicDataSourceType.MASTER)
+    @TargetDataSource(value = "first")
     public void copySlaveToMaster(List<EmployeeDO> employeeDOS, Semaphore masterSemaphore, Semaphore slaveSemaphore, AtomicBoolean isFinished) {
 
         try {
@@ -217,7 +217,7 @@ public class DynamicdbServiceimpl implements DynamicdbService {
 
     @Override
     @Transactional
-    @TargetDataSource(dataSourceType = DynamicDataSourceType.SECOND)
+    @TargetDataSource(value = "second")
     public void selectFromSlave(List<EmployeeDO> employeeDOS, Semaphore masterSemaphore, Semaphore slaveSemaphore, AtomicBoolean isFinished) {
 
         // 分页查询
@@ -288,14 +288,19 @@ public class DynamicdbServiceimpl implements DynamicdbService {
         EmployeeDO employeeDO = new EmployeeDO();
         employeeDO.setEmployeeNumber(1002L);
         System.out.println(employeeMapper.selectOne(employeeDO));
-        DynamicDataSourceTypeManager.set(DynamicDataSourceType.MASTER);
+        DataSourceToggleUtil.set(DataSourceTag.MASTER.getTag());
         // simpleService.getOneEmployeeDO();
      /*
      这个地方切换与否其实不重要, 因为上一个查询语句结束之后, 在这里 spring 会恢复挂起的事务, 拿到之前的连接来执行查询语句, 即使不切换, 也不影响查询
      但是如果后续还有其他数据源的查询需要自行切换
       */
-        DynamicDataSourceTypeManager.set(DynamicDataSourceType.SECOND);
+        DataSourceToggleUtil.set(DataSourceTag.SECOND.getTag());
         employeeDO.setEmployeeNumber(1002L);
         System.out.println(employeeMapper.selectOne(employeeDO));
+    }
+
+    public void select() {
+        List<EmployeeDO> employeeDOS = employeeMapper.selectAll();
+        log.info("employeeDOS: {}", employeeDOS);
     }
 }

@@ -39,6 +39,9 @@
                   </router-link>
                 </el-menu-item>
               </el-submenu>
+              <el-menu-item index="3">
+                <router-link style="text-decoration: none; color: #333333" to="/markdown">markdown</router-link>
+              </el-menu-item>
             </el-menu>
           </el-col>
         </el-row>

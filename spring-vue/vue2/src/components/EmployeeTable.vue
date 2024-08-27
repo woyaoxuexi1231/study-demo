@@ -64,7 +64,8 @@ export default {
   methods: {
     fetchEmployees() {
       const jsonData = {pageNum: this.currentPage, pageSize: this.pageSize};
-      const url = '/api/tkmybatis/getEmployees';      // Should be adjusted to your actual API endpoint
+      // const url = '/api/tkmybatis/getEmployees';      // Should be adjusted to your actual API endpoint
+      const url = '/tkmybatis/getEmployees';
       this.$axios.post(url, jsonData, {headers: {'Content-Type': 'application/json'}})
         .then(response => {
           console.log('Response:', response.data);
@@ -89,7 +90,8 @@ export default {
       this.editDialogVisible = true;
     },
     submitEdit() {
-      const url = '/api/tkmybatis/employees/update';  // Adjust this API endpoint to match your requirements
+      // const url = '/api/tkmybatis/employees/update';  // Adjust this API endpoint to match your requirements
+      const url = '/tkmybatis/employees/update';  // Adjust this API endpoint to match your requirements
       this.$axios.post(url, this.editFormData, {headers: {'Content-Type': 'application/json'}})
         .then(response => {
           this.editDialogVisible = false;

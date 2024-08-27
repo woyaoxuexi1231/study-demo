@@ -74,7 +74,8 @@ import Stomp from 'webstomp-client';
 export default {
   data() {
     return {
-      socketUrl: '/api/gs-guide-websocket',
+      // socketUrl: '/api/gs-guide-websocket',
+      socketUrl: '/gs-guide-websocket',
       name: '',
       messages: [],
       connected: false,

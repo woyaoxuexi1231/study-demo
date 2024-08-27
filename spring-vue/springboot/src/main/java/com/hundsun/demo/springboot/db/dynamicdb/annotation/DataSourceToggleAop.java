@@ -1,7 +1,6 @@
-package com.hundsun.demo.springboot.db.dynamicdb.config;
+package com.hundsun.demo.springboot.db.dynamicdb.annotation;
 
-import com.hundsun.demo.springboot.db.dynamicdb.annotation.TargetDataSource;
-import com.hundsun.demo.springboot.db.dynamicdb.core.DynamicDataSourceTypeManager;
+import com.hundsun.demo.springboot.db.dynamicdb.core.DataSourceToggleUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -21,7 +20,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Aspect
 @Order(-1)
-public class DynamicDataSourceAspect {
+public class DataSourceToggleAop {
 
     @Pointcut(value = "@annotation(targetDataSource))")
     public void point(TargetDataSource targetDataSource) {
@@ -31,10 +30,10 @@ public class DynamicDataSourceAspect {
     public Object around(ProceedingJoinPoint joinPoint, TargetDataSource targetDataSource) throws Throwable {
 
         try {
-            DynamicDataSourceTypeManager.set(targetDataSource.dataSourceType());
+            DataSourceToggleUtil.set(targetDataSource.value());
             return joinPoint.proceed();
         } finally {
-            DynamicDataSourceTypeManager.reSet();
+            DataSourceToggleUtil.reSet();
         }
     }
 }

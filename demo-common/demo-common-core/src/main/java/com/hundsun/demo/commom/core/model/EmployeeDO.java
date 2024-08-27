@@ -2,7 +2,10 @@ package com.hundsun.demo.commom.core.model;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -20,6 +23,9 @@ import java.io.Serializable;
  * @createDate: 2023/2/13 23:24
  */
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Data
 @Table(name = "employees")
 @TableName(value = "employees")

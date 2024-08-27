@@ -53,7 +53,8 @@ export default {
       // 模拟请求发出前的进度
       this.rabbitProgressValue = 10;
       this.rabbitProgressStatus = 'success';
-      const url = '/api/rabbimq/sendMsg';
+      // const url = '/api/rabbimq/sendMsg';
+      const url = '/rabbimq/sendMsg';
       // 使用 axios 发送 GET 请求
       this.$axios.get(url)
         .then(response => {
@@ -81,7 +82,8 @@ export default {
       // 模拟请求发出前的进度
       this.redisProgressValue = 10;
       this.redisProgressStatus = 'success';
-      const url = '/api/redispush/publish';
+      // const url = '/api/redispush/publish';
+      const url = '/redispush/publish';
       // 使用 axios 发送 GET 请求
       this.$axios.get(url)
         .then(response => {
