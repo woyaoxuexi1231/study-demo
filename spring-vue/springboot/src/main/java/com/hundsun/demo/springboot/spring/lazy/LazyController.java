@@ -18,7 +18,7 @@ public class LazyController {
     LazyBean lazyBean;
 
     @Lazy
-    @Autowired
+    // @Autowired
     public void setLazyBean(LazyBean lazyBean) {
         System.out.println("LazyController开始加载lazyBean");
         this.lazyBean = lazyBean;
