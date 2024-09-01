@@ -30,7 +30,7 @@ public class DataSourceToggleUtil {
     }
 
     public static void set(String dataSourceTag) {
-        log.info("切换到数据源为 {}", dataSourceTag);
+        // log.debug("切换到数据源为 {}", dataSourceTag);
         DATA_SOURCE_TYPE_THREAD_LOCAL.set(dataSourceTag);
     }
 

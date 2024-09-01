@@ -1,6 +1,10 @@
 package com.hundsun.demo.springboot.idgenerator.segmentid;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -17,7 +21,10 @@ import java.util.concurrent.atomic.AtomicLong;
  * Copyright 2023 Hundsun Technologies Inc. All Rights Reserved
  */
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
 public class Segment {
 
     /**

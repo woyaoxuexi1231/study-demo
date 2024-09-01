@@ -1,6 +1,5 @@
-package com.hundsun.demo.springboot.idgenerator;
+package com.hundsun.demo.springboot.idgenerator.segmentid;
 
-import com.hundsun.demo.springboot.idgenerator.segmentid.LeafAlloc;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -23,15 +22,15 @@ import java.util.List;
 
 public interface SequenceMapper {
 
-    @Update(value = {"update sequence t set value = t.value + #{step} where t.key = #{key}"})
-    void update(@Param("leafAlloc") LeafAlloc leafAlloc);
+    @Update(value = {"update sequence t set value = t.value + #{step}   where t.key = #{key} "})
+    void update(LeafAlloc leafAlloc);
 
-    @Select(value = {"select t.value from sequence t where t.key = #{key}"})
-    Long get(@Param("key") String key);
+    @Select(value = {"select t.value from sequence t where t.key = #{key} "})
+    Long get(@Param(value = "key") String key);
 
-    @Select(value = {"select t.key from sequence t"})
+    @Select(value = {"select t.key from sequence t "})
     List<String> getAll();
 
-    @Insert(value = {"insert into test(b) values (#{b})"})
+    @Insert(value = {"insert into test(b) values (#{b}) "})
     void insert(@Param("b") Long value);
 }

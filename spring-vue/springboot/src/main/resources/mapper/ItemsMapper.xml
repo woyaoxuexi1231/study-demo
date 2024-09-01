@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hundsun.demo.springboot.mybatisplus.mapper.ItemsMapper">
+    <insert id="insertItemsAutoKey" parameterType="com.hundsun.demo.springboot.common.model.req.ItemDO">
+        insert into items(item_no)
+        values (#{items.itemNo})
+    </insert>
+
+    <insert id="insertItemsCustomKey" parameterType="com.hundsun.demo.springboot.common.model.req.ItemDO">
+        insert into items(id, item_no)
+        values (#{items.id}, #{items.itemNo})
+    </insert>
+
+    <insert id="insertItemsAutoKeyList" parameterType="java.util.List">
+        insert into items(item_no)
+        values
+        <foreach collection="list" index="idex" item="item" separator=",">
+            (#{item.itemNo})
+        </foreach>
+    </insert>
+
+    <insert id="insertItemsCustomKeyList">
+        insert into items(id, item_no)
+        values
+        <foreach collection="list" index="idex" item="item" separator=",">
+            (#{item.id}, #{item.itemNo})
+        </foreach>
+    </insert>
+</mapper>

@@ -38,12 +38,13 @@ public class RoutingDataSourceBeanConfig {
     @Autowired
     SecondHikariDataSourceConfig secondHikariDataSourceConfig;
 
-    @Bean
+    @Bean(value = "dataSourceFirst")
     public DataSource dataSourceFirst() {
         HikariConfig config = new HikariDataSource();
         config.setJdbcUrl(firstHikariDataSourceConfig.getUrl());
         config.setUsername(firstHikariDataSourceConfig.getUsername());
         config.setPassword(firstHikariDataSourceConfig.getPassword());
+        config.setPoolName(String.format("coding-first-%s", firstHikariDataSourceConfig.getUrl().substring("jdbc:mysql://".length(), firstHikariDataSourceConfig.getUrl().lastIndexOf("?"))));
         return new HikariDataSource(config);
     }
 
@@ -53,6 +54,7 @@ public class RoutingDataSourceBeanConfig {
         config.setJdbcUrl(secondHikariDataSourceConfig.getUrl());
         config.setUsername(secondHikariDataSourceConfig.getUsername());
         config.setPassword(secondHikariDataSourceConfig.getPassword());
+        config.setPoolName(String.format("coding-second-%s", secondHikariDataSourceConfig.getUrl().substring("jdbc:mysql://".length(), secondHikariDataSourceConfig.getUrl().lastIndexOf("?"))));
         return new HikariDataSource(config);
     }
 }

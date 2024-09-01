@@ -9,7 +9,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import tk.mybatis.spring.annotation.MapperScan;
+
 
 /**
  * @ProductName: Hundsun amust
@@ -23,8 +23,13 @@ import tk.mybatis.spring.annotation.MapperScan;
 
 @RestController("/application")
 @SpringBootApplication
-@MapperScan(basePackages = {"com.hundsun.demo.springboot.common.mapper", "com.hundsun.demo.springboot.rabbitmq.consumer.mapper", "com.hundsun.demo.springboot.mysql.mapper", "com.hundsun.demo.springboot.tkmybatis.mapper"})
-@org.mybatis.spring.annotation.MapperScan(basePackages = {"com.hundsun.demo.springboot.mybatisplus.mapper"})
+@tk.mybatis.spring.annotation.MapperScan(basePackages = {
+        "com.hundsun.demo.springboot.common.mapper",
+        "com.hundsun.demo.springboot.rabbitmq.consumer.mapper",
+        "com.hundsun.demo.springboot.mysql.mapper",
+        "com.hundsun.demo.springboot.tkmybatis.mapper"})
+@org.mybatis.spring.annotation.MapperScan(basePackages = {
+        "com.hundsun.demo.springboot.mybatisplus.mapper"})
 @Slf4j
 // @ServletComponentScan
 @EnableScheduling

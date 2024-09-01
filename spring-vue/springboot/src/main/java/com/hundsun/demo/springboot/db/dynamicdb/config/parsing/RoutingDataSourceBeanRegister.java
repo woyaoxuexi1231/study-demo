@@ -86,9 +86,11 @@ public class RoutingDataSourceBeanRegister implements ImportBeanDefinitionRegist
                         }
                     }
                 }
-                buildDataSource(dataSourceProperties);
             }
         }
+
+        buildDataSource(dataSourceProperties);
+
         for (Map.Entry<String, DataSource> entry : dataSourceMap.entrySet()) {
             defaultDataSource = entry.getValue();
             break;
@@ -105,6 +107,7 @@ public class RoutingDataSourceBeanRegister implements ImportBeanDefinitionRegist
                 config.setJdbcUrl(entry.getValue().get("url"));
                 config.setUsername(entry.getValue().get("username"));
                 config.setPassword(entry.getValue().get("password"));
+                config.setPoolName(String.format("parsing-%s", entry.getValue().get("url").substring("jdbc:mysql://".length(), entry.getValue().get("url").lastIndexOf("?"))));
                 dataSourceMap.put(entry.getKey(), new HikariDataSource(config));
             }
         }

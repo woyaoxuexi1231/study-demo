@@ -30,7 +30,7 @@ public class LeafAlloc {
     /**
      * 最大ID
      */
-    private long maxId;
+    private Long maxId;
     /**
      * 步长
      */

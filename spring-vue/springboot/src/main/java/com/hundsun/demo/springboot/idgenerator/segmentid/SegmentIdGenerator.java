@@ -1,7 +1,7 @@
 package com.hundsun.demo.springboot.idgenerator.segmentid;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.hundsun.demo.springboot.idgenerator.SequenceMapper;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
@@ -60,6 +60,7 @@ public class SegmentIdGenerator implements ApplicationContextAware {
     /**
      * mybatis sqlSessionFactory
      */
+    @Getter
     private SqlSessionFactory sqlSessionFactory;
     /**
      * SeqIdUtils
@@ -102,21 +103,20 @@ public class SegmentIdGenerator implements ApplicationContextAware {
         // 置为未初始化状态
         this.initOk = false;
         // 执行初始化方法
-        // this.init();
+        this.init();
     }
 
-    public boolean init() {
+    public void init() {
         try {
             // 初始化 sqlSessionFactory
             this.initSqlSessionFactory();
             // 第一次更新缓存
             this.updateCacheFromDb();
             this.initOk = true;
-            // this.updateCacheFromDbAtEveryMinute();
+            this.updateCacheFromDbAtEveryMinute();
         } catch (Exception e) {
             log.error("SegmentIdGenerateUtil-分段式ID生成器初始化失败", e);
         }
-        return initOk;
     }
 
     @PreDestroy
@@ -126,24 +126,29 @@ public class SegmentIdGenerator implements ApplicationContextAware {
     }
 
     /**
-     * 初始化 sqlSessionFactory
+     * 初始化 sqlSessionFactory.
+     * 这个 sqlSessionFactory 用于 db 操作
      */
     private void initSqlSessionFactory() {
         StopWatch sw = new StopWatch("initSqlSessionFactory");
         sw.start();
         // DataSource是jdk提供的一个标准的用于建立数据库连接的对象, springboot默认使用 HikariCP 作为数据库连接池, 其他还有Apache Commons DBCP,Druid等等
         DataSource dataSource = applicationContext.getBean(DataSource.class);
-        // TransactionFactory负责创建 Transaction 对象, 用来管理和维护数据库事务
-        TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        // 这是 MyBatis 中的一个配置容器，用来设置数据库运行环境的名称（在这里是 “development”）
-        Environment environment = new Environment("development", transactionFactory, dataSource);
-        // 用刚才创建的 Environment 对象来实例化 MyBatis 的 Configuration 类。Configuration 类包含了所有 MyBatis 的配置信息，包括映射文件，结果映射，数据库环境等等。这个对象是 MyBatis 配置信息的集合，后面可以用它来构建 SqlSessionFactory。
-        Configuration configuration = new Configuration(environment);
+        Configuration configuration = getConfiguration(dataSource);
         configuration.addMapper(SequenceMapper.class);
         // 这里得到一个用于操作id生成器的专属的数据库操作类.
         this.sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
         sw.stop();
         log.debug(sw.prettyPrint());
+    }
+
+    private static Configuration getConfiguration(DataSource dataSource) {
+        // TransactionFactory 负责创建 Transaction 对象, 用来管理和维护数据库事务
+        TransactionFactory transactionFactory = new JdbcTransactionFactory();
+        // 这是 MyBatis 中的一个配置容器，用来设置数据库运行环境的名称（在这里是 “development”）
+        Environment environment = new Environment("development", transactionFactory, dataSource);
+        // 用刚才创建的 Environment 对象来实例化 MyBatis 的 Configuration 类。Configuration 类包含了所有 MyBatis 的配置信息，包括映射文件，结果映射，数据库环境等等。这个对象是 MyBatis 配置信息的集合，后面可以用它来构建 SqlSessionFactory。
+        return new Configuration(environment);
     }
 
     /**
@@ -283,7 +288,7 @@ public class SegmentIdGenerator implements ApplicationContextAware {
                         break label;
                     }
                     // 成功拿到一个可用的分布式 ID
-                    log.info("一阶段成功获得id, {}, 当前是第 {} 个 segment", value, buffer.getCurrentPos());
+                    log.debug("一阶段成功获得id, {}, 当前是第 {} 个 segment", value, buffer.getCurrentPos());
                     return new GenResult(value, "success");
                 } finally {
                     // 释放读锁, 在一阶段获取 ID 的线程互不影响
@@ -322,7 +327,7 @@ public class SegmentIdGenerator implements ApplicationContextAware {
                 segment = buffer.getCurrent();
                 value = segment.getValue().getAndIncrement();
                 if (value < segment.getMax()) {
-                    log.info("二阶段成功获得id, {} , 当前是第 {} 个 segment", value, buffer.getCurrentPos());
+                    log.debug("二阶段成功获得id, {} , 当前是第 {} 个 segment", value, buffer.getCurrentPos());
                     return new GenResult(value, "success");
                 }
                 // value >= 最大值 && buffer.isNextReady() = true 代表当前当前的 segment 不可用, 并且下一个 segment 已经准备好
@@ -441,7 +446,7 @@ public class SegmentIdGenerator implements ApplicationContextAware {
         if (!buffer.isInitOk()) {
             // **初始化buffer, 此方法只会执行一次
             // 更新数据库的最大 ID, 然后得到设置的这个最大 ID 值(同一时间只会有一个buffer拿到这个值)
-            long maxId = this.updateIdAndGetId(leafAlloc);
+            Long maxId = this.updateIdAndGetId(leafAlloc);
             leafAlloc.setMaxId(maxId);
             // 设置步长
             buffer.setStep(leafAlloc.getStep());
@@ -461,17 +466,18 @@ public class SegmentIdGenerator implements ApplicationContextAware {
              * 1. 离上一次更新 segment 的时间小于 900秒(15分钟), 那么步长可以 *2
              * 2. 离上一次更新 segment 的时间大于 1800秒(30分钟), 那么步长可以 /2
              */
-            long duration = System.currentTimeMillis() - buffer.getUpdateTimeStamp();
+            // long duration = System.currentTimeMillis() - buffer.getUpdateTimeStamp();
+            // int nextStep = buffer.getStep();
+            // if (duration < 900000L) {
+            //     if (nextStep * 2 <= 10000) {
+            //         nextStep *= 2;
+            //     }
+            // } else if (duration > 1800000L) {
+            //     if (nextStep / 2 >= buffer.getMinStep()) {
+            //         nextStep /= 2;
+            //     }
+            // }
             int nextStep = buffer.getStep();
-            if (duration < 900000L) {
-                if (nextStep * 2 <= 10000) {
-                    nextStep *= 2;
-                }
-            } else if (duration > 1800000L) {
-                if (nextStep / 2 >= buffer.getMinStep()) {
-                    nextStep /= 2;
-                }
-            }
 
             // 根据最新步长更新数据库的最大 ID
             long id = this.updateIdAndGetId(LeafAlloc.builder().key(key).step(nextStep).build());
@@ -491,7 +497,7 @@ public class SegmentIdGenerator implements ApplicationContextAware {
         // 设置计算出来的下一次的新步长
         segment.setStep(buffer.getStep());
         sw.stop();
-        log.info(sw.prettyPrint());
+        log.debug(sw.prettyPrint());
     }
 
     public List<?> getIdForList(String key, List<?> list) throws IllegalAccessException {
@@ -518,17 +524,17 @@ public class SegmentIdGenerator implements ApplicationContextAware {
     private List<String> getAllTags() {
         List<String> tags = new ArrayList<>();
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            tags = sqlSession.selectList("com.hundsun.demo.springboot.idgenerator.SequenceMapper.getAll");
+            tags = sqlSession.selectList(String.format("%s.getAll", SequenceMapper.class.getName()));
         }
         return tags;
     }
 
-    private long updateIdAndGetId(LeafAlloc leafAlloc) {
-        long id;
+    private Long updateIdAndGetId(LeafAlloc leafAlloc) {
+        Long id;
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            log.info("更新步长({})", leafAlloc.getStep());
-            sqlSession.update("com.hundsun.demo.springboot.idgenerator.SequenceMapper.update", leafAlloc);
-            id = sqlSession.selectOne("com.hundsun.demo.springboot.idgenerator.SequenceMapper.get", leafAlloc.getKey());
+            sqlSession.update(String.format("%s.update", SequenceMapper.class.getName()), leafAlloc);
+            // 这里出现了一点问题,这个查询返回的结果是 null,
+            id = sqlSession.selectOne(String.format("%s.get", SequenceMapper.class.getName()), leafAlloc.getKey());
             sqlSession.commit();
         }
         return id;

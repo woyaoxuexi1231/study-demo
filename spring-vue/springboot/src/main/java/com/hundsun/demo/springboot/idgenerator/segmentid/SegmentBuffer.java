@@ -1,6 +1,10 @@
 package com.hundsun.demo.springboot.idgenerator.segmentid;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -19,7 +23,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * Copyright 2023 Hundsun Technologies Inc. All Rights Reserved
  */
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
 public class SegmentBuffer {
     /**
      * 用于标记是否有线程在更新这个 buffer
