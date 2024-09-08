@@ -2,7 +2,7 @@
 > 2. Tomcat启动时，出现了一系列中文乱码这里需要设置一下Tomcat服务器的输出文字编码找到conf文件夹下的 logging.properties 文件找到这一行： java.util.logging.ConsoleHandler.encoding = UTF-8将UTF-8修改为GBK
 
 
-Web应用程序的内部目录结构可以因框架、技术栈和项目需求而异，但通常包括一些常见的目录和文件。以下是一个典型的Web应用程序内部目录结构的示例：
+Web应用程序的内部目录结构可以因框架、技术栈和项目需求而异，但通常包括一些常见的目录和文件。以下是一个典型的Web应用程序内部目录结构(在tomcat服务器解压后)的示例：
 
 ```
 myapp/
