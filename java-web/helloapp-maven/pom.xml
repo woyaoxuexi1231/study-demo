@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.hulei</groupId>
+        <artifactId>dependencies-parent</artifactId>
+        <version>1.0.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>helloapp-maven</artifactId>
+    <packaging>war</packaging>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <build.finalName>helloApp</build.finalName>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>javax.servlet.jsp-api</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>${build.finalName}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.4.0</version>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <filtering>true</filtering>
+                            <!-- 需要打包的目标文件路径 -->
+                            <directory>web</directory>
+                            <!-- 指定build资源具体目录，默认是base directory。 -->
+                            <targetPath>/</targetPath>
+                            <!-- 打包的文件叫什么 -->
+                            <includes>
+                                <include>**/**</include>
+                            </includes>
+                        </resource>
+                    </webResources>
+                    <!-- 打包后放在这个目录下 -->
+                    <warSourceDirectory>src/main/webapp</warSourceDirectory>
+                    <webXml>web/WEB-INF/web.xml</webXml>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

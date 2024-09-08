@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd"
+>
+
+    <!-- ########################################################################################################################################## -->
+    <!-- ##################################################################################### -->
+    <!-- ##################################### Spring 相关 #################################### -->
+    <!-- ##################################################################################### -->
+    <context:component-scan base-package="com.hundsun.demo.spring"/>
+
+    <bean class="com.hundsun.demo.spring.init.PrototypeBean" scope="prototype"/>
+    <!-- spring相关的配置信息 -->
+    <!-- BeanFactoryPostProcessor -->
+    <!-- 配置如果实现IgnoreBean接口,那么这个bean的自动注入将不会生效 -->
+    <bean class="com.hundsun.demo.spring.init.processor.IgnoreBeanFactoryPostProcessor"/>
+    <bean class="com.hundsun.demo.spring.init.processor.IgnoreBean"/>
+
+    <!-- BeanPostProcessor -->
+    <!-- <bean class="com.hundsun.demo.spring.init.processor.CustomBeanPostProcessor"/> -->
+    <!-- <bean class="com.hundsun.demo.spring.init.processor.PrintMergedBeanDefinitionPostProcessor"/> -->
+    <!-- <bean class="com.hundsun.demo.spring.init.processor.PrintInstantiationAwareBeanPostProcessor"/> -->
+    <!-- <bean class="com.hundsun.demo.spring.init.processor.PrintSmartInstantiationAwareBeanPostProcessor"/> -->
+
+    <!-- 为了展示ResolvableDependencyPostProcessor这个后置处理器, 这里当注入MySQLService的实现类的时候,全部改成注入MySQLServiceProxy而不是MySQLServiceImpl -->
+    <bean class="com.hundsun.demo.spring.init.processor.ResolvableDependencyPostProcessor"/>
+    <bean name="mySQLServiceImpl" class="com.hundsun.demo.spring.MySQLServiceImpl"/>
+    <bean name="mySQLServiceProxy" class="com.hundsun.demo.spring.MySQLServiceProxy">
+        <property name="mySqlService" ref="mySQLServiceImpl"/>
+    </bean>
+
+    <!-- spring监听机制,由 ApplicationListener + ApplicationEvent 实现 -->
+    <bean class="com.hundsun.demo.spring.init.listener.SimpleListener"/>
+
+    <!-- Spring通过三级缓存来解决循环依赖的问题 -->
+    <!-- Q1: 不过三级缓存确实可以解决循环依赖的问题, 但是我无法回答的是为什么要用三级缓存, 因为看上去二级缓存就可以解决问题了, 三级缓存似乎有点多余, 它肯定有更多的用途... 2023-2-10 -->
+    <!-- A1: 二级缓存确实可以解决循环依赖的问题, 但是如果我们加入 Spring AOP 的话, 二级缓存就无法解决了, 三级缓存解决了代理对象的注入问题 -->
+    <bean name="positiveBean" class="com.hundsun.demo.spring.init.circle.PositiveBean">
+        <property name="negativeBean" ref="negativeBean"/>
+        <!-- <constructor-arg name="negativeBean" ref="negativeBean"/> -->
+        <!-- <lookup-method name="getNegativeBean" bean="negativeBean"/> -->
+    </bean>
+    <bean name="negativeBean" class="com.hundsun.demo.spring.init.circle.NegativeBean">
+        <property name="positiveBean" ref="positiveBean"/>
+        <!-- <constructor-arg name="positiveBean" ref="positiveBean"/> -->
+    </bean>
+    <bean name="circleBean" class="com.hundsun.demo.spring.init.circle.CircleBean">
+        <property name="circleBean" ref="circleBean"/>
+        <property name="name" value="first"/>
+    </bean>
+
+
+    <!-- ##################################################################################### -->
+    <!-- ##################################### Spring AOP #################################### -->
+    <!-- ##################################################################################### -->
+    <bean class="com.hundsun.demo.spring.aop.xml.PrintService"/>
+    <!-- 配置切面 -->
+    <!-- 当我在LoggingAdvice这个类里声明print方法时,并且想用LoggingAdvice去切它自己,我发现好像办不到.切面会不生效 -->
+    <bean id="loggingAdvice" class="com.hundsun.demo.spring.aop.xml.LoggingAdvice"/>
+    <!-- 定义切点 -->
+    <aop:config>
+        <!-- 定义通知 -->
+        <aop:aspect id="loggingAspect" ref="loggingAdvice">
+            <aop:pointcut id="simplePointcut"
+                          expression="execution(* com.hundsun.demo.spring.aop.xml.PrintService.print())"/>
+            <aop:before pointcut-ref="simplePointcut" method="beforeAdvice"/>
+        </aop:aspect>
+    </aop:config>
+
+    <!-- 一共有三种用于启用 AspectJ 自动代理功能的方式 -->
+    <!-- 1. 开启<aop:aspectj-autoproxy/>配置-->
+    <!-- 2. 注册AnnotationAwareAspectJAutoProxyCreator这个bean -->
+    <!-- 3. 开启@EnableAspectJAutoProxy这个注解 -->
+    <!-- Spring 将会自动检测并创建应用程序中使用了 AspectJ 注解的 bean，并将其装配为代理对象，以便应用程序中的切面可以对这些对象进行增强。 -->
+    <aop:aspectj-autoproxy/>
+    <!-- 用于支持基于注解的 AspectJ 切面编程-->
+    <!-- <bean class="org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator"> -->
+    <!--     &lt;!&ndash; 配置指示 Spring 使用 CGLIB 来创建代理对象，而不是标准的 Java 接口代理。 &ndash;&gt; -->
+    <!--     <property name="proxyTargetClass" value="true"/> -->
+    <!-- </bean> -->
+    <bean class="com.hundsun.demo.spring.aop.annotation.LoggingAspect"/>
+    <bean class="com.hundsun.demo.spring.aop.annotation.MyServiceImpl"/>
+
+    <!-- ##################################################################################### -->
+    <!-- ####################################### Mybatis ##################################### -->
+    <!-- ##################################################################################### -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="url"
+                  value="jdbc:mysql://192.168.80.128:3306/test?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;serverTimezone=Asia/Shanghai"/>
+        <property name="username" value="root"/>
+        <property name="password" value="123456"/>
+    </bean>
+
+    <!-- 它负责创建SqlSessionFactory，后者是MyBatis中非常重要的一个对象，用于创建SqlSession -->
+    <!-- 通过SqlSession，应用程序就可以执行SQL命令、管理事务和处理映射。 -->
+    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- 指定了MyBatis将用于数据库操作的数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 指定了MyBatis的全局配置文件的位置。这个文件通常包含了MyBatis的配置信息，如类型别名、类型处理器、设置等。通过这个配置，MyBatis知道如何连接数据库以及如何生成SQL语句。 -->
+        <property name="configLocation" value="/spring/spring-mybatis-config.xml"/>
+        <!-- 定义了MyBatis mapper XML文件的位置 -->
+        <property name="mapperLocations" value="mapper/CustomerMapper.xml"/>
+    </bean>
+    <!-- 这个类的作用是自动扫描指定包下的Mapper接口，并为它们创建代理对象，这些代理对象实际上就是执行SQL操作的MyBatis mapper -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!-- 可以指定一个或多个包的路径，框架会扫描这些包下的所有接口 -->
+        <property name="basePackage" value="com.hundsun.demo.spring.mybatis.mapper"/>
+    </bean>
+    <!--
+     假设不使用上面的自动扫描
+     MapperFactoryBean是Spring提供的一个工厂bean，用于生成Mapper接口的代理实现
+    <bean id="exampleMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        这是你的Mapper接口的全限定名
+        <property name="mapperInterface" value="com.hundsun.demo.spring.mybatis.mapper.ExampleMapper"/>
+        引用前面定义的SqlSessionFactoryBean，它是MyBatis中生成SqlSession的工厂，而SqlSession是执行SQL操作的关键。
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    </bean>
+    那就需要想这样对于每个mapper都定义一遍
+     -->
+    <!-- mybatis的配置到此为止 -->
+
+
+    <!-- ##################################################################################### -->
+    <!-- ######################## Mybatis+多数据源+<tx:advice>配置事务 ########################## -->
+    <!-- ##################################################################################### -->
+    <!-- mybatis 整合进 spring 之后, 事务的管理权就交给了 spring, 所以如果我们要使用事务, 那就必须按规矩办事, 好好的声明 spring 事务吧! -->
+    <bean id="mybatisTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!-- 这里数据源依旧还是使用之前定义的多数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!-- 定义了一个事务管理策略txAdvice,指明了哪些方法需要进行事务管理，以及事务的具体属性（如传播行为、是否只读、异常回滚条件等） -->
+    <tx:advice id="txAdvice" transaction-manager="mybatisTransactionManager">
+        <tx:attributes>
+            <!-- 任何名为mybatisSpringTransaction的方法将在调用时开启事务，并且这个事务在遇到Exception时会回滚。 -->
+            <!-- <tx:method name="mybatisSpringTransaction" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception"/> -->
+            <tx:method name="save"/>
+            <tx:method name="update"/>
+            <tx:method name="delete"/>
+            <!-- <tx:method name="*"配置表示匹配所有方法名 -->
+            <!-- <tx:method name="*"/> -->
+        </tx:attributes>
+    </tx:advice>
+    <!-- 这里使用面向 aop 的命名空间 -->
+    <aop:config>
+        <!-- <aop:pointcut>**定义了一个或多个切点，指定了哪些方法（即哪个执行点）应该被增强（如事务管理）。expression属性用于指定这些方法的表达式。 -->
+        <!--  -->
+        <!-- 单独配置方法时,一定要注意方法参数是否一致 -->
+        <!-- <aop:pointcut id="mybatisMethods" expression="execution(* com.hundsun.demo.spring.mybatis.MyBatisDynamicdbService.*(..))"/> -->
+        <aop:pointcut id="mybatisMethods"
+                      expression="execution(* com.hundsun.demo.spring.mvc.springdao.UserDAOJdbcTemplate.*(..))"/>
+        <!-- 通过aop:advisor将前面定义的事务管理策略txAdvice应用到这个切点上，这样就实现了对指定方法的事务管理。 -->
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="mybatisMethods"/>
+    </aop:config>
+
+
+    <!-- ##################################################################################### -->
+    <!-- ##################################### SpringDAO ##################################### -->
+    <!-- ##################################################################################### -->
+    <!-- 配置 userDAO Bean -->
+    <!--     <bean id="userDAO" class="com.hundsun.demo.spring.mvc.springdao.UserDAOImpl"> -->
+    <!--         <constructor-arg ref="dataSource"/> -->
+    <!--     </bean> -->
+    <bean id="userDAO" class="com.hundsun.demo.spring.mvc.springdao.UserDAOJdbcTemplate">
+        <constructor-arg ref="dataSource"/>
+        <!-- 这里如果不开启下面这个注释,由于UserDAOJdbcTemplate是实现了接口的,那么springaop会自动使用jdk代理,那么在获取bean的时候,直接使用UserDAOJdbcTemplate获取,会导致出现问题,jdk代理生成的代理对象是继承 java.lang.reflect.Proxy -->
+        <!-- <aop:scoped-proxy/> -->
+    </bean>
+    <!-- ##################################################################################### -->
+    <!-- ##################################### Hibernate ##################################### -->
+    <!-- ##################################################################################### -->
+    <!-- 配置 Hibernate 的 SessionFactory -->
+    <!-- <bean id="hibernateSessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"> -->
+    <!--     <property name="dataSource" ref="dataSource"/> -->
+    <!--     <property name="packagesToScan" value="com.hundsun.demo.commom.core.model"/> -->
+    <!--     <property name="hibernateProperties"> -->
+    <!--         <props> -->
+    <!--             <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop> -->
+    <!--             <prop key="hibernate.show_sql">true</prop> -->
+    <!--             &lt;!&ndash; 其他 Hibernate 相关配置 &ndash;&gt; -->
+    <!--         </props> -->
+    <!--     </property> -->
+    <!-- </bean> -->
+    <!-- <bean class="org.springframework.orm.hibernate5.HibernateTemplate"> -->
+    <!--     <property name="sessionFactory" ref="hibernateSessionFactory"/> -->
+    <!-- </bean> -->
+    <!-- &lt;!&ndash; 配置 Hibernate 的事务管理器 &ndash;&gt; -->
+    <!-- <bean id="hibernateTransactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager"> -->
+    <!--     <property name="sessionFactory" ref="hibernateSessionFactory"/> -->
+    <!-- </bean> -->
+
+</beans>

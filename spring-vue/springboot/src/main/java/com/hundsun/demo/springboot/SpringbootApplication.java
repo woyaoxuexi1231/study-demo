@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
         "com.hundsun.demo.springboot.mybatisplus.mapper"})
 @Slf4j
 // @ServletComponentScan
-@EnableScheduling
 @EnableDynamicDataSource
 public class SpringbootApplication {
 

@@ -1,0 +1,18 @@
+server:
+  port: 12013
+spring:
+  application:
+    name: service-turbine
+turbine:
+  combine-host-port: true
+  # 配置需要监控的服务名,会通过eureka获取
+  app-config: eureka-ribbon-client,eureka-feign-client
+  # 集群的服务名
+  cluster-name-expression: new String("default")
+  aggregator:
+    cluster-config: default
+#  instanceUrlSuffix: /hystrix.stream
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:12001/eureka/

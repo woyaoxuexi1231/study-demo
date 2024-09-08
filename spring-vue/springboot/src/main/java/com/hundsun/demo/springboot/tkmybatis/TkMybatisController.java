@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.Map;
@@ -54,7 +56,7 @@ public class TkMybatisController {
     }
 
     @PostMapping(value = "/getEmployees")
-    public PageInfo<EmployeeDO> getEmployees(@Valid @RequestBody EmployeeQryReqDTO req) {
+    public PageInfo<EmployeeDO> getEmployees(@Valid @RequestBody EmployeeQryReqDTO req, HttpServletRequest request, HttpServletResponse response) {
         PageHelper.startPage(req.getPageNum(), req.getPageSize());
         return new PageInfo<>(employeeMapper.selectAll());
     }

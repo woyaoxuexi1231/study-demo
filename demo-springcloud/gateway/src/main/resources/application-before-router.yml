@@ -1,8 +1,0 @@
-spring:
-  cloud:
-    gateway:
-      routes:
-        - id: before_route
-          uri: http://httpbin.org:80
-          predicates:
-            - Before=2023-12-31T23:59:59Z

@@ -21,7 +21,7 @@
 
     <parent>
         <artifactId>spring-vue</artifactId>
-        <groupId>com.hundsun</groupId>
+        <groupId>org.hulei</groupId>
         <version>1.0.0.0-SNAPSHOT</version>
     </parent>
 

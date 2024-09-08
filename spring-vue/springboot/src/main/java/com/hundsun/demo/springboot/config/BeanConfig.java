@@ -21,18 +21,6 @@ import org.springframework.web.client.RestTemplate;
 public class BeanConfig {
 
     @Bean
-    public DoneTimeAspect doneTimeAspect() {
-        return new DoneTimeAspect();
-    }
-
-    // @Bean
-    // public ServletListenerRegistrationBean servletListenerRegistrationBean(SimpleHttpSessionListener simpleHttpSessionListener) {
-    //     ServletListenerRegistrationBean servletListenerRegistrationBean = new ServletListenerRegistrationBean();
-    //     servletListenerRegistrationBean.setListener(simpleHttpSessionListener);
-    //     return servletListenerRegistrationBean;
-    // }
-
-    @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
