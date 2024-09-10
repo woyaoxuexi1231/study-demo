@@ -1,0 +1,306 @@
+package org.hulei.keeping.server.db.dynamicdb;
+
+import com.github.pagehelper.PageHelper;
+import com.hundsun.demo.commom.core.model.EmployeeDO;
+import com.hundsun.demo.commom.core.model.dto.ResultDTO;
+import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
+import org.hulei.keeping.server.common.mapper.EmployeeMapper;
+import org.hulei.keeping.server.db.dynamicdb.annotation.TargetDataSource;
+import org.hulei.keeping.server.db.dynamicdb.config.coding.DataSourceTag;
+import org.hulei.keeping.server.db.dynamicdb.core.DataSourceToggleUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+/**
+ * @ProductName: Hundsun amust
+ * @ProjectName: study-demo
+ * @Package: com.hundsun.demo.springboot.dynamicdb
+ * @Description:
+ * @Author: hulei42031
+ * @Date: 2024-03-13 20:23
+ * @UpdateRemark:
+ * @Version: 1.0
+ * <p>
+ * Copyright 2023 Hundsun Technologies Inc. All Rights Reserved
+ */
+
+@Slf4j
+@Service
+public class DynamicDBServiceImpl implements DynamicDBService {
+
+    @Autowired
+    ThreadPoolExecutor singlePool;
+
+    @Autowired
+    ThreadPoolExecutor singleTransactionPool;
+
+    @Resource
+    EmployeeMapper employeeMapper;
+
+    @Autowired
+    private RedissonClient redissonClient;
+
+    @Autowired
+    RedisTemplate<String, String> stringRedisTemplate;
+
+    @Autowired
+    DynamicDBService dynamicdbService;
+
+    @Override
+    public ResultDTO<?> multiDataSourceSingleTransaction() {
+
+        /*
+        1. 双数据源, 一个写事务, 一个读事务, 这种情况, 双线程可以实现事务正常
+        2. 双数据源, 都为写事务, 使用本地事务是实现不了的
+        */
+
+        /*
+        3.13.6 版本的 redisson-spring-boot-starter
+        1. pool - 一个核心数和最大数都为 3 的线程池, 日志显示这种写法导致第一个拿到锁的释放失败, 且后面有两个线程同时拿到了锁
+            if(lock.tryLock()){
+                pool.execute(
+                    pool.execute(任务1)
+                    pool.execute(任务2)
+                    lock.unlock()
+                )
+            }
+        2. singlepool - 单线程池, pool 两个线程的线程池, 日志显示这种写法导致锁的频繁释放失败, 释放的锁的线程已经不持有锁了
+            if(lock.tryLock()){
+                singlepool.execute(
+                    pool.execute(任务1)
+                    pool.execute(任务2)
+                    lock.unlock()
+                )
+            }
+        这意味着, 解铃还须系铃人, 谁他妈上的锁谁来释放, 这里把锁都拿到其他线程去释放了, 不报错都怪了
+        redisson 的 tryLock方法, 如果是同一个线程, tryLock方法会返回 true
+        */
+
+        // 1. 确保单个服务同时已有一个线程在执行, 且不阻塞
+        singlePool.execute(() -> {
+
+            log.info("尝试获取分布式锁...");
+            RLock rLock = redissonClient.getLock("multidatasource::singletransaction::lock");
+
+            // 2. 确保多个服务同时只有一个能获取锁
+            if (rLock.tryLock()) {
+
+                // // 这里同时只会有一个线程操作, 判断状态
+                // if (stringRedisTemplate.opsForValue().get("multidatasource::singletransaction::state") != null) {
+                //     // 直接释放锁
+                //     log.info("60s内已完成, 请稍后再试! ");
+                //     rLock.unlock();
+                //     return;
+                // }
+                // 锁释放的计时器,只有当两个任务都完成之后,整个任务才停止
+                CountDownLatch count = new CountDownLatch(2);
+
+                // 这是两个操作共享的一个数据列表, 操作A查数据插入这个list, 操作B从这个list取数据插入数据库
+                // 这个列表不用考虑并发,同时只会有一个线程操作他
+                List<EmployeeDO> employeeDOS = new ArrayList<>();
+
+                // 控制主数据源流程的信号量(插入数据), 先不执行, 等待从流程触发这个信号量让主流程获得执行权限
+                Semaphore masterSemaphore = new Semaphore(0);
+                // 控制从数据源流程, 先执行这个流程
+                Semaphore slaveSemaphore = new Semaphore(1);
+
+                // 整个流程是否结束,至于为什么需要这个变量,考虑下面的场景
+                // 流程A查询结束了,等待流程B来激活,但是流程B却因为异常而中断了,那么流程A将永远等待
+                AtomicBoolean isFinished = new AtomicBoolean(false);
+                log.info("获取分布式锁成功, 开始执行流程. ");
+
+                // 从数据源操作
+                singleTransactionPool.execute(() -> {
+                    try {
+                        dynamicdbService.selectFromSlave(employeeDOS, masterSemaphore, slaveSemaphore, isFinished);
+                    } finally {
+                        count.countDown();
+                    }
+                });
+
+                // 主数据源操作
+                singleTransactionPool.execute(() -> {
+                    try {
+                        dynamicdbService.copySlaveToMaster(employeeDOS, masterSemaphore, slaveSemaphore, isFinished);
+                    } finally {
+                        count.countDown();
+                    }
+                });
+
+                try {
+                    count.await();
+                    // stringRedisTemplate.opsForValue().set("multidatasource::singletransaction::state", "Initializing", 60, TimeUnit.SECONDS);
+                    rLock.unlock();
+                    log.info("释放分布式锁完成. ");
+                } catch (Exception e) {
+                    log.error("释放分布式锁出现异常! ", e);
+                }
+            }
+        });
+
+        return ResultDTOBuild.resultDefaultBuild();
+    }
+
+    @Override
+    @Transactional
+    @TargetDataSource(value = "first")
+    public void copySlaveToMaster(List<EmployeeDO> employeeDOS, Semaphore masterSemaphore, Semaphore slaveSemaphore, AtomicBoolean isFinished) {
+
+        try {
+            // 尝试获取一个信号量
+            masterSemaphore.acquire();
+            employeeMapper.delete(new EmployeeDO());
+            // 操作成功后,返还这个信号量
+            masterSemaphore.release();
+        } catch (Exception e) {
+            log.error("删除数据异常! ", e);
+            // 插入数据出现异常, 终止整个流程
+            isFinished.set(true);
+            // 唤醒从数据源, 让其终止操作
+            log.info("唤醒从数据源");
+            slaveSemaphore.release();
+            // 抛出异常是为了能够正常回滚
+            throw new RuntimeException(e);
+        }
+
+
+        while (true) {
+
+            try {
+
+                // 尝试获取一个信号量
+                masterSemaphore.acquire();
+
+                // 判断整个流程是否结束
+                if (isFinished.get()) {
+                    break;
+                }
+
+                // Thread.sleep(5 * 1000);
+                // 正常插入数据
+                log.info("开始插入数据");
+                if (!employeeDOS.isEmpty()) {
+                    employeeDOS.forEach(employeeMapper::saveOne);
+                }
+                // 插入完成后清空数组
+                employeeDOS.clear();
+
+                // 唤醒从数据源, 让其查询
+                slaveSemaphore.release();
+                log.info("等待从数据源查询数据...");
+            } catch (Exception e) {
+
+                log.error("插入数据异常! ", e);
+                // 插入数据出现异常, 终止整个流程
+                isFinished.set(true);
+                // 唤醒从数据源, 让其终止操作
+                log.info("唤醒从数据源");
+                slaveSemaphore.release();
+                // 抛出异常, 终止循环
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    @Override
+    @Transactional
+    @TargetDataSource(value = "second")
+    public void selectFromSlave(List<EmployeeDO> employeeDOS, Semaphore masterSemaphore, Semaphore slaveSemaphore, AtomicBoolean isFinished) {
+
+        // 分页查询
+        int pageNum = 1;
+        int pageSize = 10;
+
+        while (true) {
+
+            try {
+
+                // 尝试获取一个信号量
+                slaveSemaphore.acquire();
+
+                // 流程结束
+                if (isFinished.get()) {
+                    break;
+                }
+
+                log.info("开始查询从数据源数据");
+                PageHelper.startPage(pageNum, pageSize);
+                employeeDOS.addAll(employeeMapper.selectAll());
+                log.info("本次一共查询 {} 条数据", employeeDOS.size());
+
+                // 已经查询所有的数据
+                if (employeeDOS.isEmpty()) {
+                    log.info("数据查询完成");
+                    isFinished.set(true);
+                    // 所有数据查询完毕, 唤醒主数据源事务, 准备结束
+                    masterSemaphore.release();
+                    break;
+                }
+
+                // 准备查询下一页数据
+                pageNum++;
+
+                // 唤醒主数据源流程, 等待插入完成
+                masterSemaphore.release();
+                log.info("等待主数据源插入数据...");
+
+            } catch (Exception e) {
+
+                log.error("查询数据异常! ", e);
+                // 查询数据异常, 整个流程结束
+                isFinished.set(true);
+                // 唤醒主数据源, 让其终止操作
+                log.info("唤醒主数据源");
+                masterSemaphore.release();
+                // 抛出异常, 终止循环
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+
+    /**
+     * 多数据源手动切换测试
+     */
+    @Override
+    @Transactional
+    public void transactionInvalidation() {
+     /*
+     在事务开启之前, 切换了一次数据源, 这个是没有问题的
+     在以下情况下会导致事务失效
+     1. 切换数据源在事务开启之后, 这时已经拿到连接, 数据源的 ThreadLocal已经失效
+     2. 没有使用 REQUIRES_NEW 传播级别来开启新的事务, 这会导致不会重新获取新连接, 切换数据源是不生效的
+     3. 没有使用 Bean 的方法, 而直接使用内部方法来调用, 这会直接导致事务失效(即没有通过代理对象来开启事务)
+      */
+        EmployeeDO employeeDO = new EmployeeDO();
+        employeeDO.setEmployeeNumber(1002L);
+        System.out.println(employeeMapper.selectOne(employeeDO));
+        DataSourceToggleUtil.set(DataSourceTag.MASTER.getTag());
+        // simpleService.getOneEmployeeDO();
+     /*
+     这个地方切换与否其实不重要, 因为上一个查询语句结束之后, 在这里 spring 会恢复挂起的事务, 拿到之前的连接来执行查询语句, 即使不切换, 也不影响查询
+     但是如果后续还有其他数据源的查询需要自行切换
+      */
+        DataSourceToggleUtil.set(DataSourceTag.SECOND.getTag());
+        employeeDO.setEmployeeNumber(1002L);
+        System.out.println(employeeMapper.selectOne(employeeDO));
+    }
+
+    public void select() {
+        List<EmployeeDO> employeeDOS = employeeMapper.selectAll();
+        log.info("employeeDOS: {}", employeeDOS);
+    }
+}
