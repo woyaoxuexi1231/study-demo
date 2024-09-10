@@ -1,5 +1,6 @@
 package org.hulei.keeping.server.websocket.stomp;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
@@ -8,15 +9,21 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+/**
+ * WebSocket 连接和断开的监听类
+ *
+ * @author hulei
+ * @since 2024/9/10 17:17
+ */
+
+@Slf4j
 @Component
 public class WebSocketEventListener {
-
-    private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        logger.info("WebSocket连接开启: {}", headerAccessor.getSessionId());
+        log.info("WebSocket连接开启: {}", headerAccessor.getSessionId());
     }
 
     @EventListener
@@ -30,6 +37,6 @@ public class WebSocketEventListener {
         我估计是因为经常改代码之后刷新导致
          */
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        logger.info("WebSocket连接断开: {}", headerAccessor.getSessionId());
+        log.info("WebSocket连接断开: {}", headerAccessor.getSessionId());
     }
 }

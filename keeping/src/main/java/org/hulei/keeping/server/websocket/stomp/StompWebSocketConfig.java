@@ -62,11 +62,9 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // registry.addEndpoint("/gs-guide-websocket");
 
         registry.addEndpoint("/gs-guide-websocket")
-                // 使用*通配符会报错
-                // java.lang.IllegalArgumentException: When allowCredentials is true, allowedOrigins cannot contain the special value "*" since that cannot be set on the "Access-Control-Allow-Origin" response header. To allow credentials to a set of origins, list them explicitly or consider using "allowedOriginPatterns" instead.
-                // .setAllowedOrigins("*")
-                // 这行代码设置允许的跨域来源。* 是一个特殊的通配符，表示允许来自任何域的请求。但是，这在 allowCredentials 设置为 true 时是无效的，因为浏览器会阻止使用凭证的请求从任意域接受。
-                .setAllowedOrigins("http://localhost:10098")
+                // 这行代码设置允许的跨域来源。但是，这在 allowCredentials 设置为 true 时是无效的，因为浏览器会阻止使用凭证的请求从任意域接受。不支持通配符模式
+                // .setAllowedOrigins("http://localhost:10099")
+                .setAllowedOriginPatterns("*")
                 // 启用 SockJS 支持。这是一种备选方案，可以在浏览器不支持原生 WebSocket 时使用，提供更好的兼容性。
                 .withSockJS();
     }
