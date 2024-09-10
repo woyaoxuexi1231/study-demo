@@ -1,7 +1,11 @@
-package org.hulei.keeping.server.redis.msgsubscribe;
+package org.hulei.keeping.server.redis.basic.msgsubscribe;
+
+import redis.clients.jedis.Jedis;
 
 public class PubSubDemo {
+
     public static void main(String[] args) {
+
         String channel = "testChannel";
 
         // 启动订阅者监听
@@ -14,8 +18,11 @@ public class PubSubDemo {
             Thread.currentThread().interrupt();
         }
 
-        // 发布消息
-        RedisPublisher publisher = new RedisPublisher();
-        publisher.publish(channel, "Hello, Redis!", "192.168.80.128", 6379, "123456");
+        try (Jedis jedis = new Jedis("192.168.80.130", 6379)) {
+            jedis.auth("123456");
+            jedis.publish(channel, "Hello, Redis!");
+        }
+
+        System.out.println("结束");
     }
 }

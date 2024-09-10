@@ -1,4 +1,4 @@
-package org.hulei.keeping.server.redis.basic;
+package org.hulei.keeping.server.redis.basic.redisclient;
 
 import org.redisson.Redisson;
 import org.redisson.api.RBucket;

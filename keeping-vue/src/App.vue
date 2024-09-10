@@ -108,7 +108,7 @@ export default {
           },
           err => {
             console.error(err);
-            this.reconnect(this.socketUrl, this.connectSucceed)
+            this.reconnect("/api/gs-guide-websocket", this.connectSucceed)
           }
       );
     },

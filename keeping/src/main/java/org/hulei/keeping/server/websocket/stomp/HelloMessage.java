@@ -1,5 +1,9 @@
 package org.hulei.keeping.server.websocket.stomp;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  * @projectName: study-demo
  * @package: com.hundsun.demo.springboot.utils.websocket.stomp
@@ -9,22 +13,11 @@ package org.hulei.keeping.server.websocket.stomp;
  * @createDate: 2024/3/11 22:02
  */
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class HelloMessage {
 
     private String name;
 
-    public HelloMessage() {
-    }
-
-    public HelloMessage(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

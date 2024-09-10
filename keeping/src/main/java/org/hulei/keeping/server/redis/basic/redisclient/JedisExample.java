@@ -1,4 +1,4 @@
-package org.hulei.keeping.server.redis.basic;
+package org.hulei.keeping.server.redis.basic.redisclient;
 
 import redis.clients.jedis.Jedis;
 

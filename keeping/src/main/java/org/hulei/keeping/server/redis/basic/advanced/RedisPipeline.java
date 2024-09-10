@@ -1,4 +1,4 @@
-package org.hulei.keeping.server.redis.advanced;
+package org.hulei.keeping.server.redis.basic.advanced;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;

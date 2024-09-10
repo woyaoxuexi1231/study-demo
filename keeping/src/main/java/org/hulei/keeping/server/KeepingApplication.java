@@ -36,6 +36,9 @@ public class KeepingApplication {
 
     public static ApplicationContext applicationContext;
 
+    /**
+     * 注解 @Value遇到 static 类型变量会直接失效
+     */
     @Value("${server.port}")
     String port;
 
@@ -53,7 +56,7 @@ public class KeepingApplication {
         applicationContext = SpringApplication.run(KeepingApplication.class);
         log.info("启动完成");
         // Open the homepage URL in default browser
-        String homepageURL = "http://localhost:10001"; // Update with your homepage URL
+        String homepageURL = String.format("http://localhost:%s", applicationContext.getEnvironment().getProperty("server.port")); // Update with your homepage URL
         System.out.println("Please navigate to: " + homepageURL);
 
         /*

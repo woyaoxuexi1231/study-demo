@@ -1,17 +1,25 @@
-package org.hulei.keeping.server.redis.msgsubscribe;
+package org.hulei.keeping.server.redis.basic.msgsubscribe;
 
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPubSub;
 
 public class SubscriberListeningThread extends Thread {
 
     private final Jedis jedis;
-    private final RedisSubscriber subscriber;
+    private final JedisPubSub subscriber;
     private final String channelName;
 
     public SubscriberListeningThread(String host, int port, String auth, String channelName) {
+
         this.jedis = new Jedis(host, port);
         jedis.auth(auth);
-        this.subscriber = new RedisSubscriber();
+
+        this.subscriber = new JedisPubSub() {
+            @Override
+            public void onMessage(String channel, String message) {
+                System.out.println("接收到消息: Channel: " + channel + ", Msg: " + message);
+            }
+        };
         this.channelName = channelName;
     }
 

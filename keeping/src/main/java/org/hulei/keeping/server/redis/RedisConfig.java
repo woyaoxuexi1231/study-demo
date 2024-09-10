@@ -8,8 +8,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-
-@EnableTransactionManagement
+// @EnableTransactionManagement
 @Slf4j
 @Configuration
 public class RedisConfig {
@@ -20,7 +19,7 @@ public class RedisConfig {
         template.setConnectionFactory(redisConnectionFactory);
         template.setKeySerializer(RedisSerializer.string());
         template.setValueSerializer(RedisSerializer.json());
-        template.setEnableTransactionSupport(true);
+        // template.setEnableTransactionSupport(true);
         return template;
     }
 }

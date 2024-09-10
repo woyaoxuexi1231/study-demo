@@ -3,10 +3,10 @@ package org.hulei.keeping.server.redis;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
-import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -16,13 +16,13 @@ import java.util.concurrent.TimeUnit;
  */
 
 @Slf4j
-@Component
-public class RedisListForMQ {
+@RestController("/redisListMQ")
+public class RedisMQByList {
 
     /**
      * 使用到的消息队列名
      */
-    private static final String QUEUE_NAME = "message_queue";
+    private static final String QUEUE_NAME = "redis-list-mq";
 
     /**
      * spring-redis默认提供的 k,v 都是字符串类型的工具类
@@ -46,6 +46,7 @@ public class RedisListForMQ {
      * @return msg
      */
     public String consume() {
+        // rightPop 将从队列的右侧阻塞获取消息
         return redisTemplate.opsForList().rightPop(QUEUE_NAME);
     }
 
@@ -55,7 +56,7 @@ public class RedisListForMQ {
      * @return msg
      */
     public String consumeWithBlock() {
-        // 超时时间为0,将一直阻塞
+        // 超时时间为 0,将一直阻塞
         return redisTemplate.opsForList().rightPop(QUEUE_NAME, 0, TimeUnit.SECONDS);
     }
 
@@ -64,24 +65,18 @@ public class RedisListForMQ {
         new Thread(() -> {
             while (true) {
                 try {
-                    this.produce(Calendar.getInstance().getTime().toString());
-                    Thread.sleep(1000 * 60);
-                } catch (Exception e) {
-                    log.error("消息发送异常,线程将停止", e);
-                    break;
-                }
-            }
-        }).start();
-        new Thread(() -> {
-            while (true) {
-                try {
-                    log.info(consumeWithBlock());
+                    log.info("这是一条使用 redis list 实现的消息队列收到的消息, {}", consumeWithBlock());
                 } catch (Exception e) {
                     log.error("消息接收异常,线程将停止", e);
                     break;
                 }
             }
-        }).start();
+        }, "redis-list-queue-consume").start();
+    }
+
+    @GetMapping("/produce")
+    public void produceAsync(String message) {
+        produce(message);
     }
 }
 
