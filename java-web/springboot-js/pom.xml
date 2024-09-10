@@ -180,7 +180,7 @@
                             ZIP: 与jar包的压缩方式不同, springboot的启动类对应 PropertiesLauncher
                              -->
                             <layout>JAR</layout>
-                            <mainClass>com.hundsun.demo.springboot.js.SpringbootJSApplication</mainClass>
+                            <mainClass>org.hulei.springboot.js.SpringbootJSApplication</mainClass>
                         </configuration>
                         <executions>
                             <execution>
@@ -243,7 +243,7 @@
                         <configuration>
                             <!--使打的包是可执行的-->
                             <executable>true</executable>
-                            <mainClass>com.hundsun.demo.springboot.js.SpringbootJSApplication</mainClass>
+                            <mainClass>org.hulei.springboot.js.SpringbootJSApplication</mainClass>
                         </configuration>
                         <executions>
                             <execution>
