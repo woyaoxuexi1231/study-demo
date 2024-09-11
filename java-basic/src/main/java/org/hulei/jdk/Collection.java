@@ -227,12 +227,12 @@ public class Collection {
             // 这一步结束后, 迭代器将获得数组的快照版本
             Iterator<Integer> iterator = copy.iterator();
             while (iterator.hasNext()) {
-                System.out.println(String.format("iterator.next: %s", iterator.next()));
+                System.out.printf("iterator.next: %s%n", iterator.next());
             }
         });
 
         Thread two = new Thread(() -> {
-            System.out.println(String.format("copy.remove: %b", copy.remove(Integer.valueOf(1))));
+            System.out.printf("copy.remove: %b%n", copy.remove(Integer.valueOf(1)));
             // System.out.println(copy.get(0));
         });
 

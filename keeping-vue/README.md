@@ -1,22 +1,22 @@
 # keeping-vue
 
 ## Project setup
-``` sh
+``` shell
 npm install
 ```
 
 ### Compiles and hot-reloads for development
-``` sh
+``` shell
 npm run serve
 ```
 
 ### Compiles and minifies for production
-```sh
+```shell
 npm run build
 ```
 
 ### Lints and fixes files
-```sh
+```shell
 npm run lint
 ```
 

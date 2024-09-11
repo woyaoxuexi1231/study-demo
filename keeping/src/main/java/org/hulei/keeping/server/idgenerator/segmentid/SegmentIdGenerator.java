@@ -17,6 +17,8 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StopWatch;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PreDestroy;
 import javax.sql.DataSource;
@@ -48,6 +50,8 @@ import java.util.concurrent.atomic.AtomicLong;
  * Copyright 2023 Hundsun Technologies Inc. All Rights Reserved
  */
 
+
+@RestController("/segmentIdGenerator")
 // @ConditionalOnProperty(value = {"ast.id.generate.strategy"}, havingValue = "segment")
 @Component
 @Slf4j
@@ -62,11 +66,6 @@ public class SegmentIdGenerator implements ApplicationContextAware {
      */
     @Getter
     private SqlSessionFactory sqlSessionFactory;
-    /**
-     * SeqIdUtils
-     */
-    // private final SeqIdUtils seqIdUtils = new SeqIdUtils();
-
     /**
      * 默认步长, 也是最小步长
      */
@@ -113,7 +112,8 @@ public class SegmentIdGenerator implements ApplicationContextAware {
             // 第一次更新缓存
             this.updateCacheFromDb();
             this.initOk = true;
-            this.updateCacheFromDbAtEveryMinute();
+            // 每分钟自动刷新分段式id的本地缓存,这里暂时不用,改为 GetMapping 手动刷新
+            // this.updateCacheFromDbAtEveryMinute();
         } catch (Exception e) {
             log.error("SegmentIdGenerateUtil-分段式ID生成器初始化失败", e);
         }
@@ -551,5 +551,13 @@ public class SegmentIdGenerator implements ApplicationContextAware {
         public Thread newThread(Runnable r) {
             return new Thread(r, "segment-update-" + nextThreadNum());
         }
+    }
+
+    /**
+     * 手动刷新 segment 的值
+     */
+    @GetMapping("/updateSegment")
+    public void updateSegment(){
+        this.updateCacheFromDb();
     }
 }

@@ -42,7 +42,7 @@ public class RoutingDataSourceBeanRegister implements ImportBeanDefinitionRegist
     /**
      * 所有配置的数据源
      */
-    private Map<String, Map<String, String>> dataSourceProperties = new ConcurrentHashMap<>();
+    private final Map<String, Map<String, String>> dataSourceProperties = new ConcurrentHashMap<>();
 
     /**
      * 所有的数据源

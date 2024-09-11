@@ -25,7 +25,7 @@ public class MultiClientServer {
 
 // 处理每个客户端连接的线程类
 class ClientHandler implements Runnable {
-    private Socket socket;
+    private final Socket socket;
 
     public ClientHandler(Socket socket) {
         this.socket = socket;

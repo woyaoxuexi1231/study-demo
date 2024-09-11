@@ -43,7 +43,7 @@ public class MybatisPlusController extends ServiceImpl<UserMapper, User> {
     @Resource
     private UserMapper userMapper;
 
-    private static final Long id = 1l;
+    private static final Long id = 1L;
 
     @GetMapping("/delete")
     public void delete() {

@@ -47,7 +47,7 @@ public class DoneTimeAspect {
             return joinPoint.proceed();
         } finally {
             stopWatch.stop();
-            log.info("time: {} nanos, method: {}, param: {} ", new DecimalFormat("#,###").format(stopWatch.getLastTaskTimeNanos()), joinPoint.getSignature().getName(), param);
+            log.info("time: {} ms, method: {}, param: {} ", new DecimalFormat("#,###").format(stopWatch.getLastTaskTimeNanos() / 1000 / 1000), joinPoint.getSignature().getName(), param);
         }
 
     }

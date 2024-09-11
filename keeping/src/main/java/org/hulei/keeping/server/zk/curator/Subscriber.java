@@ -8,7 +8,7 @@ import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
 
 public class Subscriber {
-    private CuratorFramework client;
+    private final CuratorFramework client;
 
     public Subscriber(String connectionString, String path) throws Exception {
         this.client = CuratorFrameworkFactory.newClient(connectionString, new ExponentialBackoffRetry(1000, 3));

@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -27,7 +28,8 @@ public class Server {
             ServerSocket ss = new ServerSocket(8888);
             System.out.println("启动服务器....");
             Socket s = ss.accept();
-            System.out.println("客户端:" + s.getInetAddress().getLocalHost() + "已连接到服务器");
+            s.getInetAddress();
+            System.out.println("客户端:" + InetAddress.getLocalHost() + "已连接到服务器");
 
             BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
             //读取客户端发送来的消息

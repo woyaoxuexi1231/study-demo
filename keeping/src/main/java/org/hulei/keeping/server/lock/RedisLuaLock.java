@@ -15,7 +15,7 @@ public class RedisLuaLock {
     private static final int LOCK_EXPIRE_TIME = 30; // 锁的过期时间，单位秒
     private static final String LOCK_VALUE = "lock_value"; // 锁的值，可以是独特的请求 ID 保证释放的是自己持有的锁
 
-    private JedisPool jedisPool;
+    private final JedisPool jedisPool;
 
     public RedisLuaLock(String redisHost, int redisPort) {
         this.jedisPool = new JedisPool(new JedisPoolConfig(), redisHost, redisPort, Protocol.DEFAULT_TIMEOUT, "123456");

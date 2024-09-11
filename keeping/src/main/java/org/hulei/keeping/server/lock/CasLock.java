@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class CasLock {
     private static int counter = 0;
-    private static SpinLock spinLock = new SpinLock();
+    private static final SpinLock spinLock = new SpinLock();
 
     public static void main(String[] args) {
         // 创建10个线程并启动
@@ -35,7 +35,7 @@ public class CasLock {
 }
 
 class SpinLock {
-    private AtomicReference<Thread> owner = new AtomicReference<>();
+    private final AtomicReference<Thread> owner = new AtomicReference<>();
 
     public void lock() {
         Thread currentThread = Thread.currentThread();

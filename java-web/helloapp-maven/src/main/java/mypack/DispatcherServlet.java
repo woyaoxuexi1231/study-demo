@@ -26,7 +26,7 @@ public class DispatcherServlet extends GenericServlet {
 
         Cookie[] cookies = ((HttpServletRequest) request).getCookies();
         for (Cookie cookie : cookies) {
-            System.out.println(String.format("name: %s, value: %s, path: %s", cookie.getName(), cookie.getValue(), cookie.getPath()));
+            System.out.printf("name: %s, value: %s, path: %s%n", cookie.getName(), cookie.getValue(), cookie.getPath());
         }
 
         ((HttpServletResponse)(response)).addCookie(new Cookie("helloapp","123"));

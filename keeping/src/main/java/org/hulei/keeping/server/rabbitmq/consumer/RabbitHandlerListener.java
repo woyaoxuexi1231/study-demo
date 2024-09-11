@@ -25,7 +25,7 @@ public class RabbitHandlerListener {
     @RabbitHandler
     public void receive1(byte[] msgBytes, Message msg, Channel channel) {
         // 如果发送端发送的是byte[],那么就会触发这个方法
-        System.out.println(String.format("byte[]入参监听方法收到消息, messageBytes: %s, msgBytes: %s", Arrays.toString(msgBytes), msg));
+        System.out.printf("byte[]入参监听方法收到消息, messageBytes: %s, msgBytes: %s%n", Arrays.toString(msgBytes), msg);
         try {
             channel.basicAck(msg.getMessageProperties().getDeliveryTag(), false);
         } catch (Exception e) {
@@ -37,7 +37,7 @@ public class RabbitHandlerListener {
     public void receive2(String msgStr, Message msg, Channel channel) {
         // 1. 方法参数内必须要有一个String类型的参数,不然会报错Caused by: org.springframework.amqp.AmqpException: No method found for class java.lang.String
         // 2. 不能有多个RabbitHandler方法并且都能处理同一种类型的消息(比如这里的String类型),Caused by: org.springframework.amqp.AmqpException: Ambiguous methods for payload type: class java.lang.String: handleMessage and receive2
-        System.out.println(String.format("string入参监听方法收到消息, messageStr: %s, msgBytes: %s", msgStr, msg));
+        System.out.printf("string入参监听方法收到消息, messageStr: %s, msgBytes: %s%n", msgStr, msg);
         try {
             channel.basicAck(msg.getMessageProperties().getDeliveryTag(), false);
         } catch (Exception e) {

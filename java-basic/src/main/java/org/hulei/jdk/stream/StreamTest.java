@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @ProductName: Hundsun amust
@@ -29,50 +30,9 @@ public class StreamTest {
 
         List<String> strings = Arrays.asList("abc", "", "bc", "efg", "abcd", "", "jkl");
         List<String> filtered = strings.stream().filter(string -> !string.isEmpty()).collect(Collectors.toList());
+        System.out.println(strings.stream().filter(string -> !string.isEmpty()).count());
 
-
-        ArrayList<String> list = new ArrayList<>();
-        list.add("1");
-
-        Test test = new Test();
-        System.out.println(test);
-
-        System.out.println(0b11111111111111111111111111111111);
-
-        Integer[] integers = new Integer[10];
-
-        for (int i = 0; i < 10; i++) {
-            integers[i] = i;
-        }
-
-        Integer[] integers2 = Arrays.copyOf(integers, 11);
-        System.out.println(integers2.length);
-
-        System.arraycopy(integers, 3, integers, 2, integers.length - 2 - 1);
-        integers[integers.length - 1] = null;
-
-        Arrays.stream(integers).forEach(System.out::print);
-
-        LinkedList<String> list1 = new LinkedList<>();
-
-        list1.add("1");
-
-        ArrayList<String> arrayList = null;
-        final ArrayList<String> arrayList1 = arrayList;
-        arrayList = new ArrayList<>();
-        arrayList.add("1");
-
-
-        ArrayList<String> arrayList2 = (ArrayList<String>) arrayList.clone();
-
-
-        System.out.println();
-        System.out.println(arrayList);
-        System.out.println(arrayList1);
-        // System.out.println(arrayList2.hashCode());
-
-        HashMap<Integer, String> hashMap = new HashMap<>();
-        hashMap.put(1, "1");
+        System.out.println(Stream.of(null).count());
 
     }
 
