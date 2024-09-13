@@ -1,4 +1,4 @@
-package org.hulei.jdk.network;
+package org.hulei.jdk.nio;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -10,7 +10,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 /**
  * @ProductName: Hundsun amust
@@ -25,11 +24,14 @@ import java.net.UnknownHostException;
  * Copyright 2023 Hundsun Technologies Inc. All Rights Reserved
  */
 
+@SuppressWarnings("CallToPrintStackTrace")
 @Slf4j
 public class Client {
+
     public static void main(String[] args) {
+
         try {
-            Socket s = new Socket("127.0.0.1", 8888);
+            Socket s = new Socket("127.0.0.1", 8100);
 
             // 构建IO
             InputStream is = s.getInputStream();
@@ -66,6 +68,7 @@ public class Client {
             br.close();
             bw.close();
             s.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }

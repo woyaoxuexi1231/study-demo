@@ -1,4 +1,4 @@
-package org.hulei.jdk;
+package org.hulei.jdk.java8;
 
 
 import lombok.extern.slf4j.Slf4j;

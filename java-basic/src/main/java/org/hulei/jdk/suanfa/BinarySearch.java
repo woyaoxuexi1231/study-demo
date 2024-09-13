@@ -1,4 +1,4 @@
-package org.hulei.jdk.algorithms;
+package org.hulei.jdk.suanfa;
 
 /**
  * 二分查找,非常经典的查找算法

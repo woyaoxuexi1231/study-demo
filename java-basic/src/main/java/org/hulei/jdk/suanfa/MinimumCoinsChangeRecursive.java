@@ -1,4 +1,4 @@
-package org.hulei.jdk.algorithms;
+package org.hulei.jdk.suanfa;
 
 import java.util.Arrays;
 

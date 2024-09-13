@@ -1,6 +1,4 @@
-package org.hulei.jdk.algorithms.bruteforce;
-
-import java.util.Arrays;
+package org.hulei.jdk.suanfa.bruteforce;
 
 public class BruteForceClosestPair {
     static class Point {

@@ -1,4 +1,4 @@
-package org.hulei.jdk.algorithms;
+package org.hulei.jdk.suanfa;
 
 public class CoinMaximization {
     public static int maximizeCoins(int[] nums) {

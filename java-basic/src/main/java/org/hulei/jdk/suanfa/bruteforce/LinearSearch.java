@@ -1,4 +1,4 @@
-package org.hulei.jdk.algorithms.bruteforce;
+package org.hulei.jdk.suanfa.bruteforce;
 
 /**
  * 在给定的数组中寻找一个指定的关键字。

@@ -62,7 +62,7 @@ public class EchoClient {
 
                 Scanner scanner = new Scanner(System.in);
                 while (processor.hasData.get()) {
-                    log.info("还有消息没有发送完，请稍等");
+                    log.info("还有消息没有发送完，请稍等, {}", processor.sendBuffer);
                     LockSupport.parkNanos(1000 * 1000L * 1000L);
 
                 }
@@ -94,30 +94,32 @@ public class EchoClient {
         Processor(SocketChannel channel) throws IOException {
             // Reactor初始化
             selector = Selector.open();
-
             this.channel = channel;
-            channel.register(selector,
-                    SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+            // 绑定当前的 socket信道到 selector,注册两个事件,一个读事件 一个写事件
+            channel.register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
         }
 
         @Override
         public void run() {
+            // 线程启动之后,会调用这里的run方法
             try {
                 while (!Thread.interrupted()) {
                     selector.select();
                     Set<SelectionKey> selected = selector.selectedKeys();
                     for (SelectionKey sk : selected) {
+                        /*
+                        key.isWritable()是表示Socket可写, 网络不出现阻塞情况下, 一直是可以写的, 所认一直为true. 一般我们不注册OP_WRITE事件.
+                         */
                         if (sk.isWritable()) {
-
                             if (hasData.get()) {
                                 SocketChannel socketChannel = (SocketChannel) sk.channel();
                                 sendBuffer.flip();
                                 // 操作三：发送数据
                                 socketChannel.write(sendBuffer);
+                                log.info("消息发送完成, {}", sendBuffer);
                                 sendBuffer.clear();
                                 hasData.set(false);
                             }
-
                         }
                         if (sk.isReadable()) {
                             // 若选择键的IO事件是“可读”事件,读取数据
@@ -129,7 +131,6 @@ public class EchoClient {
                                 log.info("server echo:{}", new String(readBuffer.array(), 0, length));
                                 readBuffer.clear();
                             }
-
                         }
                         // 处理结束了, 这里不能关闭select key，需要重复使用
                         // selectionKey.cancel();

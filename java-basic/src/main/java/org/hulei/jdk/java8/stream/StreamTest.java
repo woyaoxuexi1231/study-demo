@@ -1,4 +1,4 @@
-package org.hulei.jdk.stream;
+package org.hulei.jdk.java8.stream;
 
 import lombok.Data;
 

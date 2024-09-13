@@ -1,4 +1,4 @@
-package org.hulei.jdk.algorithms.bruteforce;
+package org.hulei.jdk.suanfa.bruteforce;
 
 import java.util.Arrays;
 
