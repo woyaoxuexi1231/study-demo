@@ -16,7 +16,7 @@ import tk.mybatis.spring.annotation.MapperScan;
  */
 
 @MapperScan(basePackages = {
-        "com.hundsun.demo.springboot.js.mapper",
+        "org.hulei.springboot.js.mapper",
 })
 @Slf4j
 @SpringBootApplication

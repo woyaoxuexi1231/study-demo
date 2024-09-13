@@ -9,7 +9,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.hulei.keeping.server.KeepingApplication;
 import org.hulei.keeping.server.common.mapper.EmployeeMapper;
-import org.hulei.keeping.server.mybatisplus.mapper.EmployeeMapperPlus;
+import org.hulei.keeping.server.mybatis.mybatisplus.mapper.EmployeeMapperPlus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;

@@ -69,7 +69,7 @@
         - `- %msg%n`：这是日志信息的格式，`%msg`表示日志信息，`%n`表示换行。日志信息前面有一个短横线和一个空格。
         所以，这个配置定义了如下的日志输出格式：日期和时间（按照特定格式），高亮的日志级别（左对齐并且占用5个字符宽度），线程名（被包含在方括号中），青色的日志名称（最多占用36个字符宽度），以及日志信息（前面有一个短横线和一个空格）。
          -->
-        <property name="LOG_PATTERN" value="%d{yy-MM-dd HH:mm:ss.SSS} %highlight{%-5level}[%thread] %style{%c{}}{cyan} - %msg%n"/>
+        <property name="LOG_PATTERN" value="%d{yy-MM-dd HH:mm:ss.SSS} %highlight{%-5level}[%thread] %style{%c{}}{cyan}(%L) - %msg%n"/>
 
         <!-- 定义日志存储的路径，不要配置相对路径 -->
         <property name="FILE_PATH" value="logs"/>

@@ -5,7 +5,7 @@ import org.hulei.keeping.server.common.model.req.ItemDO;
 import org.hulei.keeping.server.db.dynamicdb.core.DataSourceToggleUtil;
 import org.hulei.keeping.server.idgenerator.segmentid.SegmentIdGenerator;
 import org.hulei.keeping.server.idgenerator.snowflake.SnowflakeConfig;
-import org.hulei.keeping.server.mybatisplus.mapper.ItemsMapper;
+import org.hulei.keeping.server.mybatis.mybatisplus.mapper.ItemsMapper;
 import org.hulei.keeping.server.utils.StopWatch;
 import lombok.SneakyThrows;
 import org.springframework.beans.BeansException;

@@ -24,11 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 @tk.mybatis.spring.annotation.MapperScan(basePackages = {
         "org.hulei.keeping.server.common.mapper",
-        "org.hulei.keeping.server.rabbitmq.consumer.mapper",
+        "org.hulei.keeping.server.mq.spring.consumer.mapper",
         "org.hulei.keeping.server.mysql.mapper",
-        "org.hulei.keeping.server.tkmybatis.mapper"})
+        "org.hulei.keeping.server.mybatis.tkmybatis.mapper"})
 @org.mybatis.spring.annotation.MapperScan(basePackages = {
-        "org.hulei.keeping.server.mybatisplus.mapper"})
+        "org.hulei.keeping.server.mybatis.mybatisplus.mapper"})
 @Slf4j
 // @ServletComponentScan
 @EnableDynamicDataSource
