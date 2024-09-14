@@ -2,14 +2,12 @@ package org.hulei.jdk.nio;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.jdk.jvm.JvmUtil;
 
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.locks.LockSupport;
 
 /**
  * @author hulei

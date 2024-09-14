@@ -2,7 +2,6 @@ package org.hulei.jdk.nio;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.jdk.jvm.JvmUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,7 +10,6 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -112,6 +110,14 @@ public class NIOFileReceiveServer {
         NIOUtil.Session session = clientMap.get(key.channel());
         // 写模式
         buffer.clear();
+        // 在客户端已经关闭的情况下, 这里的读事件依旧会触发, 但是使用 read() 方法得到的数字是 -1
+        //   TCP    127.0.0.1:8888         127.0.0.1:10355        CLOSE_WAIT      30284
+        //   TCP    127.0.0.1:10355        127.0.0.1:8888         FIN_WAIT_2      30920
+        // 关闭过程为
+        //          客户端FIN(客户端进入FIN_WAIT_1) -> 服务端收到FIN,发送ACK(服务端进入CLOSE_WAIT)
+        //          -> 客户端收到ACK(进入FIN_WAIT_2),等待服务端的FIN -> 服务端发送FIN(进入LAST_ACK状态)
+        //          -> 客户端收到FIN,发送ACK(进入TIME_WAIT,一段时间后变为CLOSED状态) -> 服务器收到ACK(进入CLOSED状态)
+        // 由此可见,这里停在了服务端没有发送FIN请求给客户端
         while ((num = socketChannel.read(buffer)) > 0) {
             log.info("收到的字节数 = {}", num);
             // 切换到读模式

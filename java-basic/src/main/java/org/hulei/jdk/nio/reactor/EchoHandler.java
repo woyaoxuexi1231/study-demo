@@ -56,9 +56,9 @@ class EchoHandler implements Runnable {
         try {
             if (state == SENDING) {
                 // 写入通道
-                LockSupport.parkNanos(3L * 1000 * 1000 * 1000);
+                // LockSupport.parkNanos(3L * 1000 * 1000 * 1000);
                 channel.write(byteBuffer);
-                log.info("写入数据 {}", new String(byteBuffer.array(), StandardCharsets.UTF_8));
+                // log.info("写入数据 {}", new String(byteBuffer.array(), StandardCharsets.UTF_8));
                 // 写完后,准备开始从通道读,byteBuffer切换成写模式
                 byteBuffer.clear();
                 // 写完后,注册 read 就绪事件

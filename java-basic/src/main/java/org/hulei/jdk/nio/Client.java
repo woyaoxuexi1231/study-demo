@@ -1,5 +1,6 @@
 package org.hulei.jdk.nio;
 
+import com.github.jsonzou.jmockdata.JMockData;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
@@ -10,6 +11,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.concurrent.locks.LockSupport;
 
 /**
  * @ProductName: Hundsun amust
@@ -31,7 +33,7 @@ public class Client {
     public static void main(String[] args) {
 
         try {
-            Socket s = new Socket("127.0.0.1", 8100);
+            Socket s = new Socket("127.0.0.1", 8104);
 
             // 构建IO
             InputStream is = s.getInputStream();

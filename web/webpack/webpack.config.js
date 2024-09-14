@@ -38,7 +38,7 @@ module.exports = {
     plugins: [
         // 实例化 MiniCssPlugin
         new MiniCssPlugin({
-            // 输出的css文件名 todo 输出的文件只有一个 main.css
+            // 输出的css文件名
             filename: 'css/[name].css',
         }),
         new HtmlWebpackPlugin({

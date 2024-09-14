@@ -67,8 +67,7 @@
         </dependency>
 
         <!--
-         1. 这里 parent 最开始定义了 19.3.0.0,但是不知道为什么这里往上点, 却跳到了 ojdbc-bom-21.1.0.0.pom 这个文件 TODO 2024年6月18日
-         2. 这里使用 19.3.0.0 再使用tomcat启动报错了java.lang.NoSuchMethodException: oracle.ucp.jdbc.UCPServletContextListener.<init>(), 导致我一直起不来
+            这里使用 19.3.0.0 再使用tomcat启动报错了java.lang.NoSuchMethodException: oracle.ucp.jdbc.UCPServletContextListener.<init>(), 导致我一直起不来
             后面版本换成了 21.3.0.0 解决了这个问题
          -->
         <dependency>
