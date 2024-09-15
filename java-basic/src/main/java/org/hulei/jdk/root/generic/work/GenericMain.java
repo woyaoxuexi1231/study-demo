@@ -1,4 +1,4 @@
-package org.hulei.jdk.root.generic;
+package org.hulei.jdk.root.generic.work;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +21,7 @@ public class GenericMain {
     }
 
     public void animal(String[] args) {
+
         Dog[] dogs = new Dog[5];
         dogs[0] = new Dog();
         dogs[1] = new Dog();
