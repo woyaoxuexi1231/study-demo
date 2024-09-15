@@ -1,6 +1,7 @@
 package org.hulei.jdk.root.jvm;
 
 import lombok.SneakyThrows;
+import org.hulei.jdk.nio.NIOUtil;
 
 import java.io.File;
 import java.net.URL;
@@ -42,14 +43,21 @@ public class MyClassLoader {
 
     @SneakyThrows
     public static void main(String[] args) {
+        // 获取当前线程的默认的类加载器
         System.out.println(Thread.currentThread().getContextClassLoader());
         Thread thread = new Thread(() -> {
             System.out.println(Thread.currentThread().getContextClassLoader());
         });
         thread.setContextClassLoader(ClassLoader.getSystemClassLoader());
         thread.start();
-        CustomJarClassLoader customJarClassLoader = new CustomJarClassLoader("C:\\Users\\h1123\\.m2\\repository\\org\\springframework\\spring-context\\5.3.30\\spring-context-5.3.30.jar", ClassLoader.getSystemClassLoader());
-        System.out.println(customJarClassLoader.loadClass("org.springframework.context.annotation.AdviceMode").getName());
+
+        File jarFile = new File(NIOUtil.getResourcePath("/custom-jdk-1.0-SNAPSHOT.jar"));
+        System.out.println(jarFile.exists());
+        URL jarURL = jarFile.toURI().toURL();
+
+        CustomJarClassLoader customJarClassLoader = new CustomJarClassLoader(new URL[]{jarURL});
+        // 这里会出现加载异常 Prohibited package name: java.util ,不允许我们包的名称出现这种类似的格式
+        System.out.println(customJarClassLoader.loadClass("java.util.HashMap").getName());
     }
 }
 
@@ -61,38 +69,35 @@ public class MyClassLoader {
  */
 class CustomJarClassLoader extends URLClassLoader {
 
-    private final String jarPath;
-
-    public CustomJarClassLoader(String jarPath, ClassLoader parent) {
-        super(new URL[]{}, parent);
-        this.jarPath = jarPath;
+    public CustomJarClassLoader(URL[] urls) {
+        super(urls);
     }
 
     /**
      * 此方法在jdk1.2之前就存在,而双亲委派机制在1.2才开始出现
      * 为了兼容之前已经存在的用户自定义的类加载器,Java设计者做出妥协,声明了另一个方法 {@link URLClassLoader#findClass(String)},并且引导用户尽可能地重写这个方法来进行类加载的逻辑
      * 而loadClass这个方法则在 {@link java.lang.ClassLoader} 这个类中实现了双亲委派机制的具体逻辑
+     *
+     * 所以总结: 1.此方法Java不推荐实现,他作为默认的双亲委派机制的实现 2.自定义的类加载行为全部写在findClass内部,在loadClass方法的双亲委派链中会使用findClass来查找类
      * <p>
      * <b>启动类加载器(Bootstrap ClassLoader)</b>
      * <b>扩展类加载器(Extension ClassLoader)</b>
      * <b>应用程序类加载器(Application ClassLoader)</b>
      * <p>
-     * 我们这里重写一下这个方法来干预一下我们加载类的行为
+     * 我们这里重写一下这个方法来干预一下我们加载类的行为,我们直接加载我们自己写的HashMap类,而不加载jdk的HashMap
      */
     @Override
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-
-
+        //
         synchronized (getClassLoadingLock(name)) {
-
             // 先检查是否已经加载
             Class<?> loadedClass = findLoadedClass(name);
             if (loadedClass != null) {
                 return loadedClass;
             }
 
-            // 不在指定 JAR 包中的类委托给父类加载器加载
-            if (!name.startsWith("org.springframework.context")) {
+            // 这里我们只干预HashMap的加载方式,并不从父类加载,而是直接在我们自己写的一个jar包中加载一个空类
+            if (!name.startsWith("java.util.HashMap")) {
                 // 在java.lang.ClassLoader.loadClass(java.lang.String, boolean)这个方法内,可以看到双亲委派模型
                 // 1.首先检查是否已经加载对应的类信息 2.如果没有加载交给父类加载器(一直往上递交) 3.父类加载器如果找不到,则由当前的加载器加载
                 return super.loadClass(name, resolve);
@@ -100,9 +105,6 @@ class CustomJarClassLoader extends URLClassLoader {
 
             // 从指定 JAR 包加载类
             try {
-                File jarFile = new File(jarPath);
-                URL jarURL = jarFile.toURI().toURL();
-                addURL(jarURL);
                 return findClass(name);
             } catch (Exception e) {
                 throw new ClassNotFoundException("Failed to load class: " + name, e);

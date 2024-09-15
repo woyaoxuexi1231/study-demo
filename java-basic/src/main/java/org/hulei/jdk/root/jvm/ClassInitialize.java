@@ -9,7 +9,7 @@ package org.hulei.jdk.root.jvm;
  * @createDate: 2024/1/7 16:28
  */
 
-public class ClassLoading {
+public class ClassInitialize {
 
     public static void main(String[] args) {
         /*
@@ -17,7 +17,7 @@ public class ClassLoading {
         2. 通过数据来引用类, 也不会出发此类的初始化操作
         3. 常量在编译阶段会存入调用类的常量池中，本质上并没有直接引用到定义常量的类，因此不会触发定义常量的类的初始化。
          */
-        System.out.println(SubClass.value);
+        System.out.println(ClassInitSubClass.value);
         /*
         结果如下:
         SuperClass init!
@@ -26,7 +26,8 @@ public class ClassLoading {
     }
 }
 
-class SuperClass {
+class ClassInitSuperClass {
+
     static {
         System.out.println("SuperClass init!");
     }
@@ -34,7 +35,7 @@ class SuperClass {
     public static int value = 123;
 }
 
-class SubClass extends SuperClass {
+class ClassInitSubClass extends ClassInitSuperClass {
     static {
         System.out.println("SubClass init!");
     }
