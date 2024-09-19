@@ -1,4 +1,4 @@
-package org.hulei.keeping.server.redis.basic.redisclient;
+package org.hulei.springboot.redis.redis.basic.redisclient;
 
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;

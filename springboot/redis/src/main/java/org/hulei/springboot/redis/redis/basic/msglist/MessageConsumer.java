@@ -1,4 +1,4 @@
-package org.hulei.keeping.server.redis.basic.msglist;
+package org.hulei.springboot.redis.redis.basic.msglist;
 
 import redis.clients.jedis.Jedis;
 

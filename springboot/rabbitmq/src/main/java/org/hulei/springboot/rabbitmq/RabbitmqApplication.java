@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 2024/9/19 19:13
  */
 
-@MapperScan(basePackages = {"org.hulei.rabbitmq.spring.consumer.mapper"})
+@MapperScan(basePackages = {"org.hulei.springboot.rabbitmq.spring.consumer.mapper"})
 @SpringBootApplication
 public class RabbitmqApplication {
 

@@ -30,7 +30,4 @@ public interface SequenceMapper {
 
     @Select(value = {"select t.key from sequence t "})
     List<String> getAll();
-
-    @Insert(value = {"insert into test(b) values (#{b}) "})
-    void insert(@Param("b") Long value);
 }

@@ -1,4 +1,4 @@
-package org.hulei.keeping.server.redis.basic.msgsubscribe;
+package org.hulei.springboot.redis.redis.basic.msgsubscribe;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
