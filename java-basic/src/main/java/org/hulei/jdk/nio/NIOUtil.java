@@ -2,7 +2,7 @@ package org.hulei.jdk.nio;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.jdk.root.jvm.JvmUtil;
+import org.hulei.jdk.rtjar.jvm.JvmUtil;
 
 import java.io.File;
 import java.math.RoundingMode;

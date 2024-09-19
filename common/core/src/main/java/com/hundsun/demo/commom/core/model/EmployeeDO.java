@@ -1,6 +1,7 @@
 package com.hundsun.demo.commom.core.model;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,7 +38,7 @@ public class EmployeeDO implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "Mysql")
     @Column(name = "employeeNumber")
-    @TableField(value = "employeeNumber")
+    @TableId(value = "employeeNumber")
     private Long employeeNumber;
     /**
      *
