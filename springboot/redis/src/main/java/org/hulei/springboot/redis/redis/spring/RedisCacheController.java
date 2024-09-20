@@ -1,4 +1,4 @@
-package org.hulei.springboot.redis.redis;
+package org.hulei.springboot.redis.redis.spring;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.pagehelper.PageHelper;

@@ -1,4 +1,4 @@
-package org.hulei.springboot.redis.redis;
+package org.hulei.springboot.redis.redis.spring;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 // @EnableTransactionManagement
 @Slf4j

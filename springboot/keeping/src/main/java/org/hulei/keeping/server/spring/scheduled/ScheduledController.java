@@ -52,7 +52,7 @@ public class ScheduledController {
     }
 
     @SneakyThrows
-    @Scheduled(cron = "* * * * * ?")
+    @Scheduled(cron = "10 * * * * ?")
     public void schedule() {
         // log.info("ScheduledController执行定时任务schedule, 但是阻塞10秒执行, 并且随后抛出异常");
         // 这里会阻塞其他的定时任务执行

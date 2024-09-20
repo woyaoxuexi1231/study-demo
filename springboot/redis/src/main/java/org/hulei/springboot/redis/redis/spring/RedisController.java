@@ -1,9 +1,7 @@
-package org.hulei.springboot.redis.redis;
+package org.hulei.springboot.redis.redis.spring;
 
 import com.alibaba.fastjson.JSONObject;
 import com.github.jsonzou.jmockdata.JMockData;
-import com.hundsun.demo.commom.core.annotation.DoneTime;
-import com.hundsun.demo.commom.core.model.req.PageQryReqDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,11 +12,9 @@ import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +35,31 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @RestController
 @RequestMapping("/redis")
 public class RedisController {
+
+    /*
+    全局命令:
+    keys [pattern] 查询全局的所有key,在key非常多的情况下会严重阻塞redis的运行,不建议使用,时间复杂度 O(n), 对于一个拥有一百二十万的key的库执行这个命令,花费了7秒多
+    dbsize 查询数据库一共有多少键, dbsize的时间复杂度是 O(1) 他是直接查询redis的内置的键总数变量,可以放心使用
+    exists key 时间复杂度O(1)
+    del key 删除键
+    expire key seconds 设置键的过期时间
+    type key 查看键的数据类型
+
+    rename key newkey 重命名键
+    randomkey 随机返回一个
+    persist 用于移除键的过期时间
+    ttl keys 返回键的过期时间
+    scan cursor [MATCH pattern] [COUNT count] [TYPE type] 遍历元素 cursor第一次写0,以后每次写上一次返回的游标, 这个命令能有效的解决keys的阻塞问题
+    flushdb/fluashall 用于清空数据库或者所有数据库
+
+    acl setuser username 添加用户
+    acl setuser username on 开启用户
+    acl setuser username >password 设置用户密码
+    acl cat 查看当前所有的命令集合
+    acl cat string 查看string类型的命令集合
+    acl setuser user ~* +@string 开启string命令权限
+    acl setuser user +ttl +hset 设置单个命令
+     */
 
     /*========================================== 事务相关 =======================================*/
 
@@ -87,85 +108,6 @@ public class RedisController {
     }
 
     /*========================================== redis的基本使用 =======================================*/
-
-    /**
-     * 使用redis集合获得集合交集
-     *
-     * @return
-     */
-    @RequestMapping("/redisForList")
-    public String redisForList() {
-
-        // 对于用户 Aurelia 来说,这算是他的关注列表,他一共关注了四个人
-        strObjRedisTemplate.opsForSet().add("Aurelia", "Nou", "Tyhesha", "Darrion", "Saroeun");
-
-        // 对于用户 Nou 来说,这算是他的关注列表,他也关注了四个人
-        strObjRedisTemplate.opsForSet().add("Nou", "Sulaiman", "Tyhesha", "Darrion", "Crystle");
-
-        // 现在的问题是,要求这两个人的共同关注,这其实redis有提供这相关api可以使用
-        Set<Object> intersect = strObjRedisTemplate.opsForSet().intersect("Aurelia", "Nou");
-
-
-        // 扩展一下
-        // 1.求并集
-        Set<Object> union = strObjRedisTemplate.opsForSet().union("Aurelia", "Nou");
-        // 2.求差集
-        Set<Object> difference = strObjRedisTemplate.opsForSet().difference("Aurelia", "Nou");
-
-        Map<String, String> resultMap = new HashMap<>();
-        resultMap.put("intersect", CollectionUtils.isEmpty(intersect) ? "null" : intersect.toString());
-        resultMap.put("union", CollectionUtils.isEmpty(union) ? "null" : union.toString());
-        resultMap.put("difference", CollectionUtils.isEmpty(difference) ? "null" : difference.toString());
-        return JSONObject.toJSONString(resultMap);
-    }
-
-
-    @GetMapping("/redisForString")
-    public void redisForString() {
-
-        // redis字符串类型的 key和 value 的大小限制默认都是 512MB, 最多容纳 2的32次方个key
-        // redis的底层存储也是 hash表+链表 结构其实和 hashmap类似,但是没有红黑树
-
-        // 对于字符串, redis提供自增接口, 编号,浏览量等不记名的数量统计都可以使用这种自增来解决, 并且由于redis的自增原子性,可以作为分布式id的获取途径(一定要避免数据丢失和备份)
-        strObjRedisTemplate.opsForValue().set("string-inc", 1);
-        System.out.println(strObjRedisTemplate.opsForValue().increment("string-inc", 1));
-
-        // 位图的使用, 可以作为统计用户签到行为,打卡行为
-        strObjRedisTemplate.opsForValue().setBit("bit-test", 0, true);
-        strObjRedisTemplate.opsForValue().setBit("bit-test", 1, false);
-        System.out.println(strObjRedisTemplate.opsForValue().getBit("bit-test", 0));
-        System.out.println(strObjRedisTemplate.opsForValue().getBit("bit-test", 1));
-        System.out.println(strObjRedisTemplate.opsForValue().getBit("bit-test", 2));
-
-        // {@link com.hundsun.demo.springboot.redis.msglist.MessageConsumer.run} list可以作为消息队列使用, blpop和brpop这两个操作可以阻塞的弹出元素
-
-        // set结构,易于构建类似 记名点赞,关注列表这样的类似 一对多的结构,并且提供了友好操作的api,比如求交集(intersect),并集(union),差集(difference),并且获取元素也比较友好
-        strObjRedisTemplate.opsForSet().add("Aurelia", "Nou", "Tyhesha", "Darrion", "Saroeun");
-        strObjRedisTemplate.opsForSet().add("Nou", "Sulaiman", "Tyhesha", "Darrion", "Crystle");
-        // 交集(共同朋友)
-        System.out.println(strObjRedisTemplate.opsForSet().intersect("Aurelia", "Nou"));
-        // 1.求并集(所有关系网)
-        System.out.println(strObjRedisTemplate.opsForSet().union("Aurelia", "Nou"));
-        // 2.求差集(可能认识的人)
-        System.out.println(strObjRedisTemplate.opsForSet().difference("Aurelia", "Nou"));
-        // 随机获取两位用户
-        System.out.println(strObjRedisTemplate.opsForSet().randomMembers("Aurelia", 2));
-
-        // sort set, 有序集合, 可以用于排行榜类似需要排名的场景
-        strObjRedisTemplate.opsForZSet().add("xuexichengji", "zhangsan", 98);
-        strObjRedisTemplate.opsForZSet().add("xuexichengji", "lisi", 70);
-        strObjRedisTemplate.opsForZSet().add("xuexichengji", "wangwe", 99);
-        strObjRedisTemplate.opsForZSet().add("xuexichengji", "zhaoliu", 86);
-        // 统计个数
-        System.out.println(strObjRedisTemplate.opsForZSet().zCard("xuexichengji"));
-        // 计算排名,以及获取分数 第一个索引是0, rank是降序, reverseRank是升序
-        System.out.println(strObjRedisTemplate.opsForZSet().rank("xuexichengji", "zhangsan"));
-        System.out.println(strObjRedisTemplate.opsForZSet().reverseRank("xuexichengji", "zhangsan"));
-        System.out.println(strObjRedisTemplate.opsForZSet().incrementScore("xuexichengji", "zhangsan", 2));
-
-        System.out.println(strObjRedisTemplate.opsForZSet().range("xuexichengji", 0, 4));
-
-    }
 
     /**
      * 是否终止插入数据
