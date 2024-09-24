@@ -101,15 +101,15 @@ public class RabbitAdminConfig {
         rabbitAdmin.declareBinding(exchangeBinding);
         log.info("使用 RabbitAdmin 创建绑定关系 {} 成功! ", exchangeBinding);
 
-        // Binding binding1 = new Binding(
-        //         "direct-test",
-        //         Binding.DestinationType.QUEUE,
-        //         MQConfig.DIRECT_EXCHANGE_NAME,
-        //         MQConfig.TOPIC_TO_DIRECT_ROUTE_KEY,
-        //         null
-        // );
-        // rabbitAdmin.declareBinding(binding1);
-        // log.info("使用 RabbitAdmin 创建绑定关系 {} 成功", binding1);
+        Binding directQueue = new Binding(
+                "direct-test",
+                Binding.DestinationType.QUEUE,
+                MQConfig.DIRECT_EXCHANGE_NAME,
+                MQConfig.TOPIC_TO_DIRECT_ROUTE_KEY,
+                null
+        );
+        rabbitAdmin.declareBinding(directQueue);
+        log.info("使用 RabbitAdmin 创建绑定关系 {} 成功", directQueue);
     }
 
 }
