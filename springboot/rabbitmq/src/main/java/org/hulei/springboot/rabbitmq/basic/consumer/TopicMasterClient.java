@@ -1,4 +1,4 @@
-package org.hulei.springboot.rabbitmq.basic.work;
+package org.hulei.springboot.rabbitmq.basic.consumer;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
@@ -6,6 +6,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import lombok.extern.slf4j.Slf4j;
+import org.hulei.springboot.rabbitmq.basic.config.MQConfig;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -20,10 +21,12 @@ import java.nio.charset.StandardCharsets;
  */
 
 @Slf4j
-public class MsgPushConsumerA extends MsgConsumer {
+public class TopicMasterClient implements Runnable {
 
-    public MsgPushConsumerA(Connection connection, String queueName) {
-        super(connection, queueName);
+    Connection connection;
+
+    public TopicMasterClient(Connection connection) {
+        this.connection = connection;
     }
 
     @Override
@@ -32,12 +35,10 @@ public class MsgPushConsumerA extends MsgConsumer {
         try {
             // 创建信道
             Channel channel = connection.createChannel();
-            // 手动应答
-            boolean autoAck = false;
             /*
             用于控制消费者的流量控制方法。它用于指定消费者在处理消息时的预取数量（prefetch count）。
             basicQos(int prefetchSize, int prefetchCount, boolean global)
-            prefetchSize - 服务器将提供的最大内容量(以八位字节为单位), 如果无限制, 则为 0, 消息大小限制, 一般设置为 0, 消费端不做限制
+            prefetchSize - 服务器将提供的最大内容量(以八位字节为单位), 如果无限制, 则为 0, 消息大小限制, 一般设置为 0, 消费端不做限制, 有些版本的mq可能没有实现这个功能,如果设置成非0数字可能会报错
             prefetchCount - 服务器将传递的最大邮件数, 如果无限制, 则为 0, 告诉 rabbitmq 不要一次性给消费者推送大于 N 个消息, 即一旦有 N 个消息还没有 ack, 则该 consumer 将 block(阻塞), 直到有消息ack
             global - 是否将上面的设置应用于整个通道
 
@@ -45,18 +46,11 @@ public class MsgPushConsumerA extends MsgConsumer {
             流量控制可以防止消费者在高负载情况下处理过多的消息，避免了资源瓶颈和消息堆积。它还能够提供公平分配消息的机制，确保所有消费者能够平均处理消息队列中的消息。
              */
             channel.basicQos(1);
+
             /*
-            ① String basicConsume(String queue, boolean autoAck, String consumerTag, DeliverCallback deliverCallback, CancelCallback cancelCallback) throws IOException;
-            ② String basicConsume(String queue, boolean autoAck, String consumerTag, Consumer callback) throws IOException;
+            basicConsume对于处理消息提供了几种不同的方案
 
-            Consumer和Callback使用推消息模式, 通过持续订阅来获取消息
-            * autoAck - 是否自动应答
-            * consumerTag - 消费者标签, 用来区分多个消费者, 如果你在订阅消息队列时将 consumerTag 设定为空，那么消息代理（如RabbitMQ）会为消费者生成一个唯一的 consumerTag，并将其返回给消费者应用程序。这个生成的 consumerTag 通常是一个唯一的字符串，用于标识特定的消费者，以便进行后续的消息交付和管理。
-            * noLocal 设置为 true, 表示不能将同一个 Connection 中生产者发送的消息传递给这个 Connection 中的消费者
-            * exclusive 是否排他
-            * arguments 消费者的参数
-
-            * DeliverCallback 当一个消息发送过来后的回调
+            * DeliverCallback 当一个消息发送过来后的回调,可以理解为真正处理消息逻辑的回调函数
                 DeliverCallback 是在 RabbitMQ 中用于处理消息传递（delivery）的函数式接口。
                 它通常作为参数传递给消费者端的 basicConsume 方法，用于定义当消息被接收时如何处理消息的逻辑。
                 当消费者接收到消息时，会调用 DeliverCallback 接口的方法来处理接收到的消息内容。
@@ -83,9 +77,9 @@ public class MsgPushConsumerA extends MsgConsumer {
             在实际应用中，你可以根据需要选择适合的接口来处理消息，如果只需要处理消息的交付逻辑，可以使用 DeliverCallback；如果需要对消费者的整个生命周期进行管理，包括消息交付、取消和关闭时的处理，可以使用 Consumer 接口。
             */
             channel.basicConsume(
-                    queueName,
-                    autoAck,
-                    "",
+                    MQConfig.TOPIC_MASTER_QUEUE,
+                    false,
+                    "", // 消费者的唯一标识符,
                     new DefaultConsumer(channel) {
                         /**
                          * 这是一个用于处理消息交付的方法
@@ -97,18 +91,20 @@ public class MsgPushConsumerA extends MsgConsumer {
                          */
                         @Override
                         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                            log.info("consumerTag: {}", consumerTag);
-                            log.info("envelope: {}", envelope);
-                            log.info("properties: {}", properties);
-                            log.info("topic: {}, body: {}", envelope.getRoutingKey(), new String(body, StandardCharsets.UTF_8));
-                            log.info("replyTo: {}", properties.getReplyTo());
+                            log.info("=======================================================收到消息====================================================");
+                            log.info("消费者标识符: {}", consumerTag);
+                            log.info("消息交付信息: {}", envelope);
+                            log.info("消息的附加对象,例如消息内容格式等内容: {}", properties);
+                            log.info("主题: {}, 消息内容: {}", envelope.getRoutingKey(), new String(body, StandardCharsets.UTF_8));
+                            log.info("回复队列,收到消息后,可以通过这个回复队列去回复消息,回复队列名称: {}", properties.getReplyTo());
                             log.info("correlationId: {}", properties.getCorrelationId());
+                            log.info("=======================================================解析结束====================================================");
                             // 回复一个消息到指定的队列中去, rpc服务端的实现
                             channel.basicPublish(
                                     "",
                                     properties.getReplyTo(),
                                     new AMQP.BasicProperties().builder().correlationId(properties.getCorrelationId()).build(),
-                                    (envelope.getRoutingKey() + ", " + queueName + ", " + new String(body, StandardCharsets.UTF_8)).getBytes(StandardCharsets.UTF_8));
+                                    ("消息标识符: " + properties.getCorrelationId() + ", " + envelope.getRoutingKey() + ", " + MQConfig.TOPIC_MASTER_QUEUE + ", " + new String(body, StandardCharsets.UTF_8)).getBytes(StandardCharsets.UTF_8));
                             // deliveryTag 是用来唯一标识每条投递的消息的整数值。根据官方文档的描述，deliveryTag 是在每个 channel 上保持唯一性的，并且会在 channel 打开时从 1 开始递增。
                             channel.basicAck(envelope.getDeliveryTag(), false);
                         }

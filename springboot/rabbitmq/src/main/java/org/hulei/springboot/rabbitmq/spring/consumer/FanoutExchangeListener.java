@@ -1,0 +1,56 @@
+package org.hulei.springboot.rabbitmq.spring.consumer;
+
+import com.rabbitmq.client.Channel;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.ExchangeTypes;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.annotation.Exchange;
+import org.springframework.amqp.rabbit.annotation.Queue;
+import org.springframework.amqp.rabbit.annotation.QueueBinding;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.stereotype.Component;
+
+/**
+ * 对于此类型的交换机,设置的routingkey不会生效,绑定到交换机的所有队列都会收到消息
+ *
+ * @author hulei
+ * @since 2024/9/23 16:39
+ */
+
+@Slf4j
+@Component
+public class FanoutExchangeListener {
+
+    /**
+     * 测试 direct 类型的交换机
+     *
+     * @param msg     msg
+     * @param channel channel
+     */
+    @RabbitListener(bindings = @QueueBinding(value = @Queue(name = "fanout-test"), exchange = @Exchange(value = "amq.fanout", type = ExchangeTypes.FANOUT), key = "direct.key.test"))
+    public void fanoutQueue(Message msg, Channel channel) {
+        log.info("fanout-test 收到消息: {}", msg);
+        try {
+            channel.basicAck(msg.getMessageProperties().getDeliveryTag(), false);
+        } catch (Exception e) {
+            log.error("ack异常", e);
+        }
+    }
+
+    /**
+     * 测试 direct 类型的交换机
+     *
+     * @param msg     msg
+     * @param channel channel
+     */
+    @RabbitListener(bindings = @QueueBinding(value = @Queue(name = "fanout-test2"), exchange = @Exchange(value = "amq.fanout", type = ExchangeTypes.FANOUT), key = "direct.key.test2"))
+    public void fanoutQueue2(Message msg, Channel channel) {
+        log.info("fanout-test2 收到消息: {}", msg);
+        try {
+            channel.basicAck(msg.getMessageProperties().getDeliveryTag(), false);
+        } catch (Exception e) {
+            log.error("ack异常", e);
+        }
+    }
+
+}

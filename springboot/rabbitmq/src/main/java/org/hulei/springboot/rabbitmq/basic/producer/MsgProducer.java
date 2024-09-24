@@ -1,5 +1,8 @@
-package org.hulei.springboot.rabbitmq.basic.work;
+package org.hulei.springboot.rabbitmq.basic.producer;
 
+import com.alibaba.fastjson2.JSON;
+import com.rabbitmq.client.ReturnListener;
+import lombok.SneakyThrows;
 import org.hulei.springboot.rabbitmq.basic.config.ConnectFactory;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
@@ -36,32 +39,29 @@ public class MsgProducer {
     static {
         // 通过连接工厂获取连接, 连接工厂已经配置好了连接 mq 的配置信息
         connection = ConnectFactory.getConnect();
-        // 创建交换机
-        ConnectFactory.initExchange();
-    }
 
-    public static void postMsg(String exchangeName, String routingKey, String msg) {
-
+        // 初始化信道
         try {
+            channel = connection.createChannel();
+            // 开启发布确认, 在消息发送失败的情况下可以用于消息的重新处理, 为了消息可靠性一定要开启
+            channel.confirmSelect();
 
-            if (channel == null) {
-                // 发消息之前校验一下是否信道已经开启了, 发消息是需要通过信道发送的, 只有连接是不行的
-                channel = connection.createChannel();
-                // 开启发布确认,
-                channel.confirmSelect();
-                // 添加一个成功回调和一个失败的回调
-                channel.addConfirmListener(new ConfirmListener() {
-                    @Override
-                    public void handleAck(long deliveryTag, boolean multiple) {
-                        log.info("message send success, deliveryTag: {}, multiple: {}", deliveryTag, multiple);
-                    }
+            // 开启一个确认回调
+            channel.addConfirmListener(new ConfirmListener() {
+                @Override
+                public void handleAck(long deliveryTag, boolean multiple) {
+                    // 此方法的触发条件是消息成功到达交换机
+                    log.info("消息发送成功, deliveryTag(消息唯一标识符): {}, multiple(批量确认): {}", deliveryTag, multiple);
+                }
 
-                    @Override
-                    public void handleNack(long deliveryTag, boolean multiple) {
-                        log.info("message send failed, deliveryTag: {}, multiple: {}", deliveryTag, multiple);
-                    }
-                });
-                channel.addReturnListener(
+                @Override
+                public void handleNack(long deliveryTag, boolean multiple) {
+                    log.info("消息发送失败, deliveryTag(消息唯一标识符): {}, multiple(批量确认): {}", deliveryTag, multiple);
+                }
+            });
+
+
+            channel.addReturnListener(
                         /*
                         用于处理当消息无法被路由到对应的队列时触发的返回（Return）事件。
                         方法参数的含义如下：
@@ -80,29 +80,42 @@ public class MsgProducer {
                         应用程序可以根据返回事件的信息进行适当的处理，比如记录日志、重新发送消息、或者执行其他特定的逻辑。
                         总之，handleReturn 方法用于处理 RabbitMQ 返回（Return）事件，当消息无法被路由到目标队列时，该方法会被调用，开发人员可以在这个方法中编写逻辑来处理返回事件。
                          */
-                        (replyCode, replyText, exchange, rk, properties, body) -> {
+                    new ReturnListener() {
+                        @Override
+                        public void handleReturn(int replyCode, String replyText, String exchange, String routingKey, AMQP.BasicProperties properties, byte[] body) throws IOException {
                             String replyString = new String(body, StandardCharsets.UTF_8);
-                            log.info("消息未找到指定的队列, exchange: {}, routingKey: {}, replyString: {}", exchange, rk, replyString);
-                        });
-                // rpc实现, 回复队列
-                replyQueueName = channel.queueDeclare().getQueue();
-                consumer = new DefaultConsumer(channel) {
-                    @Override
-                    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                        String reply = new String(body, StandardCharsets.UTF_8);
-                        log.info("收到回复的消息: {}", reply);
-                    }
-                };
-                channel.basicConsume(replyQueueName, true, consumer);
-            }
-            /**
-             * BasicProperties属性笔记
-             contentType	消息体的MIME类型，如application/json
+                            log.info("消息未找到指定的队列, exchange: {}, routingKey: {}, replyString: {}", exchange, routingKey, replyString);
+                        }
+
+                    });
+
+            // rpc实现, 回复队列
+            replyQueueName = channel.queueDeclare().getQueue();
+            consumer = new DefaultConsumer(channel) {
+                @Override
+                public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                    String reply = new String(body, StandardCharsets.UTF_8);
+                    log.info("收到回复的消息: {}", reply);
+                }
+            };
+
+
+            channel.basicConsume(replyQueueName, true, consumer);
+        } catch (Exception e) {
+            log.info("信道初始化失败.", e);
+        }
+    }
+
+    public static void postMsg(String exchangeName, String routingKey, String msg) {
+
+        try {
+            /*
+             contentType	消息体的MIME类型，如 application/octet-stream(二进制),application/json(json格式)
              contentEncoding	消息的编码类型, 如是否压缩
              headers	键/值对表, 用户自定义任意的键和值
              deliveryMode 消息的持久化类型 - 1为非持久化, 2为持久化, 性能影响巨大
              priority 指定队列中消息的优先级
-             correlationId 一般用作关联消息的 message-id, 常用于消息的响应
+             correlationId 一般用作关联消息的 message-id, 常用于消息的响应. 多个消息同时收到响应的时候就可以使用这个字段进行区分到底是哪个消息已经正确响应了
              replyTo	构建回复消息的私有响应队列
              expiration 消息的过期时刻, 字符串, 但是呈现格式为整型, 精确到秒
              messageId 消息的唯一性标识, 由应用进行设置
@@ -112,14 +125,13 @@ public class MsgProducer {
              appId 应用程序的类型和版本号
              clusterId 集群 ID
              */
-            String correlationId = UUID.randomUUID().toString();
             AMQP.BasicProperties basicProperties = new AMQP.BasicProperties(
-                    "application/octet-stream",
+                    "application/json",
                     null,
                     null,
                     2,
                     0,
-                    correlationId,
+                    UUID.randomUUID().toString(),
                     replyQueueName,
                     null,
                     null,
@@ -128,7 +140,7 @@ public class MsgProducer {
                     null,
                     null,
                     null);
-            /**
+            /*
              * 发送消息 basicPublish
              * String exchange, 交换机
              * String routingKey, 路由键
@@ -137,7 +149,8 @@ public class MsgProducer {
              * immediate 参数将判断队列中是否存在消费者,如果在所有满足条件的队列中都没有消费者,这条消息将被返回给生产者, 3.0之后这个参数被取消支持
              * byte[] body，消息体
              */
-            channel.basicPublish(exchangeName, routingKey, true, basicProperties, msg.getBytes());
+            log.info("准备发送消息, 交换机: {}, 路由: {}", exchangeName, routingKey);
+            channel.basicPublish(exchangeName, routingKey, true, basicProperties, msg.getBytes(StandardCharsets.UTF_8));
             // 等待确认(这是同步的方式等待确认, 已采用addConfirmListener的方式添加异步回调确认)
             // if (!channel.waitForConfirms()) {
             //     log.error("消息发送失败!");

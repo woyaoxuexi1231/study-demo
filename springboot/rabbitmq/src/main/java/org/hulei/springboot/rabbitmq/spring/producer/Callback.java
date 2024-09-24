@@ -19,7 +19,7 @@ import javax.annotation.PostConstruct;
 
 @Slf4j
 @Component
-public class RabbitmqCallBack implements RabbitTemplate.ConfirmCallback, RabbitTemplate.ReturnsCallback {
+public class Callback implements RabbitTemplate.ConfirmCallback, RabbitTemplate.ReturnsCallback {
 
     /**
      * 注入容器里的rabbitTemplate, 以便对容器里的rabbitTemplate进行改造
@@ -82,23 +82,12 @@ public class RabbitmqCallBack implements RabbitTemplate.ConfirmCallback, RabbitT
     @Override
     public void confirm(CorrelationData correlationData, boolean ack, String cause) {
         // ack = true 交换机收到了消息, ack = false 交换机没收到消息
-        log.info("回调函数收到通知,消息已经发出去了, correlationData: {}, ack: {}, cause: {}", correlationData, ack, cause);
-    }
-
-
-    /**
-     * 在消息送不到相应队列的时候会触发这个回调
-     * 1. 发送了错误得routingKey导致没有队列能够收到这个消息, 即使交换机收到了消息, 也会触发这个回调函数
-     *
-     * @param message    the returned message. 返回的消息内容。
-     * @param replyCode  the reply code. 返回的响应码。
-     * @param replyText  the reply text. 返回的响应文本。
-     * @param exchange   the exchange. 消息发送时指定的交换机。
-     * @param routingKey the routing key. 消息发送时指定的路由键。
-     */
-    @Override
-    public void returnedMessage(Message message, int replyCode, String replyText, String exchange, String routingKey) {
-        log.info("returnedMessage => message: {}, replyCode: {}, replyText: {}, exchange: {}, routingKey: {}", message, replyCode, replyText, exchange, routingKey);
+        // 我这里在项目启动之后直接把交换机删掉了,来模拟消息到不了交换机的场景
+        if (ack) {
+            log.info("回调函数收到通知, 交换机成功收到了消息, correlationData: {}", correlationData);
+        } else {
+            log.error("回调函数收到通知, 交换机没能收到消息, correlationData: {}, 失败的原因是: {}", correlationData, cause);
+        }
     }
 
     @Override

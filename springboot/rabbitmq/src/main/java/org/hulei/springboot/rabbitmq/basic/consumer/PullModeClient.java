@@ -1,9 +1,10 @@
-package org.hulei.springboot.rabbitmq.basic.work;
+package org.hulei.springboot.rabbitmq.basic.consumer;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.GetResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.hulei.springboot.rabbitmq.basic.config.MQConfig;
 
 import java.util.Calendar;
 import java.util.Objects;
@@ -22,10 +23,12 @@ import java.util.Objects;
  */
 
 @Slf4j
-public class MsgPullConsumer extends MsgConsumer {
+public class PullModeClient implements Runnable {
 
-    public MsgPullConsumer(Connection connection, String queueName) {
-        super(connection, queueName);
+    Connection connection;
+
+    public PullModeClient(Connection connection) {
+        this.connection = connection;
     }
 
     @Override
@@ -38,8 +41,8 @@ public class MsgPullConsumer extends MsgConsumer {
                 Thread.sleep(millis);
                 Channel channel = connection.createChannel();
                 boolean autoAck = false;
-                GetResponse getResponse = channel.basicGet(queueName, autoAck);
-                log.info("getResponse: {}", getResponse);
+                GetResponse getResponse = channel.basicGet(MQConfig.TOPIC_PULL_QUEUE, autoAck);
+                log.info("通过拉模式获取到一条消息: {}", getResponse);
                 if (!Objects.isNull(getResponse)) {
                     channel.basicAck(getResponse.getEnvelope().getDeliveryTag(), false);
                 }

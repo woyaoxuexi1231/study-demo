@@ -1,4 +1,6 @@
-package com.hundsun.demo.commom.core.consts;
+package org.hulei.springboot.rabbitmq.basic.config;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @projectName: study-demo
@@ -9,6 +11,7 @@ package com.hundsun.demo.commom.core.consts;
  * @createDate: 2023/2/26 19:00
  */
 
+@Slf4j
 public class MQConfig {
 
     /* RabbitMQ */
@@ -28,23 +31,34 @@ public class MQConfig {
     public static final String DIRECT_MASTER_QUEUE = "direct-queue-master";
     public static final String DIRECT_SLAVE_ROUTE_KEY = "direct.route.key.slave";
     public static final String DIRECT_SLAVE_QUEUE = "direct-queue-slave";
+
+
     public static final String FANOUT_EXCHANGE_NAME = "fanout-exchange";
     public static final String FANOUT_MASTER_ROUTE_KEY = "fanout.route.key.master";
     public static final String FANOUT_MASTER_QUEUE = "fanout-queue-master";
     public static final String FANOUT_SLAVE_ROUTE_KEY = "fanout.route.key.slave";
     public static final String FANOUT_SLAVE_QUEUE = "fanout-queue-slave";
-    public static final String TOPIC_EXCHANGE_NAME = "exchange-test-topic";
+
+
+    public static final String TOPIC_EXCHANGE_NAME = "topic-exchange";
     // topic主题交换机以这种主题声明的队列,意味着消息只要以topic.route.key.开头,都会被路由到这个队列
     public static final String TOPIC_MASTER_ROUTE_KEY = "topic.route.key.*";
     public static final String TOPIC_MASTER_QUEUE = "topic-queue-master";
-    public static final String TOPIC_SLAVE_ROUTE_KEY = "topic.route.key.slave";
-    public static final String TOPIC_SLAVE_QUEUE = "topic-queue-slave";
+    public static final String TOPIC_PULL_ROUTE_KEY = "topic.route.key.pull";
+    public static final String TOPIC_PULL_QUEUE = "topic-queue-slave";
+    public static final String TOPIC_FOR_DEAD_QUEUE = "topic-for-dead-queue";
+    public static final String TOPIC_FOR_DEAD_ROUTE_KEY = "topic.dead.routing.*";
+    public static final String TOPIC_FOR_DEAD_QUEUE_ROUTE_KEY = "topic.dead.queue.key.*";
+
+    public static final String HANDLER_AND_LISTENER_QUEUE = "handler-and-listener-queue";
+    public static final String HANDLER_AND_LISTENER_ROUTE_KEY = "handler.and.listener.route.key";
+    public static final String HANDLER_AND_LISTENER_DEAD_ROUTE_KEY = "handler.and.listener.dead.route.key";
+
     public static final String HEADER_EXCHANGE_NAME = "header-exchange";
     public static final String HEADER_MASTER_ROUTE_KEY = "header.route.key.master";
     public static final String HEADER_MASTER_QUEUE = "header-queue-master";
     public static final String HEADER_SLAVE_ROUTE_KEY = "header.route.key.slave";
     public static final String HEADER_SLAVE_QUEUE = "header-queue-slave";
-
 
     /*
     死信队列
@@ -52,8 +66,12 @@ public class MQConfig {
     2. 达到队列最大长度
     3. 消息被拒
      */
-    public static final String DEAD_EXCHANGE_NAME = "exchange-test-dead";
+    public static final String DEAD_EXCHANGE_NAME = "dead_exchange";
     public static final String DEAD_QUEUE_NAME = "dead-queue";
+
+    public static final String KEY_FOR_CUSTOM_CONTAINER = "key.for.custom.container";
+
+    public static final String TOPIC_TO_DIRECT_ROUTE_KEY = "topic.to.direct.*";
 
 
     public static String getExchangeName(String type) {
@@ -67,5 +85,9 @@ public class MQConfig {
             default:
                 return DIRECT_EXCHANGE_NAME;
         }
+    }
+
+    public static void main(String[] args) {
+        log.info("123");
     }
 }

@@ -1,6 +1,6 @@
 package org.hulei.springboot.rabbitmq.basic.rpc;// RPCClient.java
 
-import com.hundsun.demo.commom.core.consts.MQConfig;
+import org.hulei.springboot.rabbitmq.basic.config.MQConfig;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
