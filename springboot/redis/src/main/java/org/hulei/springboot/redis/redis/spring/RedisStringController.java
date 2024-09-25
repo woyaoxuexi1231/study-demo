@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.hundsun.demo.commom.core.model.EmployeeDO;
-import org.hulei.springboot.mybatisplus.mapper.EmployeeMapperPlus;
+import com.hundsun.demo.commom.core.mapper.EmployeeMapperPlus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;

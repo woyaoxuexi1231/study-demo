@@ -1,13 +1,9 @@
 package org.hulei.keeping.server.spring.transactional;
 
 import com.hundsun.demo.commom.core.model.EmployeeDO;
-import com.hundsun.demo.commom.core.model.User;
 import lombok.SneakyThrows;
-import org.hulei.springboot.mybatisplus.mapper.EmployeeMapperPlus;
-import org.hulei.springboot.mybatisplus.mapper.UserMapperPlus;
+import com.hundsun.demo.commom.core.mapper.EmployeeMapperPlus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

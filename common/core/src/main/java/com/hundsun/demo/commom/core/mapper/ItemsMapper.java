@@ -1,4 +1,4 @@
-package org.hulei.springboot.mybatisplus.mapper;
+package com.hundsun.demo.commom.core.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hundsun.demo.commom.core.model.ItemDO;

@@ -24,10 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController("/application")
 @SpringBootApplication
 @org.mybatis.spring.annotation.MapperScan(basePackages = {
-        "org.hulei.springboot.mybatisplus.mapper",
-        "org.hulei.keeping.server.common.mapper",
-        "org.hulei.keeping.server.mq.spring.consumer.mapper",
-        "org.hulei.keeping.server.mysql.mapper"})
+        "com.hundsun.demo.commom.core.mapper",
+        "org.hulei.keeping.server.common.mapper"
+})
 @Slf4j
 @EnableDynamicDataSource
 public class KeepingApplication {
@@ -48,6 +47,7 @@ public class KeepingApplication {
 
     public static void main(String[] args) {
         // System.setProperty("cglib.debugLocation","C:\\Project\\study-demo\\demo-spring\\demo-springboot\\target\\classes");
+        // spring.profiles.active 这个配置会激活外部jar包内的配置文件
         /*
         Spring Boot内嵌 Tomcat 的实现原理主要涉及以下几个步骤:
         1. 添加依赖: 在 Spring Boot 项目中, 我们通常会添加 spring-boot-starter-web 这个 starter, 它在 pom.xml 中包含了一些依赖, 包括 web、webmvc和 tomcat 等。

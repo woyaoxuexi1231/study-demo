@@ -8,7 +8,7 @@ import com.hundsun.demo.commom.core.model.dto.ResultDTO;
 import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
 import lombok.extern.slf4j.Slf4j;
 import org.hulei.springboot.jdbc.dynamicdb.annotation.TargetDataSource;
-import org.hulei.springboot.mybatisplus.mapper.EmployeeMapperPlus;
+import com.hundsun.demo.commom.core.mapper.EmployeeMapperPlus;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -5,7 +5,7 @@ import com.hundsun.demo.commom.core.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
-import org.hulei.springboot.mybatisplus.mapper.UserMapperPlus;
+import com.hundsun.demo.commom.core.mapper.UserMapperPlus;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

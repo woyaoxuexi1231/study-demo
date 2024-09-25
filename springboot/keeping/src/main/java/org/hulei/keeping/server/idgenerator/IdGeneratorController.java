@@ -7,7 +7,7 @@ import org.hulei.keeping.server.idgenerator.segmentid.SegmentIdGenerator;
 import org.hulei.keeping.server.idgenerator.snowflake.SnowflakeConfig;
 import org.hulei.keeping.server.utils.StopWatch;
 import org.hulei.springboot.jdbc.dynamicdb.core.DataSourceToggleUtil;
-import org.hulei.springboot.mybatisplus.mapper.ItemsMapper;
+import com.hundsun.demo.commom.core.mapper.ItemsMapper;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;

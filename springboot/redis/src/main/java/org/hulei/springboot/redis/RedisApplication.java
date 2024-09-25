@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 2024/9/19 21:57
  */
 
-@MapperScan(basePackages = {"org.hulei.springboot.mybatisplus.mapper"})
+@MapperScan(basePackages = {"com.hundsun.demo.commom.core.mapper"})
 @SpringBootApplication
 public class RedisApplication {
 

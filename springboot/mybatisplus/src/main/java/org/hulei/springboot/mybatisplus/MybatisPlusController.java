@@ -1,6 +1,5 @@
 package org.hulei.springboot.mybatisplus;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -11,8 +10,8 @@ import com.github.pagehelper.PageHelper;
 import com.hundsun.demo.commom.core.model.EmployeeDO;
 import com.hundsun.demo.commom.core.model.User;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.springboot.mybatisplus.mapper.EmployeeMapperPlus;
-import org.hulei.springboot.mybatisplus.mapper.UserMapperPlus;
+import com.hundsun.demo.commom.core.mapper.EmployeeMapperPlus;
+import com.hundsun.demo.commom.core.mapper.UserMapperPlus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;

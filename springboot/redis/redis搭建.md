@@ -58,20 +58,20 @@ redis-cli -p 6380
 
 ## 配置
 
-```
-主要更改下面两个配置
+```shell
+#主要更改下面两个配置
 sentinel monitor test 192.168.80.130 6379 2
 sentinel auth-pass test 123456
 
-这里的主机别名是可以自定义的，只需要保证这几个哨兵之间使用相同的名字就可以了。如果使用的名字不同可能会出现问题。
+#这里的主机别名是可以自定义的，只需要保证这几个哨兵之间使用相同的名字就可以了。如果使用的名字不同可能会出现问题。
 
-然后启动程序 
+#然后启动程序 
 [root@node-129 src]# ./redis-sentinel ../sentinel.conf
 ```
 
 # 启动脚本
 
-``` 
+```shell
 
 #!/bin/sh
 #Configurations injected by install_server below....

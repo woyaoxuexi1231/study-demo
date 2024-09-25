@@ -9,9 +9,13 @@ import redis.clients.jedis.Jedis;
 public class RedisBitmap {
 
     public static void main(String[] args) {
+
         // 创建 Jedis 客户端连接
         Jedis jedis = new Jedis("192.168.80.128", 6379);
         jedis.auth("123456");
+
+        // 位图本身不是一种数据结构,他是基于字符串,对字符串的位进行运算
+
         // 设置位图
         jedis.setbit("user:1:login", 0, true); // 用户1登录
         jedis.setbit("user:2:login", 1, true); // 用户2登录

@@ -6,15 +6,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.Closeable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +43,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class RedisController {
 
     /*
+    redis的命令分类:
+        Strings（字符串）
+        Hashes（哈希）
+        Lists（列表）
+        Sets（集合）
+        Sorted Sets（有序集合）
+        HyperLogLog
+        Pub/Sub（发布订阅）
+        Transactions（事务）
+        Scripting（脚本）
+        Connection（连接）
+        Server（服务器）
+
     全局命令:
     keys [pattern] 查询全局的所有key,在key非常多的情况下会严重阻塞redis的运行,不建议使用,时间复杂度 O(n), 对于一个拥有一百二十万的key的库执行这个命令,花费了7秒多
     dbsize 查询数据库一共有多少键, dbsize的时间复杂度是 O(1) 他是直接查询redis的内置的键总数变量,可以放心使用
@@ -75,6 +94,11 @@ public class RedisController {
      * <p>
      * spring redisTemplate并不是直接使用 multi 和 exec 来实现事务, 必须要结合 execute 和 SessionCallback回调函数来实现事务
      * 这样才能保证所有的操作在一个连接内运行
+     * <p>
+     * 而exec也不仅仅只提供这种功能,exec最强大的功能体现在下面几个方面:
+     * 1. 可以执行任意redis命令,通过传入不同的Callback来执行任意类型的redis命令
+     * 2. 事务支持,也就是这个例子中使用的
+     * 3. 管道支持,strObjRedisTemplate.executePipelined()来批量执行操作
      */
     @GetMapping(value = "redisMultiAndExec")
     public void redisMultiAndExec() {
@@ -99,11 +123,13 @@ public class RedisController {
     @GetMapping(value = "redisTransactional")
     public void redisTransactional() {
         /*
-        在redis.cli中操作, 在multi和exec中间执行的语句出现  1.命令错误(set写成了sett),这导致事务无法执行,也不会执行语句 2.运行时错误(本该sadd的命令写成了zadd),这导致前面执行的语句无法回滚
+        在redis.cli中操作, 在multi和exec中间执行的语句出现
+            1.命令错误(set写成了sett),这导致事务无法执行,也不会执行语句
+            2.运行时错误(本该sadd的命令写成了zadd),这导致前面执行的语句无法回滚
         redis本身的事务是不支持回滚的,所以这里如果出现运行时错误也是无法回滚的,但是如果出现运行时错误的其他错误,是可以不执行操作的
          */
         strObjRedisTemplate.opsForValue().set("transactional", "redis");
-        // strObjRedisTemplate.opsForList().set("transactional", 0, "1");
+        // 对于这里抛出的异常,spring会控制不会提交上面的set命令
         throw new RuntimeException("error");
     }
 
@@ -124,6 +150,7 @@ public class RedisController {
      */
     @GetMapping("/maxMemoryTest")
     public void maxMemoryTest() {
+
         /*
         设置redis的最大内存为 10 MB, maxmemory 10MB, redis默认的内存淘汰策略是 noeviction,所以内存超了之后就不再允许插入数据了所以内存溢出后会报错:
                 Caused by: org.redisson.client.RedisOutOfMemoryException: command not allowed when used memory > 'maxmemory'..
@@ -136,14 +163,8 @@ public class RedisController {
         volatile-ttl: 根据对象的过期时间,删除最近要过期的数据,如果没有,那么回退到 noeviction 策略
 
         总结就是: 过期键一共三种-最近要过期,最近最少使用,随机; 所有键一共两种-最近最少使用,随机; 还有直接不允许插入了
-         */
-        synchronized (this) {
-            isInsert.set(!isInsert.get());
-            log.info(isInsert.get() ? "将触发无限循环插入字符串到redis的操作" : "将取消无限循环插入字符串到redis的操作, 上一次一共插入了{}条数据", insertCount);
-            insertCount = 0;
-        }
 
-        /*
+
         这里我内存淘汰策略使用的是 allkeys-lru,但是奇怪的是在操作几秒钟后,redis仍然会报错command not allowed when used memory > 'maxmemory'..
         使用 allkeys-ramdon也是同样的问题
         TODO 这里暂时不知道什么原因导致的
@@ -191,11 +212,20 @@ public class RedisController {
         lazyfree_pending_objects:0 - 懒惰删除机制中等待删除的对象数量。
         lazyfreed_objects:0 - 懒惰删除机制已经删除的对象数量。
          */
+        // commonPool.execute(() -> {
+        //     for (int i = 0; i < 500000; i++) {
+        //         strObjRedisTemplate.opsForValue().set(JMockData.mock(String.class), JMockData.mock(String.class));
+        //         insertCount++;
+        //     }
+        //     log.info("五十万条字符串类型数据添加完成!");
+        // });
+
         commonPool.execute(() -> {
-            while (isInsert.get()) {
-                strObjRedisTemplate.opsForValue().set(JMockData.mock(String.class), JMockData.mock(String.class));
+            for (int i = 0; i < 500000; i++) {
+                strObjRedisTemplate.opsForList().leftPush("blocking::list", JMockData.mock(String.class));
                 insertCount++;
             }
+            log.info("五十万条list类型数据添加完成!");
         });
     }
 
@@ -203,10 +233,32 @@ public class RedisController {
     public void blocking() {
         /*
         讨论一下redis在什么情况下可能导致响应速度变慢
-        1.
+        1. keys 由于会遍历所有的数据值,会造成大量的cpu操作和阻塞,这个操作一定要慎用
+        2.
          */
-        strObjRedisTemplate.opsForZSet().add("block-zset", "a", 1);
-        strObjRedisTemplate.opsForZSet().add("block-zset", "b", 2);
-        strObjRedisTemplate.opsForZSet().add("block-zset", "c", 3);
+        StopWatch stopWatch = new StopWatch();
+
+        stopWatch.start("blocking-string");
+        strObjRedisTemplate.opsForValue().get("blocking::string");
+        stopWatch.stop();
+
+        stopWatch.start("blocking-list");
+        strObjRedisTemplate.opsForList().range("blocking::list", 0, -1);
+        stopWatch.stop();
+    }
+
+    @GetMapping("/getKeyByScan")
+    public void getKeyByScan(String pattern) {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        ScanOptions options = ScanOptions.scanOptions().match(pattern).count(10).build(); // 可以根据需要设置匹配模式和数量
+        try (Cursor<String> scan = strObjRedisTemplate.scan(options)) {
+            while (scan.hasNext()) {
+                log.info("redis 存在 pattern:{} 的 key:{} ", pattern, scan.next());
+            }
+        }
+        stopWatch.stop();
+        String dbsize = stringRedisTemplate.execute((RedisCallback<String>) connection -> String.valueOf(connection.dbSize()));
+        log.info("本次扫描结束, 一共扫描{}个键, 耗时分析: {}", dbsize, stopWatch.prettyPrint());
     }
 }

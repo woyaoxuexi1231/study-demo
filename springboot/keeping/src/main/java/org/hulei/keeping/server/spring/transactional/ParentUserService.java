@@ -1,7 +1,7 @@
 package org.hulei.keeping.server.spring.transactional;
 
 import com.hundsun.demo.commom.core.model.User;
-import org.hulei.springboot.mybatisplus.mapper.UserMapperPlus;
+import com.hundsun.demo.commom.core.mapper.UserMapperPlus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 

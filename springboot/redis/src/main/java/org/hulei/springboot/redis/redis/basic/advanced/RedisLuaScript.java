@@ -11,24 +11,39 @@ public class RedisLuaScript {
         Jedis jedis = new Jedis("192.168.80.128", 6379);
         jedis.auth("123456");
 
-        // 定义 Lua 脚本
+        // 定义 Lua 脚本,使用 lua脚本的好处是即使脚本内有大量的命令操作, redis可以保证整个脚本的执行是原子性的(但不支持回滚,redis本身是不支持回滚这种操作的,已经执行的命令不会撤回)
         String luaScript =
-                // redis.call('get', KEYS[1])：这部分代码使用 Redis 的 GET 命令从 Redis 中获取键 KEYS[1] 对应的值。KEYS 是 Lua 脚本中预定义的一个数组，用于存储传递给 Lua 脚本的键。在这里，KEYS[1] 表示第一个键，也就是 Lua 脚本中的第一个参数。这个命令会返回一个字符串，表示键对应的值。
-                // tonumber(...)：Lua 中的 tonumber 函数用于将字符串转换为数字。在这里，我们将 Redis 返回的字符串转换为数字。如果 Redis 返回的字符串不能转换为数字（比如键不存在或者对应的值不是数字字符串），那么 tonumber 函数会返回 nil。
-                // or 0：这部分代码使用 Lua 中的逻辑或运算符 or，如果 tonumber 函数返回了 nil，则返回 0，否则返回 tonumber 函数的返回值。这样就保证了即使 Redis 中的键不存在或者对应的值不是数字字符串，我们也可以得到一个默认值 0。
+                /*
+                redis.call是lua脚本来实现对redis访问的api
+                redis.call('get', KEYS[1]):
+                    1.get指这里使用redis的get命令
+                    2.key[1]是在lua脚本中预定义一个参数数组,1表示参数数组的第一个值
+                    3,这个命令返回redis的实际结果
+                tonumber(...): 用于将字符串转换为数字,如果字符串不能转换为数字那么这个函数将返回nil
+                or 0: lua脚本的逻辑或运算,如果前面部分返回的是nil,那么整个语句返回0
+                 */
                 "local current_count = tonumber(redis.call('get', KEYS[1])) or 0\n" +
-                        // current_count：这是一个变量，表示之前获取到的 Redis 键 KEYS[1] 对应的值，即当前的计数器值。这个值是一个数字。
-                        // tonumber(ARGV[1])：这部分代码使用 Lua 的 tonumber 函数将 ARGV[1] 转换为数字。ARGV 是 Lua 脚本中预定义的一个数组，用于存储传递给 Lua 脚本的参数。在这里，ARGV[1] 表示第一个参数，也就是 Lua 脚本中的第一个参数。这个参数会在脚本执行时由外部传入。这个命令会返回一个数字，表示参数转换后的值。
-                        // new_count = current_count + tonumber(ARGV[1])：这部分代码将当前的计数器值 current_count 和外部传入的参数值相加，得到一个新的计数器值 new_count。这个新的计数器值将用于更新 Redis 中的计数器。
+                        /*
+                        current_count: 上一句中定义的变量,这里获取到上一个命令的结果
+                        tonumber(ARGV[1]): 尝试将数值列表的第一个值转换为数字
+                        这条命令通过将上述得到的结果加上我们预定义的数值列表的第一个值相加
+                         */
                         "local new_count = current_count + tonumber(ARGV[1])\n" +
-                        // redis.call('set', KEYS[1], new_count)：这部分代码调用了 Redis 的 SET 命令，用于设置 Redis 中键 KEYS[1] 对应的值为 new_count。KEYS[1] 是 Lua 脚本中预定义的一个数组，用于存储传递给 Lua 脚本的键。在这里，KEYS[1] 表示第一个键，也就是 Lua 脚本中的第一个参数。new_count 是在前面计算出来的新的计数器值，是一个数字。
+                        // 执行redis的set命令,设置KEYS[1]的值为新的值
                         "redis.call('set', KEYS[1], new_count)\n" +
+                        // 返回我们设置的新的值
                         "return new_count";
 
         // 执行 Lua 脚本
-        String key = "counter";
+        String key = "lua::counter";
         String[] keys = {key};
         String[] values = {"1"};
+
+        /*
+        要在redis中运行lua脚本,redis提供了两个命令
+        1. eval lua脚本内容 key个数 key列表 参数列表
+        2. evalsha 脚本的SHA1值 key个数 key列表 参数列表, lua脚本可以预先加载到redis服务器,得到该脚本的SHA1校验和, evalsha仅通过发送SHA1校验和作为参数来直接执行, 避免了每次发送脚本到客户端
+         */
         Long result = (Long) jedis.eval(luaScript, Arrays.asList(keys), Arrays.asList(values));
 
         System.out.println("Counter value after Lua script execution: " + result);

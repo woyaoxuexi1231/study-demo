@@ -34,6 +34,9 @@ https://www.bilibili.com/video/BV1nF4m1c7nk/?p=9&spm_id_from=333.788.top_right_b
    nohup ./elasticsearch &
 2. 启动kibana
    nohup ./kibana &
+3. 启动filebeat
+   
+
 
 
 ELK架构 - Elasticsearch、Logstash和Kibana

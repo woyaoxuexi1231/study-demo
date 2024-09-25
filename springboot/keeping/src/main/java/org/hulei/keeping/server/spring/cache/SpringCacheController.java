@@ -8,7 +8,7 @@ import com.hundsun.demo.commom.core.model.EmployeeDO;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.hulei.keeping.server.KeepingApplication;
-import org.hulei.springboot.mybatisplus.mapper.EmployeeMapperPlus;
+import com.hundsun.demo.commom.core.mapper.EmployeeMapperPlus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
@@ -88,9 +88,6 @@ public class SpringCacheController {
     /*========================================== 缓存相关 =======================================*/
 
     @Autowired
-    EmployeeMapperPlus employeeMapper;
-
-    @Autowired
     EmployeeMapperPlus employeeMapperPlus;
 
     // public static final String key = "employees::getEmployees";
@@ -101,6 +98,8 @@ public class SpringCacheController {
     /**
      * Cacheable: value作为缓存的命名空间(即一个前缀), key作为完整实际的键值
      * 举例: 在使用ConcurrentMapCache的时候,value作为ConcurrentMapCache的名字 key作为这个cache内部map的key
+     * <p>
+     * 在redis的key值为 : redis::getEmployees::EmployeeQryReq(super=PageQryReqDTO(pageNum=1, pageSize=10), employeeNumber=null)
      *
      * @param req req
      * @return object
@@ -121,7 +120,7 @@ public class SpringCacheController {
     @PostMapping("/addOneEmployee")
     public void addOneEmployee() {
         EmployeeDO employeeDO = buildMockData();
-        employeeMapper.insert(employeeDO);
+        employeeMapperPlus.insert(employeeDO);
         // 标记需要清理缓存
         clearQueue.add(new Object());
     }
@@ -131,7 +130,7 @@ public class SpringCacheController {
     public EmployeeDO updateEmployee(@RequestBody EmployeeDO req) {
         EmployeeDO employeeDO = buildMockData();
         employeeDO.setEmployeeNumber(req.getEmployeeNumber());
-        employeeMapper.updateById(employeeDO);
+        employeeMapperPlus.updateById(employeeDO);
         // 标记需要清理缓存
         clearQueue.add(new Object());
         return employeeDO;
