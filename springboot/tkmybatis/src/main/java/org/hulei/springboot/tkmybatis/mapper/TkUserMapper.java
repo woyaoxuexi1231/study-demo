@@ -1,6 +1,6 @@
 package org.hulei.springboot.tkmybatis.mapper;
 
-import com.hundsun.demo.commom.core.model.User;
+import org.hulei.commom.core.model.User;
 import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.BaseMapper;
 

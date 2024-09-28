@@ -1,8 +1,8 @@
 package com.hundsun.demo.spring.mybatis;
 
 import com.github.pagehelper.PageHelper;
-import com.hundsun.demo.commom.core.model.CustomerDO;
-import com.hundsun.demo.spring.mybatis.mapper.CustomerMapper;
+import org.hulei.commom.core.model.pojo.CustomerDO;
+import org.hulei.commom.core.mapper.CustomerMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -56,7 +56,7 @@ public class MybatisTest {
         try (SqlSession session = sessionFactory.openSession()) {
             // 对于原生Java, 使用pageHelper需要在mybatis的配置文件配置该插件
             PageHelper.startPage(1, 10);
-            List<CustomerDO> customerDOS = session.selectList("com.hundsun.demo.spring.mybatis.mapper.CustomerMapper.selectAll");
+            List<CustomerDO> customerDOS = session.selectList("com.hundsun.demo.commom.core.mapper.CustomerMapper.selectAll");
             log.info("{}", customerDOS);
         }
         try (SqlSession sqlSession = sessionFactory.openSession()) {
@@ -80,7 +80,7 @@ public class MybatisTest {
                 CustomerDO customerDO = new CustomerDO();
                 customerDO.setCustomernumber(103);
                 customerDO.setPhone("40.32.251");
-                session.update("com.hundsun.demo.spring.mybatis.mapper.CustomerMapper.updateOne", customerDO);
+                session.update("com.hundsun.demo.commom.core.mapper.CustomerMapper.updateOne", customerDO);
             } catch (Exception e) {
                 isRollback = true;
                 log.error("更新出现异常! 正在尝试回滚...", e);

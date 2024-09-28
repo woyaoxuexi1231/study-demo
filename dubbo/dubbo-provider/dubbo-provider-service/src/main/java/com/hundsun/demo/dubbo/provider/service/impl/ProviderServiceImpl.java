@@ -1,6 +1,6 @@
 package com.hundsun.demo.dubbo.provider.service.impl;
 
-import com.hundsun.demo.commom.core.annotation.DoneTime;
+import org.hulei.commom.core.annotation.DoneTime;
 import com.hundsun.demo.dubbo.provider.api.service.ProviderService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

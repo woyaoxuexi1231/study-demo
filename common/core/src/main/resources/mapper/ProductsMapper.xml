@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hulei.commom.core.mapper.ProductsMapper">
+    <resultMap id="BaseResultMap" type="org.hulei.commom.core.model.pojo.ProductsDO">
+        <!--@mbg.generated-->
+        <!--@Table products-->
+        <id column="productCode" jdbcType="VARCHAR" property="productCode"/>
+        <result column="productName" jdbcType="VARCHAR" property="productName"/>
+        <result column="productLine" jdbcType="VARCHAR" property="productLine"/>
+        <result column="productScale" jdbcType="VARCHAR" property="productScale"/>
+        <result column="productVendor" jdbcType="VARCHAR" property="productVendor"/>
+        <result column="productDescription" jdbcType="LONGVARCHAR" property="productDescription"/>
+        <result column="quantityInStock" jdbcType="SMALLINT" property="quantityInStock"/>
+        <result column="buyPrice" jdbcType="DECIMAL" property="buyPrice"/>
+        <result column="MSRP" jdbcType="DECIMAL" property="msrp"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        productCode,
+        productName,
+        productLine,
+        productScale,
+        productVendor,
+        productDescription,
+        quantityInStock,
+        buyPrice,
+        MSRP
+    </sql>
+
+    <resultMap id="productFullInfoMap" type="org.hulei.commom.core.model.ProductFullInfo" extends="BaseResultMap">
+        <!-- 对于 association 和 collection 标签,都可以不用写 select 子查询,只要一次查询的sql的字段没有重复,并且可以唯一映射上就行-->
+        <association
+                property="productlineInfo"
+                javaType="org.hulei.commom.core.model.pojo.ProductlinesDO"
+                resultMap="org.hulei.commom.core.mapper.ProductlinesMapper.BaseResultMap"
+                resultSet=""
+        />
+    </resultMap>
+
+    <select id="selectProductFullInfo" resultMap="productFullInfoMap">
+        select p.productCode,
+               p.productName,
+               p.productLine,
+               p.productScale,
+               p.productVendor,
+               p.productDescription,
+               p.quantityInStock,
+               p.buyPrice,
+               p.MSRP,
+               pl.productLine,
+               pl.textDescription,
+               pl.htmlDescription,
+               pl.image
+        from products p
+                 inner join productlines pl on p.productLine = pl.productLine
+    </select>
+</mapper>

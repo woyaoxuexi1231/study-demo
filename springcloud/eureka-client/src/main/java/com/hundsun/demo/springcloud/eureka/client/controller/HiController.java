@@ -1,8 +1,8 @@
 package com.hundsun.demo.springcloud.eureka.client.controller;
 
-import com.hundsun.demo.commom.core.model.dto.ResultDTO;
-import com.hundsun.demo.commom.core.model.req.SimpleReqDTO;
-import com.hundsun.demo.commom.core.utils.ResultDTOBuild;
+import org.hulei.commom.core.model.dto.ResultDTO;
+import org.hulei.commom.core.model.req.SimpleReqDTO;
+import org.hulei.commom.core.utils.ResultDTOBuild;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

@@ -1,8 +1,8 @@
 package org.hulei.keeping.server.spring.transactional;
 
-import com.hundsun.demo.commom.core.model.EmployeeDO;
+import org.hulei.commom.core.model.pojo.EmployeeDO;
 import lombok.SneakyThrows;
-import com.hundsun.demo.commom.core.mapper.EmployeeMapperPlus;
+import org.hulei.commom.core.mapper.EmployeeMapperPlus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;

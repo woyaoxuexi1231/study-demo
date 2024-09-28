@@ -1,6 +1,6 @@
 package org.hulei.jdk.annotation;
 
-import com.hundsun.demo.commom.core.annotation.DoneTime;
+import org.hulei.commom.core.annotation.DoneTime;
 
 import java.lang.reflect.Method;
 

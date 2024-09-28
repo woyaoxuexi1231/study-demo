@@ -1,6 +1,6 @@
 package org.hulei.springboot.tkmybatis.mapper;
 
-import com.hundsun.demo.commom.core.model.EmployeeDO;
+import org.hulei.commom.core.model.pojo.EmployeeDO;
 import org.apache.ibatis.annotations.CacheNamespace;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;

@@ -1,7 +1,7 @@
 package org.hulei.springboot.js.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.hundsun.demo.commom.core.model.TkUser;
+import org.hulei.commom.core.model.TkUser;
 import org.hulei.springboot.js.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.ExecutorType;

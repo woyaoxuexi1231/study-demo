@@ -1,6 +1,6 @@
 package com.hundsun.demo.spring.init.listener;
 
-import com.hundsun.demo.commom.core.annotation.DoneTime;
+import org.hulei.commom.core.annotation.DoneTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 

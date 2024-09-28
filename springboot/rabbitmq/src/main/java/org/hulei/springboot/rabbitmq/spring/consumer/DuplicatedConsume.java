@@ -1,8 +1,8 @@
 package org.hulei.springboot.rabbitmq.spring.consumer;
 
 import com.alibaba.fastjson.JSONObject;
-import com.hundsun.demo.commom.core.model.ConsumerStatus;
-import com.hundsun.demo.commom.core.model.MQIdempotency;
+import org.hulei.commom.core.model.ConsumerStatus;
+import org.hulei.commom.core.model.MQIdempotency;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.hulei.springboot.rabbitmq.spring.consumer.mapper.MQIdempotencyMapper;

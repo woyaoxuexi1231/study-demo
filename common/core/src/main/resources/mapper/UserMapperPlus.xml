@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hundsun.demo.commom.core.mapper.UserMapperPlus">
-    <select id="pageList" resultType="com.hundsun.demo.commom.core.model.User">
-        <!--        SELECT id, name, age, email-->
-        <!--        FROM {h- schema} user-->
+<mapper namespace="org.hulei.commom.core.mapper.UserMapperPlus">
+    <select id="pageList" resultType="org.hulei.commom.core.model.User">
+        select id, name
+        from users
     </select>
     <!--
      prefix - 拼接前缀
@@ -43,7 +43,7 @@
      keyProperty：指定实体类中属性名，用于接收数据库自动生成的主键值。
      keyColumn：指定数据库表中主键列名，用于告知 MyBatis 应该从哪个列获取自动生成的主键值。
      -->
-    <insert id="insertOne" parameterType="com.hundsun.demo.commom.core.model.User" useGeneratedKeys="true"
+    <insert id="insertOne" parameterType="org.hulei.commom.core.model.User" useGeneratedKeys="true"
             keyColumn="id" keyProperty="id">
         insert into users(name)
         values (#{name})

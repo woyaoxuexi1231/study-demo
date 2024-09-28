@@ -3,12 +3,12 @@ package org.hulei.keeping.server.spring.transactional;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.jsonzou.jmockdata.JMockData;
-import com.hundsun.demo.commom.core.model.ProductInfoDO;
-import com.hundsun.demo.commom.core.model.User;
+import org.hulei.commom.core.model.pojo.ProductInfoDO;
+import org.hulei.commom.core.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.hulei.keeping.server.common.mapper.ProductInfoMapper;
-import org.hulei.springboot.mybatisplus.BatchCommitTest;
-import com.hundsun.demo.commom.core.mapper.UserMapperPlus;
+import org.hulei.springboot.mybatisplus.controller.BatchCommitController;
+import org.hulei.commom.core.mapper.UserMapperPlus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,12 +42,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class TransactionController {
 
     @Bean
-    public BatchCommitTest batchCommitTest(){
-        return new BatchCommitTest();
+    public BatchCommitController batchCommitTest(){
+        return new BatchCommitController();
     }
 
     @Autowired
-    BatchCommitTest batchCommitTest;
+    BatchCommitController batchCommitController;
 
     @Autowired
     UserMapperPlus userMapperPlus;
@@ -91,7 +91,7 @@ public class TransactionController {
         // log.info("{}", userMapper.selectList(new QueryWrapper<>()).size());
         log.info("当前数据总量为: {}", userMapperPlus.selectList(new LambdaQueryWrapper<>()).size());
 
-        batchCommitTest.exeBatch(CollectionUtil.newArrayList(new User("hulei")), (sqlSession, user) -> {
+        batchCommitController.exeBatch(CollectionUtil.newArrayList(new User("hulei")), (sqlSession, user) -> {
             UserMapperPlus mapper = sqlSession.getMapper(UserMapperPlus.class);
             mapper.insert(user);
         });

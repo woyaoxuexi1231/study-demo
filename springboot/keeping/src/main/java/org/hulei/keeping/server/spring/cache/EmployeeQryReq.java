@@ -1,6 +1,6 @@
 package org.hulei.keeping.server.spring.cache;
 
-import com.hundsun.demo.commom.core.model.req.PageQryReqDTO;
+import org.hulei.commom.core.model.req.PageQryReqDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

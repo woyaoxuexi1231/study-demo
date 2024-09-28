@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hulei.commom.core.mapper.OrderdetailsMapper">
+    <resultMap id="BaseResultMap" type="org.hulei.commom.core.model.pojo.OrderdetailsDO">
+        <!--@mbg.generated-->
+        <!--@Table orderdetails-->
+        <id column="orderNumber" jdbcType="INTEGER" property="ordernumber"/>
+        <id column="productCode" jdbcType="VARCHAR" property="productcode"/>
+        <result column="quantityOrdered" jdbcType="INTEGER" property="quantityordered"/>
+        <result column="priceEach" jdbcType="DECIMAL" property="priceeach"/>
+        <result column="orderLineNumber" jdbcType="SMALLINT" property="orderlinenumber"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        orderNumber,
+        productCode,
+        quantityOrdered,
+        priceEach,
+        orderLineNumber
+    </sql>
+
+    <select id="selectByOrderId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List">
+        </include>
+        from orderdetails where orderNumber = #{ordernumber}
+    </select>
+</mapper>

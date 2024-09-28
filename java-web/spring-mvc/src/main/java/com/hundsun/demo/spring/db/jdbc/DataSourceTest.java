@@ -1,16 +1,11 @@
 package com.hundsun.demo.spring.db.jdbc;
 
-import com.hundsun.demo.commom.core.model.CustomerDO;
+import org.hulei.commom.core.model.pojo.CustomerDO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 
 /**

@@ -180,6 +180,10 @@
             <AppenderRef ref="Console"/>
         </Logger>
 
+        <Logger name="com.mysql.cj.jdbc" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+
         <root level="info">
             <appender-ref ref="Console"/>
             <appender-ref ref="RollingFileInfo"/>

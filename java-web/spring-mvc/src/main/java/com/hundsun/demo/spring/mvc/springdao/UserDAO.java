@@ -1,6 +1,6 @@
 package com.hundsun.demo.spring.mvc.springdao;
 
-import com.hundsun.demo.commom.core.model.User;
+import org.hulei.commom.core.model.User;
 
 import java.util.List;
 

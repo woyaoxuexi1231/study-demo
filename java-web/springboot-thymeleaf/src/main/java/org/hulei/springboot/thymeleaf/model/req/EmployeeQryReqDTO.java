@@ -1,6 +1,6 @@
 package org.hulei.springboot.thymeleaf.model.req;
 
-import com.hundsun.demo.commom.core.model.req.PageQryReqDTO;
+import org.hulei.commom.core.model.req.PageQryReqDTO;
 import lombok.Data;
 
 /**

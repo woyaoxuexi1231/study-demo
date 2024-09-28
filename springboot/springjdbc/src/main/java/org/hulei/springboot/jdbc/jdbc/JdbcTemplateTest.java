@@ -1,6 +1,6 @@
 package org.hulei.springboot.jdbc.jdbc;
 
-import com.hundsun.demo.commom.core.model.User;
+import org.hulei.commom.core.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;

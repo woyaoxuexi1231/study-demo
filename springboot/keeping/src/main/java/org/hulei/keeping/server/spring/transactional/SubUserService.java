@@ -1,6 +1,6 @@
 package org.hulei.keeping.server.spring.transactional;
 
-import com.hundsun.demo.commom.core.model.User;
+import org.hulei.commom.core.model.User;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,7 +1,7 @@
 package org.hulei.keeping.server.common.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.hundsun.demo.commom.core.model.ProductInfoDO;
+import org.hulei.commom.core.model.pojo.ProductInfoDO;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
