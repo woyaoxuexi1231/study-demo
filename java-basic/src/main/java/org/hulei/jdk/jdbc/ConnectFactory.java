@@ -28,13 +28,15 @@ public class ConnectFactory {
             Class.forName("com.mysql.cj.jdbc.Driver");
             // 数据库连接信息,jdbc使用一种与普通URL相似的语法来描述数据库,不同的数据库有不同的连接标准
             // logger=com.mysql.cj.log.StandardLogger&profileSQL=true 可以打印jdbc的操作日志和sql日志
-            String url = "jdbc:mysql://192.168.80.128:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&logger=com.mysql.cj.log.StandardLogger&profileSQL=true";
+            // allowMultiQueries=true
+            String url = "jdbc:mysql://192.168.80.128:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&logger=com.mysql.cj.log.StandardLogger&profileSQL=true&allowMultiQueries=true";
             String username = "root";
             String password = "123456";
             // 连接数据库
             connection = DriverManager.getConnection(url, username, password);
             // 关闭事务的自动提交
             connection.setAutoCommit(false);
+            // connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
         } catch (ClassNotFoundException e) {
             // 找不到 JDBC 驱动类
             throw new RuntimeException(e);
@@ -77,7 +79,8 @@ public class ConnectFactory {
     }
 
     /**
-     * 打印 ResultSet 中的所有数据。
+     * 打印 ResultSet 中的所有数据，并使每一列的输出对齐。
+     *
      * @param rs 要打印的 ResultSet 对象。
      * @throws SQLException 如果访问数据库时发生错误。
      */
@@ -90,48 +93,79 @@ public class ConnectFactory {
 
         // 检索列的数量和名字
         ResultSetMetaData metaData = rs.getMetaData();
-        // 列的数量
         int columnCount = metaData.getColumnCount();
+
+        // 获取每列的最大宽度
+        int[] columnWidths = new int[columnCount];
+        for (int i = 1; i <= columnCount; i++) {
+            columnWidths[i - 1] = metaData.getColumnName(i).length();
+        }
+
+        // 遍历 ResultSet 计算每列数据的最大宽度
+        rs.beforeFirst();
+        while (rs.next()) {
+            for (int i = 1; i <= columnCount; i++) {
+                int columnLength = rs.getString(i) != null ? rs.getString(i).length() : 4; // 如果值为空，则假定长度为4
+                if (columnLength > columnWidths[i - 1]) {
+                    columnWidths[i - 1] = columnLength;
+                }
+            }
+        }
 
         // 打印表头
         for (int i = 1; i <= columnCount; i++) {
-            if (i > 1) System.out.print(",  ");
+            if (i > 1) System.out.print(" | ");
             String columnName = metaData.getColumnName(i);
-            System.out.print(columnName);
+            System.out.printf("%-" + columnWidths[i - 1] + "s", columnName);
+        }
+        System.out.println();
+
+        // 打印分隔线
+        for (int i = 1; i <= columnCount; i++) {
+            if (i > 1) System.out.print("-+-");
+            for (int j = 0; j < columnWidths[i - 1]; j++) {
+                System.out.print("-");
+            }
         }
         System.out.println();
 
         // 遍历 ResultSet 并打印每一行
+        rs.beforeFirst(); // 再次将指针移动回结果集的开头
         while (rs.next()) {
             for (int i = 1; i <= columnCount; i++) {
-                if (i > 1) System.out.print(",  ");
+                if (i > 1) System.out.print(" | ");
 
                 // 根据列类型获取值并打印
+                String value;
                 switch (metaData.getColumnType(i)) {
                     case java.sql.Types.INTEGER:
-                        System.out.print(rs.getInt(i));
+                        value = String.valueOf(rs.getInt(i));
                         break;
                     case java.sql.Types.VARCHAR:
                     case java.sql.Types.CHAR:
-                        System.out.print(rs.getString(i));
+                        value = rs.getString(i);
                         break;
                     case java.sql.Types.DOUBLE:
                     case java.sql.Types.FLOAT:
-                        System.out.print(rs.getDouble(i));
+                        value = String.valueOf(rs.getDouble(i));
                         break;
                     case java.sql.Types.DATE:
-                        System.out.print(rs.getDate(i));
+                        value = String.valueOf(rs.getDate(i));
                         break;
                     case java.sql.Types.TIMESTAMP:
-                        System.out.print(rs.getTimestamp(i));
+                        value = String.valueOf(rs.getTimestamp(i));
                         break;
                     default:
-                        System.out.print(rs.getObject(i));
+                        value = String.valueOf(rs.getObject(i));
                         break;
                 }
+
+                System.out.printf("%-" + columnWidths[i - 1] + "s", value);
             }
             System.out.println(); // 每打印完一行换行
         }
+
+        System.out.println();
     }
 
 }

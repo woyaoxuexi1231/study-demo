@@ -27,6 +27,7 @@ public class PreparedStatementTest {
         try {
             queryPS = ConnectFactory.getConnection().prepareStatement("select * from users where id = ?");
             updatePS = ConnectFactory.getConnection().prepareStatement("update users set name = ? where id = ?");
+            // PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability)
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
