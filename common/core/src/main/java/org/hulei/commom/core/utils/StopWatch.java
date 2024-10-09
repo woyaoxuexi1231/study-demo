@@ -32,7 +32,7 @@ public class StopWatch extends org.springframework.util.StopWatch {
             sb.append("No task info kept");
         } else {
             sb.append("---------------------------------------------\n");
-            sb.append("s         %     Task name\n");
+            sb.append("second      %           Task name\n");
             sb.append("---------------------------------------------\n");
             NumberFormat nf = NumberFormat.getNumberInstance();
             nf.setMinimumFractionDigits(3);
@@ -42,8 +42,8 @@ public class StopWatch extends org.springframework.util.StopWatch {
             pf.setMinimumFractionDigits(2);
             pf.setGroupingUsed(false);
             for (TaskInfo task : this.getTaskInfo()) {
-                sb.append(nf.format(task.getTimeSeconds())).append("  ");
-                sb.append(pf.format((double) task.getTimeNanos() / this.getTotalTimeNanos())).append("  ");
+                sb.append(nf.format(task.getTimeSeconds())).append("      ");
+                sb.append(pf.format((double) task.getTimeNanos() / this.getTotalTimeNanos())).append("      ");
                 sb.append(task.getTaskName()).append("\n");
             }
         }

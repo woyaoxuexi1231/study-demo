@@ -56,6 +56,15 @@
                 salesrepemployeenumber = #{salesrepemployeenumber},
             </if>
             <if test="creditlimit != null">
+                <!--
+                参数设置同样也有很多参数
+                1.参数名
+                2.javaType 指定Java类型,可以不指定,如果对象是个泛型类型,比如HashMap,那么需要指定
+                3.jdbcType 指定数据库类型,可以不指定
+                4.numericScale 指定确定保留多少位小数
+                5.mode IN，OUT 或 INOUT todo
+                -->
+                <!-- creditlimit = #{creditlimit,javaType=java.math.BigDecimal,jdbcType=DECIMAL,numericScale=3} -->
                 creditlimit = #{creditlimit}
             </if>
         </set>

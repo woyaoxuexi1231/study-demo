@@ -28,7 +28,8 @@ public class ConnectFactory {
             Class.forName("com.mysql.cj.jdbc.Driver");
             // 数据库连接信息,jdbc使用一种与普通URL相似的语法来描述数据库,不同的数据库有不同的连接标准
             // logger=com.mysql.cj.log.StandardLogger&profileSQL=true 可以打印jdbc的操作日志和sql日志
-            // allowMultiQueries=true
+            // allowMultiQueries=true 参数设置后允许在 execute 中执行多条语句
+            // useCursorFetch=true 允许游标查询设置fetchSize的大小
             String url = "jdbc:mysql://192.168.80.128:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&logger=com.mysql.cj.log.StandardLogger&profileSQL=true&allowMultiQueries=true";
             String username = "root";
             String password = "123456";
@@ -166,6 +167,46 @@ public class ConnectFactory {
         }
 
         System.out.println();
+    }
+
+    public static void justPrintResultSet(ResultSet rs) throws SQLException {
+
+        ResultSetMetaData metaData = rs.getMetaData();
+        int columnCount = metaData.getColumnCount();
+
+        while (rs.next()) {
+            for (int i = 1; i <= columnCount; i++) {
+                if (i > 1) System.out.print(" | ");
+
+                // 根据列类型获取值并打印
+                String value;
+                switch (metaData.getColumnType(i)) {
+                    case java.sql.Types.INTEGER:
+                        value = String.valueOf(rs.getInt(i));
+                        break;
+                    case java.sql.Types.VARCHAR:
+                    case java.sql.Types.CHAR:
+                        value = rs.getString(i);
+                        break;
+                    case java.sql.Types.DOUBLE:
+                    case java.sql.Types.FLOAT:
+                        value = String.valueOf(rs.getDouble(i));
+                        break;
+                    case java.sql.Types.DATE:
+                        value = String.valueOf(rs.getDate(i));
+                        break;
+                    case java.sql.Types.TIMESTAMP:
+                        value = String.valueOf(rs.getTimestamp(i));
+                        break;
+                    default:
+                        value = String.valueOf(rs.getObject(i));
+                        break;
+                }
+
+                System.out.printf(value);
+            }
+            System.out.println(); // 每打印完一行换行
+        }
     }
 
 }

@@ -1,5 +1,6 @@
 package org.hulei.commom.core.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.hulei.commom.core.model.pojo.CustomerDO;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
  * @createDate: 2023/2/7 21:51
  */
 
-public interface CustomerMapper {
+public interface CustomerMapper extends BaseMapper<CustomerDO> {
 
     /**
      * get all customers

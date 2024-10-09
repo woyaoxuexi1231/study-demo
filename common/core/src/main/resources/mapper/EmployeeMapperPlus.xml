@@ -22,6 +22,20 @@
         <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime"/>
     </resultMap>
 
+    <!-- sql可以定义宠用的sql代码段 -->
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        employeeNumber,
+        lastName,
+        firstName,
+        extension,
+        email,
+        officeCode,
+        reportsTo,
+        jobTitle,
+        last_update_time
+    </sql>
+
     <!-- 对于使用id和result来说必须要对象有属性对应的set方法,对于一些不可变类来说,可能只有构造方法而没有set方法 -->
     <!-- 使用 constructor 就可以直接调用构造方法来构造对象-->
     <!-- 我这里始终不行 -->
@@ -45,11 +59,11 @@
                extends="BaseResultMap">
         <!-- collection标签包含大量的子标签
         property:标明当前的collection对应类中的属性名
-        column:指定传递给嵌套查询或者作为条件的一部分的列名
+        column:指定传递给嵌套查询或者作为条件的一部分的列名,不适用嵌套查询的方式这个参数没用
         javaType:指定集合的类型, List, Set
         ofType:指定集合中的元素的类型
         select:指定一个子查询
-        notNullColumn:指定一个列名,只有当该列不为空时,才会执行嵌套查询
+        notNullColumn:指定一个列名,只有当该列不为空时,才执行嵌套 . 我这里使用嵌套查询,这个参数没有作用;使用嵌套结果的形式进行查询,这个参数是起作用的
         coloumPrefix:指定一个前缀,用于在嵌套查询中引用列明的时候添加前缀
         resultSet:指定结果集的名字,当使用多个结果集的时候,可以通过这个来区分不同的结果集
 
@@ -63,9 +77,7 @@
         <collection property="customers"
                     javaType="java.util.List"
                     ofType="org.hulei.commom.core.model.pojo.CustomerDO"
-                    column="employeeNumber"
-                    select="org.hulei.commom.core.mapper.CustomerMapper.selectCustomerByEmployeeId"
-                    autoMapping="false"
+                    autoMapping="true"
         >
         </collection>
     </resultMap>
@@ -80,19 +92,6 @@
         >
         </collection>
     </resultMap>
-
-    <sql id="Base_Column_List">
-        <!--@mbg.generated-->
-        employeeNumber,
-        lastName,
-        firstName,
-        extension,
-        email,
-        officeCode,
-        reportsTo,
-        jobTitle,
-        last_update_time
-    </sql>
 
     <select
             id="getEmployeeWithResultMap"
@@ -128,8 +127,27 @@
                e.officeCode,
                e.reportsTo,
                e.jobTitle,
-               e.last_update_time
+               e.last_update_time,
+               c.customerNumber,
+               c.customerName,
+               c.contactLastName,
+               c.contactFirstName,
+               c.phone,
+               c.addressLine1,
+               c.addressLine2,
+               c.city,
+               c.state,
+               c.postalCode,
+               c.country,
+               c.salesRepEmployeeNumber,
+               c.creditLimit
         from employees e
+                 left join customers c on e.employeeNumber = c.salesRepEmployeeNumber
+        <where>
+            <if test="employeeNumber != null">
+                employeeNumber = #{employeeNumber}
+            </if>
+        </where>
     </select>
 
     <select id="getEmployeeTree" resultMap="employessTreeMap">
@@ -167,8 +185,11 @@
      resultType,指定返回结果集的类型, 注意:如果返回结果是集合,那么应该填写集合包含的类型,而不是集合本身的类型
      resultMap,引用的映射结果集的唯一标识符,这个参数与resultType只会同时使用一个,resultMap存在的情况下不会使用resultType,
 
-     fetchSize,给驱动一个建议值,尝试让驱动每次批量返回的结果行数等于这个设置值,默认依赖于数据库驱动,todo这个参数应该没有那么简单
-     resultSetType:指定结果集类型 todo
+     fetchSize,给驱动一个建议值,尝试让驱动每次批量返回的结果行数等于这个设置值,默认依赖于数据库驱动, 主要作用于游标查询和流式查询
+     resultSetType:指定结果集类型,jdbc相同的配置, FORWARD_ONLY，SCROLL_SENSITIVE, SCROLL_INSENSITIVE
+
+
+     未找到怎么使用:
      databaseId:配置数据库厂商标识
      resultOrdered:仅针对嵌套结果的select语句,如果为true,将会假设包含了嵌套结果集或者是分组,当返回一个主结果行时就不会产生对前面结果集的引用
      resultSets:这个设置仅适用于多结果集的情况,他将列出语句执行后返回的结果集并赋予每个结果集一个名称,多个名称之间用逗号分隔
@@ -182,11 +203,20 @@
      -->
     <!-- select标签的内部子标签测试 -->
     <select id="selectTagsTest"
-            resultMap="BaseResultMap"
-    >
+            resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List">
         </include>
+        from employees
+    </select>
+
+    <select id="mybatisStreamQuery" resultType="org.hulei.commom.core.model.pojo.EmployeeDO" fetchSize="-2147483648">
+        select *
+        from employees
+    </select>
+
+    <select id="resultSetOpe" resultType="org.hulei.commom.core.model.pojo.EmployeeDO" resultSetType="FORWARD_ONLY">
+        select *
         from employees
     </select>
 </mapper>

@@ -25,7 +25,20 @@ public class StatementAndResultBasic {
     @SneakyThrows
     public static void main(String[] args) {
         // doExecuteUpdate(getExecuteUpdate());
-        doExecuteQuery();
+        // doExecuteQuery();
+
+        // 精度丢失问题
+        bigDecimal();
+    }
+
+    public static void bigDecimal() {
+        doExecuteUpdate(new Consumer<Statement>() {
+            @SneakyThrows
+            @Override
+            public void accept(Statement statement) {
+                statement.executeUpdate("update customers set creditLimit = 124.126514234 where customerNumber = 103");
+            }
+        });
     }
 
     @SneakyThrows

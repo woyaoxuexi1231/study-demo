@@ -15,4 +15,5 @@ public interface BiguserMapper extends BaseMapper<Biguser> {
     List<Biguser> fetchSize1Tags();
     List<Biguser> fetchSize100Tags();
 
+    int insertOne(Biguser biguser);
 }

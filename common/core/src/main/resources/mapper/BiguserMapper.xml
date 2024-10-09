@@ -25,6 +25,8 @@
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
+
+    <!--  -->
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
         id,
@@ -56,8 +58,8 @@
     timeout:同select,在指定时间内没有响应直接返回
     statementType:同select
     useGeneratedKeys:使用jdbc提供的getGeneratedKeys方法来取出由数据库内部生成的主键,默认false
-    keyProperty: todo
-    keyColumn:
+    keyProperty: 自动生成的键应该映射到对象中的哪个字段由这个属性来指定
+    keyColumn: 一般搭配useGeneratedKeys和keyProperty一起使用,指定数据库的哪一个列是主键
     databaseID:
      -->
     <insert id="batchInsert">
@@ -82,7 +84,7 @@
     </insert>
 
 
-    <select id="fetchSize1Tags" resultType="org.hulei.commom.core.model.pojo.Biguser">
+    <select id="fetchSize1Tags" resultType="org.hulei.commom.core.model.pojo.Biguser" fetchSize="1">
         select
         <include refid="Base_Column_List">
         </include>
@@ -90,8 +92,18 @@
     </select>
 
 
-    <select id="fetchSize100Tags" resultType="org.hulei.commom.core.model.pojo.Biguser">
+    <select id="fetchSize100Tags" resultType="org.hulei.commom.core.model.pojo.Biguser" fetchSize="20000">
         select *
         from biguser
     </select>
+
+    <insert id="insertOne" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into biguser(user_name, ssn, name, phone_number, plate, address, building_number, country, birth,
+                            company, job, card_number, city, week, email, title, paragraphs) value
+            (#{userName}, #{ssn}, #{name}, #{phoneNumber}, #{plate}, #{address},
+             #{buildingNumber}, #{country},
+             #{birth}, #{company}, #{job}, #{cardNumber}, #{city}, #{week},
+             #{email}, #{title},
+             #{paragraphs})
+    </insert>
 </mapper>
