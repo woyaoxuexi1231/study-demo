@@ -6,6 +6,7 @@
         from users
     </select>
     <!--
+    trim元素主要用于sql的拼接,这个用法可能会导致慢sql,在大量数据时会触发大量的case when计算判断,性能会严重下降
      prefix - 拼接前缀
      suffix - 拼接后缀
      prefixOverrides - 去除 sql 语句前面的关键字或者字符, 该关键字或者字符由 prefixOverrides 属性指定, 假设该属性指定为"AND" 当sql语句的开头为 "AND", trim标签将会去除该 "AND"
@@ -13,8 +14,12 @@
      -->
     <update id="updateBatchByCaseWhen">
         update users
+        <!--这里去除,是为了防止多个条件时最后一个条件多一个,-->
         <trim prefix="set" suffixOverrides=",">
             <trim prefix="name =case" suffix="end,">
+                <!-- foreach标签, collection指定集合的类型,item指定当前循环的对象的别名,index指定当前循环的元素下标
+                 collection类型为map的时候,index是key,item是value
+                 -->
                 <foreach collection="list" item="item" index="index">
                     <if test="item.name != null">
                         when id = #{item.id} then #{item.name}
@@ -26,6 +31,10 @@
         <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
             #{item.id,jdbcType=BIGINT}
         </foreach>
+        <!--这个语句最终应该是
+        update users set name= case when id=xxx then ??? when id=yyy then ??? end where id in (xxx,yyy)
+        -->
+
     </update>
 
     <select id="selectAll">

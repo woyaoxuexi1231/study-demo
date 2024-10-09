@@ -73,6 +73,4 @@ public interface EmployeeMapperPlus extends BaseMapper<EmployeeDO> {
      * @param handler
      */
     void resultSetOpe(ResultHandler<EmployeeDO> handler);
-
-    void selectResultSets();
 }

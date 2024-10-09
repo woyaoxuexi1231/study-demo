@@ -143,6 +143,7 @@
                c.creditLimit
         from employees e
                  left join customers c on e.employeeNumber = c.salesRepEmployeeNumber
+        <!--Where标签的好处就是会帮我们移除语句开头的and或者or关键字,避免sql出错,也能避免在没有条件的情况下不输出where-->
         <where>
             <if test="employeeNumber != null">
                 employeeNumber = #{employeeNumber}
