@@ -1,6 +1,6 @@
 package com.hundsun.demo.spring.db.jdbc;
 
-import org.hulei.commom.core.model.pojo.CustomerDO;
+import com.hundsun.demo.spring.mybatis.CustomerDO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;

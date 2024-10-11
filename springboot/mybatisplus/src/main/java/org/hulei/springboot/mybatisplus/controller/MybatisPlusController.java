@@ -5,18 +5,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.github.javafaker.Address;
 import com.github.javafaker.Faker;
-import com.github.javafaker.Name;
 import com.github.jsonzou.jmockdata.JMockData;
 import com.github.pagehelper.PageHelper;
-import org.hulei.commom.core.mapper.BiguserMapper;
-import org.hulei.commom.core.model.pojo.Biguser;
-import org.hulei.commom.core.model.pojo.EmployeeDO;
-import org.hulei.commom.core.model.User;
+import org.hulei.common.mapper.entity.User;
+import org.hulei.common.mapper.entity.pojo.Biguser;
+import org.hulei.common.mapper.entity.pojo.EmployeeDO;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.commom.core.mapper.EmployeeMapperPlus;
-import org.hulei.commom.core.mapper.UserMapperPlus;
+import org.hulei.common.mapper.mapper.BiguserMapper;
+import org.hulei.common.mapper.mapper.EmployeeMapperPlus;
+import org.hulei.common.mapper.mapper.UserMapperPlus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,9 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @ProductName: Hundsun amust

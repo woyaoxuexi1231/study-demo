@@ -1,10 +1,10 @@
 package org.hulei.springboot.rabbitmq.spring.producer;
 
 import com.alibaba.fastjson.JSON;
+import org.hulei.common.mapper.entity.MQIdempotency;
 import org.hulei.springboot.rabbitmq.basic.config.MQConfig;
-import org.hulei.commom.core.model.MQIdempotency;
-import org.hulei.commom.core.model.dto.ResultDTO;
-import org.hulei.commom.core.utils.ResultDTOBuild;
+import org.hulei.common.core.model.dto.ResultDTO;
+import org.hulei.common.core.utils.ResultDTOBuild;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.MessagePostProcessor;

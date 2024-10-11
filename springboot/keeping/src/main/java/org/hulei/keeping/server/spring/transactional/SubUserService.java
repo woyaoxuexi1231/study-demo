@@ -1,6 +1,6 @@
 package org.hulei.keeping.server.spring.transactional;
 
-import org.hulei.commom.core.model.User;
+import org.hulei.common.mapper.entity.User;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

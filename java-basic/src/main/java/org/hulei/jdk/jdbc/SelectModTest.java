@@ -1,8 +1,7 @@
 package org.hulei.jdk.jdbc;
 
 import lombok.SneakyThrows;
-import org.hulei.commom.core.model.pojo.Biguser;
-import org.hulei.commom.core.utils.StopWatch;
+import org.hulei.common.core.utils.StopWatch;
 
 import java.sql.ResultSet;
 import java.sql.Statement;

@@ -3,12 +3,13 @@ package org.hulei.keeping.server.spring.transactional;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.jsonzou.jmockdata.JMockData;
-import org.hulei.commom.core.model.pojo.ProductInfoDO;
-import org.hulei.commom.core.model.User;
+import org.hulei.common.mapper.entity.User;
+import org.hulei.common.mapper.entity.pojo.ProductInfoDO;
 import lombok.extern.slf4j.Slf4j;
+import org.hulei.common.mapper.mapper.UserMapperPlus;
+import org.hulei.common.mapper.util.BatchExecutor;
 import org.hulei.keeping.server.common.mapper.ProductInfoMapper;
-import org.hulei.springboot.mybatisplus.controller.BatchCommitController;
-import org.hulei.commom.core.mapper.UserMapperPlus;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,13 +42,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 @RequestMapping("/transactional")
 public class TransactionController {
 
-    @Bean
-    public BatchCommitController batchCommitTest(){
-        return new BatchCommitController();
-    }
-
     @Autowired
-    BatchCommitController batchCommitController;
+    SqlSessionTemplate sqlSessionTemplate;
 
     @Autowired
     UserMapperPlus userMapperPlus;
@@ -91,10 +87,14 @@ public class TransactionController {
         // log.info("{}", userMapper.selectList(new QueryWrapper<>()).size());
         log.info("当前数据总量为: {}", userMapperPlus.selectList(new LambdaQueryWrapper<>()).size());
 
-        batchCommitController.exeBatch(CollectionUtil.newArrayList(new User("hulei")), (sqlSession, user) -> {
-            UserMapperPlus mapper = sqlSession.getMapper(UserMapperPlus.class);
-            mapper.insert(user);
-        });
+        BatchExecutor.exeBatch(
+                sqlSessionTemplate,
+                CollectionUtil.newArrayList(new User("hulei")),
+                (sqlSession, user) -> {
+                    UserMapperPlus mapper = sqlSession.getMapper(UserMapperPlus.class);
+                    mapper.insert(user);
+                }
+        );
 
         log.info("修改数据后的数据总量为: {}", userMapperPlus.selectList(new LambdaQueryWrapper<>()).size());
 

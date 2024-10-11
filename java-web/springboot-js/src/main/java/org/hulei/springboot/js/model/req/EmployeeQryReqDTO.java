@@ -1,6 +1,6 @@
 package org.hulei.springboot.js.model.req;
 
-import org.hulei.commom.core.model.req.PageQryReqDTO;
+import org.hulei.common.mapper.entity.req.PageQryReqDTO;
 import lombok.Data;
 
 /**

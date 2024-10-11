@@ -10,7 +10,7 @@ import tk.mybatis.spring.annotation.MapperScan;
  */
 
 @MapperScan(basePackages = {
-        "org.hulei.tkmybatis.mapper"
+        "org.hulei.springboot.tkmybatis.mapper"
 })
 @SpringBootApplication
 public class TkmybatisApplication {

@@ -1,7 +1,7 @@
 package org.hulei.springboot.tkmybatis.controller;
 
 import cn.hutool.core.thread.ThreadFactoryBuilder;
-import org.hulei.commom.core.model.pojo.EmployeeDO;
+import org.hulei.common.mapper.entity.pojo.EmployeeDO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;

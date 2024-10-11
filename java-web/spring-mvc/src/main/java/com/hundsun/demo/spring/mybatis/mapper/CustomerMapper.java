@@ -1,0 +1,32 @@
+package com.hundsun.demo.spring.mybatis.mapper;
+
+import com.hundsun.demo.spring.mybatis.CustomerDO;
+
+import java.util.List;
+
+/**
+ * @projectName: study-demo
+ * @package: com.hundsun.demo.spring.mybatisplugins
+ * @className: CustomerMapper
+ * @description:
+ * @author: h1123
+ * @createDate: 2023/2/7 21:51
+ */
+
+public interface CustomerMapper {
+
+    /**
+     * get all customers
+     *
+     * @return CustomerDOs
+     */
+    List<CustomerDO> selectAll();
+    /**
+     * 单条更新
+     *
+     * @param customerDO customerDO
+     */
+    void updateOne(CustomerDO customerDO);
+
+    List<CustomerDO> selectCustomerByEmployeeId(Long employeeNumber);
+}

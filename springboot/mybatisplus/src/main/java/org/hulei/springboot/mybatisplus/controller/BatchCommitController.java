@@ -1,11 +1,10 @@
 package org.hulei.springboot.mybatisplus.controller;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.hulei.commom.core.model.User;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.session.ExecutorType;
-import org.apache.ibatis.session.SqlSession;
-import org.hulei.commom.core.mapper.UserMapperPlus;
+import org.hulei.common.mapper.entity.User;
+import org.hulei.common.mapper.mapper.UserMapperPlus;
+import org.hulei.common.mapper.util.BatchExecutor;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,6 +29,9 @@ public class BatchCommitController extends ServiceImpl<UserMapperPlus, User> {
 
     @Resource
     private UserMapperPlus userMapperPlus;
+
+    @Autowired
+    SqlSessionTemplate sqlSessionTemplate;
 
     /**
      * 批量提交测试
@@ -61,10 +63,14 @@ public class BatchCommitController extends ServiceImpl<UserMapperPlus, User> {
 
         stopWatch.start("exeBatch");
         objects = objects.stream().peek(i -> i.setName("exeBatch")).collect(Collectors.toList());
-        this.exeBatch(objects, (sqlSession, user) -> {
-            UserMapperPlus mapper = sqlSession.getMapper(UserMapperPlus.class);
-            mapper.updateById(user);
-        });
+        BatchExecutor.exeBatch(
+                sqlSessionTemplate,
+                objects,
+                (sqlSession, user) -> {
+                    UserMapperPlus mapper = sqlSession.getMapper(UserMapperPlus.class);
+                    mapper.updateById(user);
+                }
+        );
         stopWatch.stop();
 
 
@@ -121,33 +127,5 @@ public class BatchCommitController extends ServiceImpl<UserMapperPlus, User> {
                         这里exeBatch虽然开启了新的SqlSession,但是由于在同一个线程内,连接是同一个,在提交时spring会校验是否回滚/提交
                         *注意 这种情况可能会因为mybatis的一级缓存导致某些情况下的数据问题,在com.hundsun.demo.springboot.mybatisplus.TransactionTest.sqlSessionTransaction方法有个小实验
          */
-    }
-
-
-    @Autowired
-    private SqlSessionTemplate sqlSessionTemplate;
-
-    public <T extends List<R>, R> void exeBatch(T t, BiConsumer<SqlSession, R> consumer) {
-        // 新获取一个模式为 BATCH, 自动提交为false的session
-        SqlSession sqlSession = sqlSessionTemplate.getSqlSessionFactory().openSession(ExecutorType.BATCH, false);
-        try {
-            for (R r : t) {
-                // 或者使用
-                // sqlSession.insert("com.example.demo.db.dao.PersonModelMapper.insertSelective", new PersonModel());
-                // 主意这时候不能正确返回影响条数了
-                consumer.accept(sqlSession, r);
-            }
-            // sqlSession.flushStatements();
-
-            sqlSession.commit();
-            // 清理缓存，防止溢出
-            // sqlSession.clearCache();
-        } catch (Exception e) {
-            // 异常回滚
-            log.error("exeBatch出现异常,", e);
-            sqlSession.rollback();
-        } finally {
-            sqlSession.close();
-        }
     }
 }

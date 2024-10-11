@@ -1,7 +1,7 @@
 package org.hulei.common.autoconfigure.commom;
 
 
-import org.hulei.commom.core.aop.DoneTimeAspect;
+import org.hulei.common.core.aop.DoneTimeAspect;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

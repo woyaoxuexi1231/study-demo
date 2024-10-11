@@ -1,6 +1,5 @@
 package com.hundsun.demo.spring.mvc.springdao;
 
-import org.hulei.commom.core.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

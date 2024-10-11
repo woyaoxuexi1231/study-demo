@@ -1,10 +1,10 @@
 package org.hulei.springboot.rabbitmq.spring.consumer;
 
 import com.alibaba.fastjson.JSONObject;
-import org.hulei.commom.core.model.ConsumerStatus;
-import org.hulei.commom.core.model.MQIdempotency;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
+import org.hulei.common.mapper.entity.ConsumerStatus;
+import org.hulei.common.mapper.entity.MQIdempotency;
 import org.hulei.springboot.rabbitmq.spring.consumer.mapper.MQIdempotencyMapper;
 import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Autowired;

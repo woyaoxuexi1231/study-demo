@@ -1,7 +1,5 @@
 package com.hundsun.demo.spring.mvc.springdao;
 
-import org.hulei.commom.core.model.User;
-
 import java.util.List;
 
 public interface UserDAO {

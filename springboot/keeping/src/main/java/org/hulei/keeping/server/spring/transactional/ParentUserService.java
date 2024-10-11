@@ -1,7 +1,7 @@
 package org.hulei.keeping.server.spring.transactional;
 
-import org.hulei.commom.core.model.User;
-import org.hulei.commom.core.mapper.UserMapperPlus;
+import org.hulei.common.mapper.entity.User;
+import org.hulei.common.mapper.mapper.UserMapperPlus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 

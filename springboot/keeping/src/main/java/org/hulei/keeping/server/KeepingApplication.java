@@ -2,7 +2,7 @@ package org.hulei.keeping.server;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.springboot.jdbc.dynamicdb.config.parsing.EnableDynamicDataSource;
+import org.hulei.springdata.routingdatasource.config.parsing.EnableDynamicDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController("/application")
 @SpringBootApplication
 @org.mybatis.spring.annotation.MapperScan(basePackages = {
-        "com.hundsun.demo.commom.core.mapper",
+        "org.hulei.common.mapper.mapper",
         "org.hulei.keeping.server.common.mapper"
 })
 @Slf4j

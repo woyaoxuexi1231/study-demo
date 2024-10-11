@@ -1,6 +1,6 @@
 package org.hulei.springboot.tkmybatis.model;
 
-import org.hulei.commom.core.model.req.PageQryReqDTO;
+import org.hulei.common.mapper.entity.req.PageQryReqDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

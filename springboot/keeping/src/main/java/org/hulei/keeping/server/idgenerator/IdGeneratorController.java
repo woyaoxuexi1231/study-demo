@@ -1,13 +1,13 @@
 package org.hulei.keeping.server.idgenerator;
 
 import com.github.jsonzou.jmockdata.JMockData;
-import org.hulei.commom.core.model.pojo.ItemDO;
+import org.hulei.common.mapper.entity.pojo.ItemDO;
 import lombok.SneakyThrows;
+import org.hulei.common.mapper.mapper.ItemsMapper;
 import org.hulei.keeping.server.idgenerator.segmentid.SegmentIdGenerator;
 import org.hulei.keeping.server.idgenerator.snowflake.SnowflakeConfig;
-import org.hulei.commom.core.utils.StopWatch;
-import org.hulei.springboot.jdbc.dynamicdb.core.DataSourceToggleUtil;
-import org.hulei.commom.core.mapper.ItemsMapper;
+import org.hulei.common.core.utils.StopWatch;
+import org.hulei.springdata.routingdatasource.core.DataSourceToggleUtil;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;

@@ -1,6 +1,6 @@
 package com.hundsun.demo.dubbo.consumer.controller;
 
-import org.hulei.commom.core.model.dto.ResultDTO;
+import org.hulei.common.core.model.dto.ResultDTO;
 import com.hundsun.demo.dubbo.provider.api.service.ProviderService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.ReferenceConfig;

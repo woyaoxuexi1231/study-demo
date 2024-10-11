@@ -2,14 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="org.hulei.springboot.tkmybatis.mapper.EmployeeMapper">
     <!-- <cache/> -->
-    <insert id="saveOne" parameterType="org.hulei.commom.core.model.pojo.EmployeeDO">
+    <insert id="saveOne" parameterType="org.hulei.common.mapper.entity.pojo.EmployeeDO">
         insert into employees(employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle)
         values (#{employeeNumber}, #{lastName}, #{firstName}, #{extension}, #{email}, #{officeCode}, #{reportsTo},
                 #{jobTitle})
         <!--        values ( ${employeeNumber}, ${lastName}, ${firstName}, ${extension}, ${email}, ${officeCode}, ${reportsTo},-->
         <!--        ${jobTitle})-->
     </insert>
-    <select id="selectAllData" resultType="org.hulei.commom.core.model.pojo.EmployeeDO">
+    <select id="selectAllData" resultType="org.hulei.common.mapper.entity.pojo.EmployeeDO">
         select *
         from employees
     </select>

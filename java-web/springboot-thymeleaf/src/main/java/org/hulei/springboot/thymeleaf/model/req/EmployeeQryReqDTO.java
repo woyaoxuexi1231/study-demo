@@ -1,7 +1,7 @@
 package org.hulei.springboot.thymeleaf.model.req;
 
-import org.hulei.commom.core.model.req.PageQryReqDTO;
 import lombok.Data;
+import org.hulei.common.mapper.entity.req.PageQryReqDTO;
 
 /**
  * @projectName: study-demo

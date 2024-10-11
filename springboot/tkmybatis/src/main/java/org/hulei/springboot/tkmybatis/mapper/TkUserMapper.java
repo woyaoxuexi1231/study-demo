@@ -1,6 +1,6 @@
 package org.hulei.springboot.tkmybatis.mapper;
 
-import org.hulei.commom.core.model.User;
+import org.hulei.common.mapper.entity.User;
 import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.BaseMapper;
 

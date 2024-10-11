@@ -1,8 +1,8 @@
 package com.hundsun.demo.springcloud.loadbalancer;
 
-import org.hulei.commom.core.model.dto.ResultDTO;
-import org.hulei.commom.core.model.req.SimpleReqDTO;
+import org.hulei.common.core.model.dto.ResultDTO;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import org.hulei.common.core.model.dto.SimpleReqDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

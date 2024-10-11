@@ -16,11 +16,8 @@
         <module>rabbitmq</module>
         <module>websocket</module>
         <module>kafka</module>
-        <module>springjdbc</module>
-        <module>redis</module>
         <module>zookeeper</module>
         <module>keeping</module>
-        <module>springjpa</module>
     </modules>
 
     <artifactId>springboot</artifactId>
@@ -36,6 +33,11 @@
         <dependency>
             <groupId>org.hulei</groupId>
             <artifactId>core</artifactId>
+            <version>1.0.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>mapper</artifactId>
             <version>1.0.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>

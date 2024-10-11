@@ -1,9 +1,9 @@
 package org.hulei.keeping.server.spring;
 
-import org.hulei.commom.core.model.pojo.EmployeeDO;
+import org.hulei.common.mapper.entity.pojo.EmployeeDO;
 import lombok.extern.slf4j.Slf4j;
+import org.hulei.common.mapper.mapper.EmployeeMapperPlus;
 import org.hulei.keeping.server.spring.circle.ClassA;
-import org.hulei.commom.core.mapper.EmployeeMapperPlus;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

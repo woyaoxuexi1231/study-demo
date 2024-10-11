@@ -1,6 +1,6 @@
 package org.hulei.keeping.server.spring.circle;
 
-import org.hulei.commom.core.annotation.DoneTime;
+import org.hulei.common.core.annotation.DoneTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

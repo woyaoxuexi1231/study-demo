@@ -1,9 +1,9 @@
 package com.hundsun.demo.springcloud.eureka.ribbon.client.service;
 
-import org.hulei.commom.core.model.dto.ResultDTO;
-import org.hulei.commom.core.model.req.SimpleReqDTO;
+import org.hulei.common.core.model.dto.ResultDTO;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.extern.slf4j.Slf4j;
+import org.hulei.common.core.model.dto.SimpleReqDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
