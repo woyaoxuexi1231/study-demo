@@ -219,7 +219,7 @@ docker commit 716569939c55 mycentos
 
 ### dockerfile指令
 
-> - FORM 指定基础镜像  
+> - FORM 指定基础镜像
 > - MAINTAINER 指定镜像的维护者信息
 > - RUN 容器内需要执行的命令
 > - ADD 添加文件到容器内,如果文件是压缩文件,那么会自动解压
@@ -308,6 +308,80 @@ VOLUME ["/data1","/data2"]
 # 剩下的其他指令
 # EXPOSE 指定容器运行时对外提供的端口服务
 # WORKDIR 更改当前的工作目录
+```
+
+### dockerfile实践,搭建一个Springboot的mvc项目
+
+第一步. **搭建一个配置文件在jar包内的jar镜像**
+
+```dockerfile
+# 初期搭建,暂时不考虑配置文件的问题,我这里配置文件内的配置都写死在jar包内
+# 为了排除所有其他东西的干扰,这里以一个纯净的centos来搭建整个dockerfile
+
+# 1. centos作为基础镜像
+FROM centos
+# 2. 更新yum的仓库源
+RUN cd /etc/yum.repos.d/
+RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+RUN yum clean all && yum makecache
+# 3. 安装jdk,为了方便jdk的安装,我这里直接使用yum安装jdk,这里就安装配套的开发工具了
+RUN yum install -y java-1.8.0-openjdk-src.x86_64
+# 4. COPY我们的jar包进入dockerfile,不使用ADD,ADD会自动解压
+COPY springboot-js.jar /home/
+# 遇到了问题就是这里启动容器会报错 Error: Unable to access jarfile springboot-js.jar
+# 因为 COPY 之后这个文件的权限默认是 600, 也就是拥有着有 读(4)写(2)权限, 但是没有执行权限(1)
+# 所以需要在中间插入一个赋权的操作
+RUN chmod 700 /home/springboot-js.jar
+# 5. 暴露容器内部的对应的端口
+EXPOSE 10008
+# 6. 使用CMD来跑这个jar包
+CMD ["java","-jar","/home/springboot-js.jar"]
+```
+
+第二步. **搭建一个配置文件不在jar包内的jar镜像**
+
+```dockerfile
+# 初期搭建,暂时不考虑配置文件的问题,我这里配置文件内的配置都写死在jar包内
+# 为了排除所有其他东西的干扰,这里以一个纯净的centos来搭建整个dockerfile
+
+# 1. centos作为基础镜像
+FROM centos
+# 2. 更新yum的仓库源
+RUN cd /etc/yum.repos.d/
+RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+RUN yum clean all && yum makecache
+# 3. 安装jdk,为了方便jdk的安装,我这里直接使用yum安装jdk,这里就安装配套的开发工具了
+RUN yum install -y java-1.8.0-openjdk-src.x86_64
+# 4. COPY我们的jar包进入dockerfile,不使用ADD,ADD会自动解压
+COPY springboot-js.jar /home/
+# 复制配置文件到docker镜像内
+COPY config /home/config
+# 把生成的日志挂载到宿主机上
+VOLUME /home/logs/
+# 遇到了问题就是这里启动容器会报错 Error: Unable to access jarfile springboot-js.jar
+# 因为 COPY 之后这个文件的权限默认是 600, 也就是拥有着有 读(4)写(2)权限, 但是没有执行权限(1)
+# 所以需要在中间插入一个赋权的操作
+RUN chmod 700 /home/springboot-js.jar
+# 以/home为工作目录, 我这里如果不在/home下,始终获取不到配置文件
+WORKDIR /home
+
+# 5. 暴露容器内部的对应的端口
+EXPOSE 10008
+# 6. 使用CMD来跑这个jar包
+CMD ["java","-jar","/home/springboot-js.jar","--spring.config.location=/home/config"]
+```
+
+第三步. **直接把配置目录挂载到主机的配置文件目录上,直接读取宿主机的配置文件内容**
+
+```shell
+# 这需要在容器启动的时候通过 -v指定外部的挂载目录
+# VOLUME和-v都能挂载目录, 两者的区别:
+# VOLUME 命令用于在 Docker 容器中创建持久化存储卷。以便数据在容器停止或者删除后也能够继续存在. 场景: 持久化数据
+# 通过 -v 可以更加灵活的挂载目录, 不仅可以指定容器内的目录,还可以指定宿主机的目录 场景: 数据共享,开发调试,轻松切换数据位置
+docker run -P -v /root/learn_docker/config:/home/config myjar
+
 ```
 
 ## docker 原理知识
