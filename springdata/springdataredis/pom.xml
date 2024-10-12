@@ -53,7 +53,7 @@
         <!-- mybatis相关依赖 -->
         <dependency>
             <groupId>org.hulei</groupId>
-            <artifactId>mapper</artifactId>
+            <artifactId>mapperplus</artifactId>
             <version>1.0.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>

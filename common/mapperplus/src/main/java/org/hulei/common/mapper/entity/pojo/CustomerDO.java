@@ -21,31 +21,43 @@ import java.math.BigDecimal;
 @Data
 public class CustomerDO {
 
-    @TableId(value = "customerNumber", type = IdType.AUTO)
+    @TableId(value = "customer_number", type = IdType.AUTO)
     private Integer customernumber;
-    @TableField(value = "customerName")
+
+    @TableField(value = "customer_name")
     private String customername;
-    @TableField(value = "contactlastname")
+
+    @TableField(value = "contact_last_name")
     private String contactlastname;
-    @TableField(value = "contactfirstname")
+
+    @TableField(value = "contact_first_name")
     private String contactfirstname;
+
     @TableField(value = "phone")
     private String phone;
-    @TableField(value = "addressline1")
+
+    @TableField(value = "address_line1")
     private String addressline1;
-    @TableField(value = "addressline2")
+
+    @TableField(value = "address_line2")
     private String addressline2;
+
     @TableField(value = "city")
     private String city;
+
     @TableField(value = "state")
     private String state;
-    @TableField(value = "postalcode")
+
+    @TableField(value = "postal_code")
     private String postalcode;
+
     @TableField(value = "country")
     private String country;
-    @TableField(value = "salesrepemployeenumber")
+
+    @TableField(value = "sales_rep_employee_number")
     private Integer salesrepemployeenumber;
-    @TableField(value = "creditlimit")
+
+    @TableField(value = "credit_limit")
     private BigDecimal creditlimit;
 
 }

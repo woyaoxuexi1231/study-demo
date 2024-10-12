@@ -4,13 +4,13 @@
     <resultMap id="BaseResultMap" type="org.hulei.common.mapper.entity.pojo.OrdersDO">
         <!--@mbg.generated-->
         <!--@Table orders-->
-        <id column="orderNumber" jdbcType="INTEGER" property="ordernumber"/>
-        <result column="orderDate" jdbcType="DATE" property="orderdate"/>
-        <result column="requiredDate" jdbcType="DATE" property="requireddate"/>
-        <result column="shippedDate" jdbcType="DATE" property="shippeddate"/>
+        <id column="order_number" jdbcType="INTEGER" property="ordernumber"/>
+        <result column="order_date" jdbcType="DATE" property="orderdate"/>
+        <result column="required_date" jdbcType="DATE" property="requireddate"/>
+        <result column="shipped_date" jdbcType="DATE" property="shippeddate"/>
         <result column="status" jdbcType="VARCHAR" property="status"/>
         <result column="comments" jdbcType="LONGVARCHAR" property="comments"/>
-        <result column="customerNumber" jdbcType="INTEGER" property="customernumber"/>
+        <result column="customer_number" jdbcType="INTEGER" property="customernumber"/>
     </resultMap>
 
     <resultMap id="orderFullInfoMap" type="org.hulei.common.mapper.entity.OrderFullInfo" extends="BaseResultMap">
@@ -18,7 +18,7 @@
                 property="details"
                 javaType="java.util.List"
                 ofType="org.hulei.common.mapper.entity.pojo.OrderdetailsDO"
-                column="ordernumber"
+                column="order_number"
                 select="org.hulei.common.mapper.mapper.OrderdetailsMapper.selectByOrderId"
         >
         </collection>
@@ -26,13 +26,13 @@
 
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
-        orderNumber,
-        orderDate,
-        requiredDate,
-        shippedDate,
+        order_number,
+        order_date,
+        required_date,
+        shipped_date,
         `status`,
         comments,
-        customerNumber
+        customer_number
     </sql>
 
     <select id="selectOrderFullInfo" resultMap="orderFullInfoMap">

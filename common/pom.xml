@@ -15,7 +15,7 @@
         <module>core</module>
         <module>common-starter</module>
         <module>curator-starter</module>
-        <module>mapper</module>
+        <module>mapperplus</module>
     </modules>
 
     <properties>

@@ -58,16 +58,18 @@ public class RedisController {
 
     全局命令:
     keys [pattern] 查询全局的所有key,在key非常多的情况下会严重阻塞redis的运行,不建议使用,时间复杂度 O(n), 对于一个拥有一百二十万的key的库执行这个命令,花费了7秒多
+    smembers lrange hgetall hkeys hvals 都是属于重量级操作,慎用
+
     dbsize 查询数据库一共有多少键, dbsize的时间复杂度是 O(1) 他是直接查询redis的内置的键总数变量,可以放心使用
     exists key 时间复杂度O(1)
     del key 删除键
-    expire key seconds 设置键的过期时间
+    expire key seconds 设置键的过期时间,key如果不存在返回0
     type key 查看键的数据类型
 
     rename key newkey 重命名键
     randomkey 随机返回一个
     persist 用于移除键的过期时间
-    ttl keys 返回键的过期时间
+    ttl keys 返回键的过期时间, 没有过期时间将返回-1,不存在将返回-2
     scan cursor [MATCH pattern] [COUNT count] [TYPE type] 遍历元素 cursor第一次写0,以后每次写上一次返回的游标, 这个命令能有效的解决keys的阻塞问题
     flushdb/fluashall 用于清空数据库或者所有数据库
 

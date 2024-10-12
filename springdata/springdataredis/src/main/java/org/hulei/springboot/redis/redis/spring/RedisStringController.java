@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class RedisStringController {
 
     /*
+
     字符串: 操作的时间复杂度基本都是O(1)
     set key value [EX seconds|PX milliseconds|EXAT timestamp|PXAT milliseconds-timestamp|KEEPTTL] [NX|XX] [GET]
         - ex 设置过期的倒数时间,单位秒
@@ -36,17 +37,21 @@ public class RedisStringController {
         - nx 只有在键不存在的时候才设置键
         - xx 只有在键存在的时候才设置键
         - get 获取旧值并获取新值
-        除此之外,redis还提供了 setnx 和 setxx 两个命令,提供原子性的 检查并插入 这个操作
-    get key 获取值
+        除此之外,redis还提供了 setnx 和 setxx 两个命令,提供原子性的 检查并插入 这个操作(set xxx ex nx 也是原子性的)
     mset key value [key value ...] 批量设置值
-    mget key [key ...] 批量获取值
     incr key 用于自增,但是value一定要是整形,否则直接返回错误. 如果键不存在那么默认键的值为0,然后对这个键进行+1操作
         同时还提供了 decr, 自定义增量的 incrby key increment, decrby key increment
-    append key value 向字符串尾部追加值
-    strlen key 输出值的长度
+    append key value 向字符串尾部追加值, 键不存在会直接新增这个key
     getset key value 设置并原来得值,如果之前是空,那么返回nil
     setrange key offset value 设置指定位置的值为新值
+
+
+    获取键:
+    get key 获取值
+    mget key [key ...] 批量获取值
+    strlen key 输出值的长度
     getrange key start end 返回指定位置的值,包括start和end
+
      */
 
     @Autowired

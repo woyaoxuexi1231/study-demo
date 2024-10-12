@@ -23,9 +23,9 @@ public class RedisListController {
     插入:
         rpush key element [element ...] 从右侧插入元素
         lpush key element [element ...] 从左侧插入元素
-        linsert key BEFORE|AFTER pivot element , pivot是具体的元素值
+        linsert key BEFORE|AFTER pivot element , pivot是具体的元素值, 在pivot的前面或者后面插入element
     查询:
-        lrange key start stop
+        lrange key start stop 这是一个重量级操作,需要注意
         lindex key index 查询指定key的指定位置的元素
         llen key 获取列表的长度
     删除:
@@ -40,6 +40,8 @@ public class RedisListController {
         blpop key [key ...] timeout
         1. 多个key时只要有一个key有元素可以弹出就会立马返回
         2. timeout=0的时候会无限阻塞,直到有元素可以获取
+
+    队列没有一个固定的查询队里内所有元素的api,但是可以通过 lrange 0 -1来实现
      */
 
     /**

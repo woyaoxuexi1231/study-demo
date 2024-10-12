@@ -2,7 +2,7 @@
 
 **安装教程： https://blog.csdn.net/weixin_43755251/article/details/127512751**
 
-使用yml简易安装完成后
+### docker的基础用法
 
 ```shell
 # 查看系统发行版本
@@ -100,7 +100,214 @@ netstat -tunlp
 # 停止容器
 docker stop 容器id
 
+```
 
+### 镜像的管理操作
+
+```shell
+
+# 删除镜像
+#  rm          Remove one or more containers
+#  rmi         Remove one or more images
+docker rmi 
+
+# 删除镜像的时候可能镜像被某个容器引用着 
+# [root@node-140 ~]# docker rmi 39286ab8a5e1
+# Error response from daemon: conflict: unable to delete 39286ab8a5e1 (must be forced) - image is being used by stopped container add4e2a22b97
+# 这个时候我们需要去删除对应的容器
+docker rm container
+# 删除所有容器 docker rm $(docker ps -aq), 删除所有镜像也类似
+
+# 可以对现存的镜像进行导出操作
+docker image save nginx > nginx.tgz
+
+# 导入对应的镜像文件
+docker image load -i nginx.tgz
+
+# 查看镜像的信息
+docker image inspect nginx
+
+```
+
+### docker的容器管理
+
+docker run 命令会创建和启动一个容器,如果镜像在本地不存在,那么会直接在远程去下载这个镜像
+
+**注意**: 容器内的进程必须处于前台运行状态,否则容器就会直接推出了
+
+```shell
+# 1. 运行一个挂掉的容器
+docker run centos
+
+# 2. 运行一个容器,并进入容器
+# -it复合命令, -i: 保持STDIN(标准输入)打开,即使没有附加在终端,这样可以在容器运行时与它进行交互 -t:分配一个伪终端,这允许在容器内使用命令行界面,就像本地终端一样
+# sh: 容器启动时要运行的命令,这样当容器启动之后,会直接进入sh命令的命令行界面
+docker run -it centos bash
+
+# 3. 运行一个容器,并执行相关的命令
+docker run centos ping www.baidu.com
+
+# 4. 运行一个活着的容器
+# -d: 使这个docker容器后台运行
+docker run -d centos ping www.baidu.com
+# --rm: 容器在运行完毕之后自动删除记录
+# --name: 给容器取名字
+# 在docker stop 之后,在容器记录中是没有这条记录的
+docker run -d --rm --name mycentos centos ping www.baidu.com
+
+# 5. 查看容器日志
+# -f 循环打印, 可以使用管道符 tail
+docker logs -f fe1e1f7b8d48
+
+# 6. 进入容器空间内
+# docker exec -it <容器id> sh
+# exec 在一个已经运行的容器中执行命令
+docker exec -it fe1e1f7b8d48 sh
+
+# 7. 查看运行中的容器的具体信息
+docker container inspect fe1e1f7b8d48
+
+# 8. 容器的端口映射
+# docker run -p <宿主机端口>:<容器端口> <镜像>
+# docker run -d -p 8080:80 nginx
+docker run -d -p 80:80 nginx 
+
+# 9. 查看容器的转发情况
+# docker port <容器ID>
+docker port b33a83bc2cf80ebe2f38b88374c4643ceb1afec4e92dc43e4e5e50c8a0ee27e9
+# 结果如下：
+# 80/tcp 表示这个是在TCP协议上的80端口, 0.0.0.0 表示该服务绑定到所有的网络接口 这意味着80端口接收所有可用网络接口上的监听和接收来自任意IP地址的连接请求
+# 也就是说本机有一个TCP协议上的80端口监听和接受来自所有ipv4地址的80端口的请求连接
+80/tcp -> 0.0.0.0:80
+# [::] 这是一个ipv6地址,和ipv4的 0.0.0.0相当,表示接受所有可用的ipv6地址
+# 表示服务器监听所有IPv6接口上的80端口，接受来自任何IPv6地址的连接。
+80/tcp -> [::]:80
+
+# 10. 随机映射端口
+# -P 随机使用一个宿主机的空闲端口,来映射到容器内的监听端口
+docker run -d -P nginx
+
+# 11. 容器的提交  运行一个基础的centos -> 容器内安装vim -> 提交新的镜像 -> 运行新镜像,直接拥有vim
+# docker start <容器ID> 运行之前挂掉的容器
+# start之后我们通过  docker exec -it <容器ID> sh 进入之前的centos的sh界面
+# 这里可能会遇到yum失败的情况 https://blog.csdn.net/lxcw_sir/article/details/140185068  说是由于版本原因,部分东西已经停止更新和维护了,原来的yum源已经失效
+
+# 进入仓库源文件夹下
+cd /etc/yum.repos.d/
+# 修改镜像配置内容
+sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+# 清空缓存,并重新生成
+yum clean all && yum makecache
+# 安装vim
+yum install vim
+# 安装完成后退出容器 exit, 然后提交新的镜像
+# docker commit <容器记录ID> 新的镜像名
+docker commit 716569939c55 mycentos
+# sha256:adcff16466c9a99b7ab3f59d6188d78a46d1c2fcfc0f6bbc95969e4e23b1f2e3
+# 这样就可以在 docker images 中看到新的镜像,运行新的镜像就可以直接使用之前安装的 vim 了
+
+```
+
+## dockerfile 学习
+
+### dockerfile主要的组成部分
+
+- 基础镜像信息 From centos:6.8
+- 制作镜像操作指令 RUN yum install openssh-server -y
+- 容器启动时执行指令 CMD ["/bin/bash"]
+
+### dockerfile指令
+
+> - FORM 指定基础镜像  
+> - MAINTAINER 指定镜像的维护者信息
+> - RUN 容器内需要执行的命令
+> - ADD 添加文件到容器内,如果文件是压缩文件,那么会自动解压
+> - COPY 作用和ADD相似,但是不会自动解压
+> - WORKDIR 相当于cd,设置当前容器的工作目录
+> - VOLUME 设置卷,挂载主机目录
+> - EXPOSE 指定对外的端口
+> - CMD 指定容器启动时需要做的事情
+
+### 实操构建nginx,并且修改主页内容
+
+```shell
+# 1. 创建Dockerfile文件, 文件名必须是 Dockerfile 
+touch Dockerfile
+
+# 2. 打开Dockerfile文件, 写入以下内容
+FROM nginx
+RUN echo '<meta charset=utf-8> 学习docker的第二次' > /usr/share/nginx/html/index.html
+
+# 3. 退出Dockerfile文件, 构建Dockerfile
+docker build .
+# 可以发现构造后的镜像没有名称
+# REPOSITORY    TAG       IMAGE ID       CREATED          SIZE
+# <none>        <none>    9f041af9b1d8   20 seconds ago   192MB
+# 4. 修改镜像名
+docker tag mynginx 9f041af9b1d8
+# 5. 运行这个image
+docker run -d -P mynginx
+```
+
+### 其他命令
+
+```dockerfile
+# 拷贝一个文件到镜像内
+COPY test.txt /home/
+# add一个文件到镜像内部,如果是压缩文件,这个压缩文件会自动解压
+# 如果是一个url,那么会下载这个连接放入目标路径,且权限自动设置为 600 
+ADD test.tar.gz /home/add
+
+# CMD 在容器内运行某个命令, 启动程序
+# CMD ["参数1","参数2"]
+# 在centos镜像CMD默认的是 /bin/bash , 指定docker run -it centos会直接进入bash解释器
+# 比如容器启动就查看系统版本,我们这里传入 cat /etc/os-release 命令,可以在 centos容器启动后打印出系统版本
+CMD ["cat","/etc/os-release"]
+
+# ENTRYPOINT 作用和CMD类似, 当指定了ENTRYPOINT之后, CMD指令的语义就变成了把CMD的内容当作参数传递给ENTRYPOINT指令
+# CMD 存在的问题就是虽然我们事先指定了命令,但是如果还想传入一些个性化参数,这些参数会直接覆盖我们写好的指令
+# 现在我们编写一个执行curl命令的centos镜像
+# rpm(Red Hat Package Manager) linux系统中用于软件包管理的命令行工具,主要用于安装,升级,删除,查询和验证软件包
+# --rebuilddb 用于重构数据库
+# epel-release 这是一个软件包仓库,允许用户从这个仓库中安装额外的软件包和工具
+# curl 一个常用的命令行工具, 主要作用于服务器传输数据或向服务器传输数据
+# -y 自动回答yes以确认安装过程中所有的提示
+FROM centos
+RUN cd /etc/yum.repos.d/
+RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+RUN yum clean all && yum makecache
+RUN rpm --rebuilddb && yum install epel-release -y
+RUN rpm --rebuilddb && yum install curl -y
+CMD ["curl","-s","http://ipinfo.io/ip"]
+
+# 保存退出, docker build -t mycentos2 .
+# 启动镜像之后,返回 119.85.105.24
+# 但是现在的问题是,如果我们在run命令后面添加其他命令,这会覆盖我们默认curl命令行为
+# 比如 docker run mycentos2 pwd 这条命令将返回 / ,而不会返回 curl的结果
+# 解决办法 
+# 1.直接重新传入完整的命令 docker run mycentos2 curl -s http://ipinfo.io/ip I 但是这么做却完全没有意义
+# 2.使用 ENTRYPOINT, 把CMD直接改为ENTRYPOINT
+ENTRYPOINT ["curl","-s","http://ipinfo.io/ip"]
+# 构建好之后重新运行镜像 docker run mycentos3 -I 就能正确执行 curl 并且打印请求信息
+
+
+# 设置环境变量  ENV ARG
+# ENV 定义变量值, 后续使用 $符号就可以使用之前定义的变量 
+ENV NAME = "hulei"
+# ARG和ENV一样, 区别于ENV的是, 无论是在环境构建时,还是在容器运行时,该变量都可以使用
+
+# VOLUME 挂载目录到宿主机
+# 容器在运行时,应该保证在存储层不写入任何数据,容器的运行期间产生的数据,推荐应该挂载到宿主机进行维护
+# 这里挂载两个目录到宿主机内,宿主机上的目录docker会自动指定
+VOLUME ["/data1","/data2"]
+# 后续可以通过 docker inspect <容器id>
+
+
+# 剩下的其他指令
+# EXPOSE 指定容器运行时对外提供的端口服务
+# WORKDIR 更改当前的工作目录
 ```
 
 ## docker 原理知识

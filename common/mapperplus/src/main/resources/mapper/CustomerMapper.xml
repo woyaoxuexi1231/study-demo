@@ -4,41 +4,41 @@
     <resultMap id="customBaseMapper" type="org.hulei.common.mapper.entity.pojo.CustomerDO">
         <!--@mbg.generated-->
         <!--@Table customers-->
-        <id column="customerNumber" jdbcType="INTEGER" property="customernumber"/>
-        <result column="customerName" jdbcType="VARCHAR" property="customername"/>
-        <result column="contactLastName" jdbcType="VARCHAR" property="contactlastname"/>
-        <result column="contactFirstName" jdbcType="VARCHAR" property="contactfirstname"/>
+        <id column="customer_number" jdbcType="INTEGER" property="customernumber"/>
+        <result column="customer_name" jdbcType="VARCHAR" property="customername"/>
+        <result column="contact_last_name" jdbcType="VARCHAR" property="contactlastname"/>
+        <result column="contact_first_name" jdbcType="VARCHAR" property="contactfirstname"/>
         <result column="phone" jdbcType="VARCHAR" property="phone"/>
-        <result column="addressLine1" jdbcType="VARCHAR" property="addressline1"/>
-        <result column="addressLine2" jdbcType="VARCHAR" property="addressline2"/>
+        <result column="address_line1" jdbcType="VARCHAR" property="addressline1"/>
+        <result column="address_line2" jdbcType="VARCHAR" property="addressline2"/>
         <result column="city" jdbcType="VARCHAR" property="city"/>
         <result column="state" jdbcType="VARCHAR" property="state"/>
-        <result column="postalCode" jdbcType="VARCHAR" property="postalcode"/>
+        <result column="postal_code" jdbcType="VARCHAR" property="postalcode"/>
         <result column="country" jdbcType="VARCHAR" property="country"/>
-        <result column="salesRepEmployeeNumber" jdbcType="INTEGER" property="salesrepemployeenumber"/>
-        <result column="creditLimit" jdbcType="DECIMAL" property="creditlimit"/>
+        <result column="sales_rep_employee_number" jdbcType="INTEGER" property="salesrepemployeenumber"/>
+        <result column="credit_limit" jdbcType="DECIMAL" property="creditlimit"/>
     </resultMap>
 
     <update id="updateOne" parameterType="org.hulei.common.mapper.entity.pojo.CustomerDO">
         update customers
         <set>
             <if test="customername != null">
-                customername = #{customername},
+                customer_name = #{customername},
             </if>
             <if test="contactlastname != null">
-                contactlastname = #{contactlastname},
+                contact_last_name = #{contactlastname},
             </if>
             <if test="contactfirstname != null">
-                contactfirstname = #{contactfirstname},
+                contact_first_name = #{contactfirstname},
             </if>
             <if test="phone != null">
                 phone = #{phone},
             </if>
             <if test="addressline1 != null">
-                addressline1 = #{addressline1},
+                address_line1 = #{addressline1},
             </if>
             <if test="addressline2 != null">
-                addressline2 = #{addressline2},
+                address_line2 = #{addressline2},
             </if>
             <if test="city != null">
                 city = #{city},
@@ -47,13 +47,13 @@
                 state = #{state},
             </if>
             <if test="postalcode != null">
-                postalcode = #{postalcode},
+                postal_code = #{postalcode},
             </if>
             <if test="country != null">
                 country = #{country},
             </if>
             <if test="salesrepemployeenumber != null">
-                salesrepemployeenumber = #{salesrepemployeenumber},
+                sales_rep_employee_number = #{salesrepemployeenumber},
             </if>
             <if test="creditlimit != null">
                 <!--
@@ -65,11 +65,11 @@
                 5.mode IN，OUT 或 INOUT todo
                 -->
                 <!-- creditlimit = #{creditlimit,javaType=java.math.BigDecimal,jdbcType=DECIMAL,numericScale=3} -->
-                creditlimit = #{creditlimit}
+                credit_limit = #{creditlimit}
             </if>
         </set>
         <where>
-            customernumber = #{customernumber}
+            customer_number = #{customernumber}
         </where>
     </update>
 
@@ -80,20 +80,20 @@
 
     <select id="selectCustomerByEmployeeId"
             resultMap="org.hulei.common.mapper.mapper.CustomerMapper.customBaseMapper">
-        select c.customerNumber,
-               c.customerName,
-               c.contactLastName,
-               c.contactFirstName,
-               c.phone,
-               c.addressLine1,
-               c.addressLine2,
-               c.city,
-               c.state,
-               c.postalCode,
-               c.country,
-               c.salesRepEmployeeNumber,
-               c.creditLimit
+        select customer_number,
+               customer_name,
+               contact_last_name,
+               contact_first_name,
+               phone,
+               address_line1,
+               address_line2,
+               city,
+               state,
+               postal_code,
+               country,
+               sales_rep_employee_number,
+               credit_limit
         from customers c
-        where c.salesRepEmployeeNumber = #{employeeNumber}
+        where c.sales_rep_employee_number = #{employeeNumber}
     </select>
 </mapper>

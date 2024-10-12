@@ -40,7 +40,7 @@
         <!-- 自定义的mapper的统一输出包 -->
         <dependency>
             <groupId>org.hulei</groupId>
-            <artifactId>mapper</artifactId>
+            <artifactId>mapperplus</artifactId>
             <version>1.0.0.0-SNAPSHOT</version>
         </dependency>
         <!-- 多数据源的stater包 -->
