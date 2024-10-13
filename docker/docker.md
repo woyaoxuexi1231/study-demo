@@ -381,6 +381,11 @@ CMD ["java","-jar","/home/springboot-js.jar","--spring.config.location=/home/con
 # VOLUME 命令用于在 Docker 容器中创建持久化存储卷。以便数据在容器停止或者删除后也能够继续存在. 场景: 持久化数据
 # 通过 -v 可以更加灵活的挂载目录, 不仅可以指定容器内的目录,还可以指定宿主机的目录 场景: 数据共享,开发调试,轻松切换数据位置
 docker run -P -v /root/learn_docker/config:/home/config myjar
+# 通过 --restart=always来让这个容器只要docker启动容器就会自动开启 
+# unless-stopped除非手动停止
+# on-failure (--restart=on-failure:5): 如果容器以非零状态退出，则重启容器。你可以指定最大重启次数。
+# no 默认行为,不自动重启容器
+docker run -d -p 10008:10008 -v /root/learn_docker/config:/home/config --restart=unless-stopped myjar
 
 ```
 

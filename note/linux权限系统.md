@@ -52,6 +52,14 @@ id       # 显示当前用户的 UID 和所属的 GID
 
 ## 3. 修改文件权限
 
+### 使用 chown 命令
+
+```shell
+# chown [OPTION]... [OWNER][:[GROUP]] FILE...
+# 把 es 文件夹以及文件夹下所有的文件都授权给 es组下的es用户
+chown -R es:es es
+```
+
 ### 使用 `chmod` 命令
 
 `chmod`（change mode）命令用于修改文件或目录的权限。有两种方法可以使用 `chmod` 来设置权限：**符号方式**和**八进制方式**。
