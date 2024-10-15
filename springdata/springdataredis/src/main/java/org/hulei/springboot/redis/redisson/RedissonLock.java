@@ -27,7 +27,7 @@ public class RedissonLock {
             - TODO 2024年9月19日(这个频道具体有什么作用,还不知道) 没有获得锁的线程将通过redis的subscribe订阅一个频道,频道的名称是 redisson_lock__channel:{lockName}
             - 没有获得锁的线程会一直轮询的去检查锁这个键的剩余时间,然后等待到足够时间后尝试去获取锁
         2. 子线程通过一个Map保存当前线程的信息,然后子线程默认每10秒进行续约
-        3. 主线程正常解锁时会接触子线程Map内保存的线程信息,以及发送一条解锁的消息到频道内
+        3. 主线程正常解锁时会删除子线程Map内保存的线程信息,以及发送一条解锁的消息到频道内
          */
         RLock lock = redisson.getLock("myLock");
 

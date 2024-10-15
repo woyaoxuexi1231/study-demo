@@ -1,0 +1,35 @@
+{
+  "properties": [
+    {
+      "name": "common.security.strategy",
+      "description": "安全策略的具体实现方式",
+      "type": "java.lang.String",
+      "defaultValue": "memory"
+    },
+    {
+      "name": "common.security.global.method",
+      "type": "java.lang.Boolean",
+      "description": "是否启用方法的安全注解",
+      "defaultValue": true
+    }
+  ],
+  "hints": [
+    {
+      "name": "common.security.strategy",
+      "values": [
+        {
+          "value": "memory",
+          "description": "纯内存方式"
+        },
+        {
+          "value": "configureradapter",
+          "description": "通过继承WebSecurityConfigurerAdapter重写configure的方式"
+        },
+        {
+          "value": "database",
+          "description": "通过UserDetailsService从数据库中获取用户信息"
+        }
+      ]
+    }
+  ]
+}

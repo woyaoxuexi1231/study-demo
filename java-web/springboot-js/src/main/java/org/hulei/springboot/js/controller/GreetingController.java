@@ -1,10 +1,11 @@
 package org.hulei.springboot.js.controller;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.hulei.springboot.js.mapper.EmployeeMapper;
-import org.hulei.springboot.js.model.pojo.EmployeeDO;
-import org.hulei.springboot.js.model.req.EmployeeQryReqDTO;
+import org.hulei.common.mapper.entity.pojo.EmployeeDO;
+import org.hulei.common.mapper.entity.req.PageQryReqDTO;
+import org.hulei.common.mapper.mapper.EmployeeMapperPlus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +29,7 @@ import javax.validation.Valid;
 public class GreetingController {
 
     @Autowired
-    EmployeeMapper employeeMapper;
+    EmployeeMapperPlus employeeMapperPlus;
 
     @GetMapping("/greeting")
     public ResponseEntity<String> greeting(@RequestParam(name = "name", defaultValue = "World") String name) {
@@ -36,8 +37,8 @@ public class GreetingController {
     }
 
     @PostMapping("/getUsers")
-    public PageInfo<EmployeeDO> getUsers(@Valid @RequestBody EmployeeQryReqDTO req) {
+    public PageInfo<EmployeeDO> getUsers(@Valid @RequestBody PageQryReqDTO req) {
         PageHelper.startPage(req.getPageNum(), req.getPageSize());
-        return new PageInfo<>(employeeMapper.selectAll());
+        return new PageInfo<>(employeeMapperPlus.selectList(Wrappers.emptyWrapper()));
     }
 }

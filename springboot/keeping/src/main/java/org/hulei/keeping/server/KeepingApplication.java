@@ -1,5 +1,6 @@
 package org.hulei.keeping.server;
 
+import cn.hutool.core.thread.ThreadFactoryBuilder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.hulei.springdata.routingdatasource.config.parsing.EnableDynamicDataSource;
@@ -7,22 +8,36 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Date;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 
 /**
- * @ProductName: Hundsun amust
- * @ProjectName: study-demo
- * @Package: org.hulei.keeping.servercontroller
- * @Description:
- * @Author: hulei42031
- * @Date: 2022-07-25 20:20
+ * spring 实战(第五版)
+ * @author hulei
+ * @since 2024/10/13 21:51
  */
 
+/*
+1. 指定这个类为配置类
+2. 启动 spring 自动配置
+3. 启动组件扫描, 这将默认扫描这个类所在的包及其子包下所有的bean
+ */
+@SpringBootApplication
 @Data
 @RestController("/application")
-@SpringBootApplication
 @org.mybatis.spring.annotation.MapperScan(basePackages = {
         "org.hulei.common.mapper.mapper",
         "org.hulei.keeping.server.common.mapper"
@@ -34,7 +49,7 @@ public class KeepingApplication {
     public static ApplicationContext applicationContext;
 
     /**
-     * 注解 @Value遇到 static 类型变量会直接失效
+     * 注解 @Value 遇到 static 类型变量会直接失效
      * <p>
      * springBoot 读取配置文件时会把大驼峰 (propertiesName) 转换为 小写+横线(properties-name) 的形式存储
      * 具体代码在 org.springframework.boot.context.properties.bind.JavaBeanBinder.BeanProperty 内
@@ -44,6 +59,9 @@ public class KeepingApplication {
      */
     @Value("${server.port}")
     String port;
+
+    @Value("${greeting.welcome}")
+    String greetingWelcome;
 
     public static void main(String[] args) {
         // System.setProperty("cglib.debugLocation","C:\\Project\\study-demo\\demo-spring\\demo-springboot\\target\\classes");
@@ -62,6 +80,7 @@ public class KeepingApplication {
         // Open the homepage URL in default browser
         String homepageURL = String.format("http://localhost:%s", applicationContext.getEnvironment().getProperty("server.port")); // Update with your homepage URL
         System.out.println("Please navigate to: " + homepageURL);
+        System.out.println(applicationContext.getEnvironment().getProperty("greeting.welcome"));
 
         /*
         内存参数 -Xmx40m -Xms40m
@@ -103,5 +122,44 @@ public class KeepingApplication {
         System.out.println("debug mode");
     }
 
+    @Bean
+    public ThreadPoolExecutor commonPool() {
+        return new ThreadPoolExecutor(
+                200,
+                200,
+                60,
+                TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(),
+                new ThreadFactoryBuilder().setNamePrefix("commonPool-").build(),
+                new ThreadPoolExecutor.AbortPolicy());
+    }
 
+    @Bean
+    public ThreadPoolExecutor singlePool() {
+        return new ThreadPoolExecutor(
+                1,
+                1,
+                60,
+                TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(50),
+                new ThreadFactoryBuilder().setNamePrefix("single-pool-").build(),
+                new ThreadPoolExecutor.CallerRunsPolicy());
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+    @PostMapping("/change")
+    public Map<String, Object> change(@RequestBody Map<String, Object> map) {
+        // 设置时区为东八区（北京时间）
+        TimeZone timeZone = TimeZone.getTimeZone("Asia/Shanghai");
+        // 获取当前时间
+        Date now = new Date();
+        // 根据指定时区获取当前时间
+        Date nowInTimeZone = new Date(now.getTime() + timeZone.getRawOffset());
+        map.put("response-tag", nowInTimeZone);
+        return map;
+    }
 }

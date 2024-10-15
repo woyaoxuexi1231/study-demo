@@ -10,11 +10,11 @@
     <!--
      <servlet> 元素： 这个元素定义了一个Servlet，它有两个子元素：
         <servlet-name>: 指定Servlet的名称为 “dispatcher”。
-        <servlet-class>: 指定Servlet类的完整路径为 “mypack.DispatcherServlet”。 默认会在 WEB-INF/classes 下去找
+        <servlet-class>: 指定Servlet类的完整路径为 “mypack.LoginServlet”。 默认会在 WEB-INF/classes 下去找
      -->
     <servlet>
         <servlet-name>dispatcher</servlet-name>
-        <servlet-class>mypack.DispatcherServlet</servlet-class>
+        <servlet-class>mypack.LoginServlet</servlet-class>
     </servlet>
 
     <!--

@@ -2,8 +2,6 @@ package com.hundsun.demo.spring.mvc.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hundsun.demo.spring.mvc.springdao.UserDAO;
-import com.hundsun.demo.spring.mvc.springdao.UserDAOImpl;
-import com.hundsun.demo.spring.mvc.springdao.UserDAOJdbcTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

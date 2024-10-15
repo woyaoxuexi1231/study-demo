@@ -16,7 +16,7 @@ import tk.mybatis.spring.annotation.MapperScan;
  */
 
 @MapperScan(basePackages = {
-        "org.hulei.springboot.thymeleaf.mapper",
+        "org.hulei.common.mapper.mapper",
 })
 @Slf4j
 @SpringBootApplication

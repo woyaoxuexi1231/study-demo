@@ -16,6 +16,7 @@
         <module>common-starter</module>
         <module>curator-starter</module>
         <module>mapperplus</module>
+        <module>common-security</module>
     </modules>
 
     <properties>

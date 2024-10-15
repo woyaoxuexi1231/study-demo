@@ -28,6 +28,9 @@ public class SecurityApplication implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+
+        //
+
         // Open the homepage URL in default browser
         String homepageURL = "http://localhost:9170"; // Update with your homepage URL
         System.out.println("Unable to open browser automatically. Please navigate to: " + homepageURL);

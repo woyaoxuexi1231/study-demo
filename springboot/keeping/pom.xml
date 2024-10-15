@@ -65,9 +65,15 @@
         </dependency>
 
         <!--自动配置-->
+        <!-- springbootweb框架,同时默认嵌入了Tomcat -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!-- Thymeleaf 和 Thymeleaf 布局方言 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -81,6 +87,23 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+        <!--
+         顾名思义，DevTools 为 Spring 开发人员提供了一些方便的开发同步工具。这些是：
+        1. 当代码更改时自动重启应用程序
+        2. 当以浏览器为目标的资源（如模板、JavaScript、样式表等）发生变化时，浏览器会自动刷新
+        3. 自动禁用模板缓存
+        4. 如果 H2 数据库正在使用，则在 H2 控制台中构建
+        当 DevTools 起作用时，它会自动启用 LiveReload （http://livereload.com/）服务器和应用程序
+        LiveReload 有针对 Google Chrome、Safari 和 Firefox 浏览器的插件, 但是没有 edge 。请访问 http://livereload.com/extensions/，了解如何为浏览器安装 LiveReload。
+
+        当前使用 2024.2.2 在开启热部署的情况下,需要进行 ctrl + F9 的手动构建才能刷新项目
+         -->
+<!--         <dependency> -->
+<!--             <groupId>org.springframework.boot</groupId> -->
+<!--             <artifactId>spring-boot-devtools</artifactId> -->
+<!--             &lt;!&ndash; 只在运行时需要,且依赖不传递 &ndash;&gt; -->
+<!--             <scope>runtime</scope> -->
+<!--         </dependency> -->
 
 
         <!-- 数据库驱动 -->
@@ -135,8 +158,6 @@
         </dependency>
 
 
-
-
         <!--测试-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -146,6 +167,11 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -228,7 +254,7 @@
                 <finalName>${build.finalName}</finalName>
                 <resources>
                     <resource>
-                        <filtering>true</filtering>
+                        <filtering>false</filtering>
                         <directory>src/main/resources</directory>
                         <excludes>
                             <exclude>

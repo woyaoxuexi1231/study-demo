@@ -11,12 +11,6 @@
 
     <packaging>pom</packaging>
     <modules>
-        <module>tkmybatis</module>
-        <module>mybatisplus</module>
-        <module>rabbitmq</module>
-        <module>websocket</module>
-        <module>kafka</module>
-        <module>zookeeper</module>
         <module>keeping</module>
     </modules>
 

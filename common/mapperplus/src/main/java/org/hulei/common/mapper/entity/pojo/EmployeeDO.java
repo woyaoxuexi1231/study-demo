@@ -34,20 +34,20 @@ public class EmployeeDO implements Serializable {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "Mysql")
-    @Column(name = "employeeNumber")
-    @TableId(value = "employeeNumber")
+    @Column(name = "employee_number")
+    @TableId(value = "employee_number")
     private Long employeeNumber;
     /**
      *
      */
-    @Column(name = "lastName")
-    @TableField(value = "lastName")
+    @Column(name = "last_name")
+    @TableField(value = "last_name")
     private String lastName;
     /**
      *
      */
-    @Column(name = "firstName")
-    @TableField(value = "firstName")
+    @Column(name = "first_name")
+    @TableField(value = "first_name")
     private String firstName;
     /**
      *
@@ -64,20 +64,20 @@ public class EmployeeDO implements Serializable {
     /**
      *
      */
-    @Column(name = "officeCode")
-    @TableField(value = "officeCode")
+    @Column(name = "office_code")
+    @TableField(value = "office_code")
     private String officeCode;
     /**
      *
      */
-    @Column(name = "reportsTo")
-    @TableField(value = "reportsTo")
+    @Column(name = "reports_to")
+    @TableField(value = "reports_to")
     private Integer reportsTo;
     /**
      *
      */
-    @Column(name = "jobTitle")
-    @TableField(value = "jobTitle")
+    @Column(name = "job_title")
+    @TableField(value = "job_title")
     private String jobTitle;
 
     @Column(name = "last_update_time")
