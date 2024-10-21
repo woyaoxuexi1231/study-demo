@@ -64,5 +64,8 @@ Caused by: java.lang.StackOverflowError
 	at com.hundsun.demo.spring.init.circle.NegativeBean.hashCode(NegativeBean.java:14) ~[classes/:?]
 ```
 
-使用lombok的@Data注解之后,会导致hashcode方法出现无限递归,去除@Data  
-但是为什么tomcat启动回去调用这个hashcode()呢? TODO
+这里使用 Lombok 的 @Data 注解之后，会导致 hashcode() 方法出现无限递归。
+
+出现原因：2024年10月21日 TODO
+
+解决方案：去除 @Data  
