@@ -109,8 +109,8 @@
 
         <!-- JPA的持久层规范 -->
         <dependency>
-            <groupId>jakarta.persistence</groupId>
-            <artifactId>jakarta.persistence-api</artifactId>
+            <groupId>javax.persistence</groupId>
+            <artifactId>javax.persistence-api</artifactId>
         </dependency>
         <!-- Java Servlet是Java企业平台的基础web规范。 -->
         <dependency>
@@ -176,7 +176,7 @@
         <!-- 数据校验 -->
         <dependency>
             <groupId>javax.persistence</groupId>
-            <artifactId>persistence-api</artifactId>
+            <artifactId>javax.persistence-api</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>

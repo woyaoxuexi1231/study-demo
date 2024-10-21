@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
@@ -71,6 +72,17 @@ public class RedisSubPubController {
                     log.info("channel: {}, 信道(主题) {}, 消息为: {}", channel, Objects.isNull(pattern) ? null : new String(pattern, StandardCharsets.UTF_8), msg);
                 },
                 channelTopic());
+
+        // 键空间监听事件, 可以监听特定键
+        container.addMessageListener((msg, pattern) -> {
+            log.info("键空间事件监听: msgBody: {}, msgChannel: {}", new String(msg.getBody(), StandardCharsets.UTF_8), new String(msg.getChannel(), StandardCharsets.UTF_8));
+        }, new PatternTopic("__keyspace@0__:*"));
+
+        // 键事件监听事件, 可以监听特定事件
+        container.addMessageListener((msg, pattern) -> {
+            log.info("键事件: msgBody: {}, msgChannel: {}", new String(msg.getBody(), StandardCharsets.UTF_8), new String(msg.getChannel(), StandardCharsets.UTF_8));
+        }, new PatternTopic("__keyevent@0__:*"));
+
         return container;
     }
 

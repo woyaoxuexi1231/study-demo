@@ -11,6 +11,12 @@
       "type": "java.lang.Boolean",
       "description": "是否启用方法的安全注解",
       "defaultValue": true
+    },
+    {
+      "name": "common.security.custom.websecurity",
+      "type": "java.lang.Boolean",
+      "description": "是否起用默认的自定义的安全规则",
+      "defaultValue": false
     }
   ],
   "hints": [

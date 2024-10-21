@@ -1,5 +1,6 @@
 package org.hulei.common.security.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -21,11 +22,23 @@ import javax.servlet.http.HttpServletResponse;
  * .formLogin()
  * <p>
  * 但目前此类已经不再推荐使用,推荐使用 SecurityFilterChain 来进行配置
+ * 这个注解 EnableWebSecurity 用于启动 Spring Security的 Web 安全功能的注解
+ * <p>
+ * 1. 启用了Spring Security的Web安全功能，使得应用程序可以拦截HTTP请求并应用安全策略。
+ * <p>
+ * 2. 使用该注解后，你可以通过定义一个配置类来自定义Web安全配置。通常，这包括配置HTTP请求的授权规则、登录、注销、会话管理、CSRF保护等。
+ * 自 Spring Security 5.4开始，配置Web安全性时推荐使用SecurityFilterChain来替代WebSecurityConfigurerAdapter，结合@EnableWebSecurity一起使用。
+ * <p>
+ * 3. 如果没有定义自己的安全配置，该注解会应用Spring Security的默认配置，这通常包括以下几项：
+ * - 对所有请求进行认证。
+ * - 提供一个默认的登录页面。
+ * - 常见的安全保护，如防御CSRF攻击等。
  *
  * @author h1123
  * @since 2023/5/9 0:05
  */
 
+@Slf4j
 @ConditionalOnProperty(name = "common.security.strategy", havingValue = "configureradapter")
 @EnableWebSecurity
 @Configuration
@@ -40,18 +53,9 @@ public class MyWebConfAdapterAutoConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        log.info("配置权限规则");
+        super.configure(http);
         http
-                .authorizeRequests() // 这是HttpSecurity对象的一个方法调用，用于配置请求的授权规则。
-                .antMatchers("/css/**", "/fonts/**").permitAll()  // 基于路径的匹配规则, 所有以 /css/开头的, /fonts/开头的url请求全部不需要身份验证,无论是否登录都可以访问
-                .antMatchers("/", "/index", "/error", "/401").permitAll() // 配置主页无限制访问
-                .antMatchers("/user/**").hasAnyRole("USER", "ADMIN") // 配置user路径仅user角色可以访问
-                .anyRequest() // 匹配应用程序中的所有 HTTP 请求，无论其路径或类型（GET、POST 等）。
-                .authenticated() // 表示所有匹配的请求都必须经过身份验证，只有已登录并且成功认证的用户才可以访问这些请求。
-                .and()
-
-                // 指定登录页面为 /login, 默认的登录成功后的页面是 /user/index, ture代表登录成功后总是会重定向到指定的 /user/index 页面，无论用户之前访问了什么 URL, 默认的登录失败的页面为 /error
-                .formLogin().loginPage("/login").defaultSuccessUrl("/user/index", true).failureForwardUrl("/error")
-                .and()
                 // 主要用于处理用户访问受保护资源时出现的异常情况, 例如未授权访问或没有登录时的行为
                 .exceptionHandling()
                 // .accessDeniedPage("/401") // 这个方法是用来处理已经通过身份验证但是没有足够权限访问特定资源的用户。
@@ -64,6 +68,7 @@ public class MyWebConfAdapterAutoConfig extends WebSecurityConfigurerAdapter {
                     request.setAttribute("isLogin", true);
                     // request.getRequestDispatcher("/401").forward(request, response);
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    response.setHeader("content-type", "text/html;charset=utf-8");
                     response.getWriter().write("权限不足以访问此资源!");
                 })
                 // 处理未认证用户访问受保护资源时的行为, 主要用于处理未认证的问题, 也就是未登录
@@ -71,10 +76,10 @@ public class MyWebConfAdapterAutoConfig extends WebSecurityConfigurerAdapter {
                     request.setAttribute("isLogin", false);
                     // request.getRequestDispatcher("/401").forward(request, response); // 指定了访问被拒绝时跳转到"/401"页面。
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setHeader("content-type", "text/html;charset=utf-8");
                     response.getWriter().write("需要登录后才能访问此资源!");
                 })
         ;
-        http.logout().logoutSuccessUrl("/"); // 这一行配置了退出登录，指定了退出成功后跳转到"/"路径。
     }
 
     @Override

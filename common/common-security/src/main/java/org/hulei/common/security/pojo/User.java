@@ -33,11 +33,10 @@ public class User implements UserDetails, Serializable {
     @TableField(value = "password")
     private String password;
 
-
+    /**
+     * 用户的角色信息,这个属性不在用户表中,这里需要单独查出这个字段
+     */
     @TableField(exist = false)
-    // @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    // @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-    //         inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private List<Role> authorities;
 
     @Override

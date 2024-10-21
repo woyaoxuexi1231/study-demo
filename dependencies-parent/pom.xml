@@ -80,7 +80,6 @@
         <!--第三方依赖-->
         <spring-boot-admin-starter-server.version>2.6.11</spring-boot-admin-starter-server.version>
         <!--一些工具组件-->
-        <jpa.version>1.0</jpa.version>
         <hutool.core.version>5.6.1</hutool.core.version>
         <guava.version>21.0</guava.version>
         <cglib.version>3.2.10</cglib.version>
@@ -113,9 +112,10 @@
 
         <dependencies>
 
-            <!--......................................................................................................-->
-            <!--............................................依赖版本控制.................................................-->
-            <!--.............................................................. .......................................-->
+            <!--.........................................................................................................................-->
+            <!--.........................................................依赖版本控制......................................................-->
+            <!--................................................................................. .......................................-->
+            <!-- Spring boot 依赖版本控制 -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -134,7 +134,7 @@
                 <!-- 可选依赖的标签, 如果为 true, 那么依赖不会得以传递, 只能显式的引入这个依赖 -->
                 <!--<optional>false</optional>-->
             </dependency>
-            <!-- springcloud的依赖版本控制 -->
+            <!-- Spring Cloud 依赖版本控制 -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -142,7 +142,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <!-- springlogging,这里为了排除多余的日志框架 -->
+            <!-- Spring Log, 这里为了排除多余的日志框架 -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-logging</artifactId>
@@ -159,16 +159,27 @@
                 </exclusions>
             </dependency>
 
-            <!--springboot-web 依赖-->
-            <!--spring-boot-start-logging依赖slf4j和logback-->
-            <!--Spring Boot 为 Spring MVC 提供了自动配置，并在 Spring MVC 默认功能的基础上添加了以下特性：-->
-            <!--引入了 ContentNegotiatingViewResolver 和 BeanNameViewResolver（视图解析器）-->
-            <!--对包括 WebJars 在内的静态资源的支持-->
-            <!--自动注册 Converter、GenericConverter 和 Formatter （转换器和格式化器）-->
-            <!--对 HttpMessageConverters 的支持（Spring MVC 中用于转换 HTTP 请求和响应的消息转换器）-->
-            <!--自动注册 MessageCodesResolver（用于定义错误代码生成规则）-->
-            <!--支持对静态首页（index.html）的访问-->
-            <!--自动使用 ConfigurableWebBindingInitializer-->
+            <!--......................................................................................................-->
+            <!--.........................................各厂商提供的JDBC驱动............................................-->
+            <!--......................................................................................................-->
+            <!--oracle的驱动包-->
+            <dependency>
+                <groupId>com.oracle.database.jdbc</groupId>
+                <artifactId>ojdbc8</artifactId>
+                <version>${ojdbc8.version}</version>
+            </dependency>
+            <!--解决springboot连接oracle的报错(不支持的字符集 (在类路径中添加 orai18n.jar):ZHS16GBK)-->
+            <dependency>
+                <groupId>com.oracle.database.nls</groupId>
+                <artifactId>orai18n</artifactId>
+                <version>${orai18n.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.connector.java.version}</version>
+            </dependency>
+
 
             <!-- https://mvnrepository.com/artifact/de.codecentric/spring-boot-admin-starter-server -->
             <dependency>
@@ -181,33 +192,12 @@
                 <artifactId>spring-boot-admin-starter-client</artifactId>
                 <version>${spring-boot-admin-starter-server.version}</version>
             </dependency>
-            <!--
-            `spring-boot-starter-actuator` 是 Spring Boot 的一个启动器（starter）依赖，其设计初衷是为了让开发者能够方便快捷地获取应用程序的运行时信息和健康状况，无需编写额外的监控和管理代码。这个库提供了一系列的预设端点（endpoints），通过这些端点，可以访问应用程序的内部信息，比如运行状况（health）、指标信息（metrics）、环境属性（env）等。
-
-            出现契机：
-            - **提高可观察性**：在现代应用的开发过程中，理解应用的运行状况、性能指标和各项资源的使用情况变得至关重要。随着微服务架构的流行，单个应用可能被拆分成多个服务，这使得监控单个服务的性能和健康状态成为一项挑战。`spring-boot-starter-actuator` 被设计来简化这一过程，通过暴露端点来帮助开发者和运维人员监控和管理应用。
-            - **简化运维任务**：在没有合适工具的情况下，维护和监测应用可能需要编写大量定制代码。`spring-boot-starter-actuator` 提供了一个简单而强大的方式来进行操作，比如实时检查应用的健康状况，查看应用的配置信息，实时访问日志级别等，无需登录服务器或直接访问数据库。
-            - **增强微服务架构支持**：在微服务架构中，管理和监控数十或数百个服务可能非常复杂。Actuator提供的端点可以轻松集成到微服务监控工具中，如Prometheus、Grafana等，这使得集中监控变得容易。
-
-            解决问题：
-            - **透明度**：提供应用程序运行时的详细视图，帮助开发者了解应用的内部状态。
-            - **诊断能力**：通过提供详细的健康指标和信息，帮助开发者快速定位问题所在。
-            - **减少开发负担**：避免开发者需要自行实现监控和管理功能，提高开发效率。
-            - **易于集成**：Actuator 端点容易与现有的监控系统集成，提供实时监控和警报功能。
-
-            总之，`spring-boot-starter-actuator` 是一个非常强大的工具，它通过提供丰富的运行时信息和管理功能，帮助开发者更好地管理和监控他们的应用程序。
-             -->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-actuator</artifactId>
-                <version>${spring.boot.dependencies.version}</version>
-            </dependency>
 
 
+            <!--                                              其他开源框架                                              -->
             <!--......................................................................................................-->
-            <!--...............................................DUBBO....................................................-->
+            <!--...............................................DUBBO..................................................-->
             <!--......................................................................................................-->
-            <!--dubbo-->
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-spring-boot-starter</artifactId>
@@ -227,7 +217,7 @@
 
 
             <!--......................................................................................................-->
-            <!--...............................................curator....................................................-->
+            <!--...............................................curator................................................-->
             <!--......................................................................................................-->
             <!--Curator是Netflix公司开源的一套zookeeper客户端框架，解决了很多Zookeeper客户端非常底层的细节开发工作，包括连接重连、反复注册Watcher和NodeExistsException异常等等。-->
             <!--1.curator-framework对zookeeper的底层api的一些封装-->
@@ -276,95 +266,62 @@
             </dependency>
 
 
-            <!--......................................................................................................-->
-            <!--...............................................DB相关....................................................-->
-            <!--......................................................................................................-->
-            <!--oracle的驱动包-->
-            <dependency>
-                <groupId>com.oracle.database.jdbc</groupId>
-                <artifactId>ojdbc8</artifactId>
-                <version>${ojdbc8.version}</version>
-            </dependency>
-            <!--解决springboot连接oracle的报错(不支持的字符集 (在类路径中添加 orai18n.jar):ZHS16GBK)-->
-            <dependency>
-                <groupId>com.oracle.database.nls</groupId>
-                <artifactId>orai18n</artifactId>
-                <version>${orai18n.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>${mysql.connector.java.version}</version>
-            </dependency>
-            <!-- 通用Mapper(包含了mybatis和mybatis spring两个包) -->
-            <!--https://mapperhelper.github.io/docs/-->
+            <!--.........................................................................................................................-->
+            <!--.........................................................ORM框架......................................................-->
+            <!--................................................................................. .......................................-->
+            <!-- 通用Mapper, JPA标准(包含了mybatis和mybatis spring两个包) -->
+            <!-- https://mapperhelper.github.io/docs/ -->
             <dependency>
                 <groupId>tk.mybatis</groupId>
                 <artifactId>mapper-spring-boot-starter</artifactId>
                 <version>${mapper.spring.boot.starter.version}</version>
             </dependency>
-            <!--mybatis 的入门依赖-->
+
+            <!-- Mybatis -->
+            <!-- mybatis的基础依赖 -->
             <dependency>
                 <groupId>org.mybatis</groupId>
                 <artifactId>mybatis</artifactId>
                 <version>${mybatis.version}</version>
             </dependency>
+            <!-- Mybatis整合Spring提供的Spring的包 -->
             <dependency>
                 <groupId>org.mybatis</groupId>
                 <artifactId>mybatis-spring</artifactId>
                 <version>${mybatis.spring.verison}</version>
             </dependency>
-            <!--Spring版本的PageHelper分页插件-->
-            <!--使用这个依赖，springboot会自动装配，不需要再配置文件配置也可以使用-->
-            <!--使用tkmybatis包含了mybatis和mybatis spring两个包，这里移除-->
-            <dependency>
-                <groupId>com.github.pagehelper</groupId>
-                <artifactId>pagehelper-spring-boot-starter</artifactId>
-                <version>${pagehelper.spring.boot.starter.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.pagehelper</groupId>
-                <artifactId>pagehelper</artifactId>
-                <version>${pagehelper.version}</version>
-            </dependency>
+
             <!-- mybatis plus -->
+            <!-- mybatisplus的基础依赖 -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus</artifactId>
+                <version>${mybatis.plus.boot.starter.version}</version>
+            </dependency>
+            <!-- mybatisplus整合Spring的起步依赖 -->
             <!-- https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-boot-starter -->
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>${mybatis.plus.boot.starter.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus</artifactId>
-                <version>${mybatis.plus.boot.starter.version}</version>
-            </dependency>
 
-            <!--......................................................................................................-->
-            <!--......................................springcloud的一些其他依赖.........................................-->
-            <!--......................................................................................................-->
-            <!-- Spring Cloud Starter Eureka (deprecated, please use spring-cloud-starter-netflix-eureka-client -->
+
+            <!--Spring版本的PageHelper分页插件-->
             <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-eureka</artifactId>
-                <version>${spring-cloud-starter-eureka.version}</version>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper</artifactId>
+                <version>${pagehelper.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-security</artifactId>
-                <version>${spring-cloud-starter-security.version}</version>
-            </dependency>
-            <!-- Spring Cloud Starter Feign (deprecated, please use spring-cloud-starter-openfeign) -->
-            <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-feign -->
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-feign</artifactId>
-                <version>1.4.7.RELEASE</version>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${pagehelper.spring.boot.starter.version}</version>
             </dependency>
 
 
             <!--......................................................................................................-->
-            <!--...............................................redisson...................................................-->
+            <!--..............................................redisson................................................-->
             <!--......................................................................................................-->
             <!-- redisson. 这里使用的版本是 3.13.6, 没找到与 2.7.16 匹配的 redisson starter -->
             <dependency>
@@ -382,30 +339,30 @@
             <!--......................................................................................................-->
             <!--...............................................es...................................................-->
             <!--......................................................................................................-->
-<!--             <dependency> -->
-<!--                 <groupId>co.elastic.clients</groupId> -->
-<!--                 <artifactId>elasticsearch-java</artifactId> -->
-<!--                 <version>${elasticsearch-java.version}</version> -->
-<!--             </dependency> -->
-<!--             <dependency> -->
-<!--                 <groupId>org.elasticsearch.client</groupId> -->
-<!--                 <artifactId>elasticsearch-rest-client</artifactId> -->
-<!--                 <version>${elasticsearch-rest-client.version}</version> -->
-<!--             </dependency> -->
-<!--             <dependency> -->
-<!--                 <groupId>com.fasterxml.jackson.core</groupId> -->
-<!--                 <artifactId>jackson-databind</artifactId> -->
-<!--                 <version>${jackson-databind.version}</version> -->
-<!--             </dependency> -->
-<!--             <dependency> -->
-<!--                 <groupId>jakarta.json</groupId> -->
-<!--                 <artifactId>jakarta.json-api</artifactId> -->
-<!--                 <version>${jakarta.json-api.version}</version> -->
-<!--             </dependency> -->
+            <!--             <dependency> -->
+            <!--                 <groupId>co.elastic.clients</groupId> -->
+            <!--                 <artifactId>elasticsearch-java</artifactId> -->
+            <!--                 <version>${elasticsearch-java.version}</version> -->
+            <!--             </dependency> -->
+            <!--             <dependency> -->
+            <!--                 <groupId>org.elasticsearch.client</groupId> -->
+            <!--                 <artifactId>elasticsearch-rest-client</artifactId> -->
+            <!--                 <version>${elasticsearch-rest-client.version}</version> -->
+            <!--             </dependency> -->
+            <!--             <dependency> -->
+            <!--                 <groupId>com.fasterxml.jackson.core</groupId> -->
+            <!--                 <artifactId>jackson-databind</artifactId> -->
+            <!--                 <version>${jackson-databind.version}</version> -->
+            <!--             </dependency> -->
+            <!--             <dependency> -->
+            <!--                 <groupId>jakarta.json</groupId> -->
+            <!--                 <artifactId>jakarta.json-api</artifactId> -->
+            <!--                 <version>${jakarta.json-api.version}</version> -->
+            <!--             </dependency> -->
 
 
             <!--......................................................................................................-->
-            <!--...............................................模板语言...................................................-->
+            <!--...............................................模板语言.................................................-->
             <!--......................................................................................................-->
             <!-- security 整合 thymeleaf -->
             <dependency>
@@ -481,26 +438,12 @@
             <!--     <artifactId>gson</artifactId> -->
             <!--     <version>${gson.version}</version> -->
             <!-- </dependency> -->
-            <!-- JPA规范包 -->
-            <dependency>
-                <groupId>javax.persistence</groupId>
-                <artifactId>persistence-api</artifactId>
-                <version>${jpa.version}</version>
-            </dependency>
             <!-- https://mvnrepository.com/artifact/io.github.lognet/grpc-spring-boot-starter -->
             <dependency>
                 <groupId>io.github.lognet</groupId>
                 <artifactId>grpc-spring-boot-starter</artifactId>
                 <version>${grpc-spring-boot-starter.version}</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/javax.servlet.jsp/javax.servlet.jsp-api -->
-            <dependency>
-                <groupId>javax.servlet.jsp</groupId>
-                <artifactId>javax.servlet.jsp-api</artifactId>
-                <version>2.3.3</version>
-                <scope>provided</scope>
-            </dependency>
-
 
             <!--......................................................................................................-->
             <!--...............................................插件....................................................-->

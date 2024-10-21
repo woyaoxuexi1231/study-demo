@@ -3,4 +3,5 @@ org.hulei.common.security.SecurityAutoConfig,\
 org.hulei.common.security.config.MemorySecurityAutoConfig,\
 org.hulei.common.security.config.DataBaseSecurityAutoConfig,\
 org.hulei.common.security.config.MyWebConfAdapterAutoConfig,\
-org.hulei.common.security.config.EnableGlobalMethodSecurityAutoConfig
+org.hulei.common.security.config.EnableGlobalMethodSecurityAutoConfig,\
+org.hulei.common.security.config.CustomWebSecurityFilterAutoConfig

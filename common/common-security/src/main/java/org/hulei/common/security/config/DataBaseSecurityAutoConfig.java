@@ -1,11 +1,13 @@
 package org.hulei.common.security.config;
 
-import org.hulei.common.security.service.impl.UserService;
+import org.hulei.common.security.service.impl.MyUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
@@ -31,15 +33,8 @@ public class DataBaseSecurityAutoConfig {
         return NoOpPasswordEncoder.getInstance();
     }
 
-    @Bean(name = "userDetailsService")
-    public UserService userService() {
-        return new UserService();
-    }
-
-    @Autowired
-    public void configureGlobal(
-            AuthenticationManagerBuilder auth,
-            @Qualifier(value = "userDetailsService") UserDetailsService userDetailsService) throws Exception {
-        auth.userDetailsService(userDetailsService);
+    @Bean(name = "myUserService")
+    public MyUserService myUserService() {
+        return new MyUserService();
     }
 }

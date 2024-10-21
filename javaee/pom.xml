@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.hulei</groupId>
+        <artifactId>dependencies-parent</artifactId>
+        <version>1.0.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>javaee</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>javaee8</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!--
+            javax作为Java的扩展包, 包含了许多与Java核心库的相关功能
+            它们通常提供更专业或高级的功能，是 Java SE 的一部分或与 Java EE（企业版）相关的组件
+            自sun公司被Oracle收购后,Java EE由Oracle继续发展,后来开源和社区化的趋势,Oracle将javaEE转交给Eclipse
+            由于商标问题,eclipse在jdk9之后把javax报名改为jakarta
+            -->
+            <!-- 以下是Java EE包含的部分依赖 -->
+
+            <!-- servlet-api 主要用于定义 Servlet 的架构与相关的功能 -->
+            <!-- 包含类似于HttpServlet, HttpServletRequest, HttpServletResponse这些具体实现类 -->
+            <!-- 通常在处理 HTTP 请求时使用，适合用于编写后端逻辑、请求处理、会话管理等。 -->
+            <dependency>
+                <groupId>jakarta.servlet</groupId>
+                <artifactId>jakarta.servlet-api</artifactId>
+                <version>6.0.0</version>
+                <!-- 目前大部分JavaEE服务器(如 WildFly、TomEE、GlassFish 等),因此在部署应用时，这些服务器会提供这些库。所以这里可以仅在编译时使用这个库 -->
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- JSP 是一种基于 HTML 的网页视图技术，它允许开发者将 Java 代码嵌入到 HTML 中 -->
+            <!-- 用于创建网页视图，适合用于生成动态内容，包括表单处理、数据显示等。 -->
+            <dependency>
+                <groupId>jakarta.servlet.jsp</groupId>
+                <artifactId>jakarta.servlet.jsp-api</artifactId>
+                <version>3.1.1</version>
+                <!-- 原因和servlet-api一致 -->
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- EJB 是一种用于开发分布式、事务性、安全性和可扩展性强的企业级应用的组件架构。 -->
+            <dependency>
+                <groupId>jakarta.ejb</groupId>
+                <artifactId>jakarta.ejb-api</artifactId>
+                <version>4.0.1</version>
+            </dependency>
+
+            <!-- JPA 规范包,仅仅提供规范,部分ORM框架遵循这个规范设计了自身的框架 -->
+            <dependency>
+                <groupId>jakarta.persistence</groupId>
+                <artifactId>jakarta.persistence-api</artifactId>
+                <version>3.1.0</version>
+            </dependency>
+
+            <!-- JMS 是一个用于在 Java 应用程序中进行消息传递的标准 API, 它为开发者提供了创建、发送、接收和读取消息的能力 -->
+            <dependency>
+                <groupId>jakarta.jms</groupId>
+                <artifactId>jakarta.jms-api</artifactId>
+                <version>3.1.0</version>
+            </dependency>
+
+            <!-- CDI（Contexts and Dependency Injection），是 Java EE（现称为 Jakarta EE）中的一个重要API，提供了上下文和依赖注入的功能 -->
+            <!-- CDI 是用于管理 Java 对象（称为 Beans）的生命周期、作用域和依赖关系的框架 -->
+            <dependency>
+                <groupId>jakarta.enterprise</groupId>
+                <artifactId>jakarta.enterprise.cdi-api</artifactId>
+                <version>4.0.1</version>
+            </dependency>
+
+            <!-- JTA 是 Java EE（现称为 Jakarta EE）的一部分，提供了用于在分布式环境中管理事务的标准接口 -->
+            <!-- JTA 的主要作用是为分布式事务处理提供标准化支持，确保在多个资源（如数据库、消息队列等）上执行的操作要么全部成功，要么全部失败，从而保证数据的一致性和完整性。 -->
+            <dependency>
+                <groupId>jakarta.transaction</groupId>
+                <artifactId>jakarta.transaction-api</artifactId>
+                <version>2.0.1</version>
+            </dependency>
+
+            <!-- JAX-RS 可以轻松地创建和暴露 RESTful 接口，并与其他系统进行交互。 -->
+            <!-- 提供了用于构建 RESTful Web 服务的一组标准 API, 旨在简化基于 REST 架构风格的 Web 服务的开发 -->
+            <dependency>
+                <groupId>jakarta.ws.rs</groupId>
+                <artifactId>jakarta.ws.rs-api</artifactId>
+                <version>3.1.0</version>
+            </dependency>
+
+            <!--  JAX-WS 专门用于开发和发布 Web 服务 -->
+            <!-- 提供了一套注解和工具，帮助开发者将 Java 类和方法转换成 Web 服务，从而实现不同系统之间的数据传输和交互。 -->
+            <!-- javax.jws-api 通常与 JAX-WS（Java API for XML Web Services）一起使用，后者提供了用于创建和使用基于 XML 的 Web 服务的 API。 -->
+            <dependency>
+                <groupId>jakarta.xml.ws</groupId>
+                <artifactId>jakarta.xml.ws-api</artifactId>
+                <version>3.0.1</version>
+            </dependency>
+
+            <!-- 用于处理邮件相关操作的 API -->
+            <!-- 它提供了一组抽象接口和类，使得开发人员能够在 Java 应用程序中发送、接收和处理电子邮件 -->
+            <!-- 开发者可以方便地实现诸如发送简单文本邮件、发送带有附件的复杂邮件、接收邮件等功能 -->
+            <dependency>
+                <groupId>jakarta.mail</groupId>
+                <artifactId>jakarta.mail-api</artifactId>
+                <version>2.1.3</version>
+            </dependency>
+
+
+
+
+
+            <!-- JDK 1.8 以下使用 javax 开头的依赖 -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>3.1.0</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet.jsp</groupId>
+                <artifactId>javax.servlet.jsp-api</artifactId>
+                <version>2.3.3</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.ejb</groupId>
+                <artifactId>javax.ejb-api</artifactId>
+                <version>3.2.2</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.persistence</groupId>
+                <artifactId>javax.persistence-api</artifactId>
+                <version>2.2</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.jms</groupId>
+                <artifactId>javax.jms-api</artifactId>
+                <version>2.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.enterprise</groupId>
+                <artifactId>cdi-api</artifactId>
+                <version>2.0</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.transaction</groupId>
+                <artifactId>javax.transaction-api</artifactId>
+                <version>1.3</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.ws.rs</groupId>
+                <artifactId>javax.ws.rs-api</artifactId>
+                <version>2.1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.jws</groupId>
+                <artifactId>javax.jws-api</artifactId>
+                <version>1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.mail</groupId>
+                <artifactId>javax.mail-api</artifactId>
+                <version>1.6.2</version>
+            </dependency>
+
+
+        </dependencies>
+    </dependencyManagement>
+
+</project>
