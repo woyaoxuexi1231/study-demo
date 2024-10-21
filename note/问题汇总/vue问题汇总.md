@@ -1,7 +1,0 @@
-> WebSocket connection to 'ws://localhost:10099/api/gs-guide-websocket/028/k1ymwzcf/websocket' failed: WebSocket is closed before the connection is
-> established.
-> document.domain mutation is ignored because the surrounding agent cluster is origin-keyed.
-> VM36072 sockjs.min.js:2 Uncaught Error: Incompatibile SockJS! Main site uses: "1.6.1", the iframe: "1.0.0".
-> at s (VM36072 sockjs.min.js:2:4344)
->
-> **vue集成websocket** 的时候报错

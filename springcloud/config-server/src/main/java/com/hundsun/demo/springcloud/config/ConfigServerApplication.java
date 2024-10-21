@@ -22,8 +22,7 @@ public class ConfigServerApplication {
     public static void main(String[] args) {
 
         /*
-        DiscoveryClient_EUREKA-CLIENT/LAPTOP-HGITO649:eureka-client:9101 - registration status: 204
-        注册成功
+        config server 负责把所有的配置都统一管理起来,然后提供API接口供其他服务读取
          */
         SpringApplication.run(ConfigServerApplication.class, args);
     }
