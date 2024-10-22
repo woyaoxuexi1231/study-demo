@@ -19,7 +19,7 @@ import reactor.core.publisher.Mono;
  * @since 2024/4/12 22:33
  */
 
-@Component
+// @Component
 @Slf4j
 public class AddRequestParameterGlobalFilter implements org.springframework.cloud.gateway.filter.GlobalFilter, Ordered {
 

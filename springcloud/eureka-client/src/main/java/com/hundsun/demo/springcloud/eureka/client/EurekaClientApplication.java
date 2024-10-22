@@ -1,11 +1,25 @@
 package com.hundsun.demo.springcloud.eureka.client;
 
-import com.netflix.discovery.DiscoveryManager;
+import cn.hutool.core.thread.ThreadFactoryBuilder;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PreDestroy;
+import java.util.UUID;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @projectName: study-demo
@@ -27,7 +41,11 @@ import javax.annotation.PreDestroy;
 
 服务下线:
  */
-@EnableEurekaClient
+
+@Slf4j
+@RestController
+// @EnableEurekaClient
+@EnableDiscoveryClient
 @SpringBootApplication
 public class EurekaClientApplication {
 
@@ -42,10 +60,51 @@ public class EurekaClientApplication {
 
     @PreDestroy
     public void destroy() {
-
         // 服务下线,已经不推荐使用了
-        DiscoveryManager.getInstance().shutdownComponent();
+        // DiscoveryManager.getInstance().shutdownComponent();
+    }
 
+    @Autowired
+    RestTemplate restTemplate;
 
+    @Bean
+    public ThreadPoolExecutor commonPool() {
+        return new ThreadPoolExecutor(
+                10,
+                10,
+                60,
+                TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(),
+                new ThreadFactoryBuilder().setNamePrefix("commonPool-").build(),
+                new ThreadPoolExecutor.AbortPolicy());
+    }
+
+    @GetMapping("/test")
+    public void test() {
+        for (int i = 0; i < 10; i++) {
+            commonPool().execute(() -> {
+                // 设置自定义的 HTTP Headers
+                HttpHeaders headers = new HttpHeaders();
+                headers.set("Custom-Header", "HeaderValue");
+                headers.set("Another-Header", "AnotherValue");
+                headers.set("Token", "123");
+
+                // 创建请求体（可以是对象、字符串等，这里为空表示没有请求体）
+                String requestBody = "";
+
+                // 将 headers 和请求体封装到 HttpEntity 中
+                HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
+
+                // 定义请求的 URL
+                String baseUrl = "http://localhost:12020/eureka-client/hi?" + UUID.randomUUID();
+
+                // 执行 HTTP 请求，并获取响应
+                ResponseEntity<String> response = restTemplate.exchange(baseUrl, HttpMethod.GET, entity, String.class);
+
+                // 输出响应结果
+                System.out.println("Response Status Code: " + response.getStatusCode());
+                System.out.println("Response Body: " + response.getBody());
+            });
+        }
     }
 }

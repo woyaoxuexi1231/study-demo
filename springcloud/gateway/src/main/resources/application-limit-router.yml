@@ -1,22 +1,36 @@
+#spring:
+#  cloud:
+#    gateway:
+#      routes:
+#        - id: limit_route
+#          uri: http://httpbin.org:80
+#          predicates:
+#            - After=2017-01-20T17:42:47.789-07:00[America/Denver]
+##            - Path=/eureka-client/hi
+#          filters:
+#            - name: RequestRateLimiter
+#              args:
+#                key-resolver: '#{@hostAddrKeyResolver}'
+#                redis-rate-limiter.replenish-rate: 1
+#                redis-rate-limiter.burst-capacity: 1
+#                redis-rate-limiter.requested-tokens: 1
 spring:
   cloud:
     gateway:
+      default-filters:
+        - name: RequestRateLimiter
+          args:
+            key-resolver: '#{@hostAddrKeyResolver}'  # 基于IP的限流
+            redis-rate-limiter.replenish-rate: 1  # 每秒请求恢复数量
+            redis-rate-limiter.burst-capacity: 1 # 突发容量
+            redis-rate-limiter.requested-tokens: 1 # 每个请求消耗的令牌数
       routes:
-        - id: limit_route
-          uri: http://httpbin.org:80
+        - id: my_route
+          uri: lb://eureka-client
           predicates:
-            - After=2017-01-20T17:42:47.789-07:00[America/Denver]
-          filters:
-            # 这是spring官方提供的一个限流过滤器,通过redis和lua脚本实现
-            - name: RequestRateLimiter
-              args:
-                # 用于限流的键的解析器的bean的名字,根据 #{@xxx} 从spring中获取bean对象
-                key-resolver: '#{@hostAddrKeyResolver}'
-                # 令牌桶每秒的平均填充速率
-                redis-rate-limiter.replenishRate: 1
-                # 令牌桶总容量
-                redis-rate-limiter.burstCapacity: 3
+            - Path=/**
   redis:
-    host: 192.168.80.128
-    port: 6379
-    database: 0
+    host: 192.168.3.220
+    port: 16379
+    database: 5
+    password: cquissE12

@@ -1,9 +1,13 @@
 package com.hundsun.demo.springcloud.gateway.resolver;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 /**
  * `KeyResolver`是Spring Cloud Gateway中的一个接口，用于在限流、熔断等功能中确定请求的Key。在使用Spring Cloud Gateway进行流量控制时，通常需要根据请求的某些属性来确定请求的唯一标识，从而对请求进行限流或熔断。
@@ -15,6 +19,7 @@ import reactor.core.publisher.Mono;
  * @since 2023/5/7 18:27
  */
 
+@Slf4j
 @Component
 public class HostAddrKeyResolver implements KeyResolver {
 
@@ -23,6 +28,11 @@ public class HostAddrKeyResolver implements KeyResolver {
         // 这里相当于是把地址作为key返回
         // 这个类配置在 application-limit-router.yml
         // 作用于 RequestRateLimiterGatewayFilterFactory(springcloudgateway内置的) 这个类
-        return Mono.just(exchange.getRequest().getRemoteAddress().getAddress().getHostAddress());
+        HttpHeaders headers = exchange.getRequest().getHeaders();
+        log.info("请求头带出来的信息为: {}", headers);
+        String token = headers.getFirst("Token");
+        log.info("token: {}", token);
+        log.info("当前请求来自: {}", exchange.getRequest().getRemoteAddress().getAddress().getHostAddress());
+        return Mono.just(token);
     }
 }

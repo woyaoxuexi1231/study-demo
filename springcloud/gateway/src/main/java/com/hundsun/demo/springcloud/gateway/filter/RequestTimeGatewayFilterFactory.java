@@ -21,7 +21,7 @@ import java.util.List;
  */
 
 @Slf4j
-@Component
+// @Component
 public class RequestTimeGatewayFilterFactory extends AbstractGatewayFilterFactory<RequestTimeGatewayFilterFactory.Config> implements Ordered {
 
     /**

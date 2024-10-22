@@ -72,40 +72,40 @@ public class RedisStringController {
         strObjRedisTemplate.opsForValue().set("string-inc", 1);
         System.out.println(strObjRedisTemplate.opsForValue().increment("string-inc", 1));
 
-        // 位图的使用, 可以作为统计用户签到行为,打卡行为
-        strObjRedisTemplate.opsForValue().setBit("bit-test", 0, true);
-        strObjRedisTemplate.opsForValue().setBit("bit-test", 1, false);
-        System.out.println(strObjRedisTemplate.opsForValue().getBit("bit-test", 0));
-        System.out.println(strObjRedisTemplate.opsForValue().getBit("bit-test", 1));
-        System.out.println(strObjRedisTemplate.opsForValue().getBit("bit-test", 2));
-
-        // {@link com.hundsun.demo.springboot.redis.msglist.MessageConsumer.run} list可以作为消息队列使用, blpop和brpop这两个操作可以阻塞的弹出元素
-
-        // set结构,易于构建类似 记名点赞,关注列表这样的类似 一对多的结构,并且提供了友好操作的api,比如求交集(intersect),并集(union),差集(difference),并且获取元素也比较友好
-        strObjRedisTemplate.opsForSet().add("Aurelia", "Nou", "Tyhesha", "Darrion", "Saroeun");
-        strObjRedisTemplate.opsForSet().add("Nou", "Sulaiman", "Tyhesha", "Darrion", "Crystle");
-        // 交集(共同朋友)
-        System.out.println(strObjRedisTemplate.opsForSet().intersect("Aurelia", "Nou"));
-        // 1.求并集(所有关系网)
-        System.out.println(strObjRedisTemplate.opsForSet().union("Aurelia", "Nou"));
-        // 2.求差集(可能认识的人)
-        System.out.println(strObjRedisTemplate.opsForSet().difference("Aurelia", "Nou"));
-        // 随机获取两位用户
-        System.out.println(strObjRedisTemplate.opsForSet().randomMembers("Aurelia", 2));
-
-        // sort set, 有序集合, 可以用于排行榜类似需要排名的场景
-        strObjRedisTemplate.opsForZSet().add("xuexichengji", "zhangsan", 98);
-        strObjRedisTemplate.opsForZSet().add("xuexichengji", "lisi", 70);
-        strObjRedisTemplate.opsForZSet().add("xuexichengji", "wangwe", 99);
-        strObjRedisTemplate.opsForZSet().add("xuexichengji", "zhaoliu", 86);
-        // 统计个数
-        System.out.println(strObjRedisTemplate.opsForZSet().zCard("xuexichengji"));
-        // 计算排名,以及获取分数 第一个索引是0, rank是降序, reverseRank是升序
-        System.out.println(strObjRedisTemplate.opsForZSet().rank("xuexichengji", "zhangsan"));
-        System.out.println(strObjRedisTemplate.opsForZSet().reverseRank("xuexichengji", "zhangsan"));
-        System.out.println(strObjRedisTemplate.opsForZSet().incrementScore("xuexichengji", "zhangsan", 2));
-
-        System.out.println(strObjRedisTemplate.opsForZSet().range("xuexichengji", 0, 4));
+        // // 位图的使用, 可以作为统计用户签到行为,打卡行为
+        // strObjRedisTemplate.opsForValue().setBit("bit-test", 0, true);
+        // strObjRedisTemplate.opsForValue().setBit("bit-test", 1, false);
+        // System.out.println(strObjRedisTemplate.opsForValue().getBit("bit-test", 0));
+        // System.out.println(strObjRedisTemplate.opsForValue().getBit("bit-test", 1));
+        // System.out.println(strObjRedisTemplate.opsForValue().getBit("bit-test", 2));
+        //
+        // // {@link com.hundsun.demo.springboot.redis.msglist.MessageConsumer.run} list可以作为消息队列使用, blpop和brpop这两个操作可以阻塞的弹出元素
+        //
+        // // set结构,易于构建类似 记名点赞,关注列表这样的类似 一对多的结构,并且提供了友好操作的api,比如求交集(intersect),并集(union),差集(difference),并且获取元素也比较友好
+        // strObjRedisTemplate.opsForSet().add("Aurelia", "Nou", "Tyhesha", "Darrion", "Saroeun");
+        // strObjRedisTemplate.opsForSet().add("Nou", "Sulaiman", "Tyhesha", "Darrion", "Crystle");
+        // // 交集(共同朋友)
+        // System.out.println(strObjRedisTemplate.opsForSet().intersect("Aurelia", "Nou"));
+        // // 1.求并集(所有关系网)
+        // System.out.println(strObjRedisTemplate.opsForSet().union("Aurelia", "Nou"));
+        // // 2.求差集(可能认识的人)
+        // System.out.println(strObjRedisTemplate.opsForSet().difference("Aurelia", "Nou"));
+        // // 随机获取两位用户
+        // System.out.println(strObjRedisTemplate.opsForSet().randomMembers("Aurelia", 2));
+        //
+        // // sort set, 有序集合, 可以用于排行榜类似需要排名的场景
+        // strObjRedisTemplate.opsForZSet().add("xuexichengji", "zhangsan", 98);
+        // strObjRedisTemplate.opsForZSet().add("xuexichengji", "lisi", 70);
+        // strObjRedisTemplate.opsForZSet().add("xuexichengji", "wangwe", 99);
+        // strObjRedisTemplate.opsForZSet().add("xuexichengji", "zhaoliu", 86);
+        // // 统计个数
+        // System.out.println(strObjRedisTemplate.opsForZSet().zCard("xuexichengji"));
+        // // 计算排名,以及获取分数 第一个索引是0, rank是降序, reverseRank是升序
+        // System.out.println(strObjRedisTemplate.opsForZSet().rank("xuexichengji", "zhangsan"));
+        // System.out.println(strObjRedisTemplate.opsForZSet().reverseRank("xuexichengji", "zhangsan"));
+        // System.out.println(strObjRedisTemplate.opsForZSet().incrementScore("xuexichengji", "zhangsan", 2));
+        //
+        // System.out.println(strObjRedisTemplate.opsForZSet().range("xuexichengji", 0, 4));
 
     }
 
