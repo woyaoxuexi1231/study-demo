@@ -20,17 +20,17 @@
 
     <dependencies>
 
-<!--         <dependency> -->
-<!--             <groupId>org.springframework.cloud</groupId> -->
-<!--             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId> -->
-<!--         </dependency> -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.alibaba.cloud/spring-cloud-starter-alibaba-nacos-discovery -->
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-            <version>2021.1</version>
-        </dependency>
+<!--         <dependency> -->
+<!--             <groupId>com.alibaba.cloud</groupId> -->
+<!--             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId> -->
+<!--             <version>2021.1</version> -->
+<!--         </dependency> -->
         <!--alibaba在2020版之后不使用ribbon,这里使用loadbalancer代替,然后在配置文件中禁用ribbon-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

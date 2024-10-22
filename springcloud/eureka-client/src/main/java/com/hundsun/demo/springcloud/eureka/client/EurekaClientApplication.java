@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -44,8 +45,8 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
-// @EnableEurekaClient
-@EnableDiscoveryClient
+@EnableEurekaClient
+// @EnableDiscoveryClient
 @SpringBootApplication
 public class EurekaClientApplication {
 

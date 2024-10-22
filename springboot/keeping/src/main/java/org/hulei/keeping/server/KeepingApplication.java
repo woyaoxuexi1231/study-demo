@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit;
         "org.hulei.keeping.server.common.mapper"
 })
 @Slf4j
-@EnableDynamicDataSource
+// @EnableDynamicDataSource
 public class KeepingApplication {
 
     public static ApplicationContext applicationContext;

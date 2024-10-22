@@ -337,6 +337,9 @@ RUN chmod 700 /home/springboot-js.jar
 EXPOSE 10008
 # 6. 使用CMD来跑这个jar包
 CMD ["java","-jar","/home/springboot-js.jar"]
+
+## 完成后docker build
+# docker build -t myjar .
 ```
 
 第二步. **搭建一个配置文件不在jar包内的jar镜像**

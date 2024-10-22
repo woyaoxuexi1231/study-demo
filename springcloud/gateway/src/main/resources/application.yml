@@ -5,17 +5,17 @@ spring:
   application:
     name: service-gateway
   profiles:
-    active: nacos
+    active: after-router,eureka-client
   main:
     allow-circular-references: true
 
-#eureka:
-#  client:
-#    service-url:
-#      defaultZone: http://localhost:12000/eureka/
-#    fetch-registry: true
-#  instance:
-#    prefer-ip-address: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:12000/eureka/
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
 
 logging:
   level:

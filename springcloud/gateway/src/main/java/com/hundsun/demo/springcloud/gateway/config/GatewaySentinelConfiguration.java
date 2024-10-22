@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Configuration
+// @Configuration
 public class GatewaySentinelConfiguration {
 
     private final List<ViewResolver> viewResolvers;
