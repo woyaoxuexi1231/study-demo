@@ -44,7 +44,11 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
-// @EnableEurekaClient
+/*
+@EnableEurekaClient 和 @EnableDiscoveryClient 是用于 Spring Cloud 的服务注册与发现的注解
+- @EnableEurekaClient 专用于 Eureka 作为服务注册中心的场景。它依赖于 Spring Cloud Netflix。
+- @EnableDiscoveryClient 这是一个更通用的注解，支持多个服务发现组件。使用这个注解可以在切换服务注册中心实现时提供更大的灵活性。
+ */
 @EnableDiscoveryClient
 @SpringBootApplication
 public class EurekaClientApplication {

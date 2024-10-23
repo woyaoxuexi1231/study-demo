@@ -25,14 +25,14 @@ public class HostAddrKeyResolver implements KeyResolver {
 
     @Override
     public Mono<String> resolve(ServerWebExchange exchange) {
-        // 这里相当于是把地址作为key返回
-        // 这个类配置在 application-limit-router.yml
+        // 这里相当于是把地址作为 key 返回
+        // 这个类配置在 application-redis-rate-limit.yml
         // 作用于 RequestRateLimiterGatewayFilterFactory(springcloudgateway内置的) 这个类
         HttpHeaders headers = exchange.getRequest().getHeaders();
         log.info("请求头带出来的信息为: {}", headers);
         String token = headers.getFirst("Token");
         log.info("token: {}", token);
         log.info("当前请求来自: {}", exchange.getRequest().getRemoteAddress().getAddress().getHostAddress());
-        return Mono.just(token);
+        return Mono.just(exchange.getRequest().getRemoteAddress().getAddress().getHostAddress());
     }
 }

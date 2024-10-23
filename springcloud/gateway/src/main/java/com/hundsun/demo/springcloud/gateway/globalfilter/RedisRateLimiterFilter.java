@@ -1,9 +1,8 @@
-package com.hundsun.demo.springcloud.gateway.filter;
+package com.hundsun.demo.springcloud.gateway.globalfilter;
 
 import cn.hutool.core.lang.Pair;
 import com.hundsun.demo.springcloud.gateway.config.RedisLimit;
 import com.hundsun.demo.springcloud.gateway.config.RedisLimitConfig;
-import com.netflix.discovery.converters.Auto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -17,12 +16,10 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import javax.annotation.PostConstruct;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author hulei
@@ -30,7 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 
 @Slf4j
-@Component
+// @Component
 public class RedisRateLimiterFilter implements GlobalFilter, Ordered {
 
     @Autowired

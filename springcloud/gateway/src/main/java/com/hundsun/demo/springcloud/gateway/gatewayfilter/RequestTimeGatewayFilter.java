@@ -1,4 +1,4 @@
-package com.hundsun.demo.springcloud.gateway.filter;
+package com.hundsun.demo.springcloud.gateway.gatewayfilter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;

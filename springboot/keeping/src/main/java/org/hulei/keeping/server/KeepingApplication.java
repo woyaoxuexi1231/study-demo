@@ -3,8 +3,13 @@ package org.hulei.keeping.server;
 import cn.hutool.core.thread.ThreadFactoryBuilder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.hulei.keeping.server.spring.config.AppConfig;
+import org.hulei.keeping.server.spring.config.CustomConfig;
 import org.hulei.springdata.routingdatasource.config.parsing.EnableDynamicDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -26,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * spring 实战(第五版)
+ *
  * @author hulei
  * @since 2024/10/13 21:51
  */
@@ -44,7 +50,7 @@ import java.util.concurrent.TimeUnit;
 })
 @Slf4j
 // @EnableDynamicDataSource
-public class KeepingApplication {
+public class KeepingApplication implements ApplicationRunner {
 
     public static ApplicationContext applicationContext;
 
@@ -161,5 +167,13 @@ public class KeepingApplication {
         Date nowInTimeZone = new Date(now.getTime() + timeZone.getRawOffset());
         map.put("response-tag", nowInTimeZone);
         return map;
+    }
+
+    @Autowired
+    AppConfig appConfig;
+
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        log.info("{}", appConfig);
     }
 }

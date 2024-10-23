@@ -1,4 +1,4 @@
-package com.hundsun.demo.springcloud.gateway.filter;
+package com.hundsun.demo.springcloud.gateway.globalfilter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +8,6 @@ import org.springframework.cloud.gateway.filter.factory.AbstractNameValueGateway
 import org.springframework.cloud.gateway.filter.factory.AddRequestParameterGatewayFilterFactory;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpMethod;
-import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 

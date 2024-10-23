@@ -20,6 +20,14 @@
 
     <dependencies>
 
+        <!-- spring cloud gateway 起步依赖 -->
+        <!-- 提供网关能力, 包括路由, 过滤器等功能 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
+        </dependency>
+
+        <!-- 用于提供eureka的服务注册发现的能力 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
@@ -32,15 +40,12 @@
 <!--             <version>2021.1</version> -->
 <!--         </dependency> -->
         <!--alibaba在2020版之后不使用ribbon,这里使用loadbalancer代替,然后在配置文件中禁用ribbon-->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
-        </dependency>
+<!--         <dependency> -->
+<!--             <groupId>org.springframework.cloud</groupId> -->
+<!--             <artifactId>spring-cloud-starter-loadbalancer</artifactId> -->
+<!--         </dependency> -->
 
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-gateway</artifactId>
-        </dependency>
+
         <!-- 配合着做限流服务 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
