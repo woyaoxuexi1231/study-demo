@@ -5,17 +5,9 @@ spring:
   application:
     name: service-gateway
   profiles:
-    active: after-router,eureka-client
+    active: eureka-client,redis-limitconfig
   main:
     allow-circular-references: true
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:12000/eureka/
-    fetch-registry: true
-  instance:
-    prefer-ip-address: true
 
 logging:
   level:

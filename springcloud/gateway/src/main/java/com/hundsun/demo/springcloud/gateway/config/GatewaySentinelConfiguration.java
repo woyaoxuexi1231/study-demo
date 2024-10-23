@@ -17,6 +17,8 @@ import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
+import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRuleManager;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.context.annotation.Bean;
@@ -132,13 +134,19 @@ public class GatewaySentinelConfiguration {
         FlowRuleManager.loadRules(rules);
 
         Set<GatewayFlowRule> gatewayFlowRules = new HashSet<>();
-        // 针对 "order_api" 分组的限流规则，每秒最多允许 10 个请求
         GatewayFlowRule eurekarule = new GatewayFlowRule();
         eurekarule.setResource("eureka-client");
         eurekarule.setGrade(RuleConstant.FLOW_GRADE_QPS);
         eurekarule.setCount(1);
         gatewayFlowRules.add(eurekarule);
         GatewayRuleManager.loadRules(gatewayFlowRules);
+
+        // ParamFlowRule rule = new ParamFlowRule("eureka-client")
+        //         .setParamIdx(0)  // 限流基于第一个参数 (user)
+        //         .setCount(1)    // 每秒最多允许10次请求
+        //         .setGrade(RuleConstant.FLOW_GRADE_QPS);  // 基于QPS的限流
+        // 加载限流规则
+        // ParamFlowRuleManager.loadRules(Collections.singletonList(rule));
     }
 
     /**
@@ -180,10 +188,9 @@ public class GatewaySentinelConfiguration {
         //             add(new ApiPathPredicateItem().setPattern("/api/order/update"));
         //         }});
 
-
         ApiDefinition eureka = new ApiDefinition("eureka-client")
                 .setPredicateItems(new HashSet<ApiPredicateItem>() {{
-                    add(new ApiPathPredicateItem().setPattern("/test/**")
+                    add(new ApiPathPredicateItem().setPattern("/eureka-client/**")
                             .setMatchStrategy(SentinelGatewayConstants.URL_MATCH_STRATEGY_PREFIX));
                 }});
 

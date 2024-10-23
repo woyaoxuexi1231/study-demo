@@ -2,10 +2,12 @@ package com.hundsun.demo.springcloud.gateway;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
+import com.hundsun.demo.springcloud.gateway.config.RedisLimitConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
@@ -72,9 +74,11 @@ public class GatewayApplication {
         return new RestTemplate();
     }
 
-    @GetMapping("/test/{userinfo}")
-    public Object test(@PathVariable String userinfo) {
-        String url = "http://eureka-client/";
-        return restTemplate.getForObject(url + "hi", Object.class);
+    @Autowired
+    RedisLimitConfig redisLimitConfig;
+
+    @GetMapping("/test")
+    public void test() {
+        log.info("{}", redisLimitConfig.getRedisLimits());
     }
 }

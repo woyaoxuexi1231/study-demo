@@ -48,6 +48,7 @@ public class RequestTimeGatewayFilter implements GatewayFilter, Ordered {
                                 // 如果成功获取了请求开始时间戳，则计算当前时间与请求开始时间的差值，以获取请求处理时间。然后将请求路径和处理时间以日志的形式输出。
                                 log.info(exchange.getRequest().getURI().getRawPath() + ": " + (System.currentTimeMillis() - startTime) + "ms");
                             }
+
                         })
                 );
 

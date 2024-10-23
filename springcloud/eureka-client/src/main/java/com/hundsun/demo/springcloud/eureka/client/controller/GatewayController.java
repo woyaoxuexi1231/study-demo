@@ -25,8 +25,8 @@ import java.util.TimeZone;
  */
 
 @Slf4j
-@RequestMapping("/gateway")
-@RestController
+// @RequestMapping("/gateway")
+// @RestController
 public class GatewayController {
 
     @Value("${server.port}")

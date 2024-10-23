@@ -11,6 +11,10 @@ spring:
       discovery:
         server-addr: 192.168.3.225:30769
         namespace: local
+#  cloud:
+#    nacos:
+#      discovery:
+#        server‐addr: 127.0.0.1:8848
 
 management:
   endpoints:
