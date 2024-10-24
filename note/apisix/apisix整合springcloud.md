@@ -1,4 +1,19 @@
-# 配置apisix接入nacos
+## 配置apisix服务直连转发
+
+配置路由：
+
+1. 路径 /eureka-client/*
+
+2. 路由改写：
+
+   - 匹配正则表达式：/eureka-client/*
+   - 转发路径模板：/$1
+
+   这个路径匹配将由 /eureka-client/hi -> /hi
+
+
+
+## 配置apisix接入nacos
 
 配置 apisix 的 config.yaml 配置文件，追加以下内容：
 

@@ -19,4 +19,5 @@
    systemctl start apisix-dashboard
    ```
 
-   
+
+默认控制台地址：http://127.0.0.1:9000/

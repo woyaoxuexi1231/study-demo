@@ -38,7 +38,7 @@
 # 基本使用
 
 ```shell
-# 1. 添加路由信息
+# 1. 添加路由信息和路由转发(node_list)不同, admin接口的端口默认9180
 # 需要在头部添加apikey信息，否则接口会401
 curl -i "http://127.0.0.1:9180/apisix/admin/routes" \
 -X PUT \

@@ -3,6 +3,8 @@ package com.hundsun.demo.springcloud.eureka.client;
 import cn.hutool.core.thread.ThreadFactoryBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -51,7 +53,7 @@ import java.util.concurrent.TimeUnit;
  */
 @EnableDiscoveryClient
 @SpringBootApplication
-public class EurekaClientApplication {
+public class EurekaClientApplication implements ApplicationRunner {
 
     public static void main(String[] args) {
 
@@ -85,30 +87,16 @@ public class EurekaClientApplication {
 
     @GetMapping("/test")
     public void test() {
-        for (int i = 0; i < 10; i++) {
-            commonPool().execute(() -> {
-                // 设置自定义的 HTTP Headers
-                HttpHeaders headers = new HttpHeaders();
-                headers.set("Custom-Header", "HeaderValue");
-                headers.set("Another-Header", "AnotherValue");
-                headers.set("Token", "123");
+        HttpEntity<String> entity = new HttpEntity<>(null);
+        ResponseEntity<Object> ipResponse = restTemplate.exchange("http://httpbin.org:80/ip", HttpMethod.GET, entity, Object.class);
+        ResponseEntity<Object> jsonResponse = restTemplate.exchange("http://httpbin.org:80/json", HttpMethod.GET, entity, Object.class);
 
-                // 创建请求体（可以是对象、字符串等，这里为空表示没有请求体）
-                String requestBody = "";
+        System.out.println(ipResponse.getBody());
+        System.out.println(jsonResponse.getBody());
+    }
 
-                // 将 headers 和请求体封装到 HttpEntity 中
-                HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
 
-                // 定义请求的 URL
-                String baseUrl = "http://localhost:12020/eureka-client/hi?" + UUID.randomUUID();
-
-                // 执行 HTTP 请求，并获取响应
-                ResponseEntity<String> response = restTemplate.exchange(baseUrl, HttpMethod.GET, entity, String.class);
-
-                // 输出响应结果
-                System.out.println("Response Status Code: " + response.getStatusCode());
-                System.out.println("Response Body: " + response.getBody());
-            });
-        }
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
     }
 }
