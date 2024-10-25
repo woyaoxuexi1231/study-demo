@@ -18,6 +18,25 @@
 
 
 
+编辑路由规则第三步会出现插件配置，选择limit-count插件，进行配置
+
+count: 限定时间窗口内请求数量的限制
+
+time_windows：时间窗口的大小（以秒为单位）
+
+key_type: 
+
+key: 
+
+1. **URL 参数**：例如，用户 ID 作为请求的查询参数传递，如 `/api/resource?user_id=12345`。在这种情况下，你可以使用 `key: "arg_user_id"` 来进行限流，其中 `arg_` 是 Nginx 的标准用法，用来访问 URL 查询参数。
+2. **HTTP Header**：如果用户 ID 通过 HTTP 请求头传递，例如 `X-User-ID: 12345`，你可以使用 `key: "http_x_user_id"` 来进行限流。
+3. **Cookie**：用户 ID 也可以存储在 cookie 中，例如 `user_id=12345`，这时可以使用 `key: "cookie_user_id"`。
+
+```shell
+curl "http://192.168.3.233:9080/ip"
+curl "http://127.0.0.1:9080/ip"
+```
+
 
 
 

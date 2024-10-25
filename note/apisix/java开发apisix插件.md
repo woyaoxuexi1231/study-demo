@@ -76,5 +76,14 @@ Unix 域套接字**不需要占用端口**。与 TCP/IP 套接字不同，TCP/IP
 
 
 
+### apisix插件需要配置
 
+apisix的config.yaml文件，新增如下配置：
+
+```yaml
+ext-plugin:
+  path_for_test: /tmp/runner.sock
+  cmd: ['/usr/local/java/jdk-11.0.12/bin/java', '-jar', '-DAPISIX_LISTEN_ADDRESS=unix:/tmp/runner.sock', '-DAPISIX_CONF_EXPIRE_TIME=3600', '/root/apisix/apisix-java-plugin-runner/apisix-runner-bin/apisix-java-plugin-runner.jar']
+  
+```
 
