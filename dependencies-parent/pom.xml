@@ -444,26 +444,6 @@
                 <artifactId>grpc-spring-boot-starter</artifactId>
                 <version>${grpc-spring-boot-starter.version}</version>
             </dependency>
-
-            <!--......................................................................................................-->
-            <!--...............................................插件....................................................-->
-            <!--......................................................................................................-->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring.boot.maven.plugin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>${maven.jar.plugin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler.plugin.version}</version>
-            </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -497,6 +477,25 @@
             install - 将包安装到本地 Maven 仓库中，这样可以在其他本地项目中使用。
             deploy - 将最终的包复制到远程仓库以便与其他开发人员和项目共享。
          -->
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>2.5.15</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>flatten-maven-plugin</artifactId>
+                    <version>1.1.0</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
 
 
         <!--parent element for one or more <plugin> elements.-->
@@ -526,20 +525,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler.plugin.version}</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring.boot.maven.plugin.version}</version>
-            </plugin>
-
         </plugins>
     </build>
-
 
 </project>
