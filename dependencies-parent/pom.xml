@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <!-- 指定当前的 POM 模型的版本, 对于 maven2 以及 maven3 只能是 4.0.0 -->
     <modelVersion>4.0.0</modelVersion>
 
@@ -452,8 +453,24 @@
         <developerConnection>scm:git:https://github.com/woyaoxuexi1231/study-demo.git</developerConnection>
         <!--      git url  -->
         <url>https://github.com/woyaoxuexi1231/study-demo.git</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
+
+    <!-- 配置部署到私服 -->
+    <distributionManagement>
+        <!-- 快照仓库的目的就是为了解决未发布模块的快速构建-->
+        <snapshotRepository>
+            <id>my-snap-repository</id>
+            <name>Nexus自定义的快照私服</name>
+            <url>http://192.168.80.128:8081/repository/my-snap-repository/</url>
+        </snapshotRepository>
+        <!-- 发布版构建仓库 -->
+        <repository>
+            <id>my-repository</id>
+            <name>Nexus自定义的稳定私服</name>
+            <url>http://192.168.80.128:8081/repository/my-repository/</url>
+        </repository>
+    </distributionManagement>
 
     <!--defines the project build.-->
     <build>
