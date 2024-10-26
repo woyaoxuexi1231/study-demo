@@ -447,6 +447,15 @@
         </dependencies>
     </dependencyManagement>
 
+    <scm>
+        <!--      git https  -->
+        <connection>scm:git:https://github.com/woyaoxuexi1231/study-demo.git</connection>
+        <!--      git https  -->
+        <developerConnection>scm:git:https://github.com/woyaoxuexi1231/study-demo.git</developerConnection>
+        <!--      git url  -->
+        <url>https://github.com/woyaoxuexi1231/study-demo.git</url>
+    </scm>
+
     <!--defines the project build.-->
     <build>
 
@@ -530,6 +539,21 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>3.0.1</version>
+                <configuration>
+                    <!--  prepare发布之前执行的mvn命令   -->
+                    <preparationGoals>clean verify</preparationGoals>
+                    <!--  生成的tag格式  这里 @{} 而不是 ${} 可以防止project.version被其他方式覆盖 -->
+                    <tagNameFormat>release-@{revision}</tagNameFormat>
+                    <!--   手动push -->
+                    <pushChanges>false</pushChanges>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
