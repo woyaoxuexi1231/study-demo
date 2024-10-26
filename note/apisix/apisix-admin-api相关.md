@@ -7,9 +7,9 @@ deployment:
     admin:
         admin_key:
         - name: admin
-        	# 使用默认的 Admin API Key 存在安全风险，部署到生产环境时请及时更新
-            key: edd1c9f034335f136f87ad84b625c8f1  
-            role: admin
+          # 使用默认的 Admin API Key 存在安全风险，部署到生产环境时请及时更新
+          key: edd1c9f034335f136f87ad84b625c8f1  
+          role: admin
         # http://nginx.org/en/docs/http/ngx_http_access_module.html#allow
         allow_admin:                    
             - 127.0.0.0/24

@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class DispatcherServlet extends GenericServlet {
+public class LoginServlet extends GenericServlet {
 
     private final String target = "/hello_tag.jsp";
 

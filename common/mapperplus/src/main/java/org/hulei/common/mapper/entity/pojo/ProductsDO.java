@@ -27,28 +27,28 @@ public class ProductsDO {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "productCode")
+    @Column(name = "product_code")
     private String productCode;
     @Basic
-    @Column(name = "productName")
+    @Column(name = "product_name")
     private String productName;
     @Basic
-    @Column(name = "productLine")
+    @Column(name = "product_line")
     private String productLine;
     @Basic
-    @Column(name = "productScale")
+    @Column(name = "product_scale")
     private String productScale;
     @Basic
-    @Column(name = "productVendor")
+    @Column(name = "product_vendor")
     private String productVendor;
     @Basic
-    @Column(name = "productDescription")
+    @Column(name = "product_description")
     private String productDescription;
     @Basic
-    @Column(name = "quantityInStock")
+    @Column(name = "quantity_in_stock")
     private short quantityInStock;
     @Basic
-    @Column(name = "buyPrice")
+    @Column(name = "buy_price")
     private BigDecimal buyPrice;
     @Basic
     @Column(name = "MSRP")
