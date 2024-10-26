@@ -8,7 +8,7 @@
     <!-- 定义当前项目的唯一 ID -->
     <artifactId>dependencies-parent</artifactId>
     <!-- 当前项目的版本 -->
-    <version>1.0.0.0</version>
+    <version>1.0.0.1-SNAPSHOT</version>
     <!-- 打包方式, 如果没有指定那么默认以 jar 方式打包 -->
     <!-- 对于聚合和父模块, 必须是 pom 模式 -->
     <packaging>pom</packaging>
@@ -452,7 +452,7 @@
         <developerConnection>scm:git:https://github.com/woyaoxuexi1231/study-demo.git</developerConnection>
         <!--      git url  -->
         <url>https://github.com/woyaoxuexi1231/study-demo.git</url>
-      <tag>release-1.0.0.0</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <!--defines the project build.-->
