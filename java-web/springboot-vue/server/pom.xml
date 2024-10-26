@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.hulei</groupId>
         <artifactId>springboot-vue</artifactId>
-        <version>1.0.0.0-SNAPSHOT</version>
+        <version>1.0.0.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>server</artifactId>
@@ -155,17 +155,17 @@
                 <dependency>
                     <groupId>org.hulei</groupId>
                     <artifactId>vue2-cli</artifactId>
-                    <version>1.0.0.0-SNAPSHOT</version>
+                    <version>1.0.0.4-SNAPSHOT</version>
                 </dependency>
                 <dependency>
                     <groupId>org.hulei</groupId>
                     <artifactId>vue2-webpack</artifactId>
-                    <version>1.0.0.0-SNAPSHOT</version>
+                    <version>1.0.0.4-SNAPSHOT</version>
                 </dependency>
                 <dependency>
                     <groupId>org.hulei</groupId>
                     <artifactId>vue3-vite</artifactId>
-                    <version>1.0.0.0-SNAPSHOT</version>
+                    <version>1.0.0.4-SNAPSHOT</version>
                 </dependency>
             </dependencies>
             <build>

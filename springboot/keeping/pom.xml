@@ -5,7 +5,7 @@
     <parent>
         <artifactId>springboot</artifactId>
         <groupId>org.hulei</groupId>
-        <version>1.0.0.0-SNAPSHOT</version>
+        <version>1.0.0.4-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -23,31 +23,31 @@
         <dependency>
             <groupId>org.hulei</groupId>
             <artifactId>core</artifactId>
-            <version>1.0.0.0-SNAPSHOT</version>
+            <version>1.0.0.4-SNAPSHOT</version>
         </dependency>
         <!-- 一个starter小测试包 -->
         <dependency>
             <groupId>org.hulei</groupId>
             <artifactId>common-starter</artifactId>
-            <version>1.0.0.0-SNAPSHOT</version>
+            <version>1.0.0.4-SNAPSHOT</version>
         </dependency>
         <!-- curator工具的starter测试包 -->
         <dependency>
             <groupId>org.hulei</groupId>
             <artifactId>curator-starter</artifactId>
-            <version>1.0.0.0-SNAPSHOT</version>
+            <version>1.0.0.4-SNAPSHOT</version>
         </dependency>
         <!-- 自定义的mapper的统一输出包 -->
         <dependency>
             <groupId>org.hulei</groupId>
             <artifactId>mapperplus</artifactId>
-            <version>1.0.0.0-SNAPSHOT</version>
+            <version>1.0.0.4-SNAPSHOT</version>
         </dependency>
         <!-- 多数据源的stater包 -->
         <dependency>
             <groupId>org.hulei</groupId>
             <artifactId>springroutingdatasource</artifactId>
-            <version>1.0.0.0-SNAPSHOT</version>
+            <version>1.0.0.4-SNAPSHOT</version>
         </dependency>
 
         <!-- 一些工具包 -->

@@ -27,7 +27,7 @@
          3. 使用 CI/CD 工具
             Jenkins、GitLab CI、GitHub Actions 等在流水线中将 SNAPSHOT 版本用于开发分支，将去掉 -SNAPSHOT 的版本用于发布分支。
          -->
-        <revision>1.0.0.0-SNAPSHOT</revision>
+        <revision>1.0.0.4-SNAPSHOT</revision>
         <maven-flatten-version>1.1.0</maven-flatten-version>
     </properties>
 

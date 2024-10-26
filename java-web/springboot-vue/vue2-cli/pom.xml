@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.hulei</groupId>
         <artifactId>springboot-vue</artifactId>
-        <version>1.0.0.0-SNAPSHOT</version>
+        <version>1.0.0.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>vue2-cli</artifactId>
