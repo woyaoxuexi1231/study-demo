@@ -17,6 +17,16 @@
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+        <!--
+         快照版本和稳定版本的打包主要有以下几种方式：
+         1. 手动修改pom文件的版本，快照时添加-SNAPSHOT后缀，稳定版本时去掉
+         2. 使用 maven-release-plugin 管理版本发布时可以更为自动化。
+            该插件自动更新 pom.xml 中的版本号。
+            执行 mvn release:prepare 会自动去掉 -SNAPSHOT，提交修改，然后标记版本。
+            执行 mvn release:perform 来进行实际的发布。
+         3. 使用 CI/CD 工具
+            Jenkins、GitLab CI、GitHub Actions 等在流水线中将 SNAPSHOT 版本用于开发分支，将去掉 -SNAPSHOT 的版本用于发布分支。
+         -->
         <revision>1.0.0.0-SNAPSHOT</revision>
         <maven-flatten-version>1.1.0</maven-flatten-version>
     </properties>
@@ -28,9 +38,67 @@
         </dependency>
     </dependencies>
 
+    <!-- 配置私服仓库信息 -->
+    <repositories>
+        <repository>
+            <!-- 其实这个id是随便起的,但是要保证唯一,而且如果名字是central,那么会覆盖默认的中央仓库 -->
+            <id>my-snap-repository</id>
+            <name>nexus发布版仓库</name>
+            <url>http://192.168.80.128:8081/repository/my-snap-repository/</url>
+            <!-- 这两个用来控制发布版构建和快照版构建的下载 -->
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <!-- 控制从远程仓库更新的频率 -->
+                <updatePolicy>daily</updatePolicy>
+                <!-- 配置maven检查检验和文件的策略 -->
+                <!-- 当配置为warn的时候,如果检验校验和文件失败那么会输出警告日志 -->
+                <checksumPolicy>ignore</checksumPolicy>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <!-- 仓库可能存在认证信息,如果需要,那么就要在setting文件中进行配置 -->
+        <!-- 配置在setting文件中的考虑是因为pom文件往往都能下载,认证信息如果放在这里就不安全了,所以一般存在本机的setting文件中是比较安全的 -->
+        <!-- 这里是一个私服配置 -->
+        <!--
+        <server>
+          <server>
+            <id>my-snap-repository</id>
+            <username>admin</username>
+            <password>admin</password>
+          </server>
+        </servers>
+         -->
+    </repositories>
+    <!-- 配置部署到私服 -->
+    <distributionManagement>
+        <!-- 快照仓库的目的就是为了解决未发布模块的快速构建-->
+        <snapshotRepository>
+            <id>my-snap-repository</id>
+            <name>Nexus自定义的快照私服</name>
+            <url>http://192.168.80.128:8081/repository/my-snap-repository/</url>
+        </snapshotRepository>
+        <!-- 发布版构建仓库 -->
+        <repository>
+            <id>my-repository</id>
+            <name>Nexus自定义的稳定私服</name>
+            <url>http://192.168.80.128:8081/repository/my-repository/</url>
+        </repository>
+    </distributionManagement>
+
+    <scm>
+        <!--      git https  -->
+        <connection>scm:git:https://github.com/woyaoxuexi1231/study-demo.git</connection>
+        <!--      git https  -->
+        <developerConnection>scm:git:https://github.com/woyaoxuexi1231/study-demo.git</developerConnection>
+        <!--      git url  -->
+        <url>https://github.com/woyaoxuexi1231/study-demo.git</url>
+    </scm>
+
     <build>
 
-        <!-- 这里定义了两个资源（resource） -->
+        <!-- 用于指定要包含在构建输出中的资源文件。可以配置资源目录和过滤选项。 -->
         <resources>
             <resource>
                 <!-- targetPath 指定了资源文件在构建过程中被复制到的目标位置。在这里，目标路径是${basedir}/target/dist。 -->
@@ -94,6 +162,20 @@
         <plugins>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>3.0.1</version>
+                <configuration>
+                    <!--  prepare发布之前执行的mvn命令   -->
+                    <preparationGoals>clean verify</preparationGoals>
+                    <!--  生成的tag格式  这里 @{} 而不是 ${} 可以防止project.version被其他方式覆盖 -->
+                    <tagNameFormat>release-@{revision}</tagNameFormat>
+                    <!--   手动push -->
+                    <pushChanges>false</pushChanges>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
                 <version>${maven-flatten-version}</version>
@@ -132,7 +214,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>2.0.2.RELEASE</version>
                 <configuration>
                     <!--
                      JAR: regular executable JAR layout.
