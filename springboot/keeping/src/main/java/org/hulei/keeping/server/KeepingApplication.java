@@ -4,8 +4,6 @@ import cn.hutool.core.thread.ThreadFactoryBuilder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.hulei.keeping.server.spring.config.AppConfig;
-import org.hulei.keeping.server.spring.config.CustomConfig;
-import org.hulei.springdata.routingdatasource.config.parsing.EnableDynamicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
