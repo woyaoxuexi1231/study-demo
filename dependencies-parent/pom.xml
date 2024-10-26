@@ -548,7 +548,7 @@
                     <!--  prepare发布之前执行的mvn命令   -->
                     <preparationGoals>clean verify</preparationGoals>
                     <!--  生成的tag格式  这里 @{} 而不是 ${} 可以防止project.version被其他方式覆盖 -->
-                    <tagNameFormat>release-@{revision}</tagNameFormat>
+                    <tagNameFormat>release-@{project.version}</tagNameFormat>
                     <!--   手动push -->
                     <pushChanges>false</pushChanges>
                 </configuration>
