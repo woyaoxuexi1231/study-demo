@@ -76,7 +76,7 @@
 
                     <!-- 用于在 WAR 中包含额外文件的单个目录。这是您放置 JSP 文件的地方。默认为 ${basedir}/src/main/webapp -->
                     <!-- warSourceDirectory 是为了主要的 Web 资源目录配置，而 webResources 是为了添加额外的文件或进行复杂的导入规则。 -->
-                    <warSourceDirectory>${basedir}/src/main/webapp</warSourceDirectory>
+                    <warSourceDirectory>${basedir}/web</warSourceDirectory>
 
                     <!--
                     warSourceDirectory 直接指定目录即可，而 webResources 提供了更复杂的配置选项来支持动态、精细的资源导入。

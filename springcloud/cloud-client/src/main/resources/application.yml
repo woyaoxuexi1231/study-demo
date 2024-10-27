@@ -1,0 +1,6 @@
+spring:
+  profiles:
+    active: eureka
+
+server:
+  port: 12008
