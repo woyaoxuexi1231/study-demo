@@ -13,8 +13,8 @@
 
     <properties>
         <build.finalName>demo-dubbo-consumer</build.finalName>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <demo.dubbo.consumer.version>1.0.0.4-SNAPSHOT</demo.dubbo.consumer.version>
         <demo.commom.starter.version>1.0.0.4-SNAPSHOT</demo.commom.starter.version>
     </properties>
@@ -35,11 +35,6 @@
         <dependency>
             <groupId>org.hulei</groupId>
             <artifactId>curator-starter</artifactId>
-            <version>1.0.0.4-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hulei</groupId>
-            <artifactId>java-basic</artifactId>
             <version>1.0.0.4-SNAPSHOT</version>
         </dependency>
 

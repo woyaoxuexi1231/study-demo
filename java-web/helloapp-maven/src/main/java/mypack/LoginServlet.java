@@ -1,12 +1,14 @@
 package mypack;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 
 
@@ -19,7 +21,7 @@ import java.io.IOException;
  * @since 2024/10/14 22:24
  */
 
-
+@Slf4j
 public class LoginServlet extends HttpServlet {
 
     @Override
@@ -42,7 +44,7 @@ public class LoginServlet extends HttpServlet {
         request.setAttribute("PASSWORD", password);
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
-            System.out.printf("name: %s, value: %s, path: %s%n", cookie.getName(), cookie.getValue(), cookie.getPath());
+            log.info("name: {}, value: {}, path: {}", cookie.getName(), cookie.getValue(), cookie.getPath());
         }
 
         /*

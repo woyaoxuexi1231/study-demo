@@ -13,25 +13,53 @@
     <packaging>war</packaging>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <build.finalName>helloApp</build.finalName>
     </properties>
 
     <dependencies>
+        <!-- servlet-api 主要用于定义 Servlet 的架构与相关的功能 -->
+        <!-- 包含类似于HttpServlet, HttpServletRequest, HttpServletResponse这些具体实现类 -->
+        <!-- 通常在处理 HTTP 请求时使用，适合用于编写后端逻辑、请求处理、会话管理等。 -->
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.0.0</version>
+            <!-- 目前大部分JavaEE服务器(如 WildFly、TomEE、GlassFish 等),因此在部署应用时，这些服务器会提供这些库。所以这里可以仅在编译时使用这个库 -->
             <scope>provided</scope>
         </dependency>
+
+        <!-- JSP 是一种基于 HTML 的网页视图技术，它允许开发者将 Java 代码嵌入到 HTML 中 -->
+        <!-- 用于创建网页视图，适合用于生成动态内容，包括表单处理、数据显示等。 -->
         <dependency>
-            <groupId>javax.servlet.jsp</groupId>
-            <artifactId>javax.servlet.jsp-api</artifactId>
-            <version>2.3.3</version>
+            <groupId>jakarta.servlet.jsp</groupId>
+            <artifactId>jakarta.servlet.jsp-api</artifactId>
+            <version>3.1.1</version>
+            <!-- 原因和servlet-api一致 -->
             <scope>provided</scope>
+        </dependency>
+
+
+        <!-- ==================================================slf4j+log4j2=================================================== -->
+        <!-- Slf4jWithLog4jExample是一个范例代码 -->
+        <!-- 这是一个slf4j桥接到log4j2 -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.32</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>2.17.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
     </dependencies>
 
@@ -41,24 +69,42 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>3.4.0</version>
                 <configuration>
+
+                    <!-- 生成的 WAR 文件的目录。默认为 ${project.build.directory}。 -->
+                    <outputDirectory>${project.build.directory}</outputDirectory>
+
+                    <!-- 用于在 WAR 中包含额外文件的单个目录。这是您放置 JSP 文件的地方。默认为 ${basedir}/src/main/webapp -->
+                    <!-- warSourceDirectory 是为了主要的 Web 资源目录配置，而 webResources 是为了添加额外的文件或进行复杂的导入规则。 -->
+                    <warSourceDirectory>${basedir}/src/main/webapp</warSourceDirectory>
+
+                    <!--
+                    warSourceDirectory 直接指定目录即可，而 webResources 提供了更复杂的配置选项来支持动态、精细的资源导入。
+                    允许你指定其他需要包括在 WAR 包中的资源文件，这些文件可以是额外的静态文件，也可以来自于其他路径。
+                        directory：指定资源文件所在目录。
+                        targetPath：指定该资源在 WAR 包中的目的路径。
+                        includes 和 excludes：用于指定在资源集里需要包含或排除的文件模式。
+                        filtering：对资源进行内容过滤，比如替换占位符等。
+                    配置示例:
+
                     <webResources>
                         <resource>
                             <filtering>true</filtering>
-                            <!-- 需要打包的目标文件路径 -->
                             <directory>web</directory>
-                            <!-- 指定build资源具体目录，默认是base directory。 -->
                             <targetPath>/</targetPath>
-                            <!-- 打包的文件叫什么 -->
                             <includes>
                                 <include>**/**</include>
                             </includes>
                         </resource>
                     </webResources>
-                    <!-- 打包后放在这个目录下 -->
-                    <warSourceDirectory>src/main/webapp</warSourceDirectory>
+                     -->
+
+                    <!-- 指定 Web 应用程序的资源文件夹，这通常是你的 JSP 文件、HTML 文件、CSS 以及 JavaScript 文件的位置。在这个配置中，默认路径是 src/main/webapp。 -->
+                    <!-- <warSourceDirectory>src/main/webapp</warSourceDirectory> -->
+
+                    <!-- 指定自定义的 web.xml 文件的路径。在此配置中，使用的是 web/WEB-INF/web.xml 相对于项目根目录的路径。 -->
                     <webXml>web/WEB-INF/web.xml</webXml>
+
                 </configuration>
             </plugin>
         </plugins>

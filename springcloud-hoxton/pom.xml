@@ -15,8 +15,8 @@
     <packaging>pom</packaging>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
 
         <spring.boot.dependencies.version>2.3.12.RELEASE</spring.boot.dependencies.version>
         <spring.cloud.dependencies.version>Hoxton.RELEASE</spring.cloud.dependencies.version>

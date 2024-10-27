@@ -5,7 +5,7 @@ spring:
   application:
     name: service-gateway
   profiles:
-    active: redis-connect,eureka,redis-rate-limit
+    active: redis-connect,eureka
   main:
     allow-circular-references: true
 

@@ -13,8 +13,8 @@
     <artifactId>dependencies-springcloud-hoxton</artifactId>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <spring.boot.dependencies.version>2.3.12.RELEASE</spring.boot.dependencies.version>
