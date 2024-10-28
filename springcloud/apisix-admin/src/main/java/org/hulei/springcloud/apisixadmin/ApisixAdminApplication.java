@@ -1,6 +1,7 @@
 package org.hulei.springcloud.apisixadmin;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,6 +20,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 /**
  * @author hulei
  * @since 2024/10/24 9:49
@@ -33,17 +38,30 @@ public class ApisixAdminApplication {
         SpringApplication.run(ApisixAdminApplication.class, args);
         // ApisixAdminApplication apisixAdminApplication = new ApisixAdminApplication();
         // apisixAdminApplication.buildAdminReqDemo();
+        // UpstreamNode node = new UpstreamNode();
+        // node.setAddress("127.0.0.1:8080");
+        // node.setWeight(10);
+        // apisixAdminApplication.prettyPrint(node);;
     }
 
     @Autowired
     RestTemplate restTemplate;
 
+    @SneakyThrows
     @GetMapping("/getRoutes")
-    public void getRoutes() {
+    public void getRoutes(String id) {
         // 发起 GET 请求，使用 exchange 方法
         String url = "http://192.168.3.233:9180/apisix/admin/routes";
-        ResponseEntity<Object> responseEntity = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(buildHeaders()), Object.class);
-        prettyPrint(responseEntity);
+        if (Objects.isNull(id)) {
+            ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(buildHeaders()), String.class);
+            ApisixAdminRsp apisixAdminRsp = JSON.parseObject(responseEntity.getBody(), ApisixAdminRsp.class);
+        } else {
+            ResponseEntity<String> responseEntity = restTemplate.exchange(url + "/" + id, HttpMethod.GET, new HttpEntity<>(buildHeaders()), String.class);
+            // ApisixAdminRsp apisixAdminRsp = JSON.parseObject(responseEntity.getBody(), ApisixAdminRsp.class);
+            // prettyPrint(responseEntity.getBody());
+            ApisixRouteRsp apisixAdminRsp = JSON.parseObject(responseEntity.getBody(), ApisixRouteRsp.class);
+            prettyPrint(apisixAdminRsp);
+        }
     }
 
     @GetMapping("/addRoute")
@@ -57,7 +75,7 @@ public class ApisixAdminApplication {
         String url = "http://192.168.3.233:9180/apisix/admin/routes";
         ResponseEntity<Object> responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
         // 处理响应
-        prettyPrint(responseEntity);
+        prettyPrint(responseEntity.getBody());
     }
 
     @SneakyThrows
@@ -69,6 +87,8 @@ public class ApisixAdminApplication {
         // apisixAdminReq.setId(String.valueOf(System.currentTimeMillis()));
         apisixAdminReq.setName("route-demo-test-" + System.currentTimeMillis());
         apisixAdminReq.setUri("/eureka-client/hi2");
+        apisixAdminReq.setPriority(1);
+        apisixAdminReq.setStatus(0);
         // 请求类型
         apisixAdminReq.setMethods(CollectionUtil.newArrayList("GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS", "CONNECT", "TRACE", "PURGE"));
 
@@ -78,12 +98,13 @@ public class ApisixAdminApplication {
         apisixUpstream.setType("roundrobin");
         // 协议
         apisixUpstream.setScheme("http");
+        apisixUpstream.setRetries(2);
+        apisixUpstream.setPassHost("pass");
         // 配置上游节点
-        UpstreamNode node = new UpstreamNode();
-        node.setHost("192.168.3.233");
-        node.setPort(12101);
-        node.setWeight(1);
-        apisixUpstream.setNodes(CollectionUtil.newArrayList(node));
+        Map<String, Integer> nodes = new HashMap<>();
+        nodes.put("192.168.3.233:12101", 1);
+        nodes.put("192.168.3.234:12101", 1);
+        apisixUpstream.setNodes(nodes);
         apisixAdminReq.setUpstream(apisixUpstream);
         // 配置超时配置
         // UpstreamTimeout upstreamTimeout = new UpstreamTimeout();
@@ -131,12 +152,46 @@ public class ApisixAdminApplication {
         return apisixAdminReq;
     }
 
+    @GetMapping("/updateRoute")
+    public void updateRoute() {
+        // /apisix/admin/routes/{id}
+        // 修改上游信息
+        ApisixAdminReq apisixAdminReq = new ApisixAdminReq();
+        apisixAdminReq.setStatus(1);
+        ApisixUpstream apisixUpstream = new ApisixUpstream();
+        // 配置上游节点
+        Map<String, Integer> nodes = new HashMap<>();
+        nodes.put("192.168.3.233:12101", 1);
+        nodes.put("192.168.3.234:12101", 1);
+        apisixUpstream.setNodes(nodes);
+        apisixAdminReq.setUpstream(apisixUpstream);
+        HttpHeaders httpHeaders = buildHeaders();
+        httpHeaders.add("Accept", "application/json");
+        httpHeaders.add("Content-Type", "application/json");
+        // 创建 HttpEntity，封装请求头
+        // prettyPrint(node);
+        HttpEntity<Object> entity = new HttpEntity<>(JSONObject.toJSONString(apisixAdminReq), httpHeaders);
+        // 发起 GET 请求，使用 exchange 方法
+        String url = "http://192.168.3.233:9180/apisix/admin/routes/00000000000000000567";
+        ResponseEntity<Object> responseEntity = restTemplate.exchange(url, HttpMethod.PATCH, entity, Object.class);
+        // 处理响应
+        prettyPrint(responseEntity);
+
+    }
+
+    @GetMapping("/deleteRoute")
+    public void deleteRoute(String id) {
+        // 发起 GET 请求，使用 exchange 方法
+        String url = "http://192.168.3.233:9180/apisix/admin/routes/";
+        ResponseEntity<Object> responseEntity = restTemplate.exchange(url + id, HttpMethod.DELETE, new HttpEntity<>(buildHeaders()), Object.class);
+        prettyPrint(responseEntity.getBody());
+    }
 
     @SneakyThrows
-    public void prettyPrint(ResponseEntity<?> responseEntity) {
+    public void prettyPrint(Object object) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT); // 启用格式化
-        System.out.println(objectMapper.writeValueAsString(responseEntity.getBody()));
+        System.out.println(objectMapper.writeValueAsString(JSONObject.toJSON(object)));
     }
 
     public HttpHeaders buildHeaders() {

@@ -2,8 +2,11 @@ package org.hulei.springcloud.apisixadmin;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author hulei
@@ -25,9 +28,24 @@ public class ApisixAdminReq {
      */
     private String id;
     /**
+     * 匹配条件 - 域名
+     * 路由匹配的域名列表。支持泛域名，如：*.test.com
+     */
+    private String host;
+    /**
+     * 优先级
+     * apisix 支持多种匹配方式，可能会在一次匹配中同时匹配到多条路由，此时优先级高的优先匹配中
+     * 值越大优先级越高，默认值为 0
+     */
+    private Integer priority;
+    /**
      * 路由名称
      */
     private String name;
+    /**
+     * 当设置为 1 时，启用该路由，默认值为 1 表示启用，0 表示禁用。
+     */
+    private Integer status;
     /**
      * 支持的 HTTP 方法
      * "methods" : [ "GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS", "CONNECT", "TRACE", "PURGE" ]
@@ -51,17 +69,42 @@ class ApisixUpstream {
      */
     private String type;
     /**
+     * key: address 127.0.0.1:8080
+     * value: weight 权重
      * 上游节点
      */
-    private List<UpstreamNode> nodes;
+    private Map<String,Integer> nodes;
     /**
      * 超时配置
      */
     private UpstreamTimeout timeout;
     /**
-     * 协议
+     * 协议 http https
      */
     private String scheme;
+    /**
+     * 重试次数
+     */
+    private Integer retries;
+    /**
+     * 重试超时时间
+     */
+    @JSONField(name = "retry_timeout")
+    private Integer retryTimeout;
+    /**
+     * 请求发给上游时的 host 设置选型。
+     * [pass，node，rewrite] 之一，默认是 pass。
+     * pass: 将客户端的 host 透传给上游
+     * node: 使用 upstream node 中配置的 host
+     * rewrite: 使用配置项 upstream_host 的值
+     */
+    @JSONField(name = "pass_host")
+    private String passHost;
+    /**
+     * 允许 Upstream 有自己单独的连接池
+     */
+    @JSONField(name = "keepalive_pool")
+    private UpstreamKeepalivePool keepalivePool;
 }
 
 @Data
@@ -157,6 +200,26 @@ class LimitCountPlugin {
      * 每个客户端在指定时间窗口内的总请求数量阈值。
      */
     private Integer count;
+    /**
+     * redis地址
+     */
+    @JSONField(name = "redis_host")
+    private String redisHost;
+    /**
+     * redis端口
+     */
+    @JSONField(name = "redis_port")
+    private Integer redisPort;
+    /**
+     * redis用户名
+     */
+    @JSONField(name = "redis_username")
+    private String redisUsername;
+    /**
+     * redis密码
+     */
+    @JSONField(name = "redis_password")
+    private String redisPassword;
 }
 
 @Data
@@ -219,4 +282,21 @@ class UpstreamTimeout {
      * 发送超时, 默认6秒
      */
     private Integer send;
+}
+
+@Data
+class UpstreamKeepalivePool {
+    /**
+     * 连接池容量 默认
+     */
+    private Integer size;
+    /**
+     * 空闲超时时间
+     */
+    @JSONField(name = "idle_timeout")
+    private Integer idleTimeout;
+    /**
+     * 连接池请求数量
+     */
+    private Integer requests;
 }

@@ -1,5 +1,6 @@
 package org.hulei.springcloud.client.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hulei.common.core.model.dto.ResultDTO;
 import org.hulei.common.core.model.dto.SimpleReqDTO;
 import org.hulei.common.core.utils.ResultDTOBuild;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -26,6 +29,7 @@ import java.util.TimeZone;
  * @createDate: 2023/5/6 22:53
  */
 
+@Slf4j
 @RestController
 public class HiController {
 
@@ -34,6 +38,11 @@ public class HiController {
 
     @GetMapping("/hi")
     public String hi(HttpServletRequest req, HttpServletResponse rsp) {
+        Iterator<String> iterator = req.getHeaderNames().asIterator();
+        while (iterator.hasNext()) {
+            String header = iterator.next();
+            log.info("header: {}", header);
+        }
         return "here is " + port + " and your ip is " + req.getRemoteAddr();
     }
 
