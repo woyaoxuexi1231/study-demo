@@ -80,6 +80,9 @@ systemctl restart docker
 # 1.搜索安装包, 我这里一直报错,尝试修改镜像等方法也一直不行
 docker search nginx
 
+# 获取镜像 镜像后可以跟版本
+docker pull ubuntu:20.04
+
 # 查看目前所有已经下载的镜像
 > docker images
 REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
@@ -191,6 +194,9 @@ docker run -d -P nginx
 # docker start <容器ID> 运行之前挂掉的容器
 # start之后我们通过  docker exec -it <容器ID> sh 进入之前的centos的sh界面
 # 这里可能会遇到yum失败的情况 https://blog.csdn.net/lxcw_sir/article/details/140185068  说是由于版本原因,部分东西已经停止更新和维护了,原来的yum源已经失效
+
+# 容器的删除
+docker rm <容器id>
 
 # 进入仓库源文件夹下
 cd /etc/yum.repos.d/

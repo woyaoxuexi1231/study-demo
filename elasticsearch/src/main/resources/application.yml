@@ -1,4 +1,12 @@
-#spring:
-#  elasticsearch:
-#    uris: https://localhost:9200
+spring:
+  elasticsearch:
+    uris: http://192.168.80.140:9200
+#    username: elastic
+#    password: Q_N3Ja+RBs3xHLhOdKz-
+  main:
+    allow-bean-definition-overriding: true
 
+
+logging:
+  level:
+    root: debug
