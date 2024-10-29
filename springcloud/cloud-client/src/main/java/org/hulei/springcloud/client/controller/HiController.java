@@ -41,7 +41,7 @@ public class HiController {
         Iterator<String> iterator = req.getHeaderNames().asIterator();
         while (iterator.hasNext()) {
             String header = iterator.next();
-            log.info("header: {}", header);
+            log.info("header: {} : {}", header, req.getHeader(header));
         }
         return "here is " + port + " and your ip is " + req.getRemoteAddr();
     }
@@ -55,7 +55,7 @@ public class HiController {
      * @return rsp
      */
     @GetMapping("/hi2")
-    public ResultDTO<?> hi2(@RequestParam(required = false, name = "req") String req, @RequestParam(required = false, name = "req2") String req2) {
+    public ResultDTO<?> hi2(@RequestParam(required = false, name = "req") String req, @RequestParam(required = false, name = "other") String req2) {
         // throw new RuntimeException("error");
         return ResultDTOBuild.resultSuccessBuild("OK, im receive the msg : " + req + " + " + req2);
     }
