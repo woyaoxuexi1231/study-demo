@@ -6,6 +6,7 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -24,7 +25,7 @@ import java.util.Optional;
  * @since 2023/5/25 0:37
  */
 
-// @Component
+@Component
 @Slf4j
 public class TokenGlobalFilter implements org.springframework.cloud.gateway.filter.GlobalFilter, Ordered {
 
@@ -42,6 +43,8 @@ public class TokenGlobalFilter implements org.springframework.cloud.gateway.filt
         // }
         // log.info("token is {}", token);
         // return chain.filter(exchange);
+        log.info("path: {}",exchange.getRequest().getPath().pathWithinApplication().value());
+        log.info("path: {}",exchange.getRequest().getPath().contextPath().value());
 
         // 从请求的cookie中获取token
         Optional<String> token = Optional.ofNullable(exchange.getRequest().getCookies().getFirst("token"))

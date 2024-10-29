@@ -85,7 +85,7 @@ public class HiController {
     }
 
     @PostMapping("/hi5")
-    public ResultDTO<?> hi5(String req) {
+    public ResultDTO<?> hi5(@RequestBody String req) {
         return ResultDTOBuild.resultSuccessBuild("OK, im receive the msg : " + req);
     }
 

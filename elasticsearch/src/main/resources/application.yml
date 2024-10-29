@@ -1,0 +1,4 @@
+#spring:
+#  elasticsearch:
+#    uris: https://localhost:9200
+

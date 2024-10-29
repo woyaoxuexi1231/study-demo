@@ -53,8 +53,9 @@ public class ApisixAdminApplication {
         // 发起 GET 请求，使用 exchange 方法
         String url = "http://192.168.3.233:9180/apisix/admin/routes";
         if (Objects.isNull(id)) {
-            ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(buildHeaders()), String.class);
-            ApisixAdminRsp apisixAdminRsp = JSON.parseObject(responseEntity.getBody(), ApisixAdminRsp.class);
+            ResponseEntity<Object> responseEntity = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(buildHeaders()), Object.class);
+            // ApisixAdminRsp apisixAdminRsp = JSON.parseObject(responseEntity.getBody(), ApisixAdminRsp.class);
+            prettyPrint(responseEntity.getBody());
         } else {
             ResponseEntity<String> responseEntity = restTemplate.exchange(url + "/" + id, HttpMethod.GET, new HttpEntity<>(buildHeaders()), String.class);
             // ApisixAdminRsp apisixAdminRsp = JSON.parseObject(responseEntity.getBody(), ApisixAdminRsp.class);
@@ -85,10 +86,10 @@ public class ApisixAdminApplication {
         ApisixAdminReq apisixAdminReq = new ApisixAdminReq();
         // id让apisix自动生成
         // apisixAdminReq.setId(String.valueOf(System.currentTimeMillis()));
-        apisixAdminReq.setName("route-demo-test-" + System.currentTimeMillis());
-        apisixAdminReq.setUri("/eureka-client/hi2");
+        apisixAdminReq.setName("route-demo-test");
+        apisixAdminReq.setUri("/hi");
         apisixAdminReq.setPriority(1);
-        apisixAdminReq.setStatus(0);
+        apisixAdminReq.setStatus(1);
         // 请求类型
         apisixAdminReq.setMethods(CollectionUtil.newArrayList("GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS", "CONNECT", "TRACE", "PURGE"));
 
@@ -103,7 +104,7 @@ public class ApisixAdminApplication {
         // 配置上游节点
         Map<String, Integer> nodes = new HashMap<>();
         nodes.put("192.168.3.233:12101", 1);
-        nodes.put("192.168.3.234:12101", 1);
+        // nodes.put("192.168.3.234:12101", 1);
         apisixUpstream.setNodes(nodes);
         apisixAdminReq.setUpstream(apisixUpstream);
         // 配置超时配置
@@ -113,9 +114,9 @@ public class ApisixAdminApplication {
         // 配置插件
         ApisixPlugin plugin = new ApisixPlugin();
         // 路由重写
-        ProxyRewritePlugin proxyRewrite = new ProxyRewritePlugin();
-        proxyRewrite.setUri("/hi2");
-        plugin.setProxyRewrite(proxyRewrite);
+        // ProxyRewritePlugin proxyRewrite = new ProxyRewritePlugin();
+        // proxyRewrite.setUri("/hi2");
+        // plugin.setProxyRewrite(proxyRewrite);
 
         // 配置限流插件
         LimitCountPlugin limitCountPlugin = new LimitCountPlugin();
@@ -138,7 +139,7 @@ public class ApisixAdminApplication {
 
         ExtPlugin extPluginPostResp = new ExtPlugin();
         extPluginPostResp.setAllowDegradation(false);
-        extPluginPostResp.setConf(CollectionUtil.newArrayList(new ExtPluginConfig("TokenValidator", "")));
+        extPluginPostResp.setConf(CollectionUtil.newArrayList(new ExtPluginConfig("RspBodyValidator", "")));
         plugin.setExtPluginPostResp(extPluginPostResp);
         // 插件配置完成
         apisixAdminReq.setPlugins(plugin);

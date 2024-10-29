@@ -1,22 +1,24 @@
+# Linux 环境安装
+
 [参考文章, 腾讯云作者 Linux安装ElasticSearch](https://cloud.tencent.com/developer/article/2216722)
 
 [参考视频, bilibili 2024最新Elastic Stack（ELK）教程入门到精通，深入浅出ES技术](https://www.bilibili.com/video/BV1nF4m1c7nk/?p=8&spm_id_from=pageDriver&vd_source=8d7ce9dd45b35258ee11a3c3ce982ea9)
 
-# es安装
+## es安装
 
 ElasticSearch 担任数据持久层的角色，负责储存数据
 
-## 环境准备
+### 环境准备
 
 - 安装和配置JDK
 - 虚拟机内存建议4G以上,我这里配置的3G
 
-## 下载安装包
+### 下载安装包
 
 搜索并下载随意版本, 我这里使用的是 elasticsearch-8.11.4 elasticsearch-8.11.4-linux-x86_64.tar.gz
 > https://www.elastic.co/cn/downloads/elasticsearch
 
-## 创建es用户
+### 创建es用户
 
 因为安全问题，Elasticsearch 不允许 root 用户直接运行, 所以要创建一个ES专属的普通用户es
 
@@ -27,7 +29,7 @@ useradd es -d /home/es -m;
 echo "es" | passwd --stdin es;
 ```
 
-## 前置准备部分配置修改
+### 前置准备部分配置修改
 
 安装es还有一些前置准备这里省略, 比如修改每个进程允许打开的文件数量的限制, 操作系统层面每个用户创建的进程允许的最大线程数量
 (操作系统可以创建的最大线程数量最大的因素主要取决于内存,一般来说从几千到几百万不等)
@@ -75,7 +77,7 @@ xpack.security.transport.ssl:
 cluster.initial_master_nodes: [ "node-128" ]
 ```
 
-## 启动es,并打开初始页面
+### 启动es,并打开初始页面
 
 ```shell
 # 启动es
@@ -120,9 +122,9 @@ cd /bin
 
 输入账户 elastic 密码 Q_N3Ja+RBs3xHLhOdKz- 登录成功则部署完成
 
-## 初始化后的其他配置
+### 初始化后的其他配置
 
-### 关于es的初始密码和修改密码
+#### 关于es的初始密码和修改密码
 
 是es的账户密码 Q_N3Ja+RBs3xHLhOdKz- 用户名是 elastic(最高权限)
 我们也可以通过 bin/elasticsearch-reset-password 来调整密码
@@ -132,22 +134,22 @@ cd /bin
 - ./elasticsearch-reset-password --username kibana_system 重置kibana密码
 - ./elasticsearch-reset-password --url "https://host:port" --username ‘用户名’ -i
 
-### kibana的ssl的token问题
+#### kibana的ssl的token问题
 
 > kibana初始化与Es链接SSl的token **有效期30分钟** 过期使用  
 > **.\elasticsearch-create-enrollment-token -s kibana** 再次创建  
 > 生成SSL的密钥都在**/config/certs**  
 > **访问时需要带上 https**
 
-# kibana安装
+## kibana安装
 
-## 下载安装包
+### 下载安装包
 
 kibana 担任视图层角色，拥有各种维度的查询和分析，并使用图形化的界面展示存放在Elasticsearch中的数据
 
 > https://www.elastic.co/cn/downloads/kibana
 
-## 配置准备
+### 配置准备
 
 kibana.yml文件初始化也是无配置的,我们添加如下配置
 
@@ -159,7 +161,7 @@ server.host: 0.0.0.0
 i18n.locale: "zh-CN"
 ```
 
-## 启动
+### 启动
 
 ```shell
 cd bin/
@@ -187,7 +189,7 @@ elasticsearch.ssl.certificateAuthorities: [ /home/es/es/kibana-8.11.4/data/ca_17
 xpack.fleet.outputs: [ { id: fleet-default-output, name: default, is_default: true, is_default_monitoring: true, type: elasticsearch, hosts: [ 'https://192.168.80.128:9200' ], ca_trusted_fingerprint: 3d68f1114677d53e154ee4f944621b18f9c502d48e83cf9d05a4b329b6232922 } ]
 ```
 
-# filebeat安装
+## filebeat安装
 
 ELK使用的组件是 Logstash, 担任控制层的角色，负责搜集和过滤数据
 
@@ -202,14 +204,14 @@ Filebeat 和 Logstash 的对比表格：
 | **使用场景**    | 适用于需要简单、轻量级日志收集的场景。<br>适合在边缘节点上部署，如服务器、容器、虚拟机等。                                                                                              | 适用于需要复杂数据处理和转换的场景。<br>适合在数据中心或需要集中处理数据的地方使用。                                                                                      |
 | **组合使用**    | Filebeat + Logstash 通常情况下，Filebeat 用于日志收集，Logstash 用于数据处理和转换。<br>Filebeat 将日志数据发送到 Logstash，Logstash 进行处理后再发送到 Elasticsearch。                | Filebeat + Logstash 通常情况下，Filebeat 用于日志收集，Logstash 用于数据处理和转换。<br>Filebeat 将日志数据发送到 Logstash，Logstash 进行处理后再发送到 Elasticsearch。     |
 
-## 下载安装包
+### 下载安装包
 
 这里选择 filebeat-8.11.4-linux-x86_64.tar.gz
 > https://www.elastic.co/cn/downloads/beats/filebeat
 
-## 配置filebeat并输出到es
+### 配置filebeat并输出到es
 
-### filebeat和日志不在一台服务器上,使用nfs挂载目录同步日志文件
+#### filebeat和日志不在一台服务器上,使用nfs挂载目录同步日志文件
 
 ```shell
 # 在两台服务器都安装上nfs服务
@@ -238,7 +240,7 @@ vim /etc/fstab
 # 上述配置完成后,就可以在 loadlogs 文件夹中看到同步的文件了
 ```
 
-### 配置filebeat的配置文件
+#### 配置filebeat的配置文件
 
 ```shell
 filebeat.inputs:
@@ -287,3 +289,8 @@ processors:
 
 > {"log.level":"info","@timestamp":"2024-10-13T17:08:58.214+0800","log.logger":"publisher_pipeline_output","log.origin":{"file.name":"pipeline/client_worker.go","file.line":145},"message":"Connection to backoff(elasticsearch(https://192.168.80.128:9200)) established","service.name":"filebeat","ecs.version":"1.6.0"}
 
+
+
+
+
+# Docker 环境安装(windows)

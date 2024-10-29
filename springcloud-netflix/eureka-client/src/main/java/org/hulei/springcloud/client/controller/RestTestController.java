@@ -73,16 +73,19 @@ public class RestTestController {
     @GetMapping("/restTemplateExchange")
     public void restTemplateExchange() {
         // 创建 HttpEntity，封装请求头
-        HttpEntity<String> entity = new HttpEntity<>(JSONObject.toJSONString(new Object(){
+        HttpEntity<String> entity = new HttpEntity<>(JSONObject.toJSONString(new Object() {
             String req = "123";
+
             public String getReq() {
                 return req;
             }
+
             public void setReq(String req) {
                 this.req = req;
             }
         }), new HttpHeaders());
         // 发起 GET 请求，使用 exchange 方法
         ResponseEntity<Object> responseEntity = restTemplate.exchange("http://localhost:" + port + "/hi5", HttpMethod.POST, entity, Object.class);
+        log.info("{}", responseEntity.getBody());
     }
 }
