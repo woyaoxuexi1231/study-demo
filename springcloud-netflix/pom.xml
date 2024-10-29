@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <artifactId>dependencies-springcloud-hoxton</artifactId>
+        <groupId>org.hulei</groupId>
+        <version>1.0.0.4-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--
+     此模块是网飞为SpringCloud提供的组件
+     虽然在 Spring Cloud 2020 版本及之后，Hystrix 被视为不推荐使用，但其他组件仍然广泛使用，或与其他新的库（如 Resilience4j）结合使用
+     -->
+    <artifactId>springcloud-netflix</artifactId>
+    <version>1.0.0.4-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+
+        <spring.boot.dependencies.version>2.3.12.RELEASE</spring.boot.dependencies.version>
+        <spring.cloud.dependencies.version>Hoxton.SR12</spring.cloud.dependencies.version>
+    </properties>
+
+    <modules>
+        <!-- 服务注册中心 -->
+        <module>eureka-server</module>
+        <!-- 一个简单的服务发现者 -->
+        <module>eureka-client</module>
+
+        <!-- Ribbon负载均衡组件 -->
+        <module>ribbon-client</module>
+        <!-- 网关 -->
+        <module>zuul-client</module>
+        <!-- 集成了Turbine,用于聚合多个Hystrix Dashboard -->
+        <module>turbine-service</module>
+    </modules>
+
+    <dependencies>
+        <!-- 内部 -->
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>core</artifactId>
+            <version>1.0.0.4-SNAPSHOT</version>
+        </dependency>
+
+        <!-- 一些工具包 -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+<!--         <dependency> -->
+<!--             <groupId>org.aspectj</groupId> -->
+<!--             <artifactId>aspectjweaver</artifactId> -->
+<!--         </dependency> -->
+
+<!--         &lt;!&ndash;自动配置&ndash;&gt; -->
+<!--         <dependency> -->
+<!--             <groupId>org.springframework.boot</groupId> -->
+<!--             <artifactId>spring-boot-starter</artifactId> -->
+<!--         </dependency> -->
+<!--         <dependency> -->
+<!--             <groupId>org.springframework.boot</groupId> -->
+<!--             <artifactId>spring-boot-starter-logging</artifactId> -->
+<!--             <exclusions> -->
+<!--                 <exclusion> -->
+<!--                     <groupId>org.apache.logging.log4j</groupId> -->
+<!--                     <artifactId>log4j-to-slf4j</artifactId> -->
+<!--                 </exclusion> -->
+<!--                 <exclusion> -->
+<!--                     <groupId>ch.qos.logback</groupId> -->
+<!--                     <artifactId>logback-classic</artifactId> -->
+<!--                 </exclusion> -->
+<!--             </exclusions> -->
+<!--         </dependency> -->
+
+
+<!--         &lt;!&ndash;......................................................................................................&ndash;&gt; -->
+<!--         &lt;!&ndash;................................springcloud新版本已经抛弃的部分依赖.......................................&ndash;&gt; -->
+<!--         &lt;!&ndash;......................................................................................................&ndash;&gt; -->
+<!--         &lt;!&ndash; springcloud新版本已经抛弃的部分依赖(由于Netflix不再维护) &ndash;&gt; -->
+<!--         &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-turbine &ndash;&gt; -->
+<!--         &lt;!&ndash; spring-cloud-starter-netflix-turbine 是 Spring Cloud Netflix 中的一个模块，用于构建监控多个 Hystrix 断路器的数据聚合器。它能够将多个微服务的 Hystrix 监控数据聚合起来，展示在一个统一的监控面板上，以便于监控和分析。 &ndash;&gt; -->
+<!--         &lt;!&ndash; Turbine 的工作原理是通过轮询各个微服务的 Hystrix 监控端点，然后将数据聚合到一个可视化的监控面板中。通过这个面板，我们可以看到各个微服务的断路器状态、请求次数、错误率等信息，从而更好地监控系统的健康状况。 &ndash;&gt; -->
+<!--         &lt;!&ndash; 在 Spring Cloud 中，Turbine 曾经是一个非常受欢迎的模块，但是随着时间的推移，Netflix 对其 Hystrix 库的支持已经停止，并且停止了对 Turbine 的维护。因此，Spring Cloud 项目决定不再继续对 Turbine 进行支持，而是推荐使用其他替代方案，比如 Prometheus、Grafana、Spring Boot Admin 等。 &ndash;&gt; -->
+<!--         <dependency> -->
+<!--             <groupId>org.springframework.cloud</groupId> -->
+<!--             <artifactId>spring-cloud-starter-netflix-turbine</artifactId> -->
+<!--             &lt;!&ndash; <version>2.2.9.RELEASE</version> &ndash;&gt; -->
+<!--         </dependency> -->
+<!--         &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-hystrix-dashboard &ndash;&gt; -->
+<!--         &lt;!&ndash; spring-cloud-starter-netflix-hystrix-dashboard 是 Spring Cloud Netflix 中的一个模块，用于在 Spring Boot 应用程序中启用 Hystrix 仪表板。Hystrix 仪表板是一个 Web 应用程序，用于可视化显示 Hystrix 断路器的监控数据，包括断路器的状态、请求次数、错误率等信息，帮助开发人员更好地监控和理解断路器的行为。 &ndash;&gt; -->
+<!--         &lt;!&ndash; Hystrix 仪表板工作原理是通过轮询 Hystrix 断路器的监控端点，然后将数据可视化地展示在一个仪表板上。在该仪表板上，我们可以看到断路器的健康状况、请求情况、错误情况等信息，从而帮助开发人员及时发现和解决服务故障。 &ndash;&gt; -->
+<!--         &lt;!&ndash; Spring Cloud 项目曾经支持 Hystrix 仪表板模块，但随着时间的推移，Netflix 对 Hystrix 库的支持已经停止，并且停止了对 Hystrix 仪表板的维护。因此，Spring Cloud 项目决定不再继续对 Hystrix 仪表板模块进行支持。 &ndash;&gt; -->
+<!--         <dependency> -->
+<!--             <groupId>org.springframework.cloud</groupId> -->
+<!--             <artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId> -->
+<!--             &lt;!&ndash; <version>2.2.9.RELEASE</version> &ndash;&gt; -->
+<!--         </dependency> -->
+<!--         &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-zuul &ndash;&gt; -->
+<!--         &lt;!&ndash; spring-cloud-starter-netflix-zuul 是 Spring Cloud Netflix 中的一个模块，用于构建和管理微服务架构中的 API 网关。Zuul 可以作为微服务架构中的入口，接收所有客户端请求，并根据预定义的路由规则将请求转发到相应的后端服务。它还提供了一些过滤器，用于实现请求的安全、日志记录、认证、路由等功能。 &ndash;&gt; -->
+<!--         &lt;!&ndash; Spring Cloud Gateway 的出现: Spring Cloud 项目推出了一个新的网关模块 Spring Cloud Gateway，它提供了一种更现代化、更灵活的方式来构建 API 网关，支持响应式编程、函数式配置等特性，因此 Spring Cloud 项目将重点放在推广和维护 Spring Cloud Gateway 上。 &ndash;&gt; -->
+<!--         &lt;!&ndash; Netflix 对 Zuul 的支持停止: Netflix 停止对 Zuul 库的维护，导致 Zuul 的功能无法更新和完善，也无法满足用户日益增长的需求。 &ndash;&gt; -->
+<!--         <dependency> -->
+<!--             <groupId>org.springframework.cloud</groupId> -->
+<!--             <artifactId>spring-cloud-starter-netflix-zuul</artifactId> -->
+<!--             &lt;!&ndash; <version>2.2.9.RELEASE</version> &ndash;&gt; -->
+<!--         </dependency> -->
+<!--         &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-hystrix &ndash;&gt; -->
+<!--         &lt;!&ndash; spring-cloud-starter-netflix-hystrix 是 Spring Cloud Netflix 中的一个模块，用于在微服务架构中实现容错和服务降级。Hystrix 是 Netflix 提供的一个开源库，用于处理分布式系统中的延迟和容错问题。它通过实现断路器模式来防止网络故障导致的级联故障，提高了分布式系统的弹性和可用性。 &ndash;&gt; -->
+<!--         &lt;!&ndash; Spring Cloud Netflix 提供了对 Hystrix 的集成，可以方便地将 Hystrix 应用于 Spring Cloud 微服务架构中。通过在服务的方法上添加 @HystrixCommand 注解，开发人员可以定义服务的降级逻辑，并指定当服务调用失败或超时时应该执行的备用逻辑。 &ndash;&gt; -->
+<!--         &lt;!&ndash; 尽管 Hystrix 曾经是 Spring Cloud 中的一个核心组件，但随着时间的推移和技术的发展，Netflix 对 Hystrix 库的支持已经停止，并且停止了对 Hystrix 的维护。因此，Spring Cloud 项目决定不再推荐使用 spring-cloud-starter-netflix-hystrix 模块。 &ndash;&gt; -->
+<!--         &lt;!&ndash; Spring Cloud 项目的发展: Spring Cloud 项目推出了更现代化、更灵活的替代方案，如 Resilience4j 和 Sentinel 等，这些替代方案提供了更丰富、更灵活的容错和服务降级功能，能够更好地满足微服务架构中的需求。 &ndash;&gt; -->
+<!--         <dependency> -->
+<!--             <groupId>org.springframework.cloud</groupId> -->
+<!--             <artifactId>spring-cloud-starter-netflix-hystrix</artifactId> -->
+<!--             &lt;!&ndash; <version>2.2.9.RELEASE</version> &ndash;&gt; -->
+<!--         </dependency> -->
+<!--         &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-ribbon &ndash;&gt; -->
+<!--         &lt;!&ndash; spring-cloud-starter-netflix-ribbon 是 Spring Cloud Netflix 中的一个模块，用于在微服务架构中实现客户端负载均衡。Ribbon 是 Netflix 提供的一个开源负载均衡器，它可以自动地将客户端请求分发到多个服务实例中，以提高系统的可用性和性能。 &ndash;&gt; -->
+<!--         &lt;!&ndash; Spring Cloud Netflix 提供了对 Ribbon 的集成，使开发人员可以方便地在 Spring Cloud 微服务架构中使用 Ribbon 来实现客户端负载均衡。通过在服务消费者中引入 spring-cloud-starter-netflix-ribbon 依赖，Spring Cloud 应用程序可以利用 Ribbon 来动态地选择服务实例，并实现负载均衡。 &ndash;&gt; -->
+<!--         &lt;!&ndash; 尽管 Ribbon 曾经是 Spring Cloud 中的一个重要组件，但随着时间的推移和技术的发展，Spring Cloud 项目决定不再推荐使用 spring-cloud-starter-netflix-ribbon 模块。 &ndash;&gt; -->
+<!--         &lt;!&ndash; Spring Cloud 项目推出了更现代化、更灵活的替代方案，如 Spring Cloud LoadBalancer 和 Istio 的集成等，这些替代方案提供了更丰富、更灵活的负载均衡功能，能够更好地满足微服务架构中的需求。 &ndash;&gt; -->
+<!--         &lt;!&ndash; Netflix 已经宣布停止对 Ribbon 库的维护，并鼓励用户迁移到其他替代方案。因此，Ribbon 的功能将不再更新和完善。 &ndash;&gt; -->
+<!--         <dependency> -->
+<!--             <groupId>org.springframework.cloud</groupId> -->
+<!--             <artifactId>spring-cloud-starter-netflix-ribbon</artifactId> -->
+<!--             &lt;!&ndash; <version>2.2.9.RELEASE</version> &ndash;&gt; -->
+<!--         </dependency> -->
+    </dependencies>
+
+</project>

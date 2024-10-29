@@ -12,8 +12,6 @@
     <artifactId>springcloud</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>eureka-server</module>
-        <module>cloud-client</module>
         <module>loadbalancer</module>
         <module>gateway</module>
 
@@ -23,10 +21,19 @@
         <module>config-server</module>
         <module>config-client</module>
 
+        <!-- 安全验证方面 -->
+        <!-- springSecurity -->
         <module>security</module>
+        <!-- OAuth2 -->
+        <module>oauth2-service</module>
+        <module>oauth2-service-hi</module>
+
+        <!--  -->
         <module>admin-server</module>
         <module>admin-client</module>
         <module>apisix-admin</module>
+
+        <module>feign</module>
     </modules>
 
     <properties>

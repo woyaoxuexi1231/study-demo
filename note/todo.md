@@ -6,9 +6,23 @@ Spring webflux
 
 ### 2024-10-24
 
-1. springgateway获取消息响应，拿到请求数量
+1. Spring Gateway获取消息响应，拿到请求数量
+
 2. maven私服 
-3. springcloud服务间调用
+
+3. Spring Cloud服务间调用
+
+   - restTemplate，三个族的方法。 ForObject，ForEntity，exchange
+
+     区别就是ForObject仅获取结果。
+
+     ForEntity可以获取完整的http请求信息。
+
+     exchange支持更加复杂的http传输，最强大。
+
+   - Feign开源组件。使用自定义接口+@FeignClient实现，比使用restTemplate拼请求更加符合面向对象的思想。
+
+   - 其他负载均衡组件和RestTemplate的结合使用。例如：Ribbon+RestTemplate，SpringCloudLoadbalancer
 
 ### 2024-10-28
 
