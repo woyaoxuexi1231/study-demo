@@ -5,8 +5,3 @@ spring:
 server:
   port: 12008
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'

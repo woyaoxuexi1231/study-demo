@@ -21,7 +21,7 @@ public class BeanConfig {
     @Bean
     public ElasticsearchClient elasticsearchClient() {
         RestClient restClient = RestClient.builder(
-                new HttpHost("192.168.80.140", 9200)).build();
+                new HttpHost("localhost", 9200)).build();
         RestClientTransport transport = new RestClientTransport(
                 restClient, new JacksonJsonpMapper());
         return new ElasticsearchClient(transport);

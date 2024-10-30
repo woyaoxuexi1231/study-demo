@@ -30,6 +30,12 @@
 4. 安装完成后
 
    ```shell
+   #APISIX 安装完成后，你可以运行以下命令初始化 NGINX 配置文件和 etcd：
+   apisix init
+   
+   #使用以下命令启动 APISIX：
+   apisix run
+   
    # 测试是否成功安装
    curl -sL https://run.api7.ai/apisix/quickstart | sh
    # Server: APISIX/3.9.1
