@@ -27,3 +27,10 @@ Spring webflux
 ### 2024-10-28
 
 spring-cloud-starter-bootstrap的作用
+
+
+
+### 2024-10-31
+
+1. docker打包插件，jenkins使用
+2. spring-cloud-commons是什么？和Ribbon，Hystrix，zuul的关系

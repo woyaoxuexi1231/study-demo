@@ -4,6 +4,8 @@
 
 ![img.png](linux虚拟机宕机日志截图.png)
 
+![image-20241101003429528](C:\dataz\Project\study-demo\note\images\image-20241101003429528.png)
+
 当VMware虚拟机遭遇强制下电后，重启可能会出现系统文件错误。
 [参考文章](https://blog.csdn.net/zhanremo3062/article/details/113842682)
 
@@ -13,6 +15,8 @@ xfs_repair /dev/mapper/centos-root
 # 退出即可
 exit
 ```
+
+
 
 ## Windows换行符问题
 
