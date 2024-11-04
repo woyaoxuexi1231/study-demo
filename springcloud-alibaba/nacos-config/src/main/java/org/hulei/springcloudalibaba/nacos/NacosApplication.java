@@ -13,7 +13,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * @since 2024/10/30 11:22
  */
 
-@EnableDiscoveryClient
 @Slf4j
 @SpringBootApplication
 public class NacosApplication {

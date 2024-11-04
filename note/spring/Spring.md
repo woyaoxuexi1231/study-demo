@@ -183,6 +183,141 @@ BeanFactoryPostProcessor 和 BeanPostProcessor 是 Spring 框架中两个重要�
 - BeanFactoryPostProcessor 在 Spring 容器实例化 Bean 之前执行，作用于 Bean 的定义；
 - BeanPostProcessor 在 Spring 容器实例化 Bean 后，在初始化方法执行前后执行，作用于每个具体的 Bean 实例。
 
+
+
+## Spring Aop 
+
+### aop的各种概念
+
+AOP（Aspect-Oriented Programming，面向切面编程）是一种软件开发方法，旨在通过将横切关注点（cross-cutting concerns）从核心业务逻辑中分离出来，以提高代码的模块化性、可维护性和可重用性。以下是 AOP 中常见的概念：
+
+1. **切面（Aspect）：**
+   切面是一个模块化单元，它横切应用程序的多个类。它封装了与特定横切关注点（如日志、事务管理、安全性等）相关的行为，并可以在程序中的多个位置重复使用。切面可以包含通知以及切点。  
+   代表的是系统中由 Pointcut 和 Advice 组合而成的一个 AOP 概念实体
+
+2. **通知（Advice）：**
+   通知是切面的具体行为。在 AOP 中，通知定义了在何时、何地、以及如何应用切面的行为。常见的通知类型包括：
+
+    - **前置通知（Before advice）：** 在连接点之前执行的通知。
+    - **后置通知（After advice）：** 在连接点完成后（无论是正常返回还是异常退出）执行的通知。
+    - **返回通知（After returning advice）：** 在连接点正常完成后执行的通知。
+    - **异常通知（After throwing advice）：** 在方法抛出异常后执行的通知。
+    - **环绕通知（Around advice）：** 包围连接点的通知，在方法调用之前和之后都可以执行自定义的行为。
+
+   表示在这个 JoinPoint 需要添加的横切逻辑, 对应我们的 @Before, @After, @Around
+
+3. **连接点（Join Point）：**
+   连接点是程序执行的特定点，如方法调用、方法执行、异常处理等。在 AOP 中，连接点被定义为在应用程序中允许插入切面的点。  
+   在确切的某个点进行织入操作的那个点就是一个 JoinPoint
+
+4. **切点（Pointcut）：**
+   切点是指一组连接点的集合，允许开发者定义在哪些连接点应用通知。通知只在与切点匹配的连接点上被执行。
+   JoinPoint 是我们逻辑上的一个点, 而 Pointcut 在代码层面帮我们描述 JoinPoint 且 Pointcut可以描述由一堆 JoinPoint 的集合, SpringAop 中的 @PointCut 注解
+
+5. **引入（Introduction）：**
+   引入允许向现有类添加新方法或属性。在 AOP 中，引入允许切面向现有的类添加新功能，而无需修改它们的代码。
+
+6. **织入（Weaving）：**
+   织入是将切面与应用程序的目标对象连接起来并创建新的代理对象的过程。织入可以在编译时、加载时或运行时完成。在 Spring 中，AOP 通常通过动态代理或者字节码增强来实现织入。
+
+7. **Weaver（织入器）：**
+   Weaver 是 AOP 中负责将切面与目标对象连接起来并创建代理对象的组件。它负责将切面的通知逻辑应用到目标对象的连接点上，从而实现横切关注点的织入。Weaver 可以在编译时、加载时或者运行时进行织入操作。常见的织入方式包括静态代理、动态代理和字节码增强。在 Spring AOP
+   中，Weaver 负责将切面织入到 Spring 容器管理的 Bean 上，以创建代理对象来实现切面功能。
+
+8. **Target Object（目标对象）：**
+   Target Object 是指在 AOP 中被切面所影响或增强的原始对象。它是应用程序中实际执行业务逻辑的对象。通常，切面中的通知会围绕着目标对象的连接点来执行相应的操作，例如在方法调用前后添加日志、在方法执行时处理事务等。目标对象可以是任何普通的 Java 对象，包括 POJO（Plain
+   Old Java Object）、Spring 管理的 Bean 等。
+
+这些概念共同构成了 AOP 的核心，通过 AOP，开发者可以将横切关注点与核心业务逻辑分离，提高了代码的可维护性和可重用性。
+
+### spring aop
+
+Spring AOP（Aspect-Oriented Programming，Spring面向切面编程）是 Spring 框架提供的一种基于 AOP 思想的编程方式，旨在使开发者能够更轻松地实现横切关注点的功能，并将其与核心业务逻辑解耦。下面是关于 Spring AOP 的详细介绍：
+
+1. **概念：**
+   Spring AOP 是 Spring 框架提供的 AOP 实现，它允许开发者通过定义切面（Aspect）和通知（Advice）来实现横切关注点的功能，而无需直接修改核心业务逻辑。
+
+2. **核心组件：**
+   - **切面（Aspect）：** 切面是一个模块化单元，它封装了与特定横切关注点相关的行为，例如日志记录、事务管理、安全性等。
+   - **通知（Advice）：** 通知定义了在何时、何地、以及如何应用切面的行为。Spring AOP 支持常见的通知类型，包括前置通知、后置通知、返回通知、异常通知和环绕通知。
+   - **切点（Pointcut）：** 切点是一组连接点的集合，它允许开发者定义在哪些连接点应用通知。
+   - **织入器（Weaver）：** 织入器负责将切面中定义的通知织入到目标对象的连接点上，从而实现横切关注点的功能。
+   - **目标对象（Target Object）：** 目标对象是应用程序中被切面所影响或增强的原始对象，它是实际执行业务逻辑的对象。
+
+3. **支持的通知类型：**
+   - **前置通知（Before advice）：** 在连接点之前执行的通知。
+   - **后置通知（After advice）：** 在连接点完成后（无论是正常返回还是异常退出）执行的通知。
+   - **返回通知（After returning advice）：** 在连接点正常完成后执行的通知。
+   - **异常通知（After throwing advice）：** 在方法抛出异常后执行的通知。
+   - **环绕通知（Around advice）：** 包围连接点的通知，在方法调用之前和之后都可以执行自定义的行为。
+
+4. **Spring AOP vs. AspectJ：**
+   Spring AOP 是基于动态代理实现的轻量级 AOP 框架，它仅支持方法级别的连接点。相比之下，AspectJ 是一个功能更强大的 AOP 框架，它支持更广泛的连接点，包括方法调用、字段访问、对象创建等。Spring AOP 在运行时创建代理对象，而 AspectJ
+   可以在编译时或者加载时进行织入操作。
+
+5. **使用场景：**
+   - 记录日志：在方法执行前后记录日志信息。
+   - 事务管理：在方法执行前后开启、提交或回滚事务。
+   - 权限控制：在方法执行前检查用户权限。
+   - 缓存管理：在方法执行前后存取缓存数据。
+   - 异常处理：在方法执行后处理异常情况。
+
+总的来说，Spring AOP 提供了一种轻量级的 AOP 实现，使开发者能够更加灵活地管理应用程序的横切关注点，从而提高代码的模块化性、可维护性和可重用性。
+
+### spring aop
+
+在 Spring AOP 中，有一些核心的类和接口起到了关键作用，以下是其中比较重要的一些类和接口：
+
+1. **Aspect（切面）：**
+   - **@Aspect：** 这是一个注解，用于定义一个切面。通常与其他注解（如 @Before、@After、@Around 等）一起使用，用于定义通知和切点。
+
+2. **Advice（通知）：**
+   - **MethodBeforeAdvice：** 前置通知的接口，用于在方法调用之前执行。
+   - **AfterReturningAdvice：** 返回通知的接口，用于在方法正常返回后执行。
+   - **ThrowsAdvice：** 异常通知的接口，用于在方法抛出异常后执行。
+   - **MethodInterceptor：** 环绕通知的接口，用于在方法调用前后执行自定义的行为。
+
+3. **Pointcut（切点）：**
+   - **Pointcut：** 定义了一组连接点，通知将会在这些连接点上被执行。Spring 提供了多种实现，如 `NameMatchMethodPointcut`、`RegexpMethodPointcut` 和 `JdkRegexpMethodPointcut` 等。
+
+4. **Advisor（顾问）：**
+   - **DefaultPointcutAdvisor：** 默认的顾问类，用于将切点和通知结合起来。
+
+5. **ProxyFactoryBean：**
+   - **ProxyFactoryBean：** 用于创建代理对象的工厂类，可以通过它的属性设置来定义代理对象的行为，如要代理的目标对象、要织入的切面等。
+
+6. **ProxyFactory：**
+   - **ProxyFactory：** 与 `ProxyFactoryBean` 类似，也是用于创建代理对象的工厂类，但它更为底层，可以更加灵活地创建代理对象。
+
+7. **AopProxy：**
+   - **AopProxy：** 是一个接口，定义了获取代理对象的方法，有两个实现类 `JdkDynamicAopProxy` 和 `CglibAopProxy`，分别用于基于 JDK 动态代理和 CGLIB 代理的情况。
+
+8. **ProxyConfig：**
+   - **ProxyConfig：** 代理配置类，用于配置代理对象的创建方式和其他相关属性。
+
+这些类和接口构成了 Spring AOP 的核心组件，通过它们，开发者可以定义切面、通知、切点和代理对象，从而实现横切关注点的功能，并将其与核心业务逻辑解耦。
+
+### AnnotationAwareAspectJAutoProxyCreator
+
+`AnnotationAwareAspectJAutoProxyCreator` 是 Spring 框架中的一个类，用于支持基于注解的 AspectJ 切面编程。它是自动代理创建器的一种，特别负责识别带有 AspectJ 注解 (`@Aspect`) 的类，并为它们自动创建代理。这个过程是
+AOP (面向切面编程) 的核心组成部分，允许开发者定义切面（aspects）、通知（advises）、切点（pointcuts）等，以便在不修改源代码的情况下增加额外的行为（比如日志记录、事务管理等）。
+
+具体来说，`AnnotationAwareAspectJAutoProxyCreator` 执行以下关键任务：
+
+1. **检测`@Aspect`注解**：它会扫描应用上下文中所有的 Bean，寻找带有 `@Aspect` 注解的类，这些类定义了切面的规则和逻辑。
+
+2. **创建代理**：对于那些与切点表达式匹配的 Bean，`AnnotationAwareAspectJAutoProxyCreator` 会为它们创建代理。这些代理在目标方法执行前后可以执行额外的逻辑，如前置通知（Before advice）、后置通知（After returning
+   advice）、异常通知（After throwing advice）等。
+
+3. **管理通知和切点**：它还负责处理这些切面中定义的通知（advice）和切点（pointcut）逻辑，确保在正确的时间、正确的地点执行预定的操作。
+
+`AnnotationAwareAspectJAutoProxyCreator` 是 Spring AOP 功能的关键组件之一，使得在 Spring 应用中实现面向切面编程变得更加简单和直接。通过使用 AspectJ 的注解，开发者可以非常灵活地定义横切关注点，而无需深入了解复杂的 AOP
+概念或代理机制。
+
+这个类属于 Spring AOP 和 AspectJ 支持的一部分，通常是通过配置（如使用 Java 配置或 XML 配置）自动注册和激活的，而开发者主要关注于定义切面和通知逻辑。
+
+
+
 ## 问题
 
 ### 什么是循环依赖,spring是如何解决循环依赖问题的?
