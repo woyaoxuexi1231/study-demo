@@ -73,7 +73,7 @@ class ApisixUpstream {
      * value: weight 权重
      * 上游节点
      */
-    private Map<String,Integer> nodes;
+    private Map<String, Integer> nodes;
     /**
      * 超时配置
      */
@@ -105,6 +105,77 @@ class ApisixUpstream {
      */
     @JSONField(name = "keepalive_pool")
     private UpstreamKeepalivePool keepalivePool;
+    /**
+     * 主动健康检查配置
+     */
+    private ApisixHealthChecks check;
+}
+
+@Data
+class ApisixHealthChecks {
+    /**
+     * 健康状态配置
+     */
+    private ApisixHealthCheckHealthy healthy;
+    /**
+     * 不健康状态配置
+     */
+    private ApisixHealthCheckUnhealthy unhealthy;
+    /**
+     * 向目标节点发出 HTTP GET 请求时应使用的路径。
+     */
+    private String httpPath;
+    /**
+     * 主动健康检查的套接字的超时时间
+     */
+    private Integer timeout;
+    /**
+     * 在主动健康检查中同时检查的目标数量。
+     */
+    private Integer concurrency;
+}
+
+@Data
+class ApisixHealthCheckHealthy {
+    /**
+     * 主动健康检查的 HTTP 成功次数，若达到此值，表示上游服务目标节点是健康的。
+     */
+    private Integer successes;
+    /**
+     * 对不健康目标的主动健康检查之间的间隔（以秒为单位）。数值为0表示不应该对健康目标进行主动探查。
+     */
+    private Integer interval;
+    /**
+     * HTTP 状态码列表，当探针在主动健康检查中返回时，视为健康。
+     */
+    @JSONField(name = "http_statuses")
+    private List<Integer> httpStatuses;
+}
+
+@Data
+class ApisixHealthCheckUnhealthy {
+    /**
+     * 主动探测中 TCP 失败次数超过该值时，认为目标不健康。
+     */
+    @JSONField(name = "tcp_failures")
+    private Integer tcpFailures;
+    /**
+     * 活动探针中认为目标不健康的超时次数。
+     */
+    private Integer timeouts;
+    /**
+     * 对不健康目标的主动健康检查之间的间隔（以秒为单位）。数值为0表示不应该对健康目标进行主动探查。
+     */
+    private Integer interval;
+    /**
+     * 主动健康检查的 HTTP 失败次数，默认值为0。若达到此值，表示上游服务目标节点是不健康的。
+     */
+    private Integer httpFailures;
+    /**
+     * HTTP 状态码列表，当探针在主动健康检查中返回时，视为健康。
+     */
+    @JSONField(name = "http_statuses")
+    private List<Integer> httpStatuses;
 }
 
 @Data

@@ -1,3 +1,7 @@
+github token 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
+
+
+
 ### 2024-10-21
 
 Spring webflux
@@ -34,3 +38,21 @@ spring-cloud-starter-bootstrap的作用
 
 1. docker打包插件，jenkins使用
 2. spring-cloud-commons是什么？和Ribbon，Hystrix，zuul的关系
+
+
+
+### 2024-11-1
+
+runcher
+
+flink 
+
+定时任务框架：[Apache DolphinScheduler](https://gitee.com/dolphinscheduler/DolphinScheduler)
+
+idea插件整理
+
+
+
+### 2024-11-4
+
+pgsql id如何自增

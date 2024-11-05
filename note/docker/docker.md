@@ -212,8 +212,16 @@ yum install vim
 docker commit 716569939c55 mycentos
 # sha256:adcff16466c9a99b7ab3f59d6188d78a46d1c2fcfc0f6bbc95969e4e23b1f2e3
 # 这样就可以在 docker images 中看到新的镜像,运行新的镜像就可以直接使用之前安装的 vim 了
-
 ```
+
+#### 查看docker容器的启动参数
+
+```shell
+```
+
+
+
+
 
 ## dockerfile 学习
 

@@ -2,11 +2,14 @@ package org.hulei.springcloud.client;
 
 import cn.hutool.core.thread.ThreadFactoryBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.hulei.springcloud.client.listener.ApplicationReadyEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -48,7 +51,7 @@ import java.util.concurrent.TimeUnit;
 - @EnableEurekaClient 专用于 Eureka 作为服务注册中心的场景。它依赖于 Spring Cloud Netflix。
 - @EnableDiscoveryClient 这是一个更通用的注解，支持多个服务发现组件。使用这个注解可以在切换服务注册中心实现时提供更大的灵活性。
  */
-// @EnableDiscoveryClient
+@EnableDiscoveryClient
 @SpringBootApplication
 public class EurekaClientApplication implements ApplicationRunner {
 
@@ -58,7 +61,9 @@ public class EurekaClientApplication implements ApplicationRunner {
         DiscoveryClient_EUREKA-CLIENT/LAPTOP-HGITO649:eureka-client:9101 - registration status: 204
         注册成功
          */
-        SpringApplication.run(EurekaClientApplication.class, args);
+        ConfigurableApplicationContext context = SpringApplication.run(EurekaClientApplication.class, args);
+
+        context.publishEvent(new ApplicationReadyEvent("容器启动完成!"));
     }
 
     @PreDestroy

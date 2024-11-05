@@ -28,9 +28,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 2. configuration: 指定自定义的 Feign 配置类。你可以在这个配置类中配置 Feign 客户端的相关参数，比如超时时间、重试策略等。
 3. fallback: 指定断路器（Hystrix）的回退实现类。如果调用服务失败或者出现异常，断路器会启用，并调用指定的回退实现类来处理回退逻辑。
 4. url: 配置服务的地址
+5. contextId:
  */
 @FeignClient(
-        name = "cloud-client",
+        name = "eureka-client",
+        contextId = "",
         // url = "http://localhost:12008", // 这里暂时不配置, 我们通过eureka注册中心拿到服务
         configuration = FeignConfig.class,
         fallback = HiHystrix.class)
