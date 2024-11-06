@@ -44,7 +44,7 @@ import java.util.concurrent.TimeUnit;
 @RestController("/application")
 @org.mybatis.spring.annotation.MapperScan(basePackages = {
         "org.hulei.common.mapper.mapper",
-        "org.hulei.keeping.server.common.mapper"
+        "org.hulei.springboot.common.mapper"
 })
 @Slf4j
 // @EnableDynamicDataSource

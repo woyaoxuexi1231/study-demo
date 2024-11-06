@@ -1,0 +1,8 @@
+server:
+  port: 11007
+
+spring:
+  profiles:
+    active: db,redis
+  main:
+    allow-circular-references: true
