@@ -2,21 +2,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
     <parent>
+        <artifactId>spring-cloud</artifactId>
         <groupId>org.hulei</groupId>
-        <artifactId>springboot-vue</artifactId>
         <version>1.0.0.4-SNAPSHOT</version>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>server</artifactId>
+    <artifactId>config-client</artifactId>
 
     <properties>
+        <build.finalName>demo-springcloud-config-server</build.finalName>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <build.finalName>springbootvue-server</build.finalName>
     </properties>
 
     <dependencies>
@@ -25,14 +24,33 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-log4j2</artifactId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <!-- 使用spring cloud bus来做到实时刷新配置 -->
+        <!--
+         Spring Cloud Bus 出现的契机主要是为了解决微服务架构中的服务实例需要及时响应配置更改、共享事件等场景的需要。在传统部署模式下，当配置信息改变时，可能需要手动重启服务来加载新的配置，这在动态的云环境和容器化部署中显得不够灵活和高效。
+
+        解决的主要问题包括：
+        动态配置更新：结合 Spring Cloud Config 使用时，Spring Cloud Bus 允许配置更新时自动通知服务实例，实现配置的动态刷新，无需重新启动服务。
+        事件广播：在微服务架构中，服务实例之间可能需要基于某些事件做出响应或通信。Spring Cloud Bus 提供了一条消息通道，使得事件可以被广播到所有订阅了这些事件的服务实例。
+        解耦服务通信：通过使用轻量级消息代理，Spring Cloud Bus 有助于实现服务实例之间的解耦通信，增加系统的灵活性和可扩展性。
+         -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bus-amqp</artifactId>
         </dependency>
     </dependencies>
 
-
     <profiles>
-
         <profile>
             <id>dev</id>
             <!--默认激活状态-->
@@ -42,16 +60,6 @@
             <build>
                 <finalName>${project.name}</finalName>
                 <plugins>
-                    <plugin>
-                        <artifactId>maven-clean-plugin</artifactId>
-                        <configuration>
-                            <filesets>
-                                <fileset>
-                                    <directory>src/main/resources/public</directory>
-                                </fileset>
-                            </filesets>
-                        </configuration>
-                    </plugin>
                     <plugin>
                         <!--
                         使用 2.2.6.RELEASE 版本 spring-boot-maven-plugin 进行打包的时候我发现 jsp 即使被打进包里也访问不了
@@ -87,26 +95,8 @@
                         </executions>
                     </plugin>
                 </plugins>
-                <resources>
-                    <resource>
-                        <directory>src/main/resources</directory>
-                        <includes>
-                            <include>**/**</include>
-                        </includes>
-                    </resource>
-                    <resource>
-                        <directory>src/main/webapp</directory>
-                        <includes>
-                            <include>**/**</include>
-                        </includes>
-                        <filtering>false</filtering>
-                        <!--                        <targetPath>META-INF/resource</targetPath>-->
-                    </resource>
-                </resources>
             </build>
         </profile>
-
-
         <profile>
             <id>pro</id>
             <activation>
@@ -114,18 +104,19 @@
             </activation>
             <build>
                 <finalName>${project.name}</finalName>
-                <resources>
-                    <resource>
-                        <filtering>true</filtering>
-                        <directory>src/main/resources</directory>
-                        <excludes>
-                            <exclude>
-                                **/*.properties
-                            </exclude>
-                        </excludes>
-                    </resource>
-                </resources>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <configuration>
+                            <!--移除properties文件，pro把配置文件放jar包外进行配置-->
+                            <excludes>
+                                <exclude>
+                                    **/*.properties
+                                </exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
                     <plugin>
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-maven-plugin</artifactId>
@@ -138,70 +129,6 @@
                                 <goals>
                                     <goal>repackage</goal>
                                 </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-
-        <profile>
-            <id>ui</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.hulei</groupId>
-                    <artifactId>vue2-cli</artifactId>
-                    <version>1.0.0.4-SNAPSHOT</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.hulei</groupId>
-                    <artifactId>vue2-webpack</artifactId>
-                    <version>1.0.0.4-SNAPSHOT</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.hulei</groupId>
-                    <artifactId>vue3-vite</artifactId>
-                    <version>1.0.0.4-SNAPSHOT</version>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-clean-plugin</artifactId>
-                        <configuration>
-                            <filesets>
-                                <fileset>
-                                    <directory>src/main/resources/public</directory>
-                                </fileset>
-                            </filesets>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-resources-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>copy Vue.js frontend content</id>
-                                <goals>
-                                    <goal>copy-resources</goal>
-                                </goals>
-                                <phase>generate-resources</phase>
-                                <configuration>
-                                    <outputDirectory>src/main/resources/public</outputDirectory>
-                                    <!-- true表示覆盖目标文件中已经存在的文件 -->
-                                    <overwrite>true</overwrite>
-                                    <resources>
-                                        <resource>
-                                            <!-- <directory>${project.parent.basedir}/vue2-cli/dist</directory> -->
-                                            <!-- <directory>${project.parent.basedir}/vue2-webpack/dist</directory> -->
-                                            <directory>${project.parent.basedir}/vue3-vite/dist</directory>
-                                        </resource>
-                                    </resources>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

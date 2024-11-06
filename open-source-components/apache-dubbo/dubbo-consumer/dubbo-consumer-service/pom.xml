@@ -3,59 +3,42 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>dependencies-parent</artifactId>
+        <artifactId>dubbo-consumer</artifactId>
         <groupId>org.hulei</groupId>
         <version>1.0.0.4-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>springboot-thymeleaf</artifactId>
+    <artifactId>dubbo-consumer-service</artifactId>
 
     <properties>
-        <build.finalName>springboot-thymeleaf</build.finalName>
+        <build.finalName>demo-dubbo-consumer</build.finalName>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <demo.dubbo.consumer.version>1.0.0.4-SNAPSHOT</demo.dubbo.consumer.version>
+        <demo.commom.starter.version>1.0.0.4-SNAPSHOT</demo.commom.starter.version>
     </properties>
 
     <dependencies>
 
-        <!-- 内部 -->
+        <!--内部-->
         <dependency>
             <groupId>org.hulei</groupId>
-            <artifactId>core</artifactId>
-            <version>1.0.0.4-SNAPSHOT</version>
+            <artifactId>dubbo-consumer-api</artifactId>
+            <version>${demo.dubbo.consumer.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hulei</groupId>
-            <artifactId>mapperplus</artifactId>
-            <version>1.0.0.4-SNAPSHOT</version>
+            <artifactId>common-starter</artifactId>
+            <version>${demo.commom.starter.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hulei</groupId>
             <artifactId>curator-starter</artifactId>
             <version>1.0.0.4-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>org.hulei</groupId>
-            <artifactId>common-starter</artifactId>
-            <version>1.0.0.4-SNAPSHOT</version>
-        </dependency>
 
-        <!-- 一些工具包 -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
-        </dependency>
-
-        <!--自动配置-->
+        <!--Springboot-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -65,37 +48,13 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.redisson</groupId>
-            <artifactId>redisson-spring-boot-starter</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <!-- 只在运行时需要,且依赖不传递 -->
-            <scope>runtime</scope>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
-
-        <!-- 整合 thymeleaf -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
-
-        <!-- jdbc -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.oracle.database.jdbc</groupId>
-            <artifactId>ojdbc8</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.oracle.database.nls</groupId>
-            <artifactId>orai18n</artifactId>
-        </dependency>
-
-
         <dependency>
             <groupId>tk.mybatis</groupId>
             <artifactId>mapper-spring-boot-starter</artifactId>
@@ -104,37 +63,34 @@
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper-spring-boot-starter</artifactId>
         </dependency>
+
+        <!--驱动-->
         <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
+        <!-- Dubbo 的 Springboot Starter依赖 -->
         <dependency>
-            <groupId>dom4j</groupId>
-            <artifactId>dom4j</artifactId>
-            <version>1.6.1</version>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
         </dependency>
 
+        <!-- 启动admin的mock依赖 -->
         <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
+            <groupId>org.apache.dubbo.extensions</groupId>
+            <artifactId>dubbo-mock-admin</artifactId>
+        </dependency>
+        <!-- 启动admin mock依赖之后会依赖 Google Gson -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
         </dependency>
 
-        <!--测试-->
+        <!-- nacos注册中心的依赖 -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-registry-nacos</artifactId>
         </dependency>
 
     </dependencies>
@@ -150,16 +106,6 @@
                 <finalName>${project.name}</finalName>
                 <plugins>
                     <plugin>
-                        <!--
-                        使用 2.2.6.RELEASE 版本 spring-boot-maven-plugin 进行打包的时候我发现 jsp 即使被打进包里也访问不了
-                        使用 1.4.2.RELEASE 版本的也不行
-                        打出来的包启动会报错
-                        Failed to scan [jar:file:/C:/Project/study-demo/demo-spring/demo-springboot/target/demo-springboot.jar!/BOOT-INF/lib/spring-webmvc-5.2.7.RELEASE.jar!/] from classloader hierarchy
-                        Caused by: java.lang.IllegalStateException: Not a file URL
-                        Failed to scan [jar:file:/C:/Project/study-demo/demo-spring/demo-springboot/target/demo-springboot.jar!/BOOT-INF/lib/jstl-1.2.jar!/] from classloader hierarchy
-                        Caused by: java.lang.IllegalStateException: Not a file URL
-                        这两个日志是 WARN 级别的, 不知道是什么原因
-                        -->
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-maven-plugin</artifactId>
                         <configuration>
@@ -184,22 +130,6 @@
                         </executions>
                     </plugin>
                 </plugins>
-                <resources>
-                    <resource>
-                        <directory>src/main/resources</directory>
-                        <includes>
-                            <include>**/**</include>
-                        </includes>
-                    </resource>
-                    <resource>
-                        <directory>src/main/webapp</directory>
-                        <includes>
-                            <include>**/**</include>
-                        </includes>
-                        <filtering>false</filtering>
-                        <!--                        <targetPath>META-INF/resource</targetPath>-->
-                    </resource>
-                </resources>
             </build>
         </profile>
         <profile>
@@ -209,18 +139,19 @@
             </activation>
             <build>
                 <finalName>${project.name}</finalName>
-                <resources>
-                    <resource>
-                        <filtering>true</filtering>
-                        <directory>src/main/resources</directory>
-                        <excludes>
-                            <exclude>
-                                **/*.properties
-                            </exclude>
-                        </excludes>
-                    </resource>
-                </resources>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <configuration>
+                            <!--移除properties文件，pro把配置文件放jar包外进行配置-->
+                            <excludes>
+                                <exclude>
+                                    **/*.properties
+                                </exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
                     <plugin>
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-maven-plugin</artifactId>

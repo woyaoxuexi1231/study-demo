@@ -243,7 +243,7 @@
     </dependencies>
 
     <build>
-        <finalName>${build.finalName}</finalName>
+        <finalName>${project.name}</finalName>
     </build>
 
 </project>
