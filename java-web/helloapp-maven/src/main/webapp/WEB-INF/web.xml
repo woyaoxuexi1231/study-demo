@@ -8,14 +8,24 @@
          version="4.0">
 
     <!--
+    Tomcat在 Windows 环境下出现乱码
+    conf 文件夹下的 logging.properties 中修改编码 java.util.logging.ConsoleHandler.encoding = UTF-8 将 UTF-8 修改为 GBK
+    -->
+
+    <!--
      <servlet> 元素： 这个元素定义了一个Servlet，它有两个子元素：
-        <servlet-name>: 指定Servlet的名称为 “dispatcher”。
-        <servlet-class>: 指定Servlet类的完整路径为 “mypack.LoginServlet”。 默认会在 WEB-INF/classes 下去找
+        <servlet-name>: 指定 Servlet 的名称
+        <servlet-class>: 指定 Servlet 类的完整路径为 “mypack.LoginServlet”。 默认会在 WEB-INF/classes 下去找
      -->
     <servlet>
         <servlet-name>login</servlet-name>
         <servlet-class>mypack.LoginServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>generateResponse</servlet-name>
+        <servlet-class>mypack.ResponseJsonServlet</servlet-class>
+    </servlet>
+
 
     <!--
      <servlet-mapping> 元素： 该元素用于将Servlet与URL模式相匹配，使得当客户端请求特定URL时，能够调用相应的Servlet。这里的配置将Servlet “dispatcher” 映射到 “/dispatcher” 的URL路径。
@@ -24,16 +34,11 @@
         <servlet-name>login</servlet-name>
         <url-pattern>/login</url-pattern>
     </servlet-mapping>
-
-
-    <servlet>
-        <servlet-name>generateResponse</servlet-name>
-        <servlet-class>mypack.ResponseJsonServlet</servlet-class>
-    </servlet>
     <servlet-mapping>
         <servlet-name>generateResponse</servlet-name>
         <url-pattern>/generateResponse</url-pattern>
     </servlet-mapping>
+
 
     <!--
      <welcome-file-list> 元素： 这个元素定义了Web应用程序的欢迎文件列表。当用户访问Web应用程序的根目录时，服务器将尝试加载列表中的文件。在这个例子中，欢迎文件为 “login.htm”。

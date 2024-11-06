@@ -13,9 +13,10 @@ import java.io.IOException;
 
 
 /**
- * HTTP特定：专为 HTTP协议设计，添加了doGet(), doPost(), doPut(), doDelete()等方法，使得处理特定HTTP方法更加方便。
- * 自动支持HTTP协议特性：提供对HTTP请求和响应的全面支持，比如请求参数、Cookie、Session等，可以直接通过相关方法来方便地访问和操作。
- * 广泛使用：HttpServlet在实际Web开发中非常常用，因为大多数的Web应用都依赖HTTP协议来传输数据。
+ * HttpServlet
+ * 1. HTTP特定: 专为 HTTP 协议设计，添加了 doGet(), doPost(), doPut(), doDelete()等方法, 使得处理特定 HTTP 方法更加方便。
+ * 2. 自动支持 HTTP 协议特性: 提供对 HTTP 请求和响应的全面支持, 比如请求参数、Cookie、Session等, 可以直接通过相关方法来方便地访问和操作。
+ * 3. 广泛使用: HttpServlet 在实际 Web开发中非常常用, 因为大多数的 Web 应用都依赖 HTTP 协议来传输数据
  *
  * @author hulei
  * @since 2024/10/14 22:24
@@ -23,6 +24,12 @@ import java.io.IOException;
 
 @Slf4j
 public class LoginServlet extends HttpServlet {
+
+    /**
+     * 通过这个属性可以看到, 同一个 servlet 在容器内部只有一个对象, 请求进来的时候都会使用这个对象
+     * 所以为了避免线程安全问题, 最好是不要在 servlet 中设置属性
+     */
+    private String lastUser;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -38,14 +45,19 @@ public class LoginServlet extends HttpServlet {
             通过 setAttribute 方法可以在请求中存储数据,这些属性可以在整个请求的生命周期中共享和访问
             主要是为了组件之间传递数据(比如传递给下一个Servlet,或者JSP,或者下一个Filter)
          */
+        log.info("last login user is : {}", lastUser);
+
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         request.setAttribute("USER", username);
         request.setAttribute("PASSWORD", password);
         Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            log.info("name: {}, value: {}, path: {}", cookie.getName(), cookie.getValue(), cookie.getPath());
+        if(cookies != null) {
+            for (Cookie cookie : cookies) {
+                log.info("name: {}, value: {}, path: {}", cookie.getName(), cookie.getValue(), cookie.getPath());
+            }
         }
+        lastUser = username;
 
         /*
         HttpServletResponse用于帮助服务器构建和发送对客户端的HTTP响应。它为返回数据提供了接口。
