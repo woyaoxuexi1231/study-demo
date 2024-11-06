@@ -40,7 +40,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <build>
-                <finalName>${build.finalName}</finalName>
+                <finalName>${project.name}</finalName>
                 <plugins>
                     <plugin>
                         <artifactId>maven-clean-plugin</artifactId>
@@ -113,7 +113,7 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
             <build>
-                <finalName>${build.finalName}</finalName>
+                <finalName>${project.name}</finalName>
                 <resources>
                     <resource>
                         <filtering>true</filtering>

@@ -161,7 +161,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <build>
-                <finalName>${build.finalName}</finalName>
+                <finalName>${project.name}</finalName>
                 <plugins>
                     <plugin>
                         <!--
@@ -229,7 +229,7 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
             <build>
-                <finalName>${build.finalName}</finalName>
+                <finalName>${project.name}</finalName>
                 <resources>
                     <resource>
                         <!-- 指定是否对资源文件进行过滤。过滤通常涉及将资源文件中的占位符替换为实际的值。

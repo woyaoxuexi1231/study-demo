@@ -52,4 +52,5 @@ Java起初拥有三个版本：
 
 而这之前，2018年1月，Spring推出了Spring boot2.0，推出了响应式编程，与传统的命令式编程形成完全割裂的两种编程方式。
 
-![image-20241105011248124](C:\dataz\Project\study-demo\note\images\image-20241105011248124.png)
+![image-20241105011248124](..\images\image-20241105011248124.png)
+
