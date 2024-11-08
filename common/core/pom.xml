@@ -64,6 +64,19 @@
             <artifactId>guava</artifactId>
         </dependency>
 
+        <!-- MOCK数据生成包 -->
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+        <!-- mock数据生成包 -->
+        <dependency>
+            <groupId>com.github.jsonzou</groupId>
+            <artifactId>jmockdata</artifactId>
+            <version>4.2.0</version>
+        </dependency>
+
         <!-- 一些可选的配置 -->
         <!-- spring容器包 -->
         <dependency>
