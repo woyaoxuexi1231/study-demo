@@ -22,7 +22,7 @@ public class ApisixAdminRsp {
 }
 
 @Data
-class ApisixRouteRsp{
+class ApisixRouteRsp {
     /**
      * 创建下标
      */
@@ -31,6 +31,8 @@ class ApisixRouteRsp{
      * 路由信息
      */
     private ApisixAdminReq value;
+    /**
+     * 路由key  /apisix/routes/id
+     */
     private String key;
-    private String modifiedIndex;
 }

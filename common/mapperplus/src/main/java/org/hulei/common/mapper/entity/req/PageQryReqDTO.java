@@ -2,7 +2,7 @@ package org.hulei.common.mapper.entity.req;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**

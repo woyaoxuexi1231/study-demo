@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import kotlin.ParameterName;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
@@ -49,7 +51,7 @@ public class ApisixAdminApplication {
 
     @SneakyThrows
     @GetMapping("/getRoutes")
-    public void getRoutes(String id) {
+    public void getRoutes(@RequestParam(name = "id", required = false) String id) {
         // 发起 GET 请求，使用 exchange 方法
         String url = "http://192.168.3.233:9180/apisix/admin/routes";
         if (Objects.isNull(id)) {
@@ -57,11 +59,11 @@ public class ApisixAdminApplication {
             // ApisixAdminRsp apisixAdminRsp = JSON.parseObject(responseEntity.getBody(), ApisixAdminRsp.class);
             prettyPrint(responseEntity.getBody());
         } else {
-            ResponseEntity<String> responseEntity = restTemplate.exchange(url + "/" + id, HttpMethod.GET, new HttpEntity<>(buildHeaders()), String.class);
+            ResponseEntity<Object> responseEntity = restTemplate.exchange(url + "/" + id, HttpMethod.GET, new HttpEntity<>(buildHeaders()), Object.class);
             // ApisixAdminRsp apisixAdminRsp = JSON.parseObject(responseEntity.getBody(), ApisixAdminRsp.class);
             // prettyPrint(responseEntity.getBody());
-            ApisixRouteRsp apisixAdminRsp = JSON.parseObject(responseEntity.getBody(), ApisixRouteRsp.class);
-            prettyPrint(apisixAdminRsp);
+            // ApisixRouteRsp apisixAdminRsp = JSON.parseObject(responseEntity.getBody(), ApisixRouteRsp.class);
+            prettyPrint(responseEntity.getBody());
         }
     }
 
@@ -173,7 +175,7 @@ public class ApisixAdminApplication {
         // prettyPrint(node);
         HttpEntity<Object> entity = new HttpEntity<>(JSONObject.toJSONString(apisixAdminReq), httpHeaders);
         // 发起 GET 请求，使用 exchange 方法
-        String url = "http://192.168.3.233:9180/apisix/admin/routes/00000000000000000567";
+        String url = "http://192.168.3.233:9180/apisix/admin/routes/00000000000000000893";
         ResponseEntity<Object> responseEntity = restTemplate.exchange(url, HttpMethod.PATCH, entity, Object.class);
         // 处理响应
         prettyPrint(responseEntity);
@@ -181,7 +183,7 @@ public class ApisixAdminApplication {
     }
 
     @GetMapping("/deleteRoute")
-    public void deleteRoute(String id) {
+    public void deleteRoute(@RequestParam(name = "id") String id) {
         // 发起 GET 请求，使用 exchange 方法
         String url = "http://192.168.3.233:9180/apisix/admin/routes/";
         ResponseEntity<Object> responseEntity = restTemplate.exchange(url + id, HttpMethod.DELETE, new HttpEntity<>(buildHeaders()), Object.class);
@@ -199,7 +201,7 @@ public class ApisixAdminApplication {
         // 创建请求头
         HttpHeaders headers = new HttpHeaders();
         // 新增一个 X-API-Key: edd1c9f034335f136f87ad84b625c8f1 请求头, 这是 apisix 权限控制
-        headers.set("X-API-Key", "edd1c9f034335f136f87ad84b625c8f1"); // 添加认证头
+        headers.set("X-API-Key", "edd1c98034335f136f87ad84b625c8f1"); // 添加认证头
 
         return headers;
     }

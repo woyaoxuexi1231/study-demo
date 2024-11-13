@@ -144,3 +144,15 @@ curl -i "http://127.0.0.1:9180/apisix/admin/routes/getting-started-ip" -X PATCH 
     }
 }'
 ```
+
+
+
+# 端口
+
+
+
+apisix.node_listen 路由监听端口，请求都通过这个端口进行转发
+
+plugin_attr.prometheus.export_addr.port 配置 Prometheus 插件的监控数据导出端口
+
+deployment.admin.admin_listen.port 是用于配置 **Admin API** 的监听端口

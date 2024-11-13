@@ -1,4 +1,4 @@
-package org.hulei.javaee.springmvc.filter;
+package org.hulei.springboot.js.filter;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -11,14 +11,13 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 /**
- * TODO 这里没有生效,不知道是不是需要配置 mvc
  * @author hulei
- * @since 2024/11/13 20:33
+ * @since 2024/11/13 20:40
  */
 
-@Slf4j
 @Component
-public class SimpleFilter implements Filter {
+@Slf4j
+public class MyFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {

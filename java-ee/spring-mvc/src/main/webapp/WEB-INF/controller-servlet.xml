@@ -71,7 +71,7 @@
             <!-- 这个元素定义了哪些请求路径不应该被拦截器处理。path="/" 指的是应用的根路径。这意味着，虽然拦截器会拦截所有的请求，但是它不会处理到达应用根路径的请求。通常用于允许对主页的无障碍访问，而无需经过拦截器的处理。 -->
             <mvc:exclude-mapping path="/"/>
             <!-- 在拦截器配置中，您需要指定要应用的拦截器类。在这个示例中，我们使用 <bean> 元素指定了一个名为 SimpleFilter 的自定义拦截器类。 -->
-            <bean class="org.hulei.javaee.springmvc.filter.SimpleFilter"/>
+            <bean class="org.hulei.javaee.springmvc.filter.SimpleInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>
 

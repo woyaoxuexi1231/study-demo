@@ -2,8 +2,8 @@ package org.hulei.common.mapper.entity.pojo;
 
 import lombok.Data;
 
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 /**
  * @projectName: study-demo
