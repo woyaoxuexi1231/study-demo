@@ -15,6 +15,24 @@
 
 
     <!--
+
+    Maven拉取依赖出现报错：Since Maven 3.8.1 http repositories are blocked.
+    maven从 3.8.1 开始就不再支持 http 的仓库了，只能使用 https 的仓库。
+
+    修改 maven 全局配置里的配置，把配置里的下面的内容注释。
+    idea在的安装目录下: C:\Program Files\JetBrains\IntelliJ IDEA 2022.1\plugins\maven\lib\maven3\conf
+    ```
+    <mirror>
+    <id>maven-default-http-blocker</id>
+    <mirrorOf>external:http:*</mirrorOf>
+    <name>Pseudo repository to mirror external repositories initially using HTTP.</name>
+    <url>http://0.0.0.0/</url>
+    <blocked>true</blocked>
+    </mirror>
+    ```
+     -->
+
+    <!--
      springboot 父依赖， 这里没有采用这种方式
         定义了 Java 编译版本，如上为 1.6。
         使用 UTF-8 格式编码
@@ -40,9 +58,9 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <!-- https://spring.io/projects/spring-cloud可以查看 spring boot 和 spring cloud 的版本对应 -->
-        <spring.boot.dependencies.version>2.7.16</spring.boot.dependencies.version>
-        <spring.cloud.dependencies.version>2021.0.9</spring.cloud.dependencies.version>
+        <!-- https://spring.io/projects/spring-cloud 可以查看 spring boot 和 spring cloud 的版本对应 -->
+        <spring.boot.dependencies.version>3.2.11</spring.boot.dependencies.version>
+        <spring-cloud-dependencies.version>2023.0.3</spring-cloud-dependencies.version>
 
         <!-- dubbo -->
         <apache.dubbo.springboot.starter.version>3.2.7</apache.dubbo.springboot.starter.version>
@@ -141,7 +159,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring.cloud.dependencies.version}</version>
+                <version>${spring-cloud-dependencies.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -162,11 +180,11 @@
                 </exclusions>
             </dependency>
 
-<!--             <dependency> -->
-<!--                 <groupId>org.springframework.cloud</groupId> -->
-<!--                 <artifactId>spring-cloud-starter-bootstrap</artifactId> -->
-<!--                 <version>4.0.0</version> -->
-<!--             </dependency> -->
+            <!--             <dependency> -->
+            <!--                 <groupId>org.springframework.cloud</groupId> -->
+            <!--                 <artifactId>spring-cloud-starter-bootstrap</artifactId> -->
+            <!--                 <version>4.0.0</version> -->
+            <!--             </dependency> -->
 
             <!--......................................................................................................-->
             <!--.........................................各厂商提供的JDBC驱动............................................-->
@@ -384,6 +402,11 @@
             <!--......................................................................................................-->
             <!--...............................................工具包....................................................-->
             <!--......................................................................................................-->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.34</version>
+            </dependency>
             <!--Fastjson 是一个 Java 库，可以将 Java 对象转换为 JSON 格式，当然它也可以将 JSON 字符串转换为 Java 对象。-->
             <!--Fastjson 可以操作任何 Java 对象，即使是一些预先存在的没有源码的对象。-->
             <!--Fastjson 源码地址：https://github.com/alibaba/fastjson-->
@@ -420,12 +443,27 @@
                 <artifactId>commons-io</artifactId>
                 <version>${commons.io.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.17.0</version>
+            </dependency>
             <!--Hutool是一个小而全的Java工具类库，通过静态方法封装，降低相关API的学习成本，提高工作效率，使Java拥有函数式语言般的优雅，让Java语言也可以“甜甜的”。-->
             <!--https://gitee.com/dromara/hutool-->
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-core</artifactId>
                 <version>${hutool.core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-slf4j2-impl</artifactId>
+                <version>2.24.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>2.0.16</version>
             </dependency>
             <!--MyBatis Generator （MBG） 是 MyBatis MyBatis 的代码生成器。-->
             <dependency>

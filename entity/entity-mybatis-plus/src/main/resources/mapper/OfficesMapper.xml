@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hulei.eneity.mybatisplus.mapper.OfficesMapper">
+  <resultMap id="BaseResultMap" type="org.hulei.eneity.mybatisplus.domain.Offices">
+    <!--@Table offices-->
+    <id column="office_code" jdbcType="VARCHAR" property="officeCode" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="address_line1" jdbcType="VARCHAR" property="addressLine1" />
+    <result column="address_line2" jdbcType="VARCHAR" property="addressLine2" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+    <result column="country" jdbcType="VARCHAR" property="country" />
+    <result column="postal_code" jdbcType="VARCHAR" property="postalCode" />
+    <result column="territory" jdbcType="VARCHAR" property="territory" />
+  </resultMap>
+</mapper>

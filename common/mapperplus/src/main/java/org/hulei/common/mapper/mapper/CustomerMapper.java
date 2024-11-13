@@ -31,4 +31,6 @@ public interface CustomerMapper extends BaseMapper<CustomerDO> {
     void updateOne(CustomerDO customerDO);
 
     List<CustomerDO> selectCustomerByEmployeeId(Long employeeNumber);
+
+    CustomerDO selectByEnmu();
 }

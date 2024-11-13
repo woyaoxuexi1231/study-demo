@@ -173,6 +173,8 @@ public class XmlTagController {
         //     List<EmployeeDO> employeeDOS = employeeMapper.selectTagsTest();
         // });
 
+        customerMapper.selectByEnmu();
+
     }
 
     @GetMapping("/insertTagsTest")

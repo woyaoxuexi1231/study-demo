@@ -1,0 +1,35 @@
+server:
+  port: 10009
+
+spring:
+  profiles:
+    active: db,redis,zk,mvc
+  main:
+    allow-circular-references: true
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java
+      #exclude: **/static/**,**/*.js,**/*.html
+    livereload:
+      enabled: true
+      port: 35729
+
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/*.xml
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/*.xml
+
+pagehelper:
+  auto-runtime-dialect: true
+
+# log config
+#logging:
+#  level:
+#    root: DEBUG
+#    com.hundsun.demo.springboot.mapper: debug

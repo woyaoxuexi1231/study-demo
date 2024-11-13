@@ -96,4 +96,8 @@
         from customers c
         where c.sales_rep_employee_number = #{employeeNumber}
     </select>
+
+    <select id="selectByEnmu" resultMap="customBaseMapper">
+        select * from customers where customer_number = ${@org.hulei.springboot.mybatisplus.CityEnum@Aachen.code}
+    </select>
 </mapper>
