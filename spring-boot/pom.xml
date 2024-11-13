@@ -19,49 +19,15 @@
 
     <dependencies>
 
-        <!-- 内部 -->
         <dependency>
             <groupId>org.hulei</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>utils</artifactId>
             <version>1.0.0.4-SNAPSHOT</version>
         </dependency>
-        <!-- 一个starter小测试包 -->
         <dependency>
             <groupId>org.hulei</groupId>
             <artifactId>common-starter</artifactId>
             <version>1.0.0.4-SNAPSHOT</version>
-        </dependency>
-        <!-- curator工具的starter测试包 -->
-<!--         <dependency> -->
-<!--             <groupId>org.hulei</groupId> -->
-<!--             <artifactId>curator-starter</artifactId> -->
-<!--             <version>1.0.0.4-SNAPSHOT</version> -->
-<!--         </dependency> -->
-        <!-- 自定义的mapper的统一输出包 -->
-        <dependency>
-            <groupId>org.hulei</groupId>
-            <artifactId>mapperplus</artifactId>
-            <version>1.0.0.4-SNAPSHOT</version>
-        </dependency>
-        <!-- 多数据源的stater包 -->
-        <dependency>
-            <groupId>org.hulei</groupId>
-            <artifactId>spring-routing-datasource</artifactId>
-            <version>1.0.0.4-SNAPSHOT</version>
-        </dependency>
-
-        <!-- 一些工具包 -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
         </dependency>
 
         <!--自动配置-->
@@ -69,20 +35,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <!-- Thymeleaf 和 Thymeleaf 布局方言 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
-        <!-- spring缓存用到了 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.redisson</groupId>
-            <artifactId>redisson-spring-boot-starter</artifactId>
         </dependency>
         <!--
         `spring-boot-starter-actuator` 是 Spring Boot 的一个启动器（starter）依赖，其设计初衷是为了让开发者能够方便快捷地获取应用程序的运行时信息和健康状况，无需编写额外的监控和管理代码。这个库提供了一系列的预设端点（endpoints），通过这些端点，可以访问应用程序的内部信息，比如运行状况（health）、指标信息（metrics）、环境属性（env）等。
@@ -123,32 +75,6 @@
 <!--             <scope>runtime</scope> -->
 <!--         </dependency> -->
 
-
-        <!-- 数据库驱动 -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.oracle.database.jdbc</groupId>
-            <artifactId>ojdbc8</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.oracle.database.nls</groupId>
-            <artifactId>orai18n</artifactId>
-        </dependency>
-
-        <!-- mybatis+pagehelper -->
-        <dependency>
-            <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper-spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-        </dependency>
-
-
         <!-- 开源的xml解析包 -->
         <dependency>
             <groupId>dom4j</groupId>
@@ -161,20 +87,12 @@
             <artifactId>poi-ooxml</artifactId>
         </dependency>
 
-        <!-- mock数据生成包 -->
-        <dependency>
-            <groupId>com.github.jsonzou</groupId>
-            <artifactId>jmockdata</artifactId>
-            <version>4.2.0</version>
-        </dependency>
-
         <!-- 三方的UUID生成工具 -->
         <dependency>
             <groupId>com.github.f4b6a3</groupId>
             <artifactId>uuid-creator</artifactId>
             <version>5.2.0</version>
         </dependency>
-
 
         <!--测试-->
         <dependency>

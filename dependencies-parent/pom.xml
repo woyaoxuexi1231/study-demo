@@ -61,6 +61,8 @@
         <!-- https://spring.io/projects/spring-cloud 可以查看 spring boot 和 spring cloud 的版本对应 -->
         <spring.boot.dependencies.version>3.2.11</spring.boot.dependencies.version>
         <spring-cloud-dependencies.version>2023.0.3</spring-cloud-dependencies.version>
+        <!-- spring admin -->
+        <spring-boot-admin-starter-server.version>3.2.3</spring-boot-admin-starter-server.version>
 
         <!-- dubbo -->
         <apache.dubbo.springboot.starter.version>3.2.7</apache.dubbo.springboot.starter.version>
@@ -96,8 +98,6 @@
         <apache.curator.framework.version>2.13.0</apache.curator.framework.version>
         <apache.curator.recipes.version>2.13.0</apache.curator.recipes.version>
 
-        <!--第三方依赖-->
-        <spring-boot-admin-starter-server.version>2.6.11</spring-boot-admin-starter-server.version>
         <!--一些工具组件-->
         <hutool.core.version>5.6.1</hutool.core.version>
         <guava.version>21.0</guava.version>

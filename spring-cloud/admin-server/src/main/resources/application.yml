@@ -1,6 +1,10 @@
 spring:
   application:
     name: admin-server
+  security:
+    user:
+      name: admin #管理界面登录账户
+      password: admin #管理界面登录密码
 server:
   port: 8769
 eureka:
@@ -19,3 +23,7 @@ management:
   endpoint:
     health:
       show-details: ALWAYS
+
+logging:
+  level:
+    root: debug
