@@ -1,7 +1,9 @@
 package org.hulei.springboot.mybatisplus.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.javafaker.Faker;
 import com.github.jsonzou.jmockdata.JMockData;
 import com.google.gson.Gson;
@@ -21,16 +23,19 @@ import org.hulei.common.mapper.mapper.OrdersMapper;
 import org.hulei.common.mapper.mapper.ProductlinesMapper;
 import org.hulei.common.mapper.mapper.ProductsMapper;
 import org.hulei.springboot.mybatisplus.LocalDateTimeTypeAdapter;
+import org.hulei.springboot.mybatisplus.mapper.EmployeeMapper2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -226,6 +231,17 @@ public class XmlTagController {
         // 这里同样的,插入操作也没有报错,但是出现了精度丢失
         customerDO1.setCreditlimit(BigDecimal.valueOf(12352350.325498237));
         customerMapper.insert(customerDO1);
+    }
+
+    @Autowired
+    EmployeeMapper2 employeeMapper2;
+
+    @GetMapping("/selectByPage")
+    public void selectByPage() {
+        IPage<Map<String, Object>> data = employeeMapper2.getData(new Page<>(1, 10), "select * from employees");
+        data.getRecords().forEach(i -> {
+            log.info("{}", i);
+        });
     }
 
 }

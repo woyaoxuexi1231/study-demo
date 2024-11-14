@@ -1,6 +1,6 @@
 package org.hulei.springboot.redis;
 
-import org.mybatis.spring.annotation.MapperScan;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 2024/9/19 21:57
  */
 
-@MapperScan(basePackages = {"org.hulei.common.mapper.mapper"})
 @SpringBootApplication
 public class RedisApplication {
 
