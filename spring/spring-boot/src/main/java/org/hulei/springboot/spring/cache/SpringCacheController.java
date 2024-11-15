@@ -1,15 +1,14 @@
 package org.hulei.springboot.spring.cache;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.jsonzou.jmockdata.JMockData;
-import com.github.pagehelper.PageHelper;
-import org.hulei.common.mapper.entity.pojo.EmployeeDO;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.common.mapper.mapper.EmployeeMapperPlus;
+import org.hulei.entity.jpa.pojo.Employee;
+import org.hulei.entity.jpa.utils.MemoryDbUtil;
 import org.hulei.springboot.SpringbootApplication;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.hulei.util.dto.PageInfo;
+import org.hulei.util.dto.PageQryReqDTO;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
@@ -18,14 +17,7 @@ import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.data.redis.cache.RedisCacheConfiguration;
-import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.data.redis.cache.RedisCacheWriter;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
-import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.Field;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -71,28 +62,12 @@ public class SpringCacheController {
         return cacheManager;
     }
 
-    @Bean
-    public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
-
-        RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory);
-        RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(60)) // 设置缓存过期时间
-                .disableCachingNullValues() // 不允许 null 的缓存值
-                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.string()))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.json()));
-
-        return RedisCacheManager.builder(redisCacheWriter).withCacheConfiguration(SpringCacheController.redis, defaultCacheConfig).build();
-    }
 
 
     /*========================================== 缓存相关 =======================================*/
 
-    @Autowired
-    EmployeeMapperPlus employeeMapperPlus;
-
     // public static final String key = "employees::getEmployees";
     public static final String local = "local";
-    public static final String redis = "redis";
     public List<Object> clearQueue = new ArrayList<>();
 
     /**
@@ -105,32 +80,24 @@ public class SpringCacheController {
      * @return object
      */
     // @Cacheable(value = {"employee"}, key = "'getEmployees' + #req", cacheManager = "cacheManager")
-    @Cacheable(value = {SpringCacheController.redis}, key = "'getEmployees::' + #req", cacheManager = "redisCacheManager")
     @PostMapping(value = "/getEmployees")
-    public List<EmployeeDO> getEmployees(@RequestBody EmployeeQryReq req) {
-        LambdaQueryWrapper<EmployeeDO> wrapper = new LambdaQueryWrapper<>();
-        if (!Objects.isNull(req.getEmployeeNumber())) {
-            wrapper.eq(EmployeeDO::getEmployeeNumber, req.getEmployeeNumber());
-        }
-        PageHelper.startPage(req.getPageNum(), req.getPageSize());
-        return employeeMapperPlus.selectList(wrapper);
+    public PageInfo<Employee> getEmployees(@RequestBody PageQryReqDTO req) {
+        return MemoryDbUtil.getData(req.getPageNum(),req.getPageSize());
     }
 
-    @Transactional
     @PostMapping("/addOneEmployee")
     public void addOneEmployee() {
-        EmployeeDO employeeDO = buildMockData();
-        employeeMapperPlus.insert(employeeDO);
+        Employee employeeDO = buildMockData();
+        MemoryDbUtil.insert(employeeDO);
         // 标记需要清理缓存
         clearQueue.add(new Object());
     }
 
-    @Transactional
     @PostMapping("/updateEmployee")
-    public EmployeeDO updateEmployee(@RequestBody EmployeeDO req) {
-        EmployeeDO employeeDO = buildMockData();
-        employeeDO.setEmployeeNumber(req.getEmployeeNumber());
-        employeeMapperPlus.updateById(employeeDO);
+    public Employee updateEmployee(@RequestBody Employee req) {
+        Employee employeeDO = buildMockData();
+        employeeDO.setId(req.getId());
+        MemoryDbUtil.update(employeeDO);
         // 标记需要清理缓存
         clearQueue.add(new Object());
         return employeeDO;
@@ -147,9 +114,9 @@ public class SpringCacheController {
         }
     }
 
-    private EmployeeDO buildMockData() {
-        EmployeeDO employeeDO = new EmployeeDO();
-        employeeDO.setEmployeeNumber(System.currentTimeMillis());
+    private Employee buildMockData() {
+        Employee employeeDO = new Employee();
+        employeeDO.setId(System.currentTimeMillis());
         employeeDO.setLastName(JMockData.mock(String.class));
         employeeDO.setFirstName(JMockData.mock(String.class));
         employeeDO.setExtension(JMockData.mock(String.class));

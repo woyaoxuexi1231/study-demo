@@ -1,4 +1,4 @@
-package org.hulei.springboot.mybatisplus.model.req;
+package org.hulei.util.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
