@@ -25,6 +25,18 @@
             <version>1.0.0.4-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>entity-jpa</artifactId>
+            <version>1.0.0.4-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>common-starter</artifactId>
+            <version>1.0.0.4-SNAPSHOT</version>
+        </dependency>
+
         <!--自动配置-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

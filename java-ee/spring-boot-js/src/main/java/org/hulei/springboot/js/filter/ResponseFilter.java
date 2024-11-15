@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @Order(2)
-@Component
+// @Component
 @Slf4j
 public class ResponseFilter implements Filter {
     private static class MyResponseWrapper extends HttpServletResponseWrapper {
