@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hulei.springboot.mybatisplus.mapper.ProductInfoMapper">
+  <resultMap id="BaseResultMap" type="org.hulei.eneity.mybatisplus.domain.ProductInfo">
+    <!--@mbg.generated-->
+    <!--@Table productlines-->
+    <id column="productLine" jdbcType="VARCHAR" property="productline" />
+    <result column="textDescription" jdbcType="VARCHAR" property="textdescription" />
+    <result column="htmlDescription" jdbcType="LONGVARCHAR" property="htmldescription" />
+    <result column="image" jdbcType="BLOB" property="image" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    productLine, textDescription, htmlDescription, image
+  </sql>
+</mapper>

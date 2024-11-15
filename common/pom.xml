@@ -11,11 +11,13 @@
 
     <artifactId>common</artifactId>
     <packaging>pom</packaging>
+
     <modules>
-        <module>core</module>
+        <module>utils</module>
+        <module>entity-jpa</module>
+        <module>entity-mybatis-plus</module>
         <module>common-starter</module>
         <module>curator-starter</module>
-        <module>mapperplus</module>
         <module>common-security</module>
     </modules>
 
@@ -23,5 +25,19 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
+
+    <dependencies>
+        <!-- 一些常用的工具包导入, 可以被传递的 -->
+        <!--Lombok是一个Java库，能自动插入编辑器并构建工具，简化Java开发。通过添加注解的方式，不需要为类编写getter或eques方法，同时可以自动化日志变量。-->
+        <!--官网：https://projectlombok.org/-->
+        <!--高版本IDEA引入低版本lombok时可能导致插件不可用, 需要添加一个编译参数 - -Djps.track.ap.dependencies=false -->
+        <!-- https://youtrack.jetbrains.com/issue/IDEA-252069 -->
+        <!-- https://youtrack.jetbrains.com/issue/IDEA-250718 -->
+        <!-- GITHUB:https://github.com/projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

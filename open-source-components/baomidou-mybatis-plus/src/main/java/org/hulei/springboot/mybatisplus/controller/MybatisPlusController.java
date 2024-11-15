@@ -8,13 +8,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.javafaker.Faker;
 import com.github.jsonzou.jmockdata.JMockData;
 import com.github.pagehelper.PageHelper;
-import org.hulei.common.mapper.entity.User;
-import org.hulei.common.mapper.entity.pojo.Biguser;
-import org.hulei.common.mapper.entity.pojo.EmployeeDO;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.common.mapper.mapper.BiguserMapper;
-import org.hulei.common.mapper.mapper.EmployeeMapperPlus;
-import org.hulei.common.mapper.mapper.UserMapperPlus;
+import org.hulei.eneity.mybatisplus.domain.BigUser;
+import org.hulei.eneity.mybatisplus.domain.Employees;
+import org.hulei.eneity.mybatisplus.domain.User;
+import org.hulei.springboot.mybatisplus.mapper.BiguserMapper;
+import org.hulei.springboot.mybatisplus.mapper.EmployeesMapper;
+import org.hulei.springboot.mybatisplus.mapper.UserMapperPlus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,7 +50,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class MybatisPlusController extends ServiceImpl<UserMapperPlus, User> {
 
     @Resource
-    EmployeeMapperPlus employeeMapper;
+    EmployeesMapper employeeMapper;
 
     @Resource
     private UserMapperPlus userMapperPlus;
@@ -161,7 +161,7 @@ public class MybatisPlusController extends ServiceImpl<UserMapperPlus, User> {
      */
     @GetMapping("/sqlInject")
     public void sqlInject() {
-        EmployeeDO injectRsp = employeeMapper.getEmployeeByIdTestInject(1002L);
+        Employees injectRsp = employeeMapper.getEmployeeByIdTestInject(1002L);
     }
 
     @Autowired
@@ -173,10 +173,10 @@ public class MybatisPlusController extends ServiceImpl<UserMapperPlus, User> {
         for (int i = 0; i < 5; i++) {
             threadPoolExecutor.execute(() -> {
                 // 一万条数据插入一次
-                List<Biguser> bigusers = new ArrayList<>();
+                List<BigUser> bigusers = new ArrayList<>();
                 for (int k = 0; k < 10; k++) {
                     for (int j = 0; j < 10000; j++) {
-                        Biguser biguser = new Biguser();
+                        BigUser biguser = new BigUser();
                         biguser.setUserName(faker.name().fullName());
                         biguser.setSsn(UUID.randomUUID().toString());
                         biguser.setName(faker.name().fullName());

@@ -11,19 +11,19 @@ import com.google.gson.GsonBuilder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.hulei.common.core.annotation.DoneTime;
-import org.hulei.common.mapper.entity.pojo.Biguser;
-import org.hulei.common.mapper.entity.pojo.CustomerDO;
-import org.hulei.common.mapper.entity.pojo.EmployeeDO;
-import org.hulei.common.mapper.mapper.BiguserMapper;
-import org.hulei.common.mapper.mapper.CustomerMapper;
-import org.hulei.common.mapper.mapper.EmployeeMapperPlus;
-import org.hulei.common.mapper.mapper.OrderdetailsMapper;
-import org.hulei.common.mapper.mapper.OrdersMapper;
-import org.hulei.common.mapper.mapper.ProductlinesMapper;
-import org.hulei.common.mapper.mapper.ProductsMapper;
+import org.hulei.common.autoconfigure.annotation.DoneTime;
+import org.hulei.eneity.mybatisplus.domain.BigUser;
+import org.hulei.eneity.mybatisplus.domain.Customers;
+import org.hulei.eneity.mybatisplus.domain.Employees;
 import org.hulei.springboot.mybatisplus.LocalDateTimeTypeAdapter;
+import org.hulei.springboot.mybatisplus.mapper.BiguserMapper;
+import org.hulei.springboot.mybatisplus.mapper.CustomersMapper;
 import org.hulei.springboot.mybatisplus.mapper.EmployeeMapper2;
+import org.hulei.springboot.mybatisplus.mapper.EmployeesMapper;
+import org.hulei.springboot.mybatisplus.mapper.OrderDetailsMapper;
+import org.hulei.springboot.mybatisplus.mapper.OrdersMapper;
+import org.hulei.springboot.mybatisplus.mapper.ProductLinesMapper;
+import org.hulei.springboot.mybatisplus.mapper.ProductsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,19 +55,19 @@ public class XmlTagController {
      * 一堆mapper配置
      */
     @Resource
-    EmployeeMapperPlus employeeMapper;
+    EmployeesMapper employeeMapper;
     @Resource
     OrdersMapper ordersMapper;
     @Autowired
-    private OrderdetailsMapper orderdetailsMapper;
+    private OrderDetailsMapper orderdetailsMapper;
     @Autowired
     ProductsMapper productsMapper;
     @Autowired
-    ProductlinesMapper productlinesMapper;
+    ProductLinesMapper productlinesMapper;
     @Autowired
     BiguserMapper biguserMapper;
     @Autowired
-    private CustomerMapper customerMapper;
+    private CustomersMapper customerMapper;
 
     /**
      * Mybatis sqlSession
@@ -88,7 +88,7 @@ public class XmlTagController {
      * @return
      */
     @GetMapping("/selectListWithResultMap")
-    public List<EmployeeDO> selectListWithResultMap() {
+    public List<Employees> selectListWithResultMap() {
         // employeeMapper.getEmployeeTree();
         // 创建一个Gson实例并启用漂亮打印
         return employeeMapper.getEmployeeWithResultMap();
@@ -185,7 +185,7 @@ public class XmlTagController {
     @GetMapping("/insertTagsTest")
     public void insertTagsTest() {
         final Faker faker = new Faker(Locale.CHINA);
-        Biguser biguser = new Biguser();
+        BigUser biguser = new BigUser();
         biguser.setUserName(faker.name().fullName());
         biguser.setSsn(UUID.randomUUID().toString());
         biguser.setName(faker.name().fullName());
@@ -209,27 +209,27 @@ public class XmlTagController {
 
         log.info("自动生成的键: id={}, createTime={}, updateTime={} ", biguser.getId(), biguser.getCreateTime(), biguser.getUpdateTime());
 
-        LambdaQueryWrapper<CustomerDO> wrapper = Wrappers.lambdaQuery(CustomerDO.class);
-        CustomerDO customerDO = customerMapper.selectOne(wrapper.eq(CustomerDO::getCustomernumber, 103));
+        LambdaQueryWrapper<Customers> wrapper = Wrappers.lambdaQuery(Customers.class);
+        Customers customerDO = customerMapper.selectOne(wrapper.eq(Customers::getCustomerNumber, 103));
 
         // 这里数据库定义的是(10,2),更新时发现出现了精度丢失,但是却没有报错
-        customerDO.setCreditlimit(BigDecimal.valueOf(10.324523423423));
+        customerDO.setCreditLimit(BigDecimal.valueOf(10.324523423423));
         customerMapper.updateOne(customerDO);
 
-        CustomerDO customerDO1 = new CustomerDO();
-        customerDO1.setCustomername(faker.name().fullName());
-        customerDO1.setContactlastname(faker.name().lastName());
-        customerDO1.setContactfirstname(faker.name().firstName());
+        Customers customerDO1 = new Customers();
+        customerDO1.setCustomerName(faker.name().fullName());
+        customerDO1.setContactLastName(faker.name().lastName());
+        customerDO1.setContactFirstName(faker.name().firstName());
         customerDO1.setPhone(faker.phoneNumber().cellPhone());
-        customerDO1.setAddressline1(faker.address().fullAddress());
-        customerDO1.setAddressline2(faker.address().fullAddress());
+        customerDO1.setAddressLine1(faker.address().fullAddress());
+        customerDO1.setAddressLine2(faker.address().fullAddress());
         customerDO1.setCity(faker.country().capital());
         customerDO1.setState(faker.hobbit().location());
-        customerDO1.setPostalcode(faker.hobbit().location());
+        customerDO1.setPostalCode(faker.hobbit().location());
         customerDO1.setCountry(faker.country().name());
-        customerDO1.setSalesrepemployeenumber(1003);
+        customerDO1.setSalesRepEmployeeNumber(1003);
         // 这里同样的,插入操作也没有报错,但是出现了精度丢失
-        customerDO1.setCreditlimit(BigDecimal.valueOf(12352350.325498237));
+        customerDO1.setCreditLimit(BigDecimal.valueOf(12352350.325498237));
         customerMapper.insert(customerDO1);
     }
 

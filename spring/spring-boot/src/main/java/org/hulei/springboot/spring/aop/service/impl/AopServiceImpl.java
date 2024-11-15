@@ -1,6 +1,6 @@
 package org.hulei.springboot.spring.aop.service.impl;
 
-import org.hulei.common.core.annotation.DoneTime;
+import org.hulei.common.autoconfigure.annotation.DoneTime;
 import org.hulei.springboot.spring.aop.service.AopService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

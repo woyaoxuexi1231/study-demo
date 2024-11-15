@@ -1,6 +1,6 @@
 package org.hulei.common.autoconfigure.commom;
 
-import org.hulei.common.core.aop.ResultAdvice;
+import org.hulei.common.autoconfigure.aop.ResultAdvice;
 import org.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor;
 
 /**

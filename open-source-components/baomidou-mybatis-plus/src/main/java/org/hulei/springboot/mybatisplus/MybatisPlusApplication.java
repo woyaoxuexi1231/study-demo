@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 
 
-@MapperScan(basePackages = {"org.hulei.common.mapper.mapper","org.hulei.springboot.mybatisplus.mapper"})
+@MapperScan(basePackages = {"org.hulei.springboot.mybatisplus.mapper"})
 @SpringBootApplication
 public class MybatisPlusApplication {
 

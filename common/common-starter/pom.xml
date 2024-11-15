@@ -49,7 +49,7 @@
 
         <dependency>
             <groupId>org.hulei</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>utils</artifactId>
             <version>${demo.common.verison}</version>
         </dependency>
 

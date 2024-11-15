@@ -2,9 +2,9 @@ package org.hulei.springboot.mybatisplus.controller;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.common.mapper.entity.User;
-import org.hulei.common.mapper.mapper.UserMapperPlus;
-import org.hulei.common.mapper.util.BatchExecutor;
+import org.hulei.eneity.mybatisplus.domain.User;
+import org.hulei.eneity.mybatisplus.util.BatchExecutor;
+import org.hulei.springboot.mybatisplus.mapper.UserMapperPlus;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import jakarta.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 /**

@@ -20,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>org.hulei</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>utils</artifactId>
             <version>1.0.0.4-SNAPSHOT</version>
         </dependency>
         <dependency>

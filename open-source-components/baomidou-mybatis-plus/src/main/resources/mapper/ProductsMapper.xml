@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hulei.springboot.mybatisplus.mapper.ProductsMapper">
+    <resultMap id="BaseResultMap" type="org.hulei.eneity.mybatisplus.domain.Products">
+        <!--@mbg.generated-->
+        <!--@Table products-->
+        <id column="productCode" jdbcType="VARCHAR" property="productCode"/>
+        <result column="productName" jdbcType="VARCHAR" property="productName"/>
+        <result column="productLine" jdbcType="VARCHAR" property="productLine"/>
+        <result column="productScale" jdbcType="VARCHAR" property="productScale"/>
+        <result column="productVendor" jdbcType="VARCHAR" property="productVendor"/>
+        <result column="productDescription" jdbcType="LONGVARCHAR" property="productDescription"/>
+        <result column="quantityInStock" jdbcType="SMALLINT" property="quantityInStock"/>
+        <result column="buyPrice" jdbcType="DECIMAL" property="buyPrice"/>
+        <result column="MSRP" jdbcType="DECIMAL" property="msrp"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        productCode,
+        productName,
+        productLine,
+        productScale,
+        productVendor,
+        productDescription,
+        quantityInStock,
+        buyPrice,
+        MSRP
+    </sql>
+
+    <resultMap id="productFullInfoMap" type="org.hulei.springboot.mybatisplus.model.ProductFullInfo" extends="BaseResultMap">
+        <!-- 对于 association 和 collection 标签,都可以不用写 select 子查询,只要一次查询的sql的字段没有重复,并且可以唯一映射上就行-->
+        <!-- association主要用于处理一对一关系的关联查询,这种映射关系主要因为关联的对象在我们查询的对象的内部,他做为一个单独的属性出现,通过此标签,把对应的结果都给映射到这个属性内部 -->
+        <!-- mybatis如何加载这种关联关系呢?
+         1. 嵌套查询,也就是此标签中的select,此标签需要指定一个子查询,通过配置column和select子句来达到目的
+            这种方式存在一个非常大的问题就是,对于大型数据集非常不友好,对于每一条关联关系都要进行一次查询,这将非常浪费IO性能
+         2. 关联的嵌套结果,也就是这里采用的方式,所有的结果(包括关联对象的结果)都在一个查询语句中返回,通过属性名来映射到不同的地方
+         -->
+        <association
+                property="productlineInfo"
+                javaType="org.hulei.eneity.mybatisplus.domain.ProductLines"
+                columnPrefix="pl_"
+                resultMap="org.hulei.common.mapper.mapper.ProductlinesMapper.BaseResultMap"
+        />
+    </resultMap>
+
+    <select id="selectProductFullInfo" resultMap="productFullInfoMap">
+        select p.productCode,
+               p.productName,
+               p.productLine,
+               p.productScale,
+               p.productVendor,
+               p.productDescription,
+               p.quantityInStock,
+               p.buyPrice,
+               p.MSRP,
+               pl.productLine     as pl_productLine,
+               pl.textDescription as pl_textDescription,
+               pl.htmlDescription as pl_htmlDescription,
+               pl.image           as pl_image
+        from products p
+                 inner join productlines pl on p.productLine = pl.productLine
+    </select>
+</mapper>
