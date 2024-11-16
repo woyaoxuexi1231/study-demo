@@ -1,4 +1,4 @@
-package org.hulei.springboot.spring.mvc.filter;
+package org.hulei.springboot.spring.mvc.filter.webfilter;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -17,7 +17,6 @@ import java.io.IOException;
  */
 
 @WebFilter(urlPatterns = {"/hi"})
-// @Component
 @Slf4j
 public class IpFilter implements Filter {
 
@@ -27,6 +26,7 @@ public class IpFilter implements Filter {
         String clientIp = getClientIp((HttpServletRequest) servletRequest);
         log.info("真实 IP : {}", clientIp);
         filterChain.doFilter(servletRequest, servletResponse);
+        log.info("end");
     }
 
     /**

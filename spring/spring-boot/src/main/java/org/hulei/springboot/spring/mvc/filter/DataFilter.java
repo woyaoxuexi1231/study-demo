@@ -17,7 +17,6 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 
 @WebFilter(urlPatterns = {"/greeting"})
-// @Component
 @Slf4j
 public class DataFilter implements Filter {
     @Override
