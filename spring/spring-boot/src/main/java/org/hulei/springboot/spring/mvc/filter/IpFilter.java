@@ -16,7 +16,7 @@ import java.io.IOException;
  * @since 2024/11/13 20:40
  */
 
-@WebFilter(urlPatterns = {"/greeting"})
+@WebFilter(urlPatterns = {"/hi"})
 // @Component
 @Slf4j
 public class IpFilter implements Filter {
@@ -39,21 +39,21 @@ public class IpFilter implements Filter {
         String ipAddress = null;
         try {
             // 依次检查不同的HTTP头字段
-            ipAddress = request.getHeader("X-Forwarded-For");
+            ipAddress = request.getHeader("x-forwarded-for");
             if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
-                ipAddress = request.getHeader("X-Real-IP");
+                ipAddress = request.getHeader("x-real-ip");
             }
             if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
-                ipAddress = request.getHeader("Proxy-Client-IP");
+                ipAddress = request.getHeader("proxy-client-ip");
             }
             if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
-                ipAddress = request.getHeader("WL-Proxy-Client-IP");
+                ipAddress = request.getHeader("wl-proxy-client-ip");
             }
             if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
-                ipAddress = request.getHeader("HTTP_CLIENT_IP");
+                ipAddress = request.getHeader("http_client_ip");
             }
             if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
-                ipAddress = request.getHeader("HTTP_X_FORWARDED_FOR");
+                ipAddress = request.getHeader("http_x_forwarded_for");
             }
             // 如果以上HTTP头字段都没有获取到IP地址，则尝试获取直接连接的IP地址
             if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {

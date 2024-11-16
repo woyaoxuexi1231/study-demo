@@ -2,6 +2,7 @@ package org.hulei.springboot.spring.mvc;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * @author hulei
@@ -21,5 +22,11 @@ public class MvcController {
     @GetMapping("/")
     public String home() {
         return "home";
+    }
+
+    @GetMapping("/hi")
+    @ResponseBody
+    public void hi() {
+        System.out.println("hi");
     }
 }

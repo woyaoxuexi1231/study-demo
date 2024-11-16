@@ -10,6 +10,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,6 +40,7 @@ import java.util.concurrent.TimeUnit;
 2. 启动 spring 自动配置
 3. 启动组件扫描, 这将默认扫描这个类所在的包及其子包下所有的bean
  */
+@ServletComponentScan(basePackages = {"org.hulei.springboot.spring.mvc.filter"})
 @SpringBootApplication
 @Data
 @RestController("/application")
