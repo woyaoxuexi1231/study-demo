@@ -8,8 +8,6 @@ server:
 spring:
   application:
     name: keeping
-  profiles:
-    active: db,mvc,redis
   main:
     allow-circular-references: true
   servlet:

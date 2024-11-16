@@ -1,4 +1,4 @@
-package org.hulei.springboot.js.filter;
+package org.hulei.springboot.spring.mvc.filter;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -8,9 +8,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServletResponseWrapper;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.springboot.js.CaptureResponseWrapper;
 import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.PrintWriter;

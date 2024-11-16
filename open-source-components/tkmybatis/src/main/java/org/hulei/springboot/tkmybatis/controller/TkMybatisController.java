@@ -1,12 +1,15 @@
 package org.hulei.springboot.tkmybatis.controller;
 
 import cn.hutool.core.thread.ThreadFactoryBuilder;
-import org.hulei.common.mapper.entity.pojo.EmployeeDO;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.hulei.entity.jpa.pojo.Employee;
 import org.hulei.springboot.tkmybatis.mapper.EmployeeMapper;
-import org.hulei.springboot.tkmybatis.model.EmployeeQryReqDTO;
+import org.hulei.util.dto.PageQryReqDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,9 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -66,7 +66,7 @@ public class TkMybatisController {
      * @param response httpRsp
      */
     @PostMapping(value = "/localCache")
-    public void localCache(@Valid @RequestBody EmployeeQryReqDTO req, HttpServletRequest request, HttpServletResponse response) {
+    public void localCache(@Valid @RequestBody PageQryReqDTO req, HttpServletRequest request, HttpServletResponse response) {
 
         // mybatis-plus.configuration.local-cache-scope 用于开启mybatis的一级缓存
         // mybatis.configuration.cache-enabled 用于开启mybatis的二级缓存
@@ -96,7 +96,7 @@ public class TkMybatisController {
         // 这是一个tkmybatis的通用api,只有@CacheNamespace才会生效
         employeeMapper.selectAll();
         // 这个也是一样的,即使有入参,只有@CacheNamespace才会生效
-        employeeMapper.selectOne(EmployeeDO.builder().employeeNumber(1002L).build());
+        employeeMapper.selectOne(new Employee().setId(1002L));
         // 同样的,虽然这个不是通用mapper的api,但是他使用@Select查询数据,也只有@CacheNamespace才会生效
         employeeMapper.selectAllDataButInterface();
         // 这个是xml内的sql,只有使用<cache/>标签才能使用二级缓存

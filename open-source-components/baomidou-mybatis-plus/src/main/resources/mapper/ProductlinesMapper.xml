@@ -13,4 +13,14 @@
     <!--@mbg.generated-->
     productLine, textDescription, htmlDescription, image
   </sql>
+  <insert id="batchInsert" parameterType="org.hulei.eneity.mybatisplus.domain.ProductInfo">
+    insert into product_info(product_name, category, price, description)
+    values
+    <foreach collection="list" index="index" separator="," item="item">
+      (#{item.productName},
+      #{item.category},
+      #{item.price},
+      #{item.description})
+    </foreach>
+  </insert>
 </mapper>

@@ -1,11 +1,11 @@
 package org.hulei.springboot.tkmybatis.mapper;
 
-import org.hulei.common.mapper.entity.pojo.EmployeeDO;
 import org.apache.ibatis.annotations.CacheNamespace;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.cache.decorators.LruCache;
 import org.apache.ibatis.cache.impl.PerpetualCache;
+import org.hulei.entity.jpa.pojo.Employee;
 import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.BaseMapper;
 import tk.mybatis.mapper.common.ConditionMapper;
@@ -32,20 +32,20 @@ import java.util.List;
         blocking = true                           // 启用阻塞缓存，避免缓存穿透  同一个缓存在检测到前一个线程正在生成缓存的时候,后面一个会阻塞
 )
 @Repository
-public interface EmployeeMapper extends BaseMapper<EmployeeDO>, ConditionMapper<EmployeeDO>, MySqlMapper<EmployeeDO> {
+public interface EmployeeMapper extends BaseMapper<Employee>, ConditionMapper<Employee>, MySqlMapper<Employee> {
     /**
      * 保存
      *
      * @param employeeDO do
      */
-    void saveOne(EmployeeDO employeeDO);
+    void saveOne(Employee employeeDO);
 
     /**
      * 查询所有数据,所有字段
      *
      * @return all data
      */
-    List<EmployeeDO> selectAllData();
+    List<Employee> selectAllData();
 
     /**
      * 通过 id 查询 name
@@ -61,5 +61,5 @@ public interface EmployeeMapper extends BaseMapper<EmployeeDO>, ConditionMapper<
      * @return all data
      */
     @Select(value = "select * from employees")
-    List<EmployeeDO> selectAllDataButInterface();
+    List<Employee> selectAllDataButInterface();
 }
