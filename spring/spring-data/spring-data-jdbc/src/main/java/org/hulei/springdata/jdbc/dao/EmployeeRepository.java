@@ -1,5 +1,6 @@
 package org.hulei.springdata.jdbc.dao;
 
+import org.hulei.entity.jpa.pojo.Employee;
 import org.hulei.springdata.jdbc.entity.EmployeeDO;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

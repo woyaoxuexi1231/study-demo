@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.Field;
@@ -57,32 +58,26 @@ public class SpringCacheController {
         cacheManager.setCaches(CollectionUtil.newArrayList(
                 // 本地内存缓存
                 new ConcurrentMapCache("default"),
-                new ConcurrentMapCache(SpringCacheController.local),
+                new ConcurrentMapCache("local"),
                 new ConcurrentMapCache("employee")));
         return cacheManager;
     }
 
 
-
     /*========================================== 缓存相关 =======================================*/
-
-    // public static final String key = "employees::getEmployees";
-    public static final String local = "local";
     public List<Object> clearQueue = new ArrayList<>();
 
     /**
      * Cacheable: value作为缓存的命名空间(即一个前缀), key作为完整实际的键值
      * 举例: 在使用ConcurrentMapCache的时候,value作为ConcurrentMapCache的名字 key作为这个cache内部map的key
-     * <p>
-     * 在redis的key值为 : redis::getEmployees::EmployeeQryReq(super=PageQryReqDTO(pageNum=1, pageSize=10), employeeNumber=null)
      *
      * @param req req
      * @return object
      */
-    // @Cacheable(value = {"employee"}, key = "'getEmployees' + #req", cacheManager = "cacheManager")
+    @Cacheable(value = {"employee"}, key = "#root.method.getName() +':'+ #root.args[0]", cacheManager = "cacheManager")
     @PostMapping(value = "/getEmployees")
     public PageInfo<Employee> getEmployees(@RequestBody PageQryReqDTO req) {
-        return MemoryDbUtil.getData(req.getPageNum(),req.getPageSize());
+        return MemoryDbUtil.getData(req.getPageNum(), req.getPageSize());
     }
 
     @PostMapping("/addOneEmployee")
@@ -114,19 +109,6 @@ public class SpringCacheController {
         }
     }
 
-    private Employee buildMockData() {
-        Employee employeeDO = new Employee();
-        employeeDO.setId(System.currentTimeMillis());
-        employeeDO.setLastName(JMockData.mock(String.class));
-        employeeDO.setFirstName(JMockData.mock(String.class));
-        employeeDO.setExtension(JMockData.mock(String.class));
-        employeeDO.setEmail(JMockData.mock(String.class));
-        employeeDO.setOfficeCode(JMockData.mock(String.class));
-        employeeDO.setReportsTo(JMockData.mock(Integer.class));
-        employeeDO.setJobTitle(JMockData.mock(String.class));
-        return employeeDO;
-    }
-
     /**
      * 打印所有缓存内容
      */
@@ -143,5 +125,18 @@ public class SpringCacheController {
                 log.info("k:{}, v:{}", k, v);
             });
         }
+    }
+
+    private Employee buildMockData() {
+        Employee employeeDO = new Employee();
+        employeeDO.setId(System.currentTimeMillis());
+        employeeDO.setLastName(JMockData.mock(String.class));
+        employeeDO.setFirstName(JMockData.mock(String.class));
+        employeeDO.setExtension(JMockData.mock(String.class));
+        employeeDO.setEmail(JMockData.mock(String.class));
+        employeeDO.setOfficeCode(JMockData.mock(String.class));
+        employeeDO.setReportsTo(JMockData.mock(Integer.class));
+        employeeDO.setJobTitle(JMockData.mock(String.class));
+        return employeeDO;
     }
 }

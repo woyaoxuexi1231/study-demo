@@ -3,7 +3,7 @@ package org.hulei.springboot;
 import cn.hutool.core.thread.ThreadFactoryBuilder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.springboot.spring.config.AppConfig;
+import org.hulei.springboot.spring.config.PropertiesConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -166,10 +166,10 @@ public class SpringbootApplication implements ApplicationRunner {
     }
 
     @Autowired
-    AppConfig appConfig;
+    PropertiesConfig propertiesConfig;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        log.info("{}", appConfig);
+        log.info("{}", propertiesConfig);
     }
 }

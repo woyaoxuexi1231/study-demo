@@ -10,12 +10,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * @projectName: study-demo
- * @package: com.hundsun.demo.springboot.model.pojo
- * @className: EmployeDO
- * @description:
- * @author: h1123
- * @createDate: 2023/2/13 23:24
+ * @author hulei
+ * @since 2024/11/17 23:24
  */
 
 @Builder

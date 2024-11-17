@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @ToString
 @Component
 @ConfigurationProperties(prefix = "app.config")
-public class AppConfig {
+public class PropertiesConfig {
 
     private String name;
     private int maxRequests;
