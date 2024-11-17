@@ -62,6 +62,12 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
+        <!-- 整合 thymeleaf -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
         <!--
          顾名思义，DevTools 为 Spring 开发人员提供了一些方便的开发同步工具。这些是：
         1. 当代码更改时自动重启应用程序

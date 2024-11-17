@@ -80,8 +80,6 @@ public class SpringbootApplication implements ApplicationRunner {
         applicationContext = SpringApplication.run(SpringbootApplication.class);
         log.info("启动完成");
         // Open the homepage URL in default browser
-        String homepageURL = String.format("http://localhost:%s", applicationContext.getEnvironment().getProperty("server.port")); // Update with your homepage URL
-        System.out.println("Please navigate to: " + homepageURL);
         System.out.println(applicationContext.getEnvironment().getProperty("greeting.welcome"));
 
         /*

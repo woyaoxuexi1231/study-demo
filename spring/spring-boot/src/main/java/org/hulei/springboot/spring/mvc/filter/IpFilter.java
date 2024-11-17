@@ -16,7 +16,7 @@ import java.io.IOException;
  * @since 2024/11/13 20:40
  */
 
-@WebFilter(urlPatterns = {"/hi"})
+@WebFilter(urlPatterns = {"/get-ip"})
 // @Component
 @Slf4j
 public class IpFilter implements Filter {
