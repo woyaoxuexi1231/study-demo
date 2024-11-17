@@ -14,7 +14,7 @@ import java.util.List;
  * @since 2024/11/16 21:34
  */
 
-@Mapper
+// @Mapper
 public interface CustomerMapper {
 
     @Results({
