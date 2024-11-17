@@ -4,6 +4,7 @@ import cn.hutool.core.thread.ThreadFactoryBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -26,6 +27,7 @@ import java.util.concurrent.TimeUnit;
  * @since 2024-03-29 9:58
  */
 
+@RequiredArgsConstructor
 @SuppressWarnings("CallToPrintStackTrace")
 @Slf4j
 @RestController
@@ -42,11 +44,8 @@ public class TkMybatisController {
             new ThreadPoolExecutor.DiscardPolicy()
     );
 
-    @Autowired
-    EmployeeMapper employeeMapper;
-
-    @Autowired
-    SqlSessionFactory sessionFactory;
+    private final EmployeeMapper employeeMapper;
+    private final SqlSessionFactory sqlSessionFactory;
 
     @GetMapping("/print")
     public void print(Long id) {
@@ -71,7 +70,7 @@ public class TkMybatisController {
         // mybatis-plus.configuration.local-cache-scope 用于开启mybatis的一级缓存
         // mybatis.configuration.cache-enabled 用于开启mybatis的二级缓存
 
-        try (SqlSession session = sessionFactory.openSession()) {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             EmployeeMapper mapper = session.getMapper(EmployeeMapper.class);
             // 一级缓存开启,并且范围是statement,那么即使在同一个session内,相同的sql也都会进行数据库查询操作
             log.info("第一次查询结果: {}", mapper.selectAll());

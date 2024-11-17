@@ -5,6 +5,7 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -12,8 +13,7 @@ import lombok.experimental.Accessors;
 import java.math.BigDecimal;
 
 @Accessors(chain = true)
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "order_details", schema = "test")
 public class OrderDetail {

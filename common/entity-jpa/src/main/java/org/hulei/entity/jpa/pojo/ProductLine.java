@@ -6,13 +6,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Accessors(chain = true)
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "product_lines", schema = "test")
 public class ProductLine {

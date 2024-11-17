@@ -23,7 +23,13 @@
             <artifactId>utils</artifactId>
             <version>1.0.0.4-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>entity-jpa</artifactId>
+            <version>1.0.0.4-SNAPSHOT</version>
+        </dependency>
 
+        <!-- mybatis 框架, 只需要这个包就可以使用 mybatis 的基础功能 -->
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
@@ -31,10 +37,6 @@
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus</artifactId>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
