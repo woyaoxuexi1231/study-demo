@@ -1,9 +1,10 @@
 package org.hulei.springdata.routingdatasource.config.coding;
 
+import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import org.hulei.springdata.routingdatasource.core.DataSourceToggleUtil;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
-import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,13 +18,11 @@ import java.util.Map;
  * @createDate: 2023/2/25 17:44
  */
 
+@RequiredArgsConstructor
 public class RoutingCodingDataSource extends AbstractRoutingDataSource {
 
-    @Resource
-    private DataSource dataSourceFirst;
-
-    @Resource
-    private DataSource dataSourceSecond;
+    private final DataSource dataSourceFirst;
+    private final DataSource dataSourceSecond;
 
     @Override
     public void afterPropertiesSet() {

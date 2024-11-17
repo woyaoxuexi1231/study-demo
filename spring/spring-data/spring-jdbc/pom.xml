@@ -24,6 +24,28 @@
             <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
 
+        <!-- 为了方便测试事务, 引入mybatis-plus -->
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>entity-mybatis-plus</artifactId>
+            <version>1.0.0.4-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- 多数据源 -->
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>spring-routing-datasource</artifactId>
+            <version>1.0.0.4-SNAPSHOT</version>
+        </dependency>
+
         <!-- mysql jdbc驱动 -->
         <dependency>
             <groupId>mysql</groupId>

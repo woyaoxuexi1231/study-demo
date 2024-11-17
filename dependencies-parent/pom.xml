@@ -91,7 +91,7 @@
 
         <!-- mybatis的增强 -->
         <!-- mybatis-plus -->
-        <mybatis.plus.boot.starter.version>3.5.5</mybatis.plus.boot.starter.version>
+        <mybatis.plus.boot.starter.version>3.5.9</mybatis.plus.boot.starter.version>
         <!-- tkmybatis -->
         <mapper.spring.boot.starter.version>5.0.1</mapper.spring.boot.starter.version>
 

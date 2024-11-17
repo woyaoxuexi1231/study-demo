@@ -79,14 +79,17 @@ public class RoutingDataSourceBeanRegister implements ImportBeanDefinitionRegist
 
                 // 遍历每个属性，检查是否以指定前缀开头
                 for (String key : source.keySet()) {
-                    if (key.startsWith("spring.datasource.parsing")) {
+                    if (key.startsWith("spring.datasource.routing.parsing")) {
                         String[] split = key.split("\\.");
-                        if (dataSourceProperties.containsKey(split[3])) {
-                            dataSourceProperties.get(split[3]).put(split[4], environment.getProperty(key));
+                        if("spring.datasource.routing.parsing.enable".equals(key)) {
+                            continue;
+                        }
+                        if (dataSourceProperties.containsKey(split[4])) {
+                            dataSourceProperties.get(split[4]).put(split[5], environment.getProperty(key));
                         } else {
                             Map<String, String> map = new ConcurrentHashMap<>();
-                            map.put(split[4], environment.getProperty(key));
-                            dataSourceProperties.put(split[3], map);
+                            map.put(split[5], environment.getProperty(key));
+                            dataSourceProperties.put(split[4], map);
                         }
                     }
                 }

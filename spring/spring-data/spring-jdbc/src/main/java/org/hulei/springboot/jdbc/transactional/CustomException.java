@@ -1,4 +1,4 @@
-package org.hulei.springboot.spring.transactional;
+package org.hulei.springboot.jdbc.transactional;
 
 /**
  * @author hulei
