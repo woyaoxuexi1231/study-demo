@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
@@ -18,7 +19,7 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "employees", schema = "test")
-public class Employee {
+public class Employee implements Serializable {
 
     @Id
     @Column(name = "employee_number", nullable = false)

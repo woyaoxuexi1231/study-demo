@@ -1,5 +1,5 @@
 server:
-  port: 11001
+  port: 11003
 
 spring:
   main:
@@ -17,9 +17,11 @@ spring:
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-#    local-cache-scope: session
-#    cache-enabled: true
-#  mapper-locations: classpath:mapper/*.xml
+    # mybatis提供的一级缓存，决定在同一查询范围内的缓存配置，分为会话级别和语句级别
+    local-cache-scope: statement
+    # mybatis提供的二级缓存，决定一个 mapper 文件在整个程序的声明周期内的缓存行为, 这是一个总开关，这里关闭之后，是不会启动二级缓存的
+    cache-enabled: false
+  mapper-locations: classpath:mapper/*.xml
 
 # pagehelper
 pagehelper:

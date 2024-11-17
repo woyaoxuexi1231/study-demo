@@ -11,13 +11,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
 @Accessors(chain = true)
 @Entity
 @Table(name = "customers")
-public class Customer {
+public class Customer implements Serializable {
 
     @Id
     @Column(name = "customer_number", nullable = false)
