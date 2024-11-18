@@ -38,6 +38,10 @@
         </environment>
     </environments>
     <mappers>
-        <mapper resource="mapper/CustomerMapper.xml"/>
+        <package name="org.hulei.mybatis.mapper"/>
     </mappers>
+    <!-- 我这里不使用 mapper 文件了，直接在接口方法上写了注解 -->
+    <!--     <mappers> -->
+    <!--         <mapper resource="mapper/CustomerMapper.xml"/> -->
+    <!--     </mappers> -->
 </configuration>

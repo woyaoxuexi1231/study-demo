@@ -1,6 +1,6 @@
 package org.hulei.springboot.jdbc;
 
-import org.hulei.springboot.jdbc.entity.EmployeeDO;
+import org.hulei.eneity.mybatisplus.domain.Employees;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -31,7 +31,7 @@ public class NamedParameterJdbcTemplateController {
         parameters.addValue("name", "Patterson");  // 设置参数的值
 
         namedParameterJdbcTemplate
-                .query(sql, parameters, BeanPropertyRowMapper.newInstance(EmployeeDO.class))
+                .query(sql, parameters, BeanPropertyRowMapper.newInstance(Employees.class))
                 .forEach(System.out::println);
     }
 }

@@ -24,9 +24,9 @@ public class MvcController {
         return "home";
     }
 
-    @GetMapping("/hi")
+    @GetMapping("/get-ip")
     @ResponseBody
-    public void hi() {
+    public void getIp() {
         System.out.println("hi");
     }
 }

@@ -2,7 +2,7 @@ package org.hulei.springboot.jdbc;
 
 import com.github.jsonzou.jmockdata.JMockData;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.springboot.jdbc.entity.EmployeeDO;
+import org.hulei.eneity.mybatisplus.domain.Employees;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -78,7 +78,7 @@ public class JdbcTemplateController {
          */
         jdbcTemplate.query(
                 "select * from employees e where e.first_name like ? and e.last_name like ?",
-                BeanPropertyRowMapper.newInstance(EmployeeDO.class),
+                BeanPropertyRowMapper.newInstance(Employees.class),
                 new Object[]{"%a%", "%t%"}
         ).forEach(entity -> {
             log.info("BeanPropertyRowMapper : {}", entity);

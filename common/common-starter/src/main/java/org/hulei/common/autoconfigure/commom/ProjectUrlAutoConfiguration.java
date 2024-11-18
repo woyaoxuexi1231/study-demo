@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
+import java.net.InetAddress;
+
 /**
  * @author hulei
  * @since 2024/11/13 10:23
@@ -29,7 +31,8 @@ class MyApplicationRunner implements ApplicationRunner, EnvironmentAware {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        log.info("project url: http://localhost:{}", port);
+        InetAddress inetAddress = InetAddress.getLocalHost();
+        log.info("project url: http://" + inetAddress.getHostAddress() + ":{}", port);
     }
 
     @Override

@@ -6,21 +6,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
- * @ProductName: Hundsun amust
- * @ProjectName: study-demo
- * @Package: com.hundsun.demo.springboot.aop
- * @Description:
- * @Author: hulei42031
- * @Date: 2024-03-13 18:00
- * @UpdateRemark:
- * @Version: 1.0
- * <p>
- * Copyright 2023 Hundsun Technologies Inc. All Rights Reserved
+ * @author hulei42031
+ * @since 2024-03-13 18:00
  */
 
-// @Configuration
-// @EnableAspectJAutoProxy
-public class AppConfig {
+@Configuration
+public class AopAutoProxyConfig {
+
+    /*
+    使用 spring 的情况下，两种方式配置可以让 aop 生效
+    1. @EnableAspectJAutoProxy
+    2. 配置 AnnotationAwareAspectJAutoProxyCreator 这个 bean 对象
 
     @Bean
     public AnnotationAwareAspectJAutoProxyCreator annotationAwareAspectJAutoProxyCreator() {
@@ -29,5 +25,7 @@ public class AppConfig {
         return creator;
     }
 
-    // Bean definitions for PaymentService and LoggingAspect...
+    使用 springboot 就完全不需要配置了。
+    AopAutoConfiguration 类已经自动配置好了，通过 spring 的自动配置完全自动化的配置完成
+     */
 }

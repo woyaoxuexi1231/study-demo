@@ -24,15 +24,14 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @Slf4j
-public class SimpleAspect {
+public class MyAspectjAop {
 
     /**
-     * com.hundsun.demo.springboot.service.*.*(..)这个范围并不能匹配到子包.
-     * com.hundsun.demo.springboot.service..*.*(..)这个可以覆盖包含子包在内的所有类的方法
+     * 匹配方法的执行: execution(方法访问修饰符 方法的全限定类名) *表示所有 ..表示要匹配子包以及子包下所有的 || 或者
+     * 匹配特定类型的类中的方法: within
      * author: hulei42031
      * date: 2024-02-21 16:47
      */
-    // @Pointcut(value = "execution(* com.hundsun.demo.springboot.aop.service.*.*(..)) && !execution(* com.hundsun.demo.springboot.aop.AopTestController.*(..))")
     @Pointcut(value = "execution(* org.hulei.springboot.spring.aop.service.impl.AopServiceImpl.*(..)) || execution(* org.hulei.springboot.spring.aop.service.impl.AopServiceWithOutInterface.*(..))")
     public void point() {
     }
@@ -40,27 +39,31 @@ public class SimpleAspect {
     @Before(value = "point()")
     public void before(JoinPoint joinPoint) {
         // 进入方法之前调用, 这个在各个通知中是最先执行的
-        System.out.println("this is before aop");
+        log.info("方法 {} 之前", joinPoint.getSignature().getName());
     }
 
     @Around(value = "point()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
-        System.out.println("this is around aop");
-        return joinPoint.proceed();
+        log.info("方法 {} 之前(环绕)", joinPoint.getSignature().getName());
+        try {
+            return joinPoint.proceed();
+        } finally {
+            log.info("方法 {} 之后(坏绕)", joinPoint.getSignature().getName());
+        }
     }
 
     @After(value = "point()")
     public void after(JoinPoint joinPoint) {
-        System.out.println("this is after aop");
+        log.info("方法 {} 之后", joinPoint.getSignature().getName());
     }
 
     @AfterReturning(value = "point()", returning = "object")
-    public void afterReturning(Object object) {
-        System.out.printf("this is afterReturning aop, return: %s%n", object);
+    public void afterReturning(JoinPoint joinPoint, Object object) {
+        log.info("方法 {} 返回之后, 结果: {}", joinPoint.getSignature().getName(), object);
     }
 
     @AfterThrowing(value = "point()", throwing = "exception")
-    public void afterThrowing(Exception exception) {
-        System.out.printf("this is afterThrowing aop, exception: %s%n", exception.getMessage());
+    public void afterThrowing(JoinPoint joinPoint, Exception exception) {
+        log.error("方法 {} 抛出异常之后", joinPoint.getSignature().getName(), exception);
     }
 }

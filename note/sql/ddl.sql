@@ -82,8 +82,8 @@ CREATE TABLE `offices`
 -- ----------------------------
 -- Table structure for `orderdetails`
 -- ----------------------------
-DROP TABLE IF EXISTS `orderdetails`;
-CREATE TABLE `orderdetails`
+DROP TABLE IF EXISTS `orderde_tails`;
+CREATE TABLE `order_details`
 (
     `order_number`      int(11)        NOT NULL,
     `product_code`      varchar(15)    NOT NULL,
@@ -133,8 +133,8 @@ CREATE TABLE `payments`
 -- ----------------------------
 -- Table structure for `productlines`
 -- ----------------------------
-DROP TABLE IF EXISTS `productlines`;
-CREATE TABLE `productlines`
+DROP TABLE IF EXISTS `product_lines`;
+CREATE TABLE `product_lines`
 (
     `product_line`     varchar(50) NOT NULL,
     `text_description` varchar(4000) DEFAULT NULL,

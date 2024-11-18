@@ -6,19 +6,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.time.Instant;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Accessors(chain = true)
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "employees", schema = "test")
-public class Employee {
+public class Employee implements Serializable {
 
     @Id
     @Column(name = "employee_number", nullable = false)

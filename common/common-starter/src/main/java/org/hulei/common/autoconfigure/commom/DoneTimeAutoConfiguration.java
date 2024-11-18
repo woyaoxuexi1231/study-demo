@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Import;
  * @Date: 2022-05-23 17:41
  */
 
-@ConditionalOnProperty(value = {"done.time.enable"}, havingValue = "true")
+// @ConditionalOnProperty(value = {"done.time.enable"}, havingValue = "true")
 @Configuration
 @Import({DoneTimeAspect.class})
 public class DoneTimeAutoConfiguration {

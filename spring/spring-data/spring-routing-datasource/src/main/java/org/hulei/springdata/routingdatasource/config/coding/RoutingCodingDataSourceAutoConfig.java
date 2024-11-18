@@ -24,8 +24,8 @@ public class RoutingCodingDataSourceAutoConfig {
 
     @Bean
     @Primary
-    public DataSource dataSource() {
-        return new RoutingCodingDataSource();
+    public DataSource dataSource(DataSource dataSourceFirst, DataSource dataSourceSecond) {
+        return new RoutingCodingDataSource(dataSourceFirst, dataSourceSecond);
     }
 
     @Autowired
@@ -44,7 +44,7 @@ public class RoutingCodingDataSourceAutoConfig {
         return new HikariDataSource(config);
     }
 
-    @Bean
+    @Bean(value = "dataSourceSecond")
     public DataSource dataSourceSecond() {
         HikariConfig config = new HikariDataSource();
         config.setJdbcUrl(secondHikariDataSourceConfig.getUrl());

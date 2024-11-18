@@ -1,6 +1,6 @@
 package org.hulei.springboot.spring.circle;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,15 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2024/3/24 19:18
  */
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/circle")
 public class CircleInjectController {
 
-    @Autowired
-    ClassA classA;
-
-    @Autowired
-    ClassB classB;
+    private final ClassA classA;
+    private final ClassB classB;
 
     @GetMapping("/print")
     public void print() {

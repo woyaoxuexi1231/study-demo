@@ -2,8 +2,6 @@ server:
   port: 11001
 
 spring:
-  profiles:
-    active: dev1,db,mq,mvc,redis,zk
   main:
     allow-circular-references: true
   servlet:
@@ -11,7 +9,7 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
   datasource:
-    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&connectionCollation=utf8mb4&rewriteBatchedStatements=true
+    url: jdbc:mysql://192.168.80.128:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&connectionCollation=utf8mb4&rewriteBatchedStatements=true
     username: root
     password: 123456
 
@@ -30,24 +28,24 @@ pagehelper:
   page-size-zero: true
 
 # log config
-logging:
-  level:
-    root: DEBUG
-    org:
-      mybatis:
-        spring:
-          transaction:
-            SpringManagedTransaction: DEBUG
-      springframework:
-        data:
-          redis: DEBUG
-      hulei:
-        springboot:
-          tkmybatis:
-            mapper:
-              EmployeeMapper: debug
-    com:
-      hundsun:
-        demo:
-          springboot:
-            mapper: debug
+#logging:
+#  level:
+#    root: DEBUG
+#    org:
+#      mybatis:
+#        spring:
+#          transaction:
+#            SpringManagedTransaction: DEBUG
+#      springframework:
+#        data:
+#          redis: DEBUG
+#      hulei:
+#        springboot:
+#          tkmybatis:
+#            mapper:
+#              EmployeeMapper: debug
+#    com:
+#      hundsun:
+#        demo:
+#          springboot:
+#            mapper: debug
