@@ -62,3 +62,19 @@ pgsql id如何自增
 ### 2024-11-8
 
 工作流框架
+
+
+
+### 2024-11-19
+
+虚拟机真实ip获取问题
+
+es完整学习
+
+doris fe/be
+
+hive  dblink catalog
+
+backends  ck  yarn  sparker  hdfs 
+
+minio

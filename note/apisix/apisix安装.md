@@ -15,11 +15,20 @@
 
 2. 安装etcd
 
+   github可以下载源码 https://github.com/etcd-io/etcd
+
    ```shell
+   # 解压
+   tar -xzvf etcd-v3.4.34-linux-amd64.tar.gz
    
+   cd etcd-v3.4.34-linux-amd64
+   
+   nohup ./etcd >/tmp/etcd.log 2>&1 &
    ```
 
 3. 安装apisix 
+
+   yum 安装
 
    ```shell
    yum install apisix-3.8.0
@@ -27,6 +36,15 @@
    yum install apisix
    ```
 
+   源码安装 https://github.com/apache/apisix/releases
+
+   ```shell
+   切换到 APISIX 源码的目录，创建依赖项并安装 APISIX，命令如下所示：
+   cd apisix-${APISIX_VERSION}
+   make deps
+   make install 
+   ```
+   
 4. 安装完成后
 
    ```shell

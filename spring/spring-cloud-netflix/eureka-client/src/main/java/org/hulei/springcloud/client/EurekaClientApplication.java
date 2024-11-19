@@ -2,7 +2,6 @@ package org.hulei.springcloud.client;
 
 import cn.hutool.core.thread.ThreadFactoryBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.springcloud.client.listener.ApplicationReadyEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -62,8 +61,6 @@ public class EurekaClientApplication implements ApplicationRunner {
         注册成功
          */
         ConfigurableApplicationContext context = SpringApplication.run(EurekaClientApplication.class, args);
-
-        context.publishEvent(new ApplicationReadyEvent("容器启动完成!"));
     }
 
     @PreDestroy

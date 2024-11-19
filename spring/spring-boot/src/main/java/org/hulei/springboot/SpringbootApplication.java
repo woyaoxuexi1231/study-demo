@@ -4,6 +4,7 @@ import cn.hutool.core.thread.ThreadFactoryBuilder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.hulei.springboot.spring.config.PropertiesConfig;
+import org.hulei.springboot.spring.listener.MyApplicationReadyEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -82,6 +83,8 @@ public class SpringbootApplication implements ApplicationRunner {
         // Open the homepage URL in default browser
         System.out.println(applicationContext.getEnvironment().getProperty("greeting.welcome"));
 
+
+        applicationContext.publishEvent(new MyApplicationReadyEvent("容器启动完成!"));
         /*
         内存参数 -Xmx40m -Xms40m
         启动报错了  java.lang.OutOfMemoryError: GC overhead limit exceeded, 分配的内存太少,不停的GC来创建新的对象然而GC又回收不了对象就导致报错了

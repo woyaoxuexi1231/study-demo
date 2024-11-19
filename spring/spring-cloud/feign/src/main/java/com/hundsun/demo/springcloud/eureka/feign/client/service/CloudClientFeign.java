@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 2. configuration: 指定自定义的 Feign 配置类。你可以在这个配置类中配置 Feign 客户端的相关参数，比如超时时间、重试策略等。
 3. fallback: 指定断路器（Hystrix）的回退实现类。如果调用服务失败或者出现异常，断路器会启用，并调用指定的回退实现类来处理回退逻辑。
 4. url: 配置服务的地址
-5. contextId:
+5. contextId: 用于指定一个Bean的名称，如果存在，它将代替name属性作为Bean的名称，但不会被用作服务ID。所以在多个名字相同的Feign的时候，这个参数确实有点作用。
  */
 @FeignClient(
         name = "eureka-client",
