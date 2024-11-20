@@ -105,6 +105,20 @@
             <version>5.2.0</version>
         </dependency>
 
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-exec</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.55</version>
+        </dependency>
+
+
+
         <!--测试-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

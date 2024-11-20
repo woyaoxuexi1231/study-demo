@@ -62,4 +62,12 @@ app:
   config:
     name: Myapp
     max-requests: 100
+jsch:
+  ssh-host: 192.168.3.233
+  ssh-port: 22
+  ssh-username: root
+  ssh-password: 2Kryspr!
+  upstream-config-path: /usr/local/nginx/conf/upstream
+  nginx-bin-path: /usr/local/nginx/sbin
+  nginx-config-path: /usr/local/nginx/conf
 
