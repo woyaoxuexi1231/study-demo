@@ -1,8 +1,5 @@
 package org.hulei.springboot.spring.mvc.filter.webfilter;
 
-import cn.hutool.core.net.NetUtil;
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.extra.servlet.ServletUtil;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

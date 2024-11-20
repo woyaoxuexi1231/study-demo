@@ -1,8 +1,27 @@
-## 安装
+# 安装
 
 **安装教程： https://blog.csdn.net/weixin_43755251/article/details/127512751**
 
-### docker的基础用法
+```shell
+# 安装依赖包
+# 这条命令通常用于配置和管理系统的存储环境，特别是在设置 Docker 或使用 LVM 功能时。例如，在安装和配置 Docker 时，device-mapper-persistent-data 和 lvm2 是必需的，因为 Docker 依赖这些库来管理容器的存储。
+yum install -y yum-utils device-mapper-persistent-data lvm2
+
+# 设置阿里云的 docker-ce 镜像源
+yum-config-manager --add-repo https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+
+# 安装 docker-ce
+yum install -y docker-ce
+
+
+
+```
+
+
+
+# 使用
+
+## docker的基础用法
 
 ```shell
 # 查看系统发行版本
@@ -105,7 +124,7 @@ docker stop 容器id
 
 ```
 
-### 镜像的管理操作
+## 镜像的管理操作
 
 ```shell
 
@@ -132,7 +151,7 @@ docker image inspect nginx
 
 ```
 
-### docker的容器管理
+## docker的容器管理
 
 docker run 命令会创建和启动一个容器,如果镜像在本地不存在,那么会直接在远程去下载这个镜像
 
@@ -214,24 +233,35 @@ docker commit 716569939c55 mycentos
 # 这样就可以在 docker images 中看到新的镜像,运行新的镜像就可以直接使用之前安装的 vim 了
 ```
 
-#### 查看docker容器的启动参数
+## 查看docker容器的启动参数
 
 ```shell
+docker inspect 容器ID
+
+# RestartPolicy 参数可以查看重启策略
+# PortBindings 用于配置容器内部端口和宿主机端口之间的映射关系。它指定了容器内部端口如何映射到宿主机端口，这样外部流量可以通过宿主机访问到容器内部的服务。
+  "5044/tcp" : [ {
+    "HostIp" : "",
+    "HostPort" : "5044"
+  } ],
+# NetworkSettings 提供了与容器网络配置相关的详细信息。
 ```
 
 
 
 
 
-## dockerfile 学习
 
-### dockerfile主要的组成部分
+
+# dockerfile 学习
+
+## dockerfile主要的组成部分
 
 - 基础镜像信息 From centos:6.8
 - 制作镜像操作指令 RUN yum install openssh-server -y
 - 容器启动时执行指令 CMD ["/bin/bash"]
 
-### dockerfile指令
+## dockerfile指令
 
 > - FORM 指定基础镜像
 > - MAINTAINER 指定镜像的维护者信息
@@ -243,7 +273,7 @@ docker commit 716569939c55 mycentos
 > - EXPOSE 指定对外的端口
 > - CMD 指定容器启动时需要做的事情
 
-### 实操构建nginx,并且修改主页内容
+## 实操构建nginx,并且修改主页内容
 
 ```shell
 # 1. 创建Dockerfile文件, 文件名必须是 Dockerfile 
@@ -264,7 +294,7 @@ docker tag mynginx 9f041af9b1d8
 docker run -d -P mynginx
 ```
 
-### 其他命令
+## 其他命令
 
 ```dockerfile
 # 拷贝一个文件到镜像内
@@ -324,7 +354,7 @@ VOLUME ["/data1","/data2"]
 # WORKDIR 更改当前的工作目录
 ```
 
-### dockerfile实践,搭建一个Springboot的mvc项目
+## dockerfile实践,搭建一个Springboot的mvc项目
 
 第一步. **搭建一个配置文件在jar包内的jar镜像**
 
@@ -406,11 +436,11 @@ docker run -d -p 10008:10008 -v /root/learn_docker/config:/home/config --restart
 
 ```
 
-## docker 原理知识
+# docker 原理知识
 
 传统的环境部署方案:
 
-### 纯物理服务器部署
+## 纯物理服务器部署
 
 这是一种最传统的部署方式,所有的应用全部架设在逻辑上,没有任何虚拟化技术或者容器技术.
 CPU,内存,硬盘,网络都是由宿主机的操作系统完全调度.
@@ -427,7 +457,7 @@ CPU,内存,硬盘,网络都是由宿主机的操作系统完全调度.
 - 维护成本高,硬件故障,操作系统更新或应用程序都需要更多的手动维护
 - 隔离性差,多个应用程序运行在同一个操作系统中,如其中一个应用程序出现问题,可能影响整个系统的稳定性
 
-### 虚拟机部署
+## 虚拟机部署
 
 虚拟机(VM)部署是在物理机上运行多个虚拟的操作系统,每个虚拟机都有自己的操作系统和应用程序
 虚拟机由虚拟化软件(Vmware,Hyper-V等)管理
@@ -446,7 +476,7 @@ Vmware来说,他提供一种二进制翻译技术,Vmware通过Hypervisor把虚�
 - 启动时间长,虚拟机需要启动整个操作系统,启动时间较长
 - 资源占用大,每个虚拟机都需要占用大量的内存和存储空间,尤其是完整的操作系统镜像文件
 
-### 容器部署
+## 容器部署
 
 无论是全虚拟化,半虚拟化,还是CPU硬件加持下的全虚拟化技术(KVM),虚拟机的目标都是构建一台完整的计算机,性能消耗非常大
 Docker是一种基于容器技术的轻量级虚拟化方式,容器共享主机的操作系统内核,但每个容器拥有各自的文件系统,进程,和网络空间,具有独立的运行环境
@@ -466,7 +496,7 @@ Docker是一种基于容器技术的轻量级虚拟化方式,容器共享主机�
 - 需要操作系统支持,docker需要依赖linux内核特性,在某些操作系统上,尤其是Windows,docker的支持相对有限(
   所以在Windows上面使用docker的时候,会自动安装Hyper-V)
 
-### docker 镜像
+## docker 镜像
 
 ```shell
 # 通过docker查找一个centos的镜像

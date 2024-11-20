@@ -623,6 +623,25 @@
                     <artifactId>maven-assembly-plugin</artifactId>
                     <version>3.7.1</version>
                 </plugin>
+
+                <!--
+                exec-maven-plugin这个是什么插件
+                exec-maven-plugin 是一个 Maven 插件，用于在 Maven 生命周期的任何阶段执行外部命令或脚本。
+                它可以用于执行任何可在命令行上运行的程序，包括 shell 脚本、Python 脚本、Java 程序等。
+
+                这个插件非常灵活，可以用于自动化各种构建和部署任务。例如，你可以在编译过程中运行一些检查工具，或者在打包阶段执行一些脚本来准备部署环境。
+                 -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>3.5.0</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>com.spotify</groupId>
+                    <artifactId>dockerfile-maven-plugin</artifactId>
+                    <version>1.4.13</version>
+                </plugin>
             </plugins>
         </pluginManagement>
 
