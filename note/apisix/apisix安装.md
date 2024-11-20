@@ -1,4 +1,4 @@
-# 安装
+# APISIX安装
 
 参考安装教程：[APISIX 安装指南 | Apache APISIX® -- Cloud-Native API Gateway](https://apisix.apache.org/zh/docs/apisix/installation-guide/)
 
@@ -28,10 +28,15 @@
 
 3. 安装apisix 
 
-   yum 安装
+   rpm 安装
 
    ```shell
-   yum install apisix-3.8.0
+   # 如果当前系统没有安装 OpenResty，请使用以下命令来安装 OpenResty 和 APISIX 仓库
+   yum install -y https://repos.apiseven.com/packages/centos/apache-apisix-repo-1.0-1.noarch.rpm
+   # 如果已安装 OpenResty 的官方 RPM 仓库，请使用以下命令安装 APISIX 的 RPM 仓库：
+   yum-config-manager --add-repo https://repos.apiseven.com/packages/centos/apache-apisix.repo
+   # 完成上述操作后使用以下命令安装 APISIX
+   yum -y install apisix-3.9.1
    # 或者
    yum install apisix
    ```
@@ -44,7 +49,7 @@
    make deps
    make install 
    ```
-   
+
 4. 安装完成后
 
    ```shell
@@ -59,109 +64,39 @@
    # Server: APISIX/3.9.1
    ```
 
-# 基本使用
+5. 端口问题
 
-```shell
-# 1. 添加路由信息和路由转发(node_list)不同, admin接口的端口默认9180
-# 需要在头部添加apikey信息，否则接口会401
-curl -i "http://127.0.0.1:9180/apisix/admin/routes" \
--X PUT \
--H "X-API-Key: edd1c9f034335f136f87ad84b625c8f1" \
--d '{
-  "id": "getting-started-ip",
-  "uri": "/ip",
-  "upstream": {
-    "type": "roundrobin",
-    "nodes": {
-      "httpbin.org:80": 1
-    }
-  }
-}'
-# 调用 /ip 接口
-curl "http://127.0.0.1:9080/ip"
+   apisix默认的网关端口 9080， 可以通过 /usr/local/apisix/conf/config-default.yaml 这个配置文件的 apisix.node_listen 这个配置更改。
 
-# 2.配置负载均衡
-curl -i "http://127.0.0.1:9180/apisix/admin/routes" \
--X PUT \
--H "X-API-Key: edd1c9f034335f136f87ad84b625c8f1" \
--d '{
-  "id": "getting-started-headers",
-  "uri": "/headers",
-  "upstream" : {
-    "type": "roundrobin",
-    "nodes": {
-      "httpbin.org:443": 1,
-      "mock.api7.ai:443": 1
-    },
-    "pass_host": "node",
-    "scheme": "https"
-  }
-}'
-# 生成100个请求，查看负载情况
-hc=$(seq 100 | xargs -I {} curl "http://127.0.0.1:9080/headers" -sL | grep "httpbin" | wc -l); echo httpbin.org: $hc, mock.api7.ai: $((100 - $hc))
+   apisix默认的admin管理端口 9180，可以通过 /usr/local/apisix/conf/config-default.yaml 这个配置文件的 deployment.admin.admin_listen.port 这个配置更改。
+
+   apisix-dashboard默认的端口 9000，可以通过 /usr/local/apisix/dashboard/conf/conf.yaml 配置文件的 conf.listen.port 进行修改。
 
 
-# 对tom用户新增密钥插件
-curl -i "http://127.0.0.1:9180/apisix/admin/consumers" -X PUT -H "X-API-Key: edd1c9f034335f136f87ad84b625c8f1" -d  '
-{
-  "username": "tom",
-  "plugins": {
-    "key-auth": {
-      "key": "secret-key"
-    }
-  }
-}'
 
-# 启用 Authentication
-curl -i "http://127.0.0.1:9180/apisix/admin/routes/getting-started-ip" -X PATCH -H "X-API-Key: edd1c9f034335f136f87ad84b625c8f1" -d '
-{
-  "plugins": {
-    "key-auth": {}
-  }
-}'
+# APISIX-dashboard安装
 
-# 后续在调用 /ip 这个接口必须添加请求头 -H 'apikey: wrong-key'
+参考文章：[APISIX-dashboard安装篇_apisix dashboard安装-CSDN博客](https://blog.csdn.net/weixin_43117893/article/details/123018836)
 
-# 禁用 Authentication， 将参数设置 _meta.disable 为 true，即可禁用密钥验证插件。
-curl "http://127.0.0.1:9180/apisix/admin/routes/getting-started-ip" -X PATCH -H "X-API-Key: edd1c9f034335f136f87ad84b625c8f1" -d '
-{
-  "plugins": {
-    "key-auth": {
-      "_meta": {
-        "disable": true
-      }
-    }
-  }
-}'
+1. 下载rpm包（github能够下载），然后使用 yum install 安装
+
+2. 配置
+
+   ```shell
+   # 需要修改一下配置文件
+   cd /usr/local/apisix/dashboard/conf
+   vim conf.yaml
+   # 修改allow_list，在后面追加一个 0.0.0.0/0 允许任何源的请求访问
+   
+   # run dashboard in the shell
+   sudo manager-api -p /usr/local/apisix/dashboard/
+   
+   # or run dashboard as a service
+   systemctl start apisix-dashboard
+   ```
 
 
-# 限流操作
-curl -i "http://127.0.0.1:9180/apisix/admin/routes/getting-started-ip" -X PATCH -H "X-API-Key: edd1c9f034335f136f87ad84b625c8f1" -d '
-{
-  "plugins": {
-    "limit-count": {
-        "count": 2,
-        "time_window": 10,
-        "rejected_code": 503
-     }
-  }
-}'
-
-# 发送100个请求测试结果
-count=$(seq 100 | xargs -I {} curl "http://127.0.0.1:9080/ip" -I -sL | grep "503" | wc -l); echo \"200\": $((100 - $count)), \"503\": $count
-
-# 禁用限流
-curl -i "http://127.0.0.1:9180/apisix/admin/routes/getting-started-ip" -X PATCH -H "X-API-Key: edd1c9f034335f136f87ad84b625c8f1" -d '
-{
-    "plugins": {
-        "limit-count": {
-            "_meta": {
-                "disable": true
-            }
-        }
-    }
-}'
-```
+默认控制台地址：http://127.0.0.1:9000/
 
 
 

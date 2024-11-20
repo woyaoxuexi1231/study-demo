@@ -39,7 +39,7 @@
 #eureka:
 #  client:
 #    service-url:
-#      defaultZone: http://localhost:12000/eureka/
+#      defaultZone: http://localhost:10001/eureka/
 ##
 ### server
 ##server:

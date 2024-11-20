@@ -6,12 +6,12 @@ spring:
 #      name: admin #管理界面登录账户
 #      password: admin #管理界面登录密码
 server:
-  port: 8769
+  port: 10012
 eureka:
   client:
     registryFetchIntervalSeconds: 5
     service-url:
-      defaultZone: ${EUREKA_SERVICE_URL:http://localhost:12000}/eureka/
+      defaultZone: ${EUREKA_SERVICE_URL:http://localhost:10001}/eureka/
   instance:
     leaseRenewalIntervalInSeconds: 10
     health-check-url-path: /actuator/health

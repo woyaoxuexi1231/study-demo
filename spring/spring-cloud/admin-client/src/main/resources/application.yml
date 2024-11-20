@@ -14,7 +14,7 @@ eureka:
   client:
     registryFetchIntervalSeconds: 5
     service-url:
-      defaultZone: ${EUREKA_SERVICE_URL:http://localhost:12000}/eureka/
+      defaultZone: ${EUREKA_SERVICE_URL:http://localhost:10001}/eureka/
 #配置可监控信息
 management:
   #对外开放某个监控点
@@ -35,4 +35,4 @@ management:
     enabled-by-default: true
 
 server:
-  port: 8762
+  port: 10011

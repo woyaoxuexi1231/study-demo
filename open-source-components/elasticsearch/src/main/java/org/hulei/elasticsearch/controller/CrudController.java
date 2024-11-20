@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.hulei.elasticsearch.entity.Book;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.IndexOperations;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,6 +23,16 @@ public class CrudController {
 
     private final ElasticsearchTemplate elasticsearchTemplate;
 
+    @GetMapping("/createIndex")
+    public void createIndex() {
+        IndexOperations indexOps = elasticsearchTemplate.indexOps(Book.class);
+        indexOps.create();
+    }
 
+    @GetMapping("/deleteIndex")
+    public void deleteIndex() {
+        IndexOperations indexOps = elasticsearchTemplate.indexOps(Book.class);
+        indexOps.delete();
+    }
 
 }

@@ -15,13 +15,13 @@ spring:
   application:
     name: config-server
 server:
-  port: 9160
+  port: 10014
 eureka:
   client:
     register-with-eureka: true
     fetch-registry: false
     serviceUrl:
-      defaultZone: http://localhost:12000/eureka/
+      defaultZone: http://localhost:10001/eureka/
 logging:
   level:
     root: debug

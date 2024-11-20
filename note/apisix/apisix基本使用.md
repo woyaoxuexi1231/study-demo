@@ -1,3 +1,111 @@
+# 基本使用
+
+```shell
+# 1. 添加路由信息和路由转发(node_list)不同, admin接口的端口默认9180
+# 需要在头部添加apikey信息，否则接口会401
+curl -i "http://127.0.0.1:9180/apisix/admin/routes" \
+-X PUT \
+-H "X-API-Key: edd1c9f034335f136f87ad84b625c8f1" \
+-d '{
+  "id": "getting-started-ip",
+  "uri": "/ip",
+  "upstream": {
+    "type": "roundrobin",
+    "nodes": {
+      "httpbin.org:80": 1
+    }
+  }
+}'
+# 调用 /ip 接口
+curl "http://127.0.0.1:9080/ip"
+
+# 2.配置负载均衡
+curl -i "http://127.0.0.1:9180/apisix/admin/routes" \
+-X PUT \
+-H "X-API-Key: edd1c9f034335f136f87ad84b625c8f1" \
+-d '{
+  "id": "getting-started-headers",
+  "uri": "/headers",
+  "upstream" : {
+    "type": "roundrobin",
+    "nodes": {
+      "httpbin.org:443": 1,
+      "mock.api7.ai:443": 1
+    },
+    "pass_host": "node",
+    "scheme": "https"
+  }
+}'
+# 生成100个请求，查看负载情况
+hc=$(seq 100 | xargs -I {} curl "http://127.0.0.1:9080/headers" -sL | grep "httpbin" | wc -l); echo httpbin.org: $hc, mock.api7.ai: $((100 - $hc))
+
+
+# 对tom用户新增密钥插件
+curl -i "http://127.0.0.1:9180/apisix/admin/consumers" -X PUT -H "X-API-Key: edd1c9f034335f136f87ad84b625c8f1" -d  '
+{
+  "username": "tom",
+  "plugins": {
+    "key-auth": {
+      "key": "secret-key"
+    }
+  }
+}'
+
+# 启用 Authentication
+curl -i "http://127.0.0.1:9180/apisix/admin/routes/getting-started-ip" -X PATCH -H "X-API-Key: edd1c9f034335f136f87ad84b625c8f1" -d '
+{
+  "plugins": {
+    "key-auth": {}
+  }
+}'
+
+# 后续在调用 /ip 这个接口必须添加请求头 -H 'apikey: wrong-key'
+
+# 禁用 Authentication， 将参数设置 _meta.disable 为 true，即可禁用密钥验证插件。
+curl "http://127.0.0.1:9180/apisix/admin/routes/getting-started-ip" -X PATCH -H "X-API-Key: edd1c9f034335f136f87ad84b625c8f1" -d '
+{
+  "plugins": {
+    "key-auth": {
+      "_meta": {
+        "disable": true
+      }
+    }
+  }
+}'
+
+
+# 限流操作
+curl -i "http://127.0.0.1:9180/apisix/admin/routes/getting-started-ip" -X PATCH -H "X-API-Key: edd1c9f034335f136f87ad84b625c8f1" -d '
+{
+  "plugins": {
+    "limit-count": {
+        "count": 2,
+        "time_window": 10,
+        "rejected_code": 503
+     }
+  }
+}'
+
+# 发送100个请求测试结果
+count=$(seq 100 | xargs -I {} curl "http://127.0.0.1:9080/ip" -I -sL | grep "503" | wc -l); echo \"200\": $((100 - $count)), \"503\": $count
+
+# 禁用限流
+curl -i "http://127.0.0.1:9180/apisix/admin/routes/getting-started-ip" -X PATCH -H "X-API-Key: edd1c9f034335f136f87ad84b625c8f1" -d '
+{
+    "plugins": {
+        "limit-count": {
+            "_meta": {
+                "disable": true
+            }
+        }
+    }
+}'
+```
+
+
+
+# apisix 管理 API
+
 参考文章: [Admin API | Apache APISIX® -- Cloud-Native API Gateway](https://apisix.apache.org/zh/docs/apisix/admin-api/)
 
 ## apisix amdin api的配置

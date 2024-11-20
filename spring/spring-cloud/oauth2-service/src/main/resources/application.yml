@@ -16,7 +16,7 @@ spring:
 server:
   servlet:
     context-path: /uaa
-  port: 5000
+  port: 10020
 
 
 #security:
@@ -30,6 +30,6 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:12000/eureka/
+      defaultZone: http://localhost:10001/eureka/
 mybatis:
   mapper-locations: classpath:mapper/*.xml

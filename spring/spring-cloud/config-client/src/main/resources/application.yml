@@ -40,9 +40,9 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:12000/eureka/
+      defaultZone: http://localhost:10001/eureka/
 server:
-  port: 9161
+  port: 10013
 management:
   #  这是用于配置 Spring Boot Actuator 端点的管理端口属性。
   #  默认情况下，Actuator 端点使用与主服务相同的端口（即 server.port）。但是，如果你想要为 Actuator 端点配置一个不同的端口，你可以使用 management.server.port 属性来指定。

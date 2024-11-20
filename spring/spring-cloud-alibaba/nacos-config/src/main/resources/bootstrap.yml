@@ -13,7 +13,7 @@ spring:
         server-addr: 192.168.80.140:8848
 
 server:
-  port: 13001
+  port: 10023
 
 logging:
   level:

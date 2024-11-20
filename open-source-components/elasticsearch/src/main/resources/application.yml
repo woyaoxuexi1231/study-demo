@@ -1,3 +1,6 @@
+server:
+  port: 11007
+
 spring:
   elasticsearch:
     uris: http://localhost:9200
@@ -7,6 +10,7 @@ spring:
     allow-bean-definition-overriding: true
 
 
-logging:
-  level:
-    root: debug
+#logging:
+#  level:
+#    root: debug
+

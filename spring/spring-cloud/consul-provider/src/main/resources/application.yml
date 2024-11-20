@@ -1,6 +1,6 @@
 server:
   # 配置中心的端口配置会优于本地的配置
-  port: 9141
+  port: 10016
 spring:
   application:
     name: consul-provider
