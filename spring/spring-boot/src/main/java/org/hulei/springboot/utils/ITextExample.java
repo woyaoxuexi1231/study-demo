@@ -27,7 +27,9 @@ public class ITextExample {
 
             // Step 4: 设置字体支持中文
             BaseFont baseFont = BaseFont.createFont("STSongStd-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
-            Font chineseFont = new Font(baseFont, 12, Font.NORMAL);
+            BaseFont msYaHeiBaseFont = BaseFont.createFont("经典宋体简.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            BaseFont harmonyOSBaseFont = BaseFont.createFont("HarmonyOS_Sans_Regular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            Font chineseFont = new Font(harmonyOSBaseFont, 12, Font.NORMAL);
 
             // 添加标题
             document.add(new Paragraph("生成PDF范例", chineseFont));

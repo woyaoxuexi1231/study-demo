@@ -1,8 +1,13 @@
 package org.hulei.springboot.spring.mvc;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author hulei
@@ -26,7 +31,7 @@ public class MvcController {
 
     @GetMapping("/get-ip")
     @ResponseBody
-    public void getIp() {
+    public void getIp(HttpServletRequest request, HttpServletResponse response) {
         System.out.println("hi");
     }
 }
