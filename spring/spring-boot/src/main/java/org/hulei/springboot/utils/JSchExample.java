@@ -2,7 +2,9 @@ package org.hulei.springboot.utils;
 
 import com.jcraft.jsch.*;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class JSchExample {
 
@@ -32,11 +34,15 @@ public class JSchExample {
 
             // 3. 打开通道并执行命令
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
-            String command = "ls -l"; // 要执行的命令
+            // String command = "ls -l"; // 要执行的命令
+
+            String command = "/usr/local/nginx/sbin/nginx -s reload";
+
             channel.setCommand(command);
 
             // 获取命令输出流
             InputStream inputStream = channel.getInputStream();
+            InputStream err = channel.getErrStream();
             channel.connect();
             System.out.println("Command executed: " + command);
 
@@ -50,6 +56,19 @@ public class JSchExample {
                 }
                 if (channel.isClosed()) {
                     System.out.println("\nExit status: " + channel.getExitStatus());
+                    if (channel.getExitStatus() != 0) {
+                        // 读取命令的错误输出
+                        try (BufferedReader reader = new BufferedReader(new InputStreamReader(err))) {
+                            String line;
+                            while ((line = reader.readLine()) != null) {
+                                System.err.println(line);
+                                String regex = "nginx\\.pid.*No such file or directory";
+                                if(line.matches(".*" + regex + ".*")){
+                                    return;
+                                }
+                            }
+                        }
+                    }
                     break;
                 }
                 Thread.sleep(1000);

@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * @author hulei
@@ -143,5 +145,24 @@ public class JSchExecutorController {
         } catch (Exception e) {
             log.error("执行命令过程中出现问题", e);
         }
+    }
+
+    public static String normalize(String path) {
+        // 使用 Paths.get 处理路径
+        Path p = Paths.get(path);
+
+        // 使用 Path 的 normalize 方法来规范化路径
+        Path normalizedPath = p.normalize();
+
+        // 将 Path 转换为字符串
+        String normalizedString = normalizedPath.toString();
+
+        // 将系统默认分隔符替换为正斜杠
+        normalizedString = normalizedString.replace("\\", "/");
+
+        // 去除多余的斜杠（如果有）
+        normalizedString = normalizedString.replaceAll("/{2,}", "/");
+
+        return normalizedString;
     }
 }

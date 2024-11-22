@@ -67,7 +67,7 @@ public class SpringBean implements BeanNameAware, BeanFactoryAware, ApplicationC
     }
 
     @PostConstruct
-    public void init() {
+    private void init() {
         log.info("6. @PostConstruct, 这个方法将在实例化和依赖注入完成之后调用, 和InitializingBean接口实现的功能类似,不过这个方法比InitializingBean接口更先调用");
     }
 
@@ -78,7 +78,7 @@ public class SpringBean implements BeanNameAware, BeanFactoryAware, ApplicationC
     }
 
     @PreDestroy
-    public void preDestroy() {
+    private void preDestroy() {
         log.info("7. @PreDestroy, 容器摧毁时调用的方法, 此方法先于 DisposableBean 接口");
     }
 
