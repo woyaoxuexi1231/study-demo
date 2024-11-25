@@ -41,7 +41,7 @@ public class ItextPdfController {
             document.open();
 
             // Step 4: 设置字体支持中文
-            BaseFont baseFont = BaseFont.createFont("Noto Sans SC", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
+            BaseFont baseFont = BaseFont.createFont("STSongStd-Light", "UniGB-UCS2-H",  BaseFont.NOT_EMBEDDED);
             Font chineseFont = new Font(baseFont, 12, Font.NORMAL);
 
             // 添加标题
@@ -69,8 +69,8 @@ public class ItextPdfController {
             document.add(link);
 
             response.setCharacterEncoding("UTF-8");
-            response.setHeader("content-Type", "application/pdf");
-            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("test.pdf", StandardCharsets.UTF_8));
+            response.addHeader("content-Type", "application/pdf");
+            response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("test.pdf", StandardCharsets.UTF_8));
 
 
             // Step 5: 关闭文档

@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Random;
 
 /**
  * @ProductName: Hundsun amust
@@ -108,6 +109,11 @@ public class ExcelController {
     @GetMapping("/")
     public String index() {
         return "Welcome to file upload example. Use /upload to upload a file.";
+    }
+
+    public static void main(String[] args) {
+        Random r = new Random();
+        System.out.println(r.nextInt(30000) + 1);
     }
 }
 

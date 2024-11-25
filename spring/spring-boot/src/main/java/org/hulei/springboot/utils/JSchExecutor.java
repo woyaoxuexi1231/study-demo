@@ -158,7 +158,7 @@ public class JSchExecutor {
                     "        error_log /var/log/nginx/" + upstreamName + "_" + id + ".error.log;\n" +
                     "    }\n");
 
-            // 重启 nginx
+            // 重启 nginx  nginx多个相同上游(上游名称重复也会报错)不会报错，但是如果有多个重复端口 是有问题的
             executor.executeCommand(nginxSbinPath + "/nginx" + " -s stop");
 
             executor.executeCommand(nginxSbinPath + "/nginx -c " + nginxConfigPath + "/nginx.conf");
