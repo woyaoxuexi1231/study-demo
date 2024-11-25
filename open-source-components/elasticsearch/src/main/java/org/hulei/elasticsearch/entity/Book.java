@@ -1,11 +1,13 @@
 package org.hulei.elasticsearch.entity;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 
 
+@Accessors(chain = true)
 @Data
 @Document(indexName = "books")
 public class Book {

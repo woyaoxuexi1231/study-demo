@@ -35,4 +35,15 @@ public class CrudController {
         indexOps.delete();
     }
 
+    @GetMapping("/createDocument")
+    public void createDocument() {
+        elasticsearchTemplate.save(new Book().setAuthor("hulei").setId(1L).setTitle("Hulei Book"));
+        elasticsearchTemplate.save(new Book().setAuthor("hulei").setId(2L).setTitle("JAVA"));
+        elasticsearchTemplate.save(new Book().setAuthor("hulei").setId(3L).setTitle("Spring Boot"));
+    }
+
+    public void deleteDocument() {
+        elasticsearchTemplate.delete(Book.class);
+    }
+
 }
