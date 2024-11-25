@@ -78,3 +78,11 @@ hive  dblink catalog
 backends  ck  yarn  sparker  hdfs 
 
 minio
+
+
+
+### 2024-11-22
+
+export https_proxy=http://192.168.3.14:7890
+export http_proxy=http://192.168.3.14:7890
+export all_proxy=socks5://192.168.3.14:7890
