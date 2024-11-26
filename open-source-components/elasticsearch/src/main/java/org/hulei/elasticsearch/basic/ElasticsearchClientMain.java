@@ -1,4 +1,4 @@
-package org.hulei.jdk.es;
+package org.hulei.elasticsearch.basic;
 
 import cn.hutool.core.collection.CollectionUtil;
 import co.elastic.clients.elasticsearch.ElasticsearchAsyncClient;
@@ -31,9 +31,7 @@ import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
-import org.hulei.jdk.es.Product;
-import org.junit.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.hulei.elasticsearch.entity.Product;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -45,7 +43,6 @@ import java.util.Objects;
  * @since 2024/8/2 16:41
  */
 
-@SpringBootTest
 @Slf4j
 public class ElasticsearchClientMain {
     //
@@ -53,8 +50,6 @@ public class ElasticsearchClientMain {
 
     private static ElasticsearchAsyncClient asyncClient;
 
-
-    @Test
     public synchronized void test() throws Exception {
         makeConnection();
         // documentQuery();

@@ -1,4 +1,4 @@
-package org.hulei.jdk.es;
+package org.hulei.elasticsearch.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
