@@ -23,10 +23,10 @@
 
         <!-- 安全验证方面 -->
         <!-- springSecurity -->
-        <module>security</module>
+<!--         <module>security</module> -->
         <!-- OAuth2 -->
-        <module>oauth2-service</module>
-        <module>oauth2-service-hi</module>
+<!--         <module>oauth2-service</module> -->
+<!--         <module>oauth2-service-hi</module> -->
 
         <!--  -->
         <module>admin-server</module>
