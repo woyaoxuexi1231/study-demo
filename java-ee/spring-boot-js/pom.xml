@@ -12,7 +12,6 @@
     <artifactId>spring-boot-js</artifactId>
 
     <properties>
-        <build.finalName>spring-boot-js</build.finalName>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
     </properties>

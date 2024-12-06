@@ -43,6 +43,11 @@
             <artifactId>redisson-spring-boot-starter</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+
         <!-- mock数据工具 -->
         <dependency>
             <groupId>com.github.jsonzou</groupId>
@@ -50,24 +55,20 @@
             <version>4.2.0</version>
         </dependency>
 
-<!--         &lt;!&ndash; mybatis相关依赖 &ndash;&gt; -->
-<!--         <dependency> -->
-<!--             <groupId>org.hulei</groupId> -->
-<!--             <artifactId>mapperplus</artifactId> -->
-<!--             <version>1.0.0.4-SNAPSHOT</version> -->
-<!--         </dependency> -->
-<!--         <dependency> -->
-<!--             <groupId>com.github.pagehelper</groupId> -->
-<!--             <artifactId>pagehelper-spring-boot-starter</artifactId> -->
-<!--         </dependency> -->
-<!--         <dependency> -->
-<!--             <groupId>com.baomidou</groupId> -->
-<!--             <artifactId>mybatis-plus-boot-starter</artifactId> -->
-<!--         </dependency> -->
-<!--         <dependency> -->
-<!--             <groupId>mysql</groupId> -->
-<!--             <artifactId>mysql-connector-java</artifactId> -->
-<!--         </dependency> -->
+        <!-- 数据库相关 -->
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>entity-jpa</artifactId>
+            <version>1.0.0.4-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -78,7 +79,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <build>
-                <finalName>spring-boot-redis</finalName>
+                <finalName>${project.name}</finalName>
                 <plugins>
                     <plugin>
                         <!--

@@ -12,7 +12,6 @@
     <artifactId>netflix-eureka-client</artifactId>
 
     <properties>
-        <build.finalName>spring-eureka-client</build.finalName>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

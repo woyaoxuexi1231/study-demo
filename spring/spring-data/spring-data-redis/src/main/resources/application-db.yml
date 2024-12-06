@@ -9,7 +9,6 @@ spring:
     hibernate:
       ddl-auto: none
       naming:
-        # TODO 这两个参数有待研究
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true

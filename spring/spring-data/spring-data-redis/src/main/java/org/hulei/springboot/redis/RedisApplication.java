@@ -3,12 +3,14 @@ package org.hulei.springboot.redis;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 /**
  * @author hulei
  * @since 2024/9/19 21:57
  */
 
+@EntityScan(basePackages = {"org.hulei.entity.jpa.pojo"})
 @SpringBootApplication
 public class RedisApplication {
 

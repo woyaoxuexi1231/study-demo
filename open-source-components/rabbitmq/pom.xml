@@ -61,7 +61,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <build>
-                <finalName>spring-boot-rabbitmq</finalName>
+                <finalName>${project.name}</finalName>
                 <plugins>
                     <plugin>
                         <!--

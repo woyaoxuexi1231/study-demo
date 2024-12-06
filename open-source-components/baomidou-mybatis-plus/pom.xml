@@ -72,7 +72,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <build>
-                <finalName>spring-boot-mybatisplus</finalName>
+                <finalName>${project.name}</finalName>
                 <plugins>
                     <plugin>
                         <!--

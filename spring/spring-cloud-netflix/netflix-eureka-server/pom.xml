@@ -12,7 +12,6 @@
     <artifactId>netflix-eureka-server</artifactId>
 
     <properties>
-        <build.finalName>springcloud-eureka-server</build.finalName>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

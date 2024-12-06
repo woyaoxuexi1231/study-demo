@@ -1,5 +1,7 @@
 package org.hulei.springboot.redis.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -19,6 +21,12 @@ import java.time.Duration;
 @Configuration
 public class BeanConfig {
 
-
-
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        // 可以在这里添加其他自定义配置，比如设置日期格式等
+        // objectMapper.setDateFormat(...);
+        return objectMapper;
+    }
 }

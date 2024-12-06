@@ -1,6 +1,9 @@
 package org.hulei.springboot.redis.redis.spring;
 
+import lombok.RequiredArgsConstructor;
+import org.hulei.entity.jpa.pojo.Employee;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -9,22 +12,26 @@ import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author hulei
  * @since 2024/11/16 0:59
  */
 
+@EnableCaching
+@RequiredArgsConstructor
 @Configuration
 @RestController
 public class SpringCacheRedisController {
+
+    private final EmployeeRepository employeeRepository;
 
     @Bean
     public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
@@ -45,19 +52,13 @@ public class SpringCacheRedisController {
      * <p>
      * 在redis的key值为 : redis::getEmployees::EmployeeQryReq(super=PageQryReqDTO(pageNum=1, pageSize=10), employeeNumber=null)
      *
-     * @param req req
+     * @param id id
      * @return object
      */
-    // @Cacheable(value = {"employee"}, key = "'getEmployees' + #req", cacheManager = "cacheManager")
-    @Cacheable(value = {"redis"}, key = "'getEmployees::' + #req", cacheManager = "redisCacheManager")
-    @PostMapping(value = "/getEmployees")
-    public List<EmployeeQryReq> getEmployees(@RequestBody EmployeeQryReq req) {
-        LambdaQueryWrapper<EmployeeDO> wrapper = new LambdaQueryWrapper<>();
-        if (!Objects.isNull(req.getEmployeeNumber())) {
-            wrapper.eq(EmployeeDO::getEmployeeNumber, req.getEmployeeNumber());
-        }
-        PageHelper.startPage(req.getPageNum(), req.getPageSize());
-        return employeeMapperPlus.selectList(wrapper);
+    @Cacheable(value = {"redis"}, key = "'findEmployeeById::' + #id", cacheManager = "redisCacheManager")
+    @PostMapping(value = "/employee/{id}")
+    public Employee findEmployeeById(@PathVariable(value = "id") Long id) {
+        return employeeRepository.findById(id).isPresent() ? employeeRepository.findById(id).get() : null;
     }
 
 }
