@@ -50,6 +50,10 @@
    make install 
    ```
 
+   apisix通过源码安装在尝试安装golong的时候会连接超时Get "https://proxy.golang.org/google.golang.org/grpc/av/v1.55.1.zip": dial tcp 142.250.196.209:443: i/o timeout，目前通过DEB进行安装，安装目录在 /usr/local/apisix下
+
+   
+
 4. 安装完成后
 
    ```shell
@@ -99,6 +103,26 @@
 默认控制台地址：http://127.0.0.1:9000/
 
 
+
+源码安装：
+
+参考文章
+
+https://apisix.apache.org/zh/docs/dashboard/install/
+
+https://www.cnblogs.com/wangguishe/p/16165880.html
+
+
+
+源码安装遇到的问题：
+
+apisix-dashboard目前仅提供了rpm和源码安装，Ubuntu不支持rpm安装，只能使用源码安装。
+
+- 需要配置go的代理网络环境 go env -w GOPROXY=https://goproxy.cn,direct
+- 需要修改apisix-dashboard的build脚本Makefile文件，其中部分安装脚本有问题，目录的路径不对。(这是由于使用的go版本太低了，这里安装的apisix-dashboard版本是3.0，重新换了一个go1.23的版本就可以了，他这个过程中并没有报错，仅仅是提示一个 \+ cp ./api/conf/schema.json ./output/conf/schema.json cp: cannot stat './api/conf/schema.json': No such file or directory 命令失败，我这里重试修改了他的安装脚本，虽然安装成功，但是没有安装manage-api这个启动程序，并且使用make api-run也无法启动，并且make api-run这里报错了，一堆\# runtime ../../../go/src/runtime/mem_linux.go:20:6: sysAlloc redeclared in this block        ../../../go/src/runtime/mem.go:49:6: other declaration of sysAlloc类似这样的报错，chatgpt回答是go版本太低导致运行时的定义错误)。
+- 需要修改yarn使用的node环境，由于系统自带了node10, 修改yarn程序的node环境为我们安装的node16，找到yarn的安装路径直接 vim yarn 
+
+修改上述配置之后，大概差不多就安装完成了。
 
 # 端口
 
