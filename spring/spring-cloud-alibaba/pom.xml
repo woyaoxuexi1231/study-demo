@@ -12,7 +12,7 @@
     <artifactId>spring-cloud-alibaba</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>nacos-config</module>
+        <module>alibaba-nacos-config</module>
     </modules>
 
     <properties>

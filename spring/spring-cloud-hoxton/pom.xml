@@ -19,9 +19,9 @@
     </properties>
 
     <modules>
-        <module>security</module>
-        <module>oauth2-service</module>
-        <module>oauth2-service-hi</module>
+        <module>hoxton-security</module>
+        <module>hoxton-oauth2-service</module>
+        <module>hoxton-oauth2-service-hi</module>
     </modules>
 
 </project>

@@ -28,16 +28,16 @@
 
     <modules>
         <!-- 服务注册中心 -->
-        <module>eureka-server</module>
+        <module>netflix-eureka-server</module>
         <!-- 一个简单的服务发现者 -->
-        <module>eureka-client</module>
+        <module>netflix-eureka-client</module>
 
         <!-- Ribbon负载均衡组件 -->
-        <module>ribbon-client</module>
+        <module>netflix-ribbon-client</module>
         <!-- 网关 -->
-        <module>zuul-client</module>
+        <module>netflix-zuul-client</module>
         <!-- 集成了Turbine,用于聚合多个Hystrix Dashboard -->
-        <module>turbine-service</module>
+        <module>netflix-turbine-service</module>
     </modules>
 
     <dependencies>

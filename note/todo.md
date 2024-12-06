@@ -75,7 +75,7 @@ doris fe/be
 
 hive  dblink catalog
 
-backends  ck  yarn  sparker  hdfs 
+backends  ck(clickhouse)  yarn  sparker  hdfs 
 
 minio
 
