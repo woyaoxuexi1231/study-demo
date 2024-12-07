@@ -65,7 +65,21 @@
     </dependencies>
 
     <build>
-        <finalName>${project.artifactId}</finalName>
+        <finalName>${project.name}</finalName>
+        <plugins>
+            <!-- 1. Maven WAR 插件，用于构建 WAR 包 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <!-- 设置输出的 WAR 包文件名 -->
+                    <!-- <warName>your-web-app</warName> -->
+                    <!-- 可以将自定义的 web.xml 配置文件与默认的 web.xml 合并 -->
+                    <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
+
 
 </project>

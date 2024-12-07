@@ -9,7 +9,8 @@
         <version>1.0.0.4-SNAPSHOT</version>
     </parent>
 
-    <artifactId>javaee</artifactId>
+    <artifactId>java-ee-ejb</artifactId>
+    <packaging>war</packaging>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -218,5 +219,9 @@
             <artifactId>jakarta.mail-api</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <finalName>${project.name}</finalName>
+    </build>
 
 </project>
