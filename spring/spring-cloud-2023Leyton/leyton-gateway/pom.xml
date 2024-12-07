@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>spring-cloud-2023Leyton</artifactId>
+        <artifactId>dependencies-parent</artifactId>
         <groupId>org.hulei</groupId>
         <version>1.0.0.4-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>gateway</artifactId>
+    <artifactId>leyton-gateway</artifactId>
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -18,7 +18,12 @@
 
 
     <dependencies>
-
+        <!-- 内部 -->
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>utils</artifactId>
+            <version>1.0.0.4-SNAPSHOT</version>
+        </dependency>
         <!-- spring cloud gateway 起步依赖 -->
         <!-- 提供网关能力, 包括路由, 过滤器等功能 -->
         <dependency>

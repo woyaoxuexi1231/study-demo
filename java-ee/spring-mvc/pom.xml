@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>java-ee</artifactId>
+        <artifactId>dependencies-parent</artifactId>
         <groupId>org.hulei</groupId>
         <version>1.0.0.4-SNAPSHOT</version>
     </parent>

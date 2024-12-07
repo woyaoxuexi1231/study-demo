@@ -3,8 +3,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>spring-cloud-netflix</artifactId>
         <groupId>org.hulei</groupId>
+        <artifactId>dependencies-springcloud-hoxton</artifactId>
         <version>1.0.0.4-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -19,6 +19,14 @@
 
 
     <dependencies>
+
+        <!-- 内部 -->
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>utils</artifactId>
+            <version>1.0.0.4-SNAPSHOT</version>
+        </dependency>
+
         <!-- web框架起步依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

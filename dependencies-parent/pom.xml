@@ -61,6 +61,7 @@
         <!-- https://spring.io/projects/spring-cloud 可以查看 spring boot 和 spring cloud 的版本对应 -->
         <spring.boot.dependencies.version>3.2.11</spring.boot.dependencies.version>
         <spring-cloud-dependencies.version>2023.0.3</spring-cloud-dependencies.version>
+        <spring-cloud-alibaba-dependencies.version>2021.1</spring-cloud-alibaba-dependencies.version>
         <!-- spring admin -->
         <spring-boot-admin-starter-server.version>3.2.3</spring-boot-admin-starter-server.version>
 
@@ -174,6 +175,17 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+
             <!-- Spring Log, 这里为了排除多余的日志框架 -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>

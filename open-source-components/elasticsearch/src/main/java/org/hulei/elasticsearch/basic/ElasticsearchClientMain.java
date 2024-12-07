@@ -69,7 +69,7 @@ public class ElasticsearchClientMain {
 
         // 指定了Elasticsearch的主机地址为"192.168.80.128"，端口为9200，使用HTTPS协议。
         // 通过setHttpClientConfigCallback方法设置了HTTP客户端的配置回调，用于设置默认的认证凭据提供者为之前创建的credentialsProvider。
-        RestClientBuilder builder = RestClient.builder(new HttpHost("192.168.80.128", 9200, "https")).setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider));
+        RestClientBuilder builder = RestClient.builder(new HttpHost("localhost", 9200, "http")).setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider));
 
         RestClient restClient = builder.build();
 

@@ -224,6 +224,16 @@
                     <!-- 指定打包布局为 ZIP 格式。Spring Boot 支持多种布局，如 JAR、WAR 和 ZIP。这里选择了 ZIP 以生成一个 ZIP 包。 -->
                     <layout>ZIP</layout>
                 </configuration>
+                <!--
+                 在较新的 Spring Boot 版本（2.x 及以上），如果你使用的是 spring-boot-starter-parent 作为父 POM，并且没有对 spring-boot-maven-plugin 进行自定义配置，那么 repackage goal 是默认绑定到 package 生命周期阶段的。
+                 这意味着当你运行 mvn package 或 mvn install 时，repackage goal 会自动执行，无需显式声明 <executions> 和 <goals>。
+                 然而，如果你：
+
+                 没有使用 spring-boot-starter-parent 作为父 POM。
+                 明确地定义了 spring-boot-maven-plugin 插件，但未指定 repackage goal。
+                 使用了较旧版本的 Spring Boot。
+                 在这种情况下，repackage goal 将不会默认绑定，你需要手动配置来确保它被调用。
+                 -->
                 <executions>
                     <execution>
                         <!-- 定义了要执行的目标。在这个例子中，目标是 repackage，即重新打包应用程序，把所有依赖和项目打包成一个可执行的 JAR 或 ZIP 文件。 -->

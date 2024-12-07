@@ -3,13 +3,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>spring-cloud-2023Leyton</artifactId>
+        <artifactId>dependencies-parent</artifactId>
         <groupId>org.hulei</groupId>
         <version>1.0.0.4-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>config-server</artifactId>
+    <artifactId>leyton-feign</artifactId>
+
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -18,13 +19,41 @@
     </properties>
 
     <dependencies>
+        <!-- 内部 -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-config-server</artifactId>
+            <groupId>org.hulei</groupId>
+            <artifactId>utils</artifactId>
+            <version>1.0.0.4-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!-- eureka客户端 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+        <!-- openfeign基本依赖 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        <!--
+        在单独引入spring-cloud-starter-openfeign的情况下使用会报错:
+         No Feign Client for loadBalancing defined. Did you forget to include spring-cloud-starter-loadbalancer?
+         -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+        </dependency>
+        <!--
+        从Spring Cloud 2020版本开始，Hystrix不再推荐作为主要的熔断器，取而代之的是Spring Cloud Circuit Breaker. 支持多种熔断器实现（如Resilience4j）。
+        在Spring Cloud 2021.0.9版本中，使用Resilience4j来实现熔断和降级功能。
+         -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
         </dependency>
     </dependencies>
 
@@ -73,6 +102,22 @@
                         </executions>
                     </plugin>
                 </plugins>
+                <!--                <resources>-->
+                <!--                    <resource>-->
+                <!--                        <directory>src/main/resources</directory>-->
+                <!--                        <includes>-->
+                <!--                            <include>**/**</include>-->
+                <!--                        </includes>-->
+                <!--                    </resource>-->
+                <!--                    <resource>-->
+                <!--                        <directory>src/main/webapp</directory>-->
+                <!--                        <includes>-->
+                <!--                            <include>**/**</include>-->
+                <!--                        </includes>-->
+                <!--                        <filtering>false</filtering>-->
+                <!--                        &lt;!&ndash;                        <targetPath>META-INF/resource</targetPath>&ndash;&gt;-->
+                <!--                    </resource>-->
+                <!--                </resources>-->
             </build>
         </profile>
         <profile>
@@ -114,5 +159,6 @@
             </build>
         </profile>
     </profiles>
+
 
 </project>
