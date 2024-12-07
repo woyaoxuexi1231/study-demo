@@ -7,7 +7,7 @@ spring:
   main:
     allow-circular-references: true
   datasource:
-    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://192.168.3.101:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -15,15 +15,15 @@ spring:
       parsing:
         enable: true
         first:
-          url: jdbc:mysql://192.168.80.128:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+          url: jdbc:mysql://192.168.3.101:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
           username: root
           password: 123456
           driverClassName: com.mysql.cj.jdbc.Driver
-        second:
-          url: jdbc:mysql://192.168.80.130:3306/yiibaidb?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
-          username: root
-          password: 123456
-          driverClassName: com.mysql.cj.jdbc.Driver
+#        second:
+#          url: jdbc:mysql://192.168.80.130:3306/yiibaidb?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+#          username: root
+#          password: 123456
+#          driverClassName: com.mysql.cj.jdbc.Driver
 
 mybatis-plus:
   configuration:
