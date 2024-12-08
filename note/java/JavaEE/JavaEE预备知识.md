@@ -50,13 +50,13 @@ Tomcat内部的 IO 模型：
 
 **BIO**
 
-![image-20241107005519881](C:\dataz\Project\study-demo\note\images\image-20241107005519881.png)
+![image-20241107005519881](..\..\images\image-20241107005519881.png)
 
 **NIO** 
 
 Tomcat 8 之后的默认 IO 模式
 
-![image-20241107005605440](C:\dataz\Project\study-demo\note\images\image-20241107005605440.png)
+![image-20241107005605440](..\..\images\image-20241107005605440.png)
 
 **APR**
 

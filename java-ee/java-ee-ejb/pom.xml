@@ -10,7 +10,8 @@
     </parent>
 
     <artifactId>java-ee-ejb</artifactId>
-    <packaging>war</packaging>
+    <!-- ejb组件以jar包形式打包，打包好之后放入服务器的lib文件夹下，服务器会自动扫描并注册这个ejb组件 -->
+    <packaging>jar</packaging>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -222,6 +223,22 @@
 
     <build>
         <finalName>${project.name}</finalName>
+        <plugins>
+            <!--
+            Maven WAR 插件，用于构建 WAR 包, maven-war-plugin
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+            </plugin>
+
+            这个插件打war包时对于web文件的默认路径为 src/main/webapp, 插件内的默认配置：
+            <warSourceDirectory implementation="java.io.File" default-value="${basedir}/src/main/webapp"/>
+            如果要修改这个路径，重新配置一下 warSourceDirectory 就行
+
+            如果直接配置了pom的打包格式为war，可以使用这个插件
+             -->
+        </plugins>
     </build>
 
 </project>

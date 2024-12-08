@@ -1,20 +1,19 @@
-package org.hulei.javaee.ejb;
+package org.hulei.javaee.web;
 
 import jakarta.ejb.EJB;
+import jakarta.ejb.Remote;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.hulei.javaee.ejb.CalculatorLocal;
 
 import java.io.IOException;
 
 /**
- * <a href="http://localhost:13004/javaee_Web_exploded/calculator?a=10&a=10&b=5&b=5&operation=add&operation=add">TomEE</a>
- * <a href="http://localhost:13081/javaee_Web_exploded/calculator?a=10&a=10&b=5&b=5&operation=add&operation=add">Wildfly</a>
- *
  * @author hulei
- * @since 2024/10/20 21:49
+ * @since 2024/12/8 2:51
  */
 
 @WebServlet("/calculator")
@@ -23,7 +22,6 @@ public class CalculatorServlet extends HttpServlet {
     @EJB
     private CalculatorLocal calculator;
 
-    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int a = Integer.parseInt(request.getParameter("a"));
@@ -41,4 +39,5 @@ public class CalculatorServlet extends HttpServlet {
 
         response.getWriter().write("Result: " + result);
     }
+
 }

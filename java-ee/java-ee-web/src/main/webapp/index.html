@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+</head>
+<body>
+<h1>Simple Calculator</h1>
+<form action="calculator" method="get">
+    <label for="a">Number 1:</label>
+    <input type="number" id="a" name="a" required><br><br>
+    <label for="b">Number 2:</label>
+    <input type="number" id="b" name="b" required><br><br>
+    <label for="operation">Operation:</label>
+    <select id="operation" name="operation" required>
+        <option value="add">Add</option>
+        <option value="subtract">Subtract</option>
+    </select><br><br>
+    <button type="submit">Calculate</button>
+</form>
+<p id="result"></p>
+
+<script>
+    // Optional: Use JavaScript to handle form submission and display results without reloading the page
+    document.querySelector('form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the form from submitting the traditional way
+
+        var formData = new FormData(event.target);
+        var a = formData.get('a');
+        var b = formData.get('b');
+        var operation = formData.get('operation');
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'calculator?' + new URLSearchParams({a: a, b: b, operation: operation}).toString(), true);
+        xhr.onload = function() {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                document.getElementById('result').innerText = 'Result: ' + xhr.responseText.trim();
+            } else {
+                document.getElementById('result').innerText = 'Error: Could not fetch result.';
+            }
+        };
+        xhr.send();
+    });
+</script>
+</body>
+</html>

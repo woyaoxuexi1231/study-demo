@@ -9,14 +9,8 @@
         <version>1.0.0.4-SNAPSHOT</version>
     </parent>
 
-    <artifactId>web-service</artifactId>
-    <!--
-    除了打包方式要注意之外, 在idea使用配置tomcat启动时一定要注意Artifacts到底用的哪个
-    Artifacts
-        用于定义和配置项目的构建输出内容的功能。
-        Artifacts 通常用于指定项目在构建和打包时应包含哪些文件、目录以及如何组织它们。
-        对于 Java 项目，Artifacts 可以帮助你创建 JAR 文件、WAR 文件、EAR 文件等不同类型的打包格式。
-     -->
+    <artifactId>java-ee-web</artifactId>
+    <!-- war包打好后直接放在服务器的webapps(TomEE服务器)目录下即可，服务器会自动解压和部署 -->
     <packaging>war</packaging>
 
     <properties>
@@ -25,8 +19,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-
     <dependencies>
+
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>java-ee-ejb</artifactId>
+            <version>1.0.0.4-SNAPSHOT</version>
+            <!-- 如果这里不使用provided生命周期，那么这个ejb包会合并打入war包内，放入服务器之后，会直接使用这个内部ejb组件 -->
+            <scope>provided</scope>
+        </dependency>
+
         <!-- servlet-api 主要用于定义 Servlet 的架构与相关的功能 -->
         <!-- 包含类似于HttpServlet, HttpServletRequest, HttpServletResponse这些具体实现类 -->
         <!-- 通常在处理 HTTP 请求时使用，适合用于编写后端逻辑、请求处理、会话管理等。 -->
@@ -35,7 +37,7 @@
             <artifactId>jakarta.servlet-api</artifactId>
             <version>6.0.0</version>
             <!-- 目前大部分JavaEE服务器(如 WildFly、TomEE、GlassFish 等),因此在部署应用时，这些服务器会提供这些库。所以这里可以仅在编译时使用这个库 -->
-            <!-- <scope>provided</scope> -->
+            <scope>provided</scope>
         </dependency>
 
         <!-- JSP 是一种基于 HTML 的网页视图技术，它允许开发者将 Java 代码嵌入到 HTML 中 -->
@@ -45,41 +47,12 @@
             <artifactId>jakarta.servlet.jsp-api</artifactId>
             <version>3.1.1</version>
             <!-- 原因和servlet-api一致 -->
-            <!-- <scope>provided</scope> -->
-        </dependency>
-
-        <!-- slf4j+log4j2 -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j2-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
     <build>
         <finalName>${project.name}</finalName>
-        <plugins>
-            <!-- 1. Maven WAR 插件，用于构建 WAR 包 -->
-<!--             <plugin> -->
-<!--                 <groupId>org.apache.maven.plugins</groupId> -->
-<!--                 <artifactId>maven-war-plugin</artifactId> -->
-<!--                 <configuration> -->
-<!--                     &lt;!&ndash; 设置输出的 WAR 包文件名 &ndash;&gt; -->
-<!--                     &lt;!&ndash; <warName>your-web-app</warName> &ndash;&gt; -->
-<!--                     &lt;!&ndash; 可以将自定义的 web.xml 配置文件与默认的 web.xml 合并 &ndash;&gt; -->
-<!--                     <webXml>src/main/webapp/WEB-INF/web.xml</webXml> -->
-<!--                 </configuration> -->
-<!--             </plugin> -->
-        </plugins>
     </build>
-
 
 </project>
