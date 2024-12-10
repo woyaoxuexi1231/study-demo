@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.hulei</groupId>
-        <artifactId>springboot-vue</artifactId>
-        <version>1.0.0.0-SNAPSHOT</version>
+        <artifactId>spring-boot-vue</artifactId>
+        <version>1.0.0.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>vue2-cli</artifactId>
@@ -15,6 +15,8 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <npm>C:\dataz\node-v18.20.5-win-x64\npm.cmd</npm>
     </properties>
 
     <profiles>
@@ -39,56 +41,34 @@
                         </configuration>
                     </plugin>
                     <plugin>
-                        <!-- 这个插件的github文档明确指出了这个插件不支持使用本地的node进行构建,原文:Notice: This plugin does not support already installed Node or npm versions. Use the exec-maven-plugin instead. -->
-                        <groupId>com.github.eirslett</groupId>
-                        <artifactId>frontend-maven-plugin</artifactId>
-                        <version>1.11.0</version>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
                         <executions>
-
-                            <!-- 不指定安装node和npm,直接使用系统自带的 -->
                             <execution>
-                                <id>install node and npm</id>
-                                <!-- 定义了要执行的目标。在这个例子中，目标是 install-node-and-npm，即安装 Node.js 和 npm。 -->
+                                <id>run-npm-install</id>
+                                <phase>compile</phase>
                                 <goals>
-                                    <goal>install-node-and-npm</goal>
+                                    <goal>exec</goal>
                                 </goals>
-                                <!-- 指定要安装的 Node.js -->
                                 <configuration>
-                                    <npmVersion>10.7.0</npmVersion>
-                                    <nodeVersion>v18.20.4</nodeVersion>
-                                </configuration>
-                                <!-- optional: default phase is "generate-resources" -->
-                                <!-- 这个操作默认就在generate-resources这个极端,所以在compile的时候会安装node和npm -->
-                                <phase>generate-resources</phase>
-                            </execution>
-
-                            <!-- Install all project dependencies -->
-                            <execution>
-                                <id>npm install</id>
-                                <!-- 目标是 npm，即运行 npm 命令。 -->
-                                <goals>
-                                    <goal>npm</goal>
-                                </goals>
-                                <!-- optional: default phase is "generate-resources" -->
-                                <!-- 指定在 generate-resources 阶段执行。 -->
-                                <phase>generate-resources</phase>
-                                <!-- Optional configuration which provides for running any npm command -->
-                                <!-- 运行 npm install 命令以安装项目依赖。 -->
-                                <configuration>
-                                    <arguments>install</arguments>
+                                    <executable>${npm}</executable>
+                                    <arguments>
+                                        <argument>install</argument>
+                                    </arguments>
                                 </configuration>
                             </execution>
-
-                            <!-- Build and minify static files -->
                             <execution>
-                                <id>npm run build</id>
-                                <!-- 目标是 npm，即运行 npm 命令。 -->
+                                <id>npm build</id>
+                                <phase>compile</phase>
                                 <goals>
-                                    <goal>npm</goal>
+                                    <goal>exec</goal>
                                 </goals>
-                                <!-- 运行 npm run build 命令以构建和压缩静态文件。 -->
                                 <configuration>
-                                    <arguments>run build</arguments>
+                                    <executable>${npm}</executable>
+                                    <arguments>
+                                        <argument>run</argument>
+                                        <argument>build</argument>
+                                    </arguments>
                                 </configuration>
                             </execution>
                         </executions>

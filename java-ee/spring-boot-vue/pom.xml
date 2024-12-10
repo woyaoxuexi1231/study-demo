@@ -13,6 +13,7 @@
     <artifactId>spring-boot-vue</artifactId>
     <packaging>pom</packaging>
     <modules>
+        <module>vue2-cli</module>
         <module>vue3-vite</module>
         <module>spring-boot-vue-server</module>
     </modules>
