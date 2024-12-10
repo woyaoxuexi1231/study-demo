@@ -189,6 +189,36 @@ elasticsearch.ssl.certificateAuthorities: [ /home/es/es/kibana-8.11.4/data/ca_17
 xpack.fleet.outputs: [ { id: fleet-default-output, name: default, is_default: true, is_default_monitoring: true, type: elasticsearch, hosts: [ 'https://192.168.80.128:9200' ], ca_trusted_fingerprint: 3d68f1114677d53e154ee4f944621b18f9c502d48e83cf9d05a4b329b6232922 } ]
 ```
 
+
+
+### 环境迁移后，服务器IP变化，需要重新生成kibana的token
+
+直接使用 elasticsearch-create-enrollment-token --scope kibana 重新生成令牌，但是失败，因为服务器IP变了，这导致 Elasticsearch 在建立 TLS 连接时，目标服务器的证书没有匹配到 `192.168.3.101` 的 **Subject Alternative Name (SAN)**。
+
+```shell
+[es@node-101 bin]$ ./elasticsearch-create-enrollment-token --scope kibana
+warning: ignoring JAVA_HOME=/usr/local/java/jdk-17.0.12; using bundled JDK
+21:33:39.742 [main] WARN  org.elasticsearch.common.ssl.DiagnosticTrustManager - failed to establish trust with server at [192.168.3.101]; the server provided a certificate with subject name [CN=node-128], fingerprint [7c524eca96490e731da3e61f01251f29c6ac6db8], no keyUsage and extendedKeyUsage [serverAuth]; the certificate is valid between [2024-10-13T07:27:32Z] and [2026-10-13T07:27:32Z] (current time is [2024-12-08T13:33:39.731573817Z], certificate dates are valid); the session uses cipher suite [TLS_AES_256_GCM_SHA384] and protocol [TLSv1.3]; the certificate has subject alternative names [IP:fe80:0:0:0:4069:a4e:dc5e:6395,DNS:node-128,DNS:localhost,IP:fe80:0:0:0:cc6f:a6af:8cec:52e5,IP:192.168.80.128,IP:0:0:0:0:0:0:0:1,IP:127.0.0.1,IP:fe80:0:0:0:1321:97e0:f2c9:89e0]; the certificate is issued by [CN=Elasticsearch security auto-configuration HTTP CA]; the certificate is signed by (subject [CN=Elasticsearch security auto-configuration HTTP CA] fingerprint [00b1a0b77a55b050fcfd6649c900429e35301274] {trusted issuer}) which is self-issued; the [CN=Elasticsearch security auto-configuration HTTP CA] certificate is trusted in this ssl context ([xpack.security.http.ssl (with trust configuration: Composite-Trust{JDK-trusted-certs,StoreTrustConfig{path=certs/http.p12, password=<non-empty>, type=PKCS12, algorithm=PKIX}})])
+java.security.cert.CertificateException: No subject alternative names matching IP address 192.168.3.101 found
+
+```
+
+解决方案：
+
+#### **更新证书的 SAN 配置**
+
+```shel
+elasticsearch-certutil cert --ca elastic-stack-ca.p12 --dns 192.168.3.101
+```
+
+但是生成的时候，需要输入密码，我直接回车会报错。
+
+这里暂时先不弄了。有点复杂，涉及HTTPs证书的生成和使用。
+
+
+
+
+
 ## filebeat安装
 
 ELK使用的组件是 Logstash, 担任控制层的角色，负责搜集和过滤数据

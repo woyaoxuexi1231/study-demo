@@ -47,8 +47,6 @@
                         <artifactId>frontend-maven-plugin</artifactId>
                         <version>1.11.0</version>
                         <executions>
-
-                            <!-- 不指定安装node和npm,直接使用系统自带的 -->
                             <execution>
                                 <id>install node and npm</id>
                                 <!-- 定义了要执行的目标。在这个例子中，目标是 install-node-and-npm，即安装 Node.js 和 npm。 -->
