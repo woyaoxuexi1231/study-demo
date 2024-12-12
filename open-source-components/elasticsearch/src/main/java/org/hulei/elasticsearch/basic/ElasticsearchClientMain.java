@@ -23,6 +23,7 @@ import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.endpoints.BooleanResponse;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 import co.elastic.clients.util.NamedValue;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
@@ -45,33 +46,41 @@ import java.util.Objects;
 
 @Slf4j
 public class ElasticsearchClientMain {
-    //
+
     private static ElasticsearchClient client;
 
     private static ElasticsearchAsyncClient asyncClient;
 
-    public synchronized void test() throws Exception {
-        makeConnection();
-        // documentQuery();
-        // documentMatchAll();
-        // documentMatch();
-        // documentTermAndRange();
-        // documentBool();
-        // documentAgg();
-        documentMetrics();
+    private static RestClient restClient;
+
+    public static void main(String[] args) throws Exception {
+        try {
+            makeConnection();
+            indexCreate();
+            // documentQuery();
+            // documentMatchAll();
+            // documentMatch();
+            // documentTermAndRange();
+            // documentBool();
+            // documentAgg();
+            // documentMetrics();
+        } finally {
+            disconnect();
+        }
+
     }
 
     private static synchronized void makeConnection() {
         // 这里创建了一个BasicCredentialsProvider对象，用于管理认证凭据。
         final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         // 这里设置了认证范围为AuthScope.ANY，并且使用用户名"elastic"和密码"qNQwXe9TV1gLFRImusVi"来设置认证凭据。
-        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials("elastic", "qNQwXe9TV1gLFRImusVi"));
+        // credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials("elastic", "qNQwXe9TV1gLFRImusVi"));
 
         // 指定了Elasticsearch的主机地址为"192.168.80.128"，端口为9200，使用HTTPS协议。
         // 通过setHttpClientConfigCallback方法设置了HTTP客户端的配置回调，用于设置默认的认证凭据提供者为之前创建的credentialsProvider。
-        RestClientBuilder builder = RestClient.builder(new HttpHost("localhost", 9200, "http")).setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider));
+        RestClientBuilder builder = RestClient.builder(new HttpHost("192.168.3.101", 9200, "http")).setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider));
 
-        RestClient restClient = builder.build();
+        restClient = builder.build();
 
         // Create the transport with a Jackson mapper
         // 使用了RestClientTransport作为实现，传入了之前创建的restClient和一个JacksonJsonpMapper对象，用于处理JSON的映射。
@@ -80,6 +89,11 @@ public class ElasticsearchClientMain {
         // And create the API client
         client = new ElasticsearchClient(transport);
         asyncClient = new ElasticsearchAsyncClient(transport);
+    }
+
+    @SneakyThrows
+    private static void disconnect() {
+        restClient.close();
     }
 
     private static synchronized void indexCreate() throws IOException {
@@ -92,7 +106,7 @@ public class ElasticsearchClientMain {
         documentMap.put("id", Property.of(property -> property.keyword(KeywordProperty.of(keyword ->
                 // textProperty.index(true).analyzer("ik_max_word"))//这里设置分词
                 keyword.index(true)))));
-        documentMap.put("name", Property.of(property -> property.text(TextProperty.of(text -> text.analyzer("ik_max_word").index(true)))));
+        documentMap.put("name", Property.of(property -> property.text(TextProperty.of(text -> text.analyzer("standard").index(true)))));
         documentMap.put("price", Property.of(property -> property.integer(IntegerNumberProperty.of(integerNumberProperty -> integerNumberProperty.index(false)))));
 
         // CreateIndexResponse createIndexResponse = client.indices().create(createIndexBuilder ->
