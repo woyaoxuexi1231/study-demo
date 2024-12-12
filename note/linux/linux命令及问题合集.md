@@ -21,6 +21,7 @@ exit
 ## Windows换行符问题
 
 ```shell
+yum -y install dos2unix*
 # 使用 dos2unix 格式化文件中的非linux格式的换行符
 dos2unix one-more.sh
 ```
