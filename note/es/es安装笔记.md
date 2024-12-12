@@ -324,3 +324,129 @@ processors:
 
 
 # Docker 环境安装(windows)
+
+
+
+
+
+
+
+# 配置开启自动启动(linux)
+
+```
+#!/bin/bash
+#chkconfig: 345 63 37
+#description: elasticsearch
+#processname: elasticsearch-7.10.2
+
+# 这个目录是你Es所在文件夹的目录
+export ES_HOME=/home/es/es/es-8.11.4/elasticsearch-8.11.4
+case $1 in
+start)
+    su es<<!
+    cd $ES_HOME
+    nohup ./bin/elasticsearch -d -p pid &
+    exit
+!
+    echo "elasticsearch is started"
+    ;;
+stop)
+    pid=`cat $ES_HOME/pid`
+    kill -9 $pid
+    echo "elasticsearch is stopped"
+    ;;
+restart)
+    pid=`cat $ES_HOME/pid`
+    kill -9 $pid
+    echo "elasticsearch is stopped"
+    sleep 1
+    su es<<!
+    cd $ES_HOME
+    ./bin/elasticsearch -d -p pid
+    exit
+!
+    echo "elasticsearch is started"
+    ;;
+*)
+    echo "start|stop|restart"
+    ;;
+esac
+exit 0
+
+```
+
+
+
+配置开启自启动
+
+```shell
+# 配置 777 权限
+chmod 777 elasticsearch
+# 添加系统服务
+chkconfig --add elasticsearch
+# 删除系统服务
+chkconfig --del elasticsearch
+
+# 启动服务
+service elasticsearch start
+# 停止服务
+service elasticsearch stop
+# 重启服务
+service elasticsearch restart
+
+
+# 开启开机自动启动服务
+chkconfig elasticsearch on
+# 关闭开机自动启动服务
+chkconfig elasticsearch off
+
+chkconfig --list
+```
+
+
+
+
+
+**Kibana自动启动配置**
+
+```
+#!/bin/bash
+#chkconfig: 345 63 37
+#description: kibana
+#processname:kibana-7.6.2
+
+export KIBANA_HOME=/home/es/es/kibana-8.11.4
+
+case $1 in
+        start)
+                #su kibana<<!
+                cd $KIBANA_HOME
+                nohup ./bin/kibana -p pid --allow-root &
+                exit
+!
+                echo "kibana is started"
+                ;;
+        stop)
+                pid=`cat $KIBANA_HOME/pid`
+                kill -9 $pid
+                echo "kibana is stopped"
+                ;;
+        restart)
+                pid=`cat $KIBANA_HOME/pid`
+                kill -9 $pid
+                echo "kibana is stopped"
+                sleep 5
+                su kibana<<!
+                cd $KIBANA_HOME
+                ./bin/kibana -p pid &
+                exit
+!
+                echo "kibana is started"
+        ;;
+    *)
+        echo "start|stop|restart"
+        ;;
+esac
+exit 0
+```
+
