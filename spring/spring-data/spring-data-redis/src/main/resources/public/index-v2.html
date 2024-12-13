@@ -18,22 +18,22 @@
     }
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, 15px);
-      grid-template-rows: repeat(auto-fill, 15px);
-      gap: 0;
-      width: 1000px; /* Adjust to your desired grid size */
-      height: 700px;
+      grid-template-columns: repeat(70, 20px); /* 70 columns of 20px each */
+      grid-template-rows: repeat(40, 20px);   /* 40 rows of 20px each */
+      gap: 0; /* No gap between cells */
+      width: calc(70 * 20px); /* Width to fit 70 columns */
+      height: calc(40 * 20px); /* Height to fit 40 rows */
       border: 1px solid #ccc;
     }
     .cell {
-      width: 10px;
-      height: 10px;
+      width: 20px; /* Each cell is 20px wide */
+      height: 20px; /* Each cell is 20px tall */
       background-color: #fff;
-      border: 1px solid #ddd;
-      cursor: pointer;
+      border: 1px solid #ddd; /* Border around each cell */
+      cursor: pointer; /* Change cursor to indicate clickability */
     }
     .cell:hover {
-      opacity: 0.8;
+      opacity: 0.8; /* Slightly transparent on hover */
     }
   </style>
 </head>
@@ -53,7 +53,10 @@
 <script>
   const gridElement = document.getElementById('grid');
   const colorPicker = document.getElementById('colorPicker');
-  const gridSize = 50; // 50x50 grid (500px / 10px)
+
+  // Constants for grid size
+  const numRows = 40;
+  const numCols = 70;
 
   // Fetch colors from another endpoint and update grid
   function fetchColors() {
@@ -81,8 +84,8 @@
   }
 
   // Create grid cells
-  for (let row = 0; row < gridSize; row++) {
-    for (let col = 0; col < gridSize; col++) {
+  for (let row = 0; row < numRows; row++) {
+    for (let col = 0; col < numCols; col++) {
       const cell = document.createElement('div');
       cell.classList.add('cell');
       cell.dataset.row = row;
