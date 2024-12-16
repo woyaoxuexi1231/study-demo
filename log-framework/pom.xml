@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>dependencies-parent</artifactId>
+        <groupId>org.hulei</groupId>
+        <version>1.0.0.4-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>log-framework</artifactId>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <!-- lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>slf4j-log4j2</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <dependencies>
+                <!--
+                log4j-slf4j-impl 使用 org.slf4j.impl.StaticLoggerBinder 类来绑定 SLF4J 和 Log4j 2。
+                这个类在 SLF4J 1.7.x 版本中是必需的，因为它负责初始化日志框架。
+
+                log4j-slf4j2-impl 使用 Java 的 ServiceLoader 机制来绑定 SLF4J 和 Log4j 2。
+                从 SLF4J 2.0 开始，StaticLoggerBinder 类不再是必需的，取而代之的是 ServiceLoader 机制。
+                 -->
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                    <version>2.0.16</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-slf4j2-impl</artifactId>
+                    <version>2.24.1</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>slf4j-jdk</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                    <version>2.0.16</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-jdk14</artifactId>
+                    <version>2.0.16</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>slf4j-log4j</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                    <version>2.0.16</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                    <version>2.0.16</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>slf4j-logback</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                    <version>2.0.15</version>
+                </dependency>
+                <!-- 尝试使用 1.5.12, 也报错 Failed to load class "org.slf4j.impl.StaticLoggerBinder". -->
+                <dependency>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                    <version>1.5.12</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
+</project>

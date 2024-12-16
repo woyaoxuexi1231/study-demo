@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.hulei</groupId>
+        <artifactId>dependencies-parent</artifactId>
+        <version>1.0.0.4-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>maven-package</artifactId>
+    <version>${revision}</version>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!--
+         快照版本和稳定版本的打包主要有以下几种方式：
+         1. 手动修改pom文件的版本，快照时添加-SNAPSHOT后缀，稳定版本时去掉
+         2. 使用 maven-release-plugin 管理版本发布时可以更为自动化。
+            该插件自动更新 pom.xml 中的版本号。
+            执行 mvn release:prepare 会自动去掉 -SNAPSHOT，提交修改，然后标记版本。
+            执行 mvn release:perform 来进行实际的发布。
+         3. 使用 CI/CD 工具
+            Jenkins、GitLab CI、GitHub Actions 等在流水线中将 SNAPSHOT 版本用于开发分支，将去掉 -SNAPSHOT 的版本用于发布分支。
+         -->
+        <revision>1.0.0.4-SNAPSHOT</revision>
+        <maven-flatten-version>1.1.0</maven-flatten-version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+    </dependencies>
+
+    <!-- 配置私服仓库信息 -->
+    <repositories>
+        <repository>
+            <!-- 其实这个id是随便起的,但是要保证唯一,而且如果名字是central,那么会覆盖默认的中央仓库 -->
+            <id>my-snap-repository</id>
+            <name>nexus发布版仓库</name>
+            <url>http://192.168.80.128:8081/repository/my-snap-repository/</url>
+            <!-- 这两个用来控制发布版构建和快照版构建的下载 -->
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <!-- 控制从远程仓库更新的频率 -->
+                <updatePolicy>daily</updatePolicy>
+                <!-- 配置maven检查检验和文件的策略 -->
+                <!-- 当配置为warn的时候,如果检验校验和文件失败那么会输出警告日志 -->
+                <checksumPolicy>ignore</checksumPolicy>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <!-- 仓库可能存在认证信息,如果需要,那么就要在setting文件中进行配置 -->
+        <!-- 配置在setting文件中的考虑是因为pom文件往往都能下载,认证信息如果放在这里就不安全了,所以一般存在本机的setting文件中是比较安全的 -->
+        <!-- 这里是一个私服配置 -->
+        <!--
+        <server>
+          <server>
+            <id>my-snap-repository</id>
+            <username>admin</username>
+            <password>admin</password>
+          </server>
+        </servers>
+         -->
+    </repositories>
+    <!-- 配置部署到私服 -->
+    <distributionManagement>
+        <!-- 快照仓库的目的就是为了解决未发布模块的快速构建-->
+        <snapshotRepository>
+            <id>my-snap-repository</id>
+            <name>Nexus自定义的快照私服</name>
+            <url>http://192.168.80.128:8081/repository/my-snap-repository/</url>
+        </snapshotRepository>
+        <!-- 发布版构建仓库 -->
+        <repository>
+            <id>my-repository</id>
+            <name>Nexus自定义的稳定私服</name>
+            <url>http://192.168.80.128:8081/repository/my-repository/</url>
+        </repository>
+    </distributionManagement>
+
+    <scm>
+        <!--      git https  -->
+        <connection>scm:git:https://github.com/woyaoxuexi1231/study-demo.git</connection>
+        <!--      git https  -->
+        <developerConnection>scm:git:https://github.com/woyaoxuexi1231/study-demo.git</developerConnection>
+        <!--      git url  -->
+        <url>https://github.com/woyaoxuexi1231/study-demo.git</url>
+    </scm>
+
+    <build>
+
+        <!-- 用于指定要包含在构建输出中的资源文件。可以配置资源目录和过滤选项。 -->
+        <resources>
+            <resource>
+                <!-- targetPath 指定了资源文件在构建过程中被复制到的目标位置。在这里，目标路径是${basedir}/target/dist。 -->
+                <targetPath>${basedir}/src/main/resources</targetPath>
+                <!-- 如果设置为 true，Maven会在复制资源文件时进行过滤替换（例如，替换 ${} 中的变量）。 -->
+                <filtering>true</filtering>
+                <!-- directory 指定了资源文件的源目录。在这里，源目录是${basedir}，即项目的根目录。 -->
+                <directory>${basedir}</directory>
+                <!-- includes 定义了要包含在资源处理中的文件。在这里，只包含 dubbo-admin-info.json 文件。 -->
+                <includes>
+                    <include>info.json</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <!--
+        在整个声明周期内,maven提供了一系列的默认插件
+        1. maven-clean-plugin: 用于清理项目
+        2. maven-resources-plugin: 用于复制和过滤资源文件。
+        3. maven-compiler-plugin: 用于编译源代码。
+        4. maven-surefire-plugin: 用于执行单元测试。
+        5. maven-jar-plugin: 用于创建 JAR 包。
+           maven-war-plugin: 用于创建 war 包, 需要新增<packaging>war</packaging>,新增后其实可以不用显示配置该插件
+        6. maven-install-plugin: 用于将构建的 artifact 安装到本地仓库。
+        7. maven-deploy-plugin: 用于将构建的 artifact 部署到远程仓库。
+        8. maven-site-plugin: 用于生成项目站点。
+        9. maven-project-info-reports-plugin: 用于生成项目的各类报告，如依赖报告、插件报告等。
+        10. maven-assembly-plugin: 用于创建自定义的分发包。
+        11. maven-shade-plugin: 用于打包并重定位类，创建包含所有依赖项的可执行 JAR 包。
+        12. maven-antrun-plugin: 插件允许在 Maven 构建过程中执行 Ant 任务。
+        13. maven-checkstyle-plugin: 是一个用于执行代码风格检查的 Maven 插件。它使用 Checkstyle 工具来分析和报告 Java 代码中的风格和格式问题。
+
+        其他插件
+        1. spring-boot-maven-plugin
+            1 - 打包 Spring Boot 应用：将 Spring Boot 应用打包成可执行的 JAR 或 WAR 文件，其中包含所有依赖项。(胖jar)
+            2 - 运行 Spring Boot 应用：通过命令行运行 Spring Boot 应用，而无需复杂的部署步骤。
+            3 - 重启功能：在开发过程中支持应用的自动重启，以提高开发效率。
+            https://docs.spring.io/spring-boot/docs/1.0.x/reference/html/build-tool-plugins-maven-plugin.html
+            https://docs.spring.io/spring-boot/docs/2.3.0.M1/maven-plugin/html/
+
+        2. flatten-maven-plugin
+            1 - 扁平化 POM 文件：将父 POM、属性、依赖管理和插件管理等信息展开，生成一个扁平化的 pom.xml 文件。
+            2 - 发布和部署：生成的扁平化 POM 文件更易于发布到 Maven 中央仓库或其他仓库，因为它是一个独立的文件，包含所有必要的信息。
+            3 - 减少 POM 文件复杂性：通过去除继承和变量引用，使 POM 文件更简单和易读。
+            *4 - 自 Maven 3.5.0-beta-1 开始，可以使用 ${revision}, ${sha1} and/or ${changelist} 这样的变量作为版本占位符。
+                 但是呢 Install / Deploy 时，版本占位符将不能被替换。这将导致 Install / Deploy 后， maven 不能识别。
+                 使用 flatten-maven-plugin 可以解决这个问题。
+        3. jacoco-maven-plugin
+            1 - 代码覆盖率分析：通过在运行单元测试时插入代理，收集代码覆盖率数据。
+            2 - 覆盖率报告生成：生成详细的代码覆盖率报告，通常包括 HTML、XML 等格式。
+
+        4. sorter-maven-plugin
+            1 - 排序：按字母顺序或自定义规则排序 pom.xml 文件中的元素，例如依赖、插件等。
+            2 - 清理：去除不必要的空行、格式化 pom.xml 文件，使其结构更加清晰。
+
+        5. frontend-maven-plugin: 是一个 Maven 插件，用于在 Maven 构建过程中集成 Node.js 和 npm。
+            这对于那些使用 Node.js 工具（如 Webpack、Grunt、Gulp 等）进行前端构建的项目特别有用。这个插件允许你在 Maven 构建生命周期中自动执行 Node.js 和 npm 命令。
+
+         -->
+
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>3.0.1</version>
+                <configuration>
+                    <!--  prepare发布之前执行的mvn命令   -->
+                    <preparationGoals>clean verify</preparationGoals>
+                    <!--  生成的tag格式  这里 @{} 而不是 ${} 可以防止project.version被其他方式覆盖 -->
+                    <tagNameFormat>release-@{revision}</tagNameFormat>
+                    <!--   手动push -->
+                    <pushChanges>false</pushChanges>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>${maven-flatten-version}</version>
+                <configuration>
+                    <!-- 设置为 true 表示在执行 flatten 操作时更新 POM 文件。 -->
+                    <updatePomFile>true</updatePomFile>
+                    <!-- 设置为 resolveCiFriendliesOnly，表示在扁平化过程中仅解析 CI 友好变量（如 ${revision}、${sha1} 和 ${changelist}）。 -->
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                    <!-- 设置为 expand 表示在扁平化过程中展开依赖项。 -->
+                    <pomElements>
+                        <dependencies>expand</dependencies>
+                    </pomElements>
+                </configuration>
+                <executions>
+                    <execution>
+                        <!-- 执行扁平化操作 -->
+                        <id>flatten</id>
+                        <!-- 指定要执行的目标，这里是 flatten。 -->
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                        <!-- 指定在构建生命周期的哪个阶段执行这个目标，这里是在 process-resources 阶段。 -->
+                        <phase>process-resources</phase>
+                    </execution>
+                    <execution>
+                        <!-- 清理操作 -->
+                        <id>flatten.clean</id>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                        <phase>clean</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!--
+                     JAR: regular executable JAR layout.
+                     WAR: executable WAR layout. provided dependencies are placed in WEB-INF/lib-provided to avoid any clash when the war is deployed in a servlet container.
+                     ZIP (alias to DIR): similar to the JAR layout using PropertiesLauncher.
+                     NONE: Bundle all dependencies and project resources. Does not bundle a bootstrap loader.
+                     -->
+                    <!-- 指定打包布局为 ZIP 格式。Spring Boot 支持多种布局，如 JAR、WAR 和 ZIP。这里选择了 ZIP 以生成一个 ZIP 包。 -->
+                    <layout>ZIP</layout>
+                </configuration>
+                <!--
+                 在较新的 Spring Boot 版本（2.x 及以上），如果你使用的是 spring-boot-starter-parent 作为父 POM，并且没有对 spring-boot-maven-plugin 进行自定义配置，那么 repackage goal 是默认绑定到 package 生命周期阶段的。
+                 这意味着当你运行 mvn package 或 mvn install 时，repackage goal 会自动执行，无需显式声明 <executions> 和 <goals>。
+                 然而，如果你：
+
+                 没有使用 spring-boot-starter-parent 作为父 POM。
+                 明确地定义了 spring-boot-maven-plugin 插件，但未指定 repackage goal。
+                 使用了较旧版本的 Spring Boot。
+                 在这种情况下，repackage goal 将不会默认绑定，你需要手动配置来确保它被调用。
+                 -->
+                <executions>
+                    <execution>
+                        <!-- 定义了要执行的目标。在这个例子中，目标是 repackage，即重新打包应用程序，把所有依赖和项目打包成一个可执行的 JAR 或 ZIP 文件。 -->
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                        <!-- 指定在 package 阶段执行，即在 Maven 的 package 阶段自动执行重新打包操作。 -->
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

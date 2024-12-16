@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--      Configuration后面的status，这个用于设置log4j2自身内部的信息输出，可以不设置，
+     当设置成trace时，可以看到log4j2内部各种详细输出
+-->
+<!-- monitorInterval：Log4j能够自动检测修改配置 文件和重新配置本身，设置间隔秒数 -->
+<configuration monitorInterval="5">
+    <!-- 日志级别以及优先级排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
+
+    <!-- 变量配置 -->
+    <Properties>
+        <!--
+            格式化输出：
+            %d表示日期，
+            %thread表示线程名，
+            %-5level：级别从左显示5个字符宽度
+            %msg：日志消息，%n是换行符
+            %logger{36} 表示 Logger 名字最长36个字符
+        -->
+        <property name="LOG_PATTERN" value="%d{yy-MM-dd HH:mm:ss.SSS} %highlight{%-5level}[%thread] %style{%c{}}{cyan}: %msg%n"/>
+
+        <!-- 定义日志存储的路径，不要配置相对路径 -->
+        <property name="FILE_PATH" value="logs"/>
+        <property name="FILE_NAME" value="demo-dubbo-provider"/>
+    </Properties>
+
+    <appenders>
+
+        <!-- 定义了一个名为 "Console" 的控制台输出器。它告诉 Log4j 2 将日志输出到系统的标准输出流（System.out），也就是控制台。 -->
+        <console name="Console" target="SYSTEM_OUT">
+            <!-- 这一行定义了日志输出的格式，通过 PatternLayout 来设置。 -->
+            <!-- ${LOG_PATTERN} 是一个自定义的日志输出格式，可以在其他地方进行定义。 -->
+            <!-- disableAnsi="false" 表示启用 ANSI 控制字符（比如颜色等）。 -->
+            <!-- noConsoleNoAnsi="false" 表示即使不是在控制台输出，也要启用 ANSI 控制字符。 -->
+            <PatternLayout pattern="${LOG_PATTERN}" disableAnsi="false" noConsoleNoAnsi="false"/>
+            <!-- 这一行定义了一个过滤器，控制只有满足条件的日志才会被输出到控制台。 -->
+            <!-- level="info" 意味着只有 INFO 级别及以上的日志会被接受（输出）。 -->
+            <!-- onMatch="ACCEPT" 表示当日志满足条件时接受（输出）。 -->
+            <!-- onMismatch="DENY" 表示当日志不满足条件时拒绝（不输出）。 -->
+            <!-- 我们需要显示debug日志,所以这个过滤不开 -->
+            <!-- <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/> -->
+        </console>
+
+        <!--        　　这个会打印出所有的info及以下级别的信息，每次大小超过size，        　　则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档
+        -->
+
+        <!-- 这段配置是针对 Log4j 2 的 RollingFileAppender，用于将日志输出到文件并实现日志滚动（即按一定条件将日志文件切分、归档和重命名）。 -->
+        <!-- fileName 属性指定了输出的日志文件名，${FILE_PATH}/${FILE_NAME}-info.log 表示日志文件名为 ${FILE_PATH}/${FILE_NAME}-info.log，其中 ${FILE_PATH} 和 ${FILE_NAME} 是变量，具体值需要根据配置文件中的实际定义来替换。 -->
+        <!-- filePattern 属性指定了日志文件的归档规则，${FILE_PATH}/${FILE_NAME}-INFO-%d{yyyy-MM-dd}_%i.log.gz 表示根据日期进行归档，以及当日志文件大小达到一定阈值时进行归档压缩。 %d{yyyy-MM-dd} 表示按日期格式化，%i 表示在同一天内归档文件的序号。 -->
+        <RollingFile name="RollingFileInfo" fileName="${FILE_PATH}/${FILE_NAME}-info.log"
+                     filePattern="${FILE_PATH}/${FILE_NAME}-INFO-%d{yyyy-MM-dd}_%i.log.gz">
+            <!-- 同上 -->
+            <!-- 我们需要显示debug日志,所以这个过滤不开 -->
+            <!-- <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/> -->
+            <!-- ${LOG_PATTERN} 是一个自定义的日志输出格式，可以在其他地方进行定义。 -->
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <!-- 这一部分定义了日志滚动的策略。 -->
+            <Policies>
+                <!-- interval="1" 表示每隔1天滚动一次日志。 -->
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <!-- size="20MB" 表示当日志文件达到20MB时滚动日志。 -->
+                <SizeBasedTriggeringPolicy size="20MB"/>
+            </Policies>
+            <!-- 这一行定义了默认的日志滚动策略，max="15" 表示最多保留15个归档日志文件。 -->
+            <!-- DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件开始覆盖 -->
+            <DefaultRolloverStrategy max="15"/>
+        </RollingFile>
+
+        <!-- 这段配置与之前的类似，但是针对的是另一个名为 "RollingFileWarn" 的 RollingFileAppender，用于将 WARN 级别及以上的日志输出到文件，并实现日志滚动。 -->
+        <!-- 这一行定义了一个 RollingFileAppender，名为 "RollingFileWarn"，用于将 WARN 级别及以上的日志输出到文件。 -->
+        <RollingFile name="RollingFileWarn" fileName="${FILE_PATH}/${FILE_NAME}-warn.log"
+                     filePattern="${FILE_PATH}/${FILE_NAME}-WARN-%d{yyyy-MM-dd}_%i.log.gz">
+            <!-- 同上 -->
+            <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+            <!-- 同上 -->
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <!-- 同上 -->
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="20MB"/>
+            </Policies>
+            <!-- 同上 -->
+            <DefaultRolloverStrategy max="15"/>
+        </RollingFile>
+
+        <!-- 这一行定义了一个 RollingFileAppender，名为 "RollingFileError"，用于将 ERROR 级别的日志输出到文件。 -->
+        <RollingFile name="RollingFileError" fileName="${FILE_PATH}/${FILE_NAME}-error.log"
+                     filePattern="${FILE_PATH}/${FILE_NAME}-ERROR-%d{yyyy-MM-dd}_%i.log.gz">
+            <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="20MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="15"/>
+        </RollingFile>
+    </appenders>
+
+    <!--Logger节点用来单独指定日志的形式，比如要为指定包下的class指定不同的日志级别等。-->
+    <!--然后定义loggers，只有定义了logger并引入的appender，appender才会生效-->
+    <!-- 这段配置是用来定义日志记录器（Logger）的，它用于指定不同包下的类的日志级别以及输出到哪些 Appender（日志输出目的地）。 -->
+    <loggers>
+        <!-- 这一行定义了一个 Logger，名为 "org.mybatis"，用于控制包名为 "org.mybatis" 下的类的日志输出。 -->
+        <!-- level="info" 指定了日志级别为 INFO，表示只输出 INFO 级别及以上的日志。 -->
+        <!-- additivity="false" 表示禁用继承，默认情况下，Logger 会继承其父 Logger 的配置，如果设置为 false，则该 Logger 不会继承父 Logger 的配置。 -->
+        <!--若是additivity设为false，则 子Logger 只会在自己的appender里输出，而不会在 父Logger 的appender里输出。-->
+        <logger name="org.mybatis" level="info" additivity="false">
+            <AppenderRef ref="Console"/>
+        </logger>
+        <!-- 这一行定义了一个 Logger，名为 "org.springframework"，用于控制包名为 "org.springframework" 下的类的日志输出。 -->
+        <Logger name="org.springframework" level="info" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <!-- 这一行定义了一个根 Logger，它是所有 Logger 的父节点，用于控制所有类的日志输出。 -->
+        <!-- 设置了日志级别为 INFO，表示只输出 INFO 级别及以上的日志。 -->
+        <root level="info">
+            <appender-ref ref="Console"/>
+            <appender-ref ref="RollingFileInfo"/>
+            <appender-ref ref="RollingFileWarn"/>
+            <appender-ref ref="RollingFileError"/>
+        </root>
+    </loggers>
+</configuration>

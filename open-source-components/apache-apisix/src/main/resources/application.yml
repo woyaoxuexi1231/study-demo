@@ -1,0 +1,6 @@
+server:
+  port: 11001
+
+spring:
+  main:
+    allow-circular-references: true

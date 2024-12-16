@@ -1,0 +1,37 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          # 表明服务网关开启服务注册和发现的功能，并且服务网关自动根据服务发现为每一个服务创建了一个路由，这个路由将以服务名开头的请求路径转发到对应的服务中
+          enabled: true
+          # 将请求路径上的服务名配置为小写（因为在服务注册过程中，向注册中心注册时将服务名转成大写了），比如以/service-hi/*的请求路径被路由转发到服务名为service-hi的服务上。
+          lower-case-service-id: true
+
+# 这里有一个业务需求, gateway网关需要配置限流,但是限流的规则是对于同一个api: 针对不同的参数有单独的限流,例如对于用于1和用于2两个,他们都可以在1秒钟内访问十次
+# 这里如果使用 redis-rate-limiter 做不了这个需求,redis-rate-limiter针对的是一个api的全局限流,不管api内部的参数是什么
+# 所以我这里的解决方案是(未采用,api的路径不允许修改): 针对不同用户生成不同 url, gateway拦截这一层的请求,内部统一转发到真实的 api上去
+# 这里配置了两个路由, gateway-self会拦截/gateway/eureka-client/**所有的请求, 然后再转发给自己, 再通过/eureka-client/**这个路径转发到eureka-client
+#      routes:
+#        - id: gateway-self
+#          uri: lb://${spring.application.name}
+#          predicates:
+#            - Path=/gateway/eureka-client/**
+#          filters:
+#            # 路由转换会把整个路径转发, /eureka-client/gateway/**并不是我们真正的路径,需要去掉 /eureka-client
+#            - StripPrefix=1
+#        - id: eureka-client-route
+#          uri: lb://eureka-client
+#          predicates:
+#            - Path=/eureka-client/**
+
+
+# eureka注册中心的配置
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:10001/eureka/
+    fetch-registry: true
+  # 优先使用ip注册服务
+  instance:
+    prefer-ip-address: true

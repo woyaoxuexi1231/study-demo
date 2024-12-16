@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>cors</title>
+</head>
+<body>
+
+<script>
+
+    /*
+    * 浏览器出于安全考虑，对于 同源请求 放行，对于 异源请求，这些限制统称为同源策略，这意味着只有浏览器会出现跨域问题
+    * 对标签发出的跨域请求轻微限制
+    * 对于Ajax发出的跨域请求严厉限制
+    *
+    * cors将请求分为了两类 - 简单请求和预检请求
+    * 简单请求：1.get,head,post 2.头部字段满足CORS安全规范，w3c有详解，一般来说不改header就是一个简单请求 3.特定的content-type(不包括json)
+    * 预检请求：非简单请求，如果是一个非简单请求，那么会先发送一个预检请求来检测服务器是否允许进行跨域，然后通过了安全检测之后，浏览器才会发送真实的请求
+    * */
+    function getCorsString() {
+        fetch('http://localhost:10008/cors/getCorsString', { // 替换为您的 API URL
+            method: 'get',
+            headers: {a: "a"},
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            response.text().then(data => console.log(data));
+        }).catch(error => {
+            console.error('Error occurred while fetching data:', error);
+        });
+    }
+
+    getCorsString();
+</script>
+
+</body>
+</html>

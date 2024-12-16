@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hulei.springboot.mybatisplus.mapper.CustomersMapper">
+    <resultMap id="customBaseMapper" type="org.hulei.eneity.mybatisplus.domain.Customers">
+        <!--@mbg.generated-->
+        <!--@Table customers-->
+        <id column="customer_number" jdbcType="INTEGER" property="customernumber"/>
+        <result column="customer_name" jdbcType="VARCHAR" property="customername"/>
+        <result column="contact_last_name" jdbcType="VARCHAR" property="contactlastname"/>
+        <result column="contact_first_name" jdbcType="VARCHAR" property="contactfirstname"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="address_line1" jdbcType="VARCHAR" property="addressline1"/>
+        <result column="address_line2" jdbcType="VARCHAR" property="addressline2"/>
+        <result column="city" jdbcType="VARCHAR" property="city"/>
+        <result column="state" jdbcType="VARCHAR" property="state"/>
+        <result column="postal_code" jdbcType="VARCHAR" property="postalcode"/>
+        <result column="country" jdbcType="VARCHAR" property="country"/>
+        <result column="sales_rep_employee_number" jdbcType="INTEGER" property="salesrepemployeenumber"/>
+        <result column="credit_limit" jdbcType="DECIMAL" property="creditlimit"/>
+    </resultMap>
+
+    <update id="updateOne" parameterType="org.hulei.eneity.mybatisplus.domain.Customers">
+        update customers
+        <set>
+            <if test="customername != null">
+                customer_name = #{customername},
+            </if>
+            <if test="contactlastname != null">
+                contact_last_name = #{contactlastname},
+            </if>
+            <if test="contactfirstname != null">
+                contact_first_name = #{contactfirstname},
+            </if>
+            <if test="phone != null">
+                phone = #{phone},
+            </if>
+            <if test="addressline1 != null">
+                address_line1 = #{addressline1},
+            </if>
+            <if test="addressline2 != null">
+                address_line2 = #{addressline2},
+            </if>
+            <if test="city != null">
+                city = #{city},
+            </if>
+            <if test="state != null">
+                state = #{state},
+            </if>
+            <if test="postalcode != null">
+                postal_code = #{postalcode},
+            </if>
+            <if test="country != null">
+                country = #{country},
+            </if>
+            <if test="salesrepemployeenumber != null">
+                sales_rep_employee_number = #{salesrepemployeenumber},
+            </if>
+            <if test="creditlimit != null">
+                <!--
+                参数设置同样也有很多参数
+                1.参数名
+                2.javaType 指定Java类型,可以不指定,如果对象是个泛型类型,比如HashMap,那么需要指定
+                3.jdbcType 指定数据库类型,可以不指定
+                4.numericScale 指定确定保留多少位小数
+                5.mode IN，OUT 或 INOUT todo
+                -->
+                <!-- creditlimit = #{creditlimit,javaType=java.math.BigDecimal,jdbcType=DECIMAL,numericScale=3} -->
+                credit_limit = #{creditlimit}
+            </if>
+        </set>
+        <where>
+            customer_number = #{customernumber}
+        </where>
+    </update>
+
+    <select id="selectAll" resultType="org.hulei.eneity.mybatisplus.domain.Customers">
+        select *
+        from customers
+    </select>
+
+    <select id="selectCustomerByEmployeeId"
+            resultMap="customBaseMapper">
+        select customer_number,
+               customer_name,
+               contact_last_name,
+               contact_first_name,
+               phone,
+               address_line1,
+               address_line2,
+               city,
+               state,
+               postal_code,
+               country,
+               sales_rep_employee_number,
+               credit_limit
+        from customers c
+        where c.sales_rep_employee_number = #{employeeNumber}
+    </select>
+
+    <select id="selectByEnmu" resultMap="customBaseMapper">
+        select * from customers where customer_number = ${@org.hulei.springboot.mybatisplus.CityEnum@Aachen.code}
+    </select>
+</mapper>

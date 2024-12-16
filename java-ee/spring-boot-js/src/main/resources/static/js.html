@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>js</title>
+    <script src="js/jquery.min.js"></script>
+</head>
+<body>
+
+<script>
+
+    setTimeout(function () {  //第一层
+        console.log('武林要以和为贵');
+        setTimeout(function () {  //第二程
+            console.log('要讲武德');
+            setTimeout(function () {   //第三层
+                console.log('不要搞窝里斗');
+            }, 1000)
+        }, 2000)
+    }, 3000)
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,4 @@
+{
+  "version": "${revision}",
+  "maven-flatten-version": "${maven-flatten-version}"
+}

@@ -1,0 +1,36 @@
+server:
+  port: 10005
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:10001/eureka/
+
+spring:
+  application:
+    name: service-zuul
+
+# Zuul路由配置
+zuul:
+  prefix: /v1
+  routes:
+    hiapi:
+      path: /hiapi/**
+      service-id: eureka-client
+    ribbonapi:
+      path: /ribbonapi/**
+      service-id: ribbon-client
+
+
+# 暴露 actuator 监控指标
+management:
+  endpoints:
+    web:
+      exposure:
+        # 暴露所有指标
+        include: "*"
+hystrix:
+  dashboard:
+    # hystrix.dashboard.proxy-stream-allow-list 配置用于指定允许代理的Hystrix流（stream）地址。
+    # 它的主要作用是为了安全起见，明确哪些主机或URL可以作为Hystrix Dashboard的代理目标。
+    proxy-stream-allow-list: "*"

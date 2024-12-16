@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>common</artifactId>
+        <groupId>org.hulei</groupId>
+        <version>1.0.0.4-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>common-starter</artifactId>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <demo.common.verison>1.0.0.4-SNAPSHOT</demo.common.verison>
+        <demo.cloud.common.version>1.0.0.4-SNAPSHOT</demo.cloud.common.version>
+        <demo.common.curator.version>1.0.0.4-SNAPSHOT</demo.common.curator.version>
+    </properties>
+
+    <dependencies>
+
+        <!--引入spring-boot-starter依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-to-slf4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>utils</artifactId>
+            <version>${demo.common.verison}</version>
+        </dependency>
+
+        <!-- aspectJ -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+        </dependency>
+
+        <!--curator这里作为可选模块-->
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>curator-starter</artifactId>
+            <version>${demo.common.curator.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+    </dependencies>
+</project>

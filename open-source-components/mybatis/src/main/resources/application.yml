@@ -1,0 +1,29 @@
+server:
+  port: 11008
+
+spring:
+  main:
+    allow-circular-references: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  datasource:
+    url: jdbc:mysql://192.168.80.128:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&connectionCollation=utf8mb4&rewriteBatchedStatements=true
+    username: root
+    password: 123456
+
+# mybatis
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # mybatis提供的一级缓存，决定在同一查询范围内的缓存配置，分为会话级别和语句级别
+    local-cache-scope: statement
+    # mybatis提供的二级缓存，决定一个 mapper 文件在整个程序的声明周期内的缓存行为, 这是一个总开关，这里关闭之后，是不会启动二级缓存的
+    cache-enabled: false
+  mapper-locations: classpath:mapper/*.xml
+
+# pagehelper
+pagehelper:
+  auto-runtime-dialect: true
+  page-size-zero: true

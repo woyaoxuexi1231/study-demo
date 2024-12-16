@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>dubbo-provider</artifactId>
+        <groupId>org.hulei</groupId>
+        <version>1.0.0.4-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>dubbo-provider-service</artifactId>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <common.version>1.0.0.4-SNAPSHOT</common.version>
+        <demo.dubbo.provider.api.version>1.0.0.4-SNAPSHOT</demo.dubbo.provider.api.version>
+        <demo.commom.starter.version>1.0.0.4-SNAPSHOT</demo.commom.starter.version>
+    </properties>
+
+    <dependencies>
+
+        <!--内部-->
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>dubbo-provider-api</artifactId>
+            <version>${demo.dubbo.provider.api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>common-starter</artifactId>
+            <version>${demo.commom.starter.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>curator-starter</artifactId>
+            <version>1.0.0.4-SNAPSHOT</version>
+        </dependency>
+
+        <!--Springboot-->
+        <!--mq-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!--数据库相关-->
+        <dependency>
+            <groupId>tk.mybatis</groupId>
+            <artifactId>mapper-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <!--Dubbo-->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-registry-nacos</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>

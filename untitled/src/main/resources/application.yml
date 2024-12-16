@@ -1,0 +1,65 @@
+server:
+  port: 10004
+  # ssl:
+  #   key-store: classpath:mykeys.jks
+  #   key-store-password: 123456
+  #   key-password: 123456
+
+spring:
+  application:
+    name: keeping
+  main:
+    allow-circular-references: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  devtools:
+    restart:
+      enabled: false
+      additional-paths: src/main/java
+      # exclude: '**/static/**','**/*.js','**/*.html'
+    livereload:
+      enabled: false
+      port: 35729
+#  mvc:
+#    view:
+#      prefix: /WEB-INF/jsp/
+#      suffix: .jsp
+#  thymeleaf:
+#    prefix: classpath:/templates/
+#    suffix: .html
+
+# logging:
+#   level:
+#     root: DEBUG
+#     org.mybatis.spring.transaction.SpringManagedTransaction: DEBUG
+#     org.springframework.data.redis: DEBUG
+#     com.hundsun.demo.springboot.mapper: debug
+
+# custom config
+done:
+  time:
+    enable: true
+greeting:
+  welcome: You are using ${spring.application.name}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    shutdown:
+      enabled: true
+
+# router prefix
+# server:
+#   servlet:
+#     context-path: /api
+
+app:
+  config:
+    name: Myapp
+    max-requests: 100
+

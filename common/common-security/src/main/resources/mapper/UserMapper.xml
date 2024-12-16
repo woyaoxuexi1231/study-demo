@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hulei.common.security.mapper.UserMapper">
+    <resultMap id="FullInfoMap" type="org.hulei.common.security.pojo.User">
+        <id column="id" jdbcType="BIGINT" javaType="java.lang.Long" property="id"/>
+        <id column="username" jdbcType="VARCHAR" javaType="java.lang.String" property="username"/>
+        <id column="password" jdbcType="VARCHAR" javaType="java.lang.String" property="password"/>
+        <!-- 这里配置Role信息的一对多的关系 -->
+        <collection property="authorities" ofType="org.hulei.common.security.pojo.Role" columnPrefix="role_">
+            <id column="id" jdbcType="BIGINT" javaType="java.lang.Long" property="id"/>
+            <id column="name" jdbcType="VARCHAR" javaType="java.lang.String" property="name"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectFullInfo" resultMap="FullInfoMap" parameterType="java.lang.String">
+        select u.id, u.password, u.username, r.id as role_id, r.name as role_name
+        from user u
+                 left join test.user_role ur on u.id = ur.user_id
+                 left join role r on r.id = ur.role_id
+        where u.username = #{username}
+    </select>
+</mapper>

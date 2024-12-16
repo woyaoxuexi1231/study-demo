@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>dubbo-provider</artifactId>
+        <groupId>org.hulei</groupId>
+        <version>1.0.0.4-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>dubbo-provider-api</artifactId>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <common.version>1.0.0.4-SNAPSHOT</common.version>
+        <dubbo.demo.common.api.version>1.0.0.4-SNAPSHOT</dubbo.demo.common.api.version>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>utils</artifactId>
+            <version>${common.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>

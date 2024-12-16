@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>dubbo-consumer</artifactId>
+        <groupId>org.hulei</groupId>
+        <version>1.0.0.4-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>dubbo-consumer-api</artifactId>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <common.version>1.0.0.4-SNAPSHOT</common.version>
+        <dubbo.demo.provider.api.version>1.0.0.4-SNAPSHOT</dubbo.demo.provider.api.version>
+    </properties>
+
+    <dependencies>
+
+        <!-- 内部 -->
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>utils</artifactId>
+            <version>${common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>dubbo-provider-api</artifactId>
+            <version>${dubbo.demo.provider.api.version}</version>
+        </dependency>
+
+        <!-- JPA -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+        <!-- 使用了包内的 Validated 注解 -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>

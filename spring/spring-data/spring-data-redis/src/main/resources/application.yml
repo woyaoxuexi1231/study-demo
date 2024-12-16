@@ -1,0 +1,10 @@
+server:
+  port: 10026
+spring:
+  profiles:
+    active: redis,db
+  main:
+    allow-circular-references: true
+  servlet:
+    multipart.max-file-size: 10MB
+    multipart.max-request-size: 10MB

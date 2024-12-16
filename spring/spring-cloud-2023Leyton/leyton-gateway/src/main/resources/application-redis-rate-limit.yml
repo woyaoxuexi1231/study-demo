@@ -1,0 +1,48 @@
+#spring:
+#  cloud:
+#    gateway:
+#      routes:
+#        - id: limit_route
+#          uri: http://httpbin.org:80
+#          predicates:
+#            - After=2017-01-20T17:42:47.789-07:00[America/Denver]
+##            - Path=/eureka-client/hi
+#          filters:
+#            - name: RequestRateLimiter
+#              args:
+#                key-resolver: '#{@hostAddrKeyResolver}'
+#                redis-rate-limiter.replenish-rate: 1
+#                redis-rate-limiter.burst-capacity: 1
+#                redis-rate-limiter.requested-tokens: 1
+spring:
+  cloud:
+    gateway:
+      # 这个配置用于定义全局的默认过滤器。这些过滤器会应用于所有的路由，不需要在每个路由中单独指定。
+      # 相当于是一个全局过滤器
+#      default-filters:
+#        # 这是 RequestRateLimiterGatewayFilterFactory, 使用 Redis和lua脚本实现令牌桶算法进行限流
+#        # lua脚本为request_rate_limiter.lua, 在spring-cloud-gateway-server这个包内
+#        # RequestRateLimiterGatewayFilterFactory 本身匹配 spring.cloud.gateway.filter.request-rate-limiter 这个参数
+#        # 这里使用了 default-filters, 那么流程变成: GatewayProperties->触发
+#        - name: RequestRateLimiter
+#          args:
+#            # 这是一个 KeyResolver, 这里填写的实际应该是一个bean的名字, 我们自定义了一个 HostAddrKeyResolver, 这是一个按照ip来限流的案例
+#            key-resolver: '#{@hostAddrKeyResolver}'
+#            # 每秒请求恢复数量, 这里不能是小数, 使得配置 每十秒通过一个比较麻烦
+#            redis-rate-limiter.replenish-rate: 1
+#            # 突发容量
+#            redis-rate-limiter.burst-capacity: 10
+#            # 每个请求消耗的令牌数
+#            redis-rate-limiter.requested-tokens: 10
+
+      # 这个会由上面的 GatewayProperties 解析成一个一个的 RouteDefinition
+      routes:
+        # =====================================
+        - id: default_redis_limit_config
+          uri: http://httpbin.org:80
+          order: 10000
+          predicates:
+            - Path=/**
+          # 本来过滤器是要通过 spring.cloud.gateway.filter 来配置的，但是spring cloud内置了很多默认的
+          filters:
+            - RequestRateLimiter=1, 1, #{@hostAddrKeyResolver}

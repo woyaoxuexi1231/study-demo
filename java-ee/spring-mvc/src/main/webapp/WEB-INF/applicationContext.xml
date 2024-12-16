@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd"
+>
+
+    <context:component-scan base-package="org.hulei.javaee.springmvc"/>
+
+    <!-- 一共有三种用于启用 AspectJ 自动代理功能的方式 -->
+    <!-- 1. 开启<aop:aspectj-autoproxy/>配置-->
+    <!-- 2. 注册AnnotationAwareAspectJAutoProxyCreator这个bean -->
+    <!-- 3. 开启@EnableAspectJAutoProxy这个注解 -->
+    <!-- Spring 将会自动检测并创建应用程序中使用了 AspectJ 注解的 bean，并将其装配为代理对象，以便应用程序中的切面可以对这些对象进行增强。 -->
+    <aop:aspectj-autoproxy/>
+
+</beans>

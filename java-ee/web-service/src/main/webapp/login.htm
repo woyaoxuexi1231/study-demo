@@ -1,0 +1,60 @@
+<html lang="en">
+<head>
+    <title>helloapp</title>
+</head>
+<body>
+<form name="loginForm" method="POST" action="login">
+    <table>
+        <tr>
+            <td>
+                <div align="right">User Name:</div>
+            </td>
+            <td>
+                <label>
+                    <input type="text" name="username">
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div align="right">Password:</div>
+            </td>
+            <td>
+                <label>
+                    <input type="password" name="password">
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td><input type="submit" name="submit" value="submit"></td>
+            <td><input type="reset" name="reset" value="reset"></td>
+        </tr>
+    </table>
+</form>
+
+<button id="fetchButton">Get Response from Servlet</button>
+<div id="response"></div>
+</body>
+
+<script>
+    document.getElementById("fetchButton").addEventListener("click", function() {
+        // 使用 fetch 发送请求到你的 Servlet, 这里不加 / 的原因是我这里使用Idea配置Tomcat启动,项目带有后缀,如果加上/就会和实际路径不一致了
+        // /generateResponse 是一个绝对路径   generateResponse 是一个相对路径,基于当前的URL动态生成访问路径
+        fetch("generateResponse")  // 替换为实际的 Servlet 路径
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.text();  // 读取返回的文本数据
+            })
+            .then(data => {
+                // 将返回的内容显示到页面上
+                document.getElementById("response").innerText = data;
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    });
+</script>
+
+</html>

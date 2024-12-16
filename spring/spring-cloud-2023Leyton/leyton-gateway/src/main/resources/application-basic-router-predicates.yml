@@ -1,0 +1,72 @@
+spring:
+  cloud:
+    gateway:
+      # 路由是指将请求从客户端转发到目标服务的过程, 路由规则定义了请求如何被转发
+      # 过滤器是在请求处理过程中执行的一组操作，可以在请求进入网关、网关处理请求、请求离开网关等阶段进行。过滤器可以用于日志记录、鉴权、请求修改、响应修改等。过滤器可以自定义，也可以使用现有的过滤器。
+      routes:
+        # 路由标识符,要求唯一
+        - id: after_router
+          # 请求被转发的地址
+          uri: http://httpbin.org:80
+          # 断言(路由转发要满足的条件)
+          predicates:
+            - After=2023-12-31T23:59:59Z
+          # 过滤器,请求在转发过程中通过过滤器对请求进行一定的修改
+          filters:
+            # AddRequestHeaderGatewayFilterFactory 约定写为 AddRequestHeader
+            - AddRequestHeader=X-Request-Foo, Bar
+          order: 12
+        # 在指定时间之前的断言
+        - id: before_route
+          uri: http://httpbin.org:80
+          predicates:
+            - Before=2023-12-31T23:59:59Z
+        # 指定时间之间
+        - id: between_route
+          uri: http://httpbin.org:80
+          predicates:
+            - Between=2023-01-01T00:00:00Z,2023-12-31T23:59:59Z
+
+
+        # 需要在Header中满足一些指定条件的
+        - id: cookie_route
+          uri: http://httpbin.org:80
+          predicates:
+            - Cookie=name,value
+        - id: header_route
+          uri: http://httpbin.org:80
+          predicates:
+            - Header=X-Request-Id, \d+
+        - id: host_route
+          uri: http://httpbin.org:80
+          predicates:
+            - Host=DESKTOP-SFJ85U4,localhost,127.0.0.1
+
+
+        # 指定方法
+        - id: method_route
+          uri: http://httpbin.org:80
+          predicates:
+            - Method=GET
+            - Path=/api
+        # 指定路径
+        - id: path_route
+          uri: https://www.baidu.com
+          predicates:
+            - Path=/api/**
+        # 指定的查询参数
+        - id: query_route
+          uri: http://httpbin.org:80
+          predicates:
+            - Query=red, gree.
+        # 必须是指定的远程地址
+        - id: remoteaddr_route
+          uri: http://httpbin.org:80
+          predicates:
+            - RemoteAddr=192.168.1.1/24
+
+# properties may be like this 如果使用 properties 文件就像下面这样
+# spring.cloud.gateway.routes[0].id=after-router
+# spring.cloud.gateway.routes[0].uri=http://httpbin.org:80
+# spring.cloud.gateway.routes[0].predicates[0]=After=2023-01-20T17:42:47.789-07:00[America/Denver]
+# spring.cloud.gateway.routes[0].filters[0]=AddRequestHeader=X-Request-Foo, Bar

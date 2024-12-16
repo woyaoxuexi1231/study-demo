@@ -1,0 +1,16 @@
+server:
+  port: 11007
+
+spring:
+  elasticsearch:
+    uris: http://localhost:9200
+#    username: elastic
+#    password: Q_N3Ja+RBs3xHLhOdKz-
+  main:
+    allow-bean-definition-overriding: true
+
+
+#logging:
+#  level:
+#    root: debug
+

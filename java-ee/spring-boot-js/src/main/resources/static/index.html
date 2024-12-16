@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- 用于提供有关文档的元数据（metadata）,这里设置文档编码为 UTF-8 -->
+    <meta charset="UTF-8">
+
+    <!-- 设置网页图标 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/icon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icon/favicon-16x16.png">
+    <link rel="manifest" href="/icon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/icon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- 网页标题 -->
+    <title>Interactive Web Page</title>
+
+    <!-- 引入两个 css 样式文件 -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <!-- 预设置两个样式 -->
+    <style>
+        .button-wrapper {
+            margin-bottom: 10px;
+        }
+
+        body {
+            margin: 20px;
+        }
+    </style>
+
+    <!-- js脚本放在head意味着脚本会在文档渲染之前加载,可能会阻塞页面渲染 -->
+    <!-- js脚本放在body中可以减少这种阻塞,但是如果dom依赖于js,那么可能导致dom不可用 -->
+    <!-- 引入两个js脚本文件 -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/stomp.umd.min.js"></script>
+    <!-- 预设置一个函数 -->
+    <script>
+        /*
+        * 三种用于发起http请求的js库和方法:
+        * 1. fetch - JavaScript 的一部分，由浏览器原生支持。
+        * 2. Ajax - 通过 XMLHttpRequest 对象来实现的三方类库,存在时间已经很长了
+        * 3. axios - 基于 Promise 的 HTTP 库, 可以用在浏览器和 node.js 中, 是请求资源的模块, 通过promise对ajax的封装
+        *
+        *
+        * document.addEventListener('DOMContentLoaded', function ()
+        *   它监听网页的 ‘DOMContentLoaded’ 事件，表示网页的文档已完全加载和解析，不需要等待样式表、图像和子框架的加载完成。这意味着一旦DOM结构构建完毕，这个函数里的代码就会被执行。
+        * */
+        document.addEventListener('DOMContentLoaded', function () {
+            // 这里向ID为 'greeting-form' 的 HTML 元素（此处是一个表单）添加一个 'submit' 事件的监听器。当用户提交这个表单时，会运行提供的函数。
+            document.getElementById('greeting-form').addEventListener('submit', function (e) {
+                // 当表单提交事件发生时，这行代码将阻止表单的默认提交行为。 - 对于一个没有添加 action 属性的表单，它的默认行为是将数据发送到当前页面的地址，可能会引起页面刷新。
+                // 这里使用 e.preventDefault() 是为了阻止这种行为，让JavaScript可以控制表单数据的提交。
+                // 阻止页面的刷新行为主要是为了我们渲染 greeting-result 这个元素
+                e.preventDefault(); // 阻止表单的默认提交行为
+                // 接着，这行代码通过ID获取输入框（文本框）元素，并提取用户输入的值（即 name）。
+                const name = document.getElementById('name').value;
+                // 这一行使用 Fetch API 发送一个GET请求到后端的 /greeting 路由。
+                // encodeURIComponent(name) 确保用户输入被正确编码到URL中，防止特殊字符导致的问题。
+                // 比如，如果用户输入了包含空格或特殊字符的名字，编码确保服务器接收到的是格式正确的查询字符串。
+                fetch('/greeting?name=' + encodeURIComponent(name))
+                    // 当fetch请求得到响应后，response.text() 会读取响应体并将其作为文本返回。它返回的是一个新的Promise对象，这样可以通过链式调用.then()方法来处理数据。
+                    .then(response => response.text())
+                    // 当响应文本可用时，这个 .then() 方法的回调函数会被执行。
+                    // 它将获取ID为 'greeting-result' 的元素（此处是一个段落元素）并设置其 textContent 属性为从后端接收到的文本（即问候语句），这样用户便能在页面上看到问候。
+                    .then(text => {
+                        document.getElementById('greeting-result').textContent = text;
+                    })
+                    // 如果在请求或处理响应过程中发生错误，.catch() 方法会捕获这些错误，并将错误信息打印到控制台。这有助于开发者诊断问题。
+                    .catch(error => console.error('Error:', error));
+
+                /* 如果是一个post请求参考如下代码
+                // 定义要请求的 URL
+                const url = 'https://api.example.com/data';
+
+                // 定义请求数据
+                const data = {
+                  key: 'value',
+                  anotherKey: 42
+                };
+
+                // 将数据转换为 JSON 字符串
+                const jsonData = JSON.stringify(data);
+
+                // 发起 POST 请求
+                fetch(url, {
+                  method: 'POST', // 或 'PUT'
+                  headers: {
+                    'Content-Type': 'application/json',
+                    // 'Content-Type': 'application/x-www-form-urlencoded',
+                  },
+                  body: jsonData // 数据体
+                })
+                  .then(response => {
+                    if (!response.ok) {
+                      throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json(); // 解析响应体为 JSON
+                  })
+                  .then(data => {
+                    console.log(data);
+                  })
+                  .catch(error => {
+                    console.error('Fetch Error:', error);
+                  });
+                 */
+            });
+        });
+    </script>
+</head>
+<body>
+
+<!--被用来显示表单的标题——"Greeting Form"-->
+<h1>Greeting Form</h1>
+
+<!--<button onclick="alert('Hello, World!')">Click me</button>-->
+<p>
+    <button onclick="greet()">Click me</button>
+</p>
+
+<!--开始一个 form 元素，并赋予它一个ID "greeting-form"。这使得我们可以在JavaScript中通过这个ID来查找这个表单元素，以便处理表单提交事件。-->
+<form id="greeting-form">
+    <label for="name">
+        <input type="text" id="name" placeholder="Enter your name" required>
+    </label>
+    <button type="submit">Greet</button>
+</form>
+
+
+<!-- 最后，这是一个段落元素，被赋予ID “greeting-result”。它被用来展示从服务器返回的问候消息。我们之前解读的JavaScript代码中，这个元素会显示服务器HTTP请求的回应。-->
+<p id="greeting-result"></p>
+
+<p>Check out this <a href="image-page.html">image page</a>.</p>
+
+<script type="text/javascript">
+
+    function goToPage(pageUrl) {
+        window.location.href = pageUrl;
+    }
+
+    // JavaScript代码
+    function greet() {
+        alert('Hello, World!');
+    }
+
+</script>
+</body>
+</html>

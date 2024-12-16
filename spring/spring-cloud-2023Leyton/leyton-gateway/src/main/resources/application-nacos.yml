@@ -1,0 +1,28 @@
+spring:
+  cloud:
+    nacos:
+      username: nacos
+      password: cquissE12!@
+      discovery:
+        server-addr: 192.168.3.225:30769
+        namespace: local
+    gateway:
+      discovery:
+        locator:
+          # 启用服务发现
+          enabled: true
+          # 将服务ID转为小写
+          lower-case-service-id: true
+#      routes:
+#        - id: eureka-client-route
+#          uri: lb://eureka-client
+#          predicates:
+#            - Path=/eureka-client/**
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+

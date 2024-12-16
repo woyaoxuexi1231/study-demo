@@ -1,0 +1,7 @@
+redis:
+  limit:
+    redis-limits:
+      - interval-sec: 10
+        count: 1
+        api-name: "*"
+        user-name: "hulei"

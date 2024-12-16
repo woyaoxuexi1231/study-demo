@@ -1,0 +1,17 @@
+server:
+  port: 12001
+
+eureka:
+  server:
+    enable-self-preservation: false
+  instance:
+    prefer-ip-address: true
+    hostname: peer1
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone:
+        - http://peer1:12001/eureka/
+        - http://peer2:12002/eureka/
+        - http://peer3:12003/eureka/

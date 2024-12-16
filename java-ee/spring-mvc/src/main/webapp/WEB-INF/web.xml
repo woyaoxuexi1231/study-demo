@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+    <!--Tomcat 控制台如果乱码可以在 Tomcat的启动参数中设置 -Dfile.encoding=utf-8, 保持编码统一以解决乱码问题-->
+
+    <!--
+    这里的 web.xml 供 Servlet 容器访问, Servlet 容器在加载和启动的时候 JavaWeb 应用的时候会读取 web.xml 配置文件
+    主要配置信息:
+    1. Servlet 的定义
+    2. Servlet 的初始化参数
+    3. Servlet以及JSP的映射
+    4. 安全域配置参数
+    5. welcome 文件清单
+    6. 资源引用
+    7. 环境变量的定义
+    -->
+
+    <!--
+    监听事件, 在Servlet容器启动或者销毁Web应用的时候会触发
+
+    ① 它将为整个 Web 应用程序加载顶层的 WebApplicationContext, 加载的 WebApplicationContext 的默认配置文件路径为 /WEB-INF/applicationContext.xml
+        后续可以使用 org.springframework.web.context.support.WebApplicationContextUtils 来获取我们绑定的 WebApplicationContext
+        1. WebApplicationContextUtils.getWebApplicationContext(getServletContext());
+        2. XmlWebApplicationContext 配置了默认文件
+
+    ② AbstractRefreshableWebApplicationContext有两个子类
+        1.XmlWebApplicationContext
+            配置XmlWebApplicationContext以及指定配置文件路径
+            <context-param>
+                <param-name>contextClass</param-name>
+                <param-value>org.springframework.web.context.support.XmlWebApplicationContext</param-value>
+            </context-param>
+            <context-param>
+                <param-name>contextConfigLocation</param-name>
+                <param-value>/WEB-INF/applicationContext.xml</param-value>
+            </context-param>
+
+        2.AnnotationConfigWebApplicationContext
+            配置AnnotationConfigWebApplicationContext以及配置文件路径
+            <context-param>
+                <param-name>contextClass</param-name>
+                <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+            </context-param>
+            <context-param>
+                <param-name>contextConfigLocation</param-name>
+                <param-value>com.hundsun.demo.spring.mvc.AppConfig</param-value>
+            </context-param>
+    -->
+<!--     <listener> -->
+<!--         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class> -->
+<!--     </listener> -->
+
+    <!-- 可以考虑使用这种配置方式来配置多个配置文件或者使用下面配置servlet的方式来加载配置文件 -->
+    <!--    <context-param>-->
+    <!--        <param-name>contextConfigLocation</param-name>-->
+    <!--        <param-value>**.xml,**.xml</param-value>-->
+    <!--    </context-param>-->
+
+    <!-- 为 Servlet 类定义名字 -->
+    <servlet>
+        <!-- 如果这里配置了servlet的名字,那么意味着一定要有一个 xxx-servlet.xml 的文件, 除非像下面配置 init-param -->
+        <servlet-name>controller</servlet-name>
+        <!-- 配置 Spring MVC 的前端控制器 DispatcherServlet -->
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <!-- 初始化参数, 配置 Spring MVC 配置文件的位置和名称 -->
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>/WEB-INF/controller-servlet.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <!-- 为 Servlet 映射一个 URL -->
+    <servlet-mapping>
+        <servlet-name>controller</servlet-name>
+        <!-- <url-pattern>*.do</url-pattern>-->
+        <!-- 所有请求都将被转发到 controller 这个对应的Servlet(DispatcherServlet,Spring用于转发的总的Servlet)-->
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <!-- 欢迎页 -->
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+
+
+    <!-- Other configurations -->
+    <!-- <jsp-config> -->
+    <!--     <taglib> -->
+    <!--         <taglib-uri>http://java.sun.com/jsp/jstl/core</taglib-uri> -->
+    <!--         <taglib-location>/WEB-INF/lib/jstl-1.2.jar</taglib-location> -->
+    <!--     </taglib> -->
+    <!-- </jsp-config> -->
+
+</web-app>

@@ -1,0 +1,23 @@
+server:
+  port: 10003
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:10001/eureka/
+
+spring:
+  application:
+    name: ribbon-client
+
+# For Spring Cloud Finchley.SR1 version, this access path is not enabled by default, so we need to manually enable it.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+# Enable Hystrix stream for all clients
+hystrix:
+  dashboard:
+    proxy-stream-allow-list: '*'

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>401 Unauthorized</title>
+    <link th:href="@{/css/bootstrap.min.css}" href="/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <h2 class="mt-5">401 - Unauthorized</h2>
+    <p th:if="${isLogin}" th:text="'Welcome, ' + ${username} + '! You are not authorized to access this page.'"></p>
+    <p th:unless="${isLogin}" th:text="'Please login to access this page.'"></p>
+    <form th:if="${isLogin}" th:action="@{/logout}" method="post">
+        <input type="submit" class="btn btn-danger" value="Logout"/>
+    </form>
+    <p></p>
+    <a th:unless="${isLogin}" href="/index" class="btn btn-primary">BACK</a>
+</div>
+
+<!--<script th:src="@{/js/jquery.min.js}"></script>-->
+<!--<script th:src="@{/js/bootstrap.min.js}"></script>-->
+</body>
+</html>

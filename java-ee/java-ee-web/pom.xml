@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.hulei</groupId>
+        <artifactId>dependencies-parent</artifactId>
+        <version>1.0.0.4-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>java-ee-web</artifactId>
+    <!-- war包打好后直接放在服务器的webapps(TomEE服务器)目录下即可，服务器会自动解压和部署 -->
+    <packaging>war</packaging>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>java-ee-ejb</artifactId>
+            <version>1.0.0.4-SNAPSHOT</version>
+            <!-- 如果这里不使用provided生命周期，那么这个ejb包会合并打入war包内，放入服务器之后，会直接使用这个内部ejb组件 -->
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- servlet-api 主要用于定义 Servlet 的架构与相关的功能 -->
+        <!-- 包含类似于HttpServlet, HttpServletRequest, HttpServletResponse这些具体实现类 -->
+        <!-- 通常在处理 HTTP 请求时使用，适合用于编写后端逻辑、请求处理、会话管理等。 -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.0.0</version>
+            <!-- 目前大部分JavaEE服务器(如 WildFly、TomEE、GlassFish 等),因此在部署应用时，这些服务器会提供这些库。所以这里可以仅在编译时使用这个库 -->
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- JSP 是一种基于 HTML 的网页视图技术，它允许开发者将 Java 代码嵌入到 HTML 中 -->
+        <!-- 用于创建网页视图，适合用于生成动态内容，包括表单处理、数据显示等。 -->
+        <dependency>
+            <groupId>jakarta.servlet.jsp</groupId>
+            <artifactId>jakarta.servlet.jsp-api</artifactId>
+            <version>3.1.1</version>
+            <!-- 原因和servlet-api一致 -->
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>${project.name}</finalName>
+    </build>
+
+</project>

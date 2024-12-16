@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>dependencies-parent</artifactId>
+        <groupId>org.hulei</groupId>
+        <version>1.0.0.4-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>common</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>utils</module>
+        <module>entity-jpa</module>
+        <module>entity-mybatis-plus</module>
+        <module>common-starter</module>
+        <module>curator-starter</module>
+        <module>common-security</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <!-- 一些常用的工具包导入, 可以被传递的 -->
+        <!--Lombok是一个Java库，能自动插入编辑器并构建工具，简化Java开发。通过添加注解的方式，不需要为类编写getter或eques方法，同时可以自动化日志变量。-->
+        <!--官网：https://projectlombok.org/-->
+        <!--高版本IDEA引入低版本lombok时可能导致插件不可用, 需要添加一个编译参数 - -Djps.track.ap.dependencies=false -->
+        <!-- https://youtrack.jetbrains.com/issue/IDEA-252069 -->
+        <!-- https://youtrack.jetbrains.com/issue/IDEA-250718 -->
+        <!-- GITHUB:https://github.com/projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.hulei.springdata.routingdatasource.config.coding.RoutingCodingDataSourceAutoConfig,\
+org.hulei.springdata.routingdatasource.annotation.DataSourceToggleAutoConfig

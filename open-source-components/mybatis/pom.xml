@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.hulei</groupId>
+        <artifactId>dependencies-parent</artifactId>
+        <version>1.0.0.4-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>mybatis</artifactId>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>utils</artifactId>
+            <version>1.0.0.4-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>entity-jpa</artifactId>
+            <version>1.0.0.4-SNAPSHOT</version>
+        </dependency>
+
+        <!-- mybatis 框架, 只需要这个包就可以使用 mybatis 的基础功能 -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+        </dependency>
+        <!-- 分页插件 -->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper</artifactId>
+        </dependency>
+
+        <!-- 整合springboot, mybatis-spring的包就不引入了, 配置比较麻烦, 还需要配置数据源, 事务, sqlSession, 这里直接使用springboot自动配置的依赖 -->
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+        </dependency>
+        <!-- 同样的，整合springboot的同时，pagehelper也需要springboot的starter包，不然需要手动配置插件，比较麻烦 -->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- 依赖驱动包 -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <!--
+        spring-boot-starter-web 包含了大部分 spring 内源性的依赖
+        包括 IOC 和 AOP, 以及其他核心部分的内容, 还包括 mvc 相关的内容
+        但是没有包含 dao 层相关的东西, 比如数据库相关的依赖, mybatis 依赖数据库
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!-- 这里只需要引入 tx 就够了，tx 专注于事务管理，提供了声明式和编程式的事务管理功能，支持多种事务传播行为和隔离级别。mybatis 必须要使用到这个包 -->
+        <!-- 在使用 mybatis-spring 的时候，如果没有引入这个包，会报错找不到 org.springframework.dao.support.DaoSupport 这个类 -->
+        <!-- 使用 mybatis-spring-boot-starter 就不用管，mybatis-spring-boot-starter 连带着引入了 spring-boot-starter-jdbc -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>
