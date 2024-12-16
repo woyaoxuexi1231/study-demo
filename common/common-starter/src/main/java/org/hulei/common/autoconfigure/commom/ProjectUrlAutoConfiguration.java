@@ -1,12 +1,11 @@
 package org.hulei.common.autoconfigure.commom;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.context.EnvironmentAware;
+import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
+import org.springframework.context.event.EventListener;
 
 import java.net.InetAddress;
 
@@ -19,24 +18,22 @@ import java.net.InetAddress;
 public class ProjectUrlAutoConfiguration {
 
     @Bean
-    public ApplicationRunner projectUrlRunner() {
-        return new MyApplicationRunner();
+    public ServerPortListener projectUrlRunner() {
+        return new ServerPortListener();
     }
 }
 
+@Getter
 @Slf4j
-class MyApplicationRunner implements ApplicationRunner, EnvironmentAware {
+class ServerPortListener {
 
-    private String port;
+    private int port;
 
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
-        InetAddress inetAddress = InetAddress.getLocalHost();
-        log.info("project url: http://" + inetAddress.getHostAddress() + ":{}", port);
+    @EventListener
+    public void onApplicationEvent(WebServerInitializedEvent event) throws Exception {
+        this.port = event.getWebServer().getPort();
+        log.info("获得端口：{}", port);
+        log.info("project url: http://{}:{}", InetAddress.getLocalHost().getHostAddress(), port);
     }
 
-    @Override
-    public void setEnvironment(Environment environment) {
-        port = environment.getProperty("server.port");
-    }
 }
