@@ -1,11 +1,11 @@
 package com.hundsun.demo.dubbo.consumer.controller;
 
-import org.hulei.common.core.model.dto.ResultDTO;
 import com.hundsun.demo.dubbo.provider.api.service.ProviderService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.rpc.cluster.loadbalance.RoundRobinLoadBalance;
+import org.hulei.util.dto.ResultDTO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

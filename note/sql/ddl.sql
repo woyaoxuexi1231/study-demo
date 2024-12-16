@@ -9,8 +9,8 @@ CREATE TABLE `customers`
     `contact_last_name`         varchar(50) NOT NULL,
     `contact_first_name`        varchar(50) NOT NULL,
     `phone`                     varchar(50) NOT NULL,
-    `address_line1`            varchar(50) NOT NULL,
-    `address_line2`            varchar(50)    DEFAULT NULL,
+    `address_line1`             varchar(50) NOT NULL,
+    `address_line2`             varchar(50)    DEFAULT NULL,
     `city`                      varchar(50) NOT NULL,
     `state`                     varchar(50)    DEFAULT NULL,
     `postal_code`               varchar(15)    DEFAULT NULL,
@@ -51,7 +51,7 @@ CREATE TABLE `employees`
 DROP TABLE IF EXISTS `items`;
 CREATE TABLE `items`
 (
-    `id`      int(11)      NOT NULL AUTO_INCREMENT,
+    `id`      bigint       NOT NULL AUTO_INCREMENT,
     `item_no` varchar(255) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
@@ -65,15 +65,15 @@ CREATE TABLE `items`
 DROP TABLE IF EXISTS `offices`;
 CREATE TABLE `offices`
 (
-    `office_code`    varchar(10) NOT NULL,
-    `city`           varchar(50) NOT NULL,
-    `phone`          varchar(50) NOT NULL,
+    `office_code`   varchar(10) NOT NULL,
+    `city`          varchar(50) NOT NULL,
+    `phone`         varchar(50) NOT NULL,
     `address_line1` varchar(50) NOT NULL,
     `address_line2` varchar(50) DEFAULT NULL,
-    `state`          varchar(50) DEFAULT NULL,
-    `country`        varchar(50) NOT NULL,
-    `postal_code`    varchar(15) NOT NULL,
-    `territory`      varchar(10) NOT NULL,
+    `state`         varchar(50) DEFAULT NULL,
+    `country`       varchar(50) NOT NULL,
+    `postal_code`   varchar(15) NOT NULL,
+    `territory`     varchar(10) NOT NULL,
     PRIMARY KEY (`office_code`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
@@ -180,7 +180,7 @@ CREATE TABLE `tokens`
 DROP TABLE IF EXISTS `autokeytest`;
 CREATE TABLE `autokeytest`
 (
-    `id` int NOT NULL AUTO_INCREMENT,
+    `id` bigint NOT NULL AUTO_INCREMENT,
     `a`  varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
     `b`  varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE
@@ -226,7 +226,7 @@ create table sequence
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE users
 (
-    id   INT AUTO_INCREMENT PRIMARY KEY,
+    id   bigint AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100)
 );
 

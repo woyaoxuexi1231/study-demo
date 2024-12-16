@@ -1,5 +1,6 @@
 package org.hulei.springboot.rabbitmq.spring;
 
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.hulei.springboot.rabbitmq.basic.config.MQConfig;
 import org.springframework.amqp.core.Binding;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.PostConstruct;
 
 /**
  * @author hulei

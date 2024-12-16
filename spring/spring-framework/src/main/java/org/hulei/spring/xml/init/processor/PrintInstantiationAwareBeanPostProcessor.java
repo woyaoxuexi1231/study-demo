@@ -38,13 +38,15 @@ public class PrintInstantiationAwareBeanPostProcessor implements InstantiationAw
         return true;
     }
 
+
     @Override
-    public PropertyValues postProcessPropertyValues(PropertyValues pvs, PropertyDescriptor[] pds, Object bean, String beanName) throws BeansException {
-        // 在 Bean 的属性被注入后调用
+    public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) throws BeansException {
+        // 在 Bean 的属性被注入后调用 方法之前是 postProcessPropertyValues
         if ("exampleBean".equals(beanName)) {
             System.out.println("Post Process Property Values: " + beanName);
             // 可以检查和修改属性值
         }
-        return pvs;
+        return InstantiationAwareBeanPostProcessor.super.postProcessProperties(pvs, bean, beanName);
     }
+
 }

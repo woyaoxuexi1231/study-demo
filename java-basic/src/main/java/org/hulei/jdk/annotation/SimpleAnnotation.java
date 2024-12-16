@@ -19,7 +19,7 @@ import java.lang.annotation.Target;
  * Copyright 2024 Hundsun Technologies Inc. All Rights Reserved
  */
 
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface SimpleAnnotation {

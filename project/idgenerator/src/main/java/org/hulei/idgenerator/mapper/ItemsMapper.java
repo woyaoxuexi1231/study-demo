@@ -1,4 +1,4 @@
-package org.hulei.springboot.mybatisplus.mapper;
+package org.hulei.idgenerator.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;

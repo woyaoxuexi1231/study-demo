@@ -1,7 +1,7 @@
 package org.hulei.jdk.jdbc;
 
+import cn.hutool.core.date.StopWatch;
 import lombok.SneakyThrows;
-import org.hulei.common.core.utils.StopWatch;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -23,8 +23,8 @@ import java.util.List;
 
 public class SelectModTest {
 
-    public static final String sql100 = "select id, user_name, ssn, name, phone_number, plate, address, building_number, country, birth, company, job, card_number, city, week, email, title, paragraphs, create_time, update_time from biguser limit 0,100";
-    public static final String sql100000 = "select id, user_name, ssn, name, phone_number, plate, address, building_number, country, birth, company, job, card_number, city, week, email, title, paragraphs, create_time, update_time from biguser limit 0,100000";
+    public static final String sql100 = "select id, user_name, ssn, name, phone_number, plate, address, building_number, country, birth, company, job, card_number, city, week, email, title, paragraphs, create_time, update_time from big_user limit 0,100";
+    public static final String sql100000 = "select id, user_name, ssn, name, phone_number, plate, address, building_number, country, birth, company, job, card_number, city, week, email, title, paragraphs, create_time, update_time from big_user limit 0,100000";
 
 
     public static void main(String[] args) {
@@ -153,7 +153,7 @@ public class SelectModTest {
         int pageNum = 0, pageSize = 50000;
         while (true) {
             int count = 0;
-            ResultSet resultSet = statement.executeQuery("select * from biguser limit " + pageNum * pageSize + ","+ pageSize);
+            ResultSet resultSet = statement.executeQuery("select * from big_user limit " + pageNum * pageSize + ","+ pageSize);
             while (resultSet.next()) {
                 count++;
             }
@@ -170,7 +170,7 @@ public class SelectModTest {
         Statement statement = ConnectFactory.getStatement();
         statement.setFetchSize(Integer.MIN_VALUE);
 
-        ResultSet resultSet = statement.executeQuery("select * from biguser");
+        ResultSet resultSet = statement.executeQuery("select * from big_user");
         while (resultSet.next()) {
 
         }

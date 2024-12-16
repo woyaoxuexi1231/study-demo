@@ -1,6 +1,7 @@
 package org.hulei.idgenerator.segmentid;
 
 import cn.hutool.core.collection.CollectionUtil;
+import jakarta.annotation.PreDestroy;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.mapping.Environment;
@@ -20,7 +21,6 @@ import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.PreDestroy;
 import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -1,12 +1,12 @@
 package org.hulei.idgenerator;
 
+import cn.hutool.core.date.StopWatch;
 import com.github.jsonzou.jmockdata.JMockData;
-import org.hulei.common.mapper.entity.pojo.ItemDO;
 import lombok.SneakyThrows;
-import org.hulei.common.mapper.mapper.ItemsMapper;
+import org.hulei.eneity.mybatisplus.domain.Items;
+import org.hulei.idgenerator.mapper.ItemsMapper;
 import org.hulei.idgenerator.segmentid.SegmentIdGenerator;
 import org.hulei.idgenerator.snowflake.SnowflakeConfig;
-import org.hulei.common.core.utils.StopWatch;
 import org.hulei.springdata.routingdatasource.core.DataSourceToggleUtil;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +33,7 @@ public class IdGeneratorController implements ApplicationContextAware {
      * 上下文
      */
     ApplicationContext applicationContext;
+
     @Autowired
     private SnowflakeConfig snowflakeConfig;
 
@@ -49,9 +50,6 @@ public class IdGeneratorController implements ApplicationContextAware {
      * 测试线程池
      */
     ThreadPoolExecutor commonPool;
-
-    @Autowired
-    SnowflakeConfig SnowflakeConfig;
 
     @Autowired
     ItemsMapper itemsMapper;
@@ -84,7 +82,7 @@ public class IdGeneratorController implements ApplicationContextAware {
             commonPool.execute(() -> {
                 try {
                     DataSourceToggleUtil.set("first");
-                    itemsMapper.insertItemsAutoKey(ItemDO.builder().itemNo(JMockData.mock(String.class)).build());
+                    itemsMapper.insertItemsAutoKey(Items.builder().itemNo(JMockData.mock(String.class)).build());
                 } finally {
                     count.countDown();
                 }
@@ -103,7 +101,7 @@ public class IdGeneratorController implements ApplicationContextAware {
                     // long snowflakeId = snowflakeConfig.getSnowflake().nextId();
                     // log.info("申请的 id 为: {}", snowflakeId);
                     DataSourceToggleUtil.set("third");
-                    itemsMapper.insertItemsCustomKey(ItemDO.builder().id(snowflakeId).itemNo(JMockData.mock(String.class)).build());
+                    itemsMapper.insertItemsCustomKey(Items.builder().id(snowflakeId).itemNo(JMockData.mock(String.class)).build());
                 } finally {
                     count2.countDown();
                 }
@@ -117,9 +115,9 @@ public class IdGeneratorController implements ApplicationContextAware {
         for (int i = 0; i < 100; i++) {
             commonPool.execute(() -> {
                 try {
-                    List<ItemDO> itemDOS = new ArrayList<>();
+                    List<Items> itemDOS = new ArrayList<>();
                     for (int j = 0; j < 200; j++) {
-                        itemDOS.add(ItemDO.builder().itemNo(JMockData.mock(String.class)).build());
+                        itemDOS.add(Items.builder().itemNo(JMockData.mock(String.class)).build());
                     }
                     DataSourceToggleUtil.set("first");
                     itemsMapper.insertItemsAutoKeyList(itemDOS);
@@ -135,12 +133,12 @@ public class IdGeneratorController implements ApplicationContextAware {
         CountDownLatch count4 = new CountDownLatch(100);
         for (int i = 0; i < 100; i++) {
             try {
-                List<ItemDO> itemDOS = new ArrayList<>();
+                List<Items> itemDOS = new ArrayList<>();
                 DataSourceToggleUtil.set("first");
                 for (int j = 0; j < 200; j++) {
                     long snowflakeId = segmentIdGenerator.getId("test").getId();
                     // long snowflakeId = snowflakeConfig.getSnowflake().nextId();
-                    itemDOS.add(ItemDO.builder().id(snowflakeId).itemNo(JMockData.mock(String.class)).build());
+                    itemDOS.add(Items.builder().id(snowflakeId).itemNo(JMockData.mock(String.class)).build());
                 }
                 DataSourceToggleUtil.set("third");
                 itemsMapper.insertItemsCustomKeyList(itemDOS);

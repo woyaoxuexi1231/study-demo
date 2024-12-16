@@ -1,4 +1,4 @@
-CREATE TABLE `biguser`
+CREATE TABLE big_user
 (
     `id`              bigint(20)   NOT NULL AUTO_INCREMENT COMMENT '主键',
     `user_name`       varchar(255) NOT NULL COMMENT '账号',

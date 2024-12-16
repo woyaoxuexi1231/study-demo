@@ -1,10 +1,8 @@
 package org.hulei.jdk.annotation;
 
-import org.hulei.common.core.annotation.DoneTime;
-
 @SimpleAnnotation
 public class ParentClass {
-    @DoneTime
+    @SimpleAnnotation
     public void someMethod() {
     }
 }

@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class Items {
 
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     @TableField(value = "item_no")
     private String itemNo;

@@ -1,7 +1,7 @@
 package org.hulei.springboot.rabbitmq.spring.consumer.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.hulei.common.mapper.entity.MQIdempotency;
+import org.hulei.eneity.mybatisplus.domain.MQIdempotency;
 
 /**
  * @projectName: study-demo

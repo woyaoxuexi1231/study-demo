@@ -2,9 +2,10 @@ package org.hulei.springboot.rabbitmq.spring.consumer;
 
 import com.alibaba.fastjson.JSONObject;
 import com.rabbitmq.client.Channel;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.common.mapper.entity.ConsumerStatus;
-import org.hulei.common.mapper.entity.MQIdempotency;
+import org.hulei.eneity.mybatisplus.domain.MQIdempotency;
+import org.hulei.springboot.rabbitmq.model.ConsumerStatus;
 import org.hulei.springboot.rabbitmq.spring.consumer.mapper.MQIdempotencyMapper;
 import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;

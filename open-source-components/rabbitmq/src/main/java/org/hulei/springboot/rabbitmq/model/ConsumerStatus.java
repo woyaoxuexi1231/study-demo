@@ -1,4 +1,4 @@
-package org.hulei.springboot.mybatisplus.model;
+package org.hulei.springboot.rabbitmq.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
