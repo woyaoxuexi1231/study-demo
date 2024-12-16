@@ -419,9 +419,12 @@ export KIBANA_HOME=/home/es/es/kibana-8.11.4
 
 case $1 in
         start)
-                #su kibana<<!
+        		# 切换到 es 用户进行启动
+                su es<<!
                 cd $KIBANA_HOME
-                nohup ./bin/kibana -p pid --allow-root &
+                # 如果是 root 用户启动 需要添加 --allow-root 参数才能启动成功
+                # nohup ./bin/kibana -p pid --allow-root &
+                nohup ./bin/kibana -p pid &
                 exit
 !
                 echo "kibana is started"
