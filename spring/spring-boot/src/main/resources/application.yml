@@ -1,4 +1,5 @@
 server:
+  # 0 表示随机端口
   port: 9999
   # ssl:
   #   key-store: classpath:mykeys.jks
@@ -22,6 +23,22 @@ spring:
     livereload:
       enabled: false
       port: 35729
+  mail:
+    host: smtp.qq.com
+    port: 465
+    username: 1244171986@qq.com
+    password: ghehgzvlqptigfjf
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          socketFactory:
+            port: 465
+            class: javax.net.ssl.SSLSocketFactory
+            fallback: false
+
 #  mvc:
 #    view:
 #      prefix: /WEB-INF/jsp/
