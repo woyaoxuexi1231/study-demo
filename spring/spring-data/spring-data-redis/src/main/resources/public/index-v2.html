@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grid Painter</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background-color: #f4f4f4;
+    }
+    .controls {
+      margin-bottom: 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(70, 20px); /* 70 columns of 20px each */
+      grid-template-rows: repeat(40, 20px);   /* 40 rows of 20px each */
+      gap: 0; /* No gap between cells */
+      width: calc(70 * 20px); /* Width to fit 70 columns */
+      height: calc(40 * 20px); /* Height to fit 40 rows */
+      border: 1px solid #ccc;
+    }
+    .cell {
+      width: 20px; /* Each cell is 20px wide */
+      height: 20px; /* Each cell is 20px tall */
+      background-color: #fff;
+      border: 1px solid #ddd; /* Border around each cell */
+      cursor: pointer; /* Change cursor to indicate clickability */
+    }
+    .cell:hover {
+      opacity: 0.8; /* Slightly transparent on hover */
+    }
+  </style>
+</head>
+<body>
+<div class="controls">
+  <label for="colorPicker">Select Color:</label>
+  <select id="colorPicker">
+    <option value="#ff0000">Red</option>
+    <option value="#00ff00">Green</option>
+    <option value="#0000ff">Blue</option>
+    <option value="#ffff00">Yellow</option>
+  </select>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<script>
+  const gridElement = document.getElementById('grid');
+  const colorPicker = document.getElementById('colorPicker');
+
+  // Constants for grid size
+  const numRows = 40;
+  const numCols = 70;
+
+  // Fetch colors from another endpoint and update grid
+  function fetchColors() {
+    fetch('/spring-data-redis/paint/get-colors')
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Failed to fetch colors');
+              }
+              return response.json();
+            })
+            .then(data => {
+              if (data.code === 200 && Array.isArray(data.data)) {
+                data.data.forEach(item => {
+                  const { row, col, color } = item;
+                  const cell = document.querySelector(`.cell[data-row='${row}'][data-col='${col}']`);
+                  if (cell) {
+                    cell.style.backgroundColor = color;
+                  }
+                });
+              } else {
+                console.error('Invalid data format from /get-colors');
+              }
+            })
+            .catch(error => console.error('Error fetching colors:', error));
+  }
+
+  // Create grid cells
+  for (let row = 0; row < numRows; row++) {
+    for (let col = 0; col < numCols; col++) {
+      const cell = document.createElement('div');
+      cell.classList.add('cell');
+      cell.dataset.row = row;
+      cell.dataset.col = col;
+      cell.addEventListener('click', () => handleCellClick(row, col));
+      gridElement.appendChild(cell);
+    }
+  }
+
+  // Handle cell click
+  function handleCellClick(row, col) {
+    const selectedColor = colorPicker.value;
+    console.log(`Cell clicked: Row ${row}, Col ${col}, Color: ${selectedColor}`);
+
+    fetch('/spring-data-redis/paint/draw', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ row, col, color: selectedColor })
+    })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              // return response.json();
+            })
+            .then(data => {
+              // console.log('Response:', data);
+              fetchColors(); // Refresh the grid with the latest colors after clicking
+            })
+            .catch(error => {
+              console.error('There was a problem with the fetch operation:', error);
+            });
+  }
+
+  // Initialize colors
+  fetchColors();
+</script>
+</body>
+</html>

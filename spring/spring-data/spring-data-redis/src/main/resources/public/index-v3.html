@@ -58,7 +58,7 @@
 
     // Fetch colors from another endpoint and update grid
     function fetchColors() {
-        fetch('/paint/get-colors')
+        fetch('/spring-data-redis/paint/get-colors')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Failed to fetch colors');
@@ -98,7 +98,7 @@
         const selectedColor = colorPicker.value;
         console.log(`Cell clicked: Row ${row}, Col ${col}, Color: ${selectedColor}`);
 
-        fetch('/paint/draw', {
+        fetch('/spring-data-redis/paint/draw', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

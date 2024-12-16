@@ -8,3 +8,5 @@ spring:
   servlet:
     multipart.max-file-size: 10MB
     multipart.max-request-size: 10MB
+  application:
+    name: spring-data-redis
