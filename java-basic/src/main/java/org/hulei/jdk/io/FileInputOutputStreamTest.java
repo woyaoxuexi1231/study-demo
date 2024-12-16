@@ -1,4 +1,4 @@
-package org.hulei.jdk.nio;
+package org.hulei.jdk.io;
 
 import com.github.jsonzou.jmockdata.JMockData;
 import lombok.AllArgsConstructor;

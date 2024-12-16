@@ -1,4 +1,4 @@
-package org.hulei.jdk.nio.netty;
+package org.hulei.jdk.io.netty;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;

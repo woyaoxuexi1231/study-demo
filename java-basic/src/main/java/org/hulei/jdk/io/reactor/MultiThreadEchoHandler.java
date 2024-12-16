@@ -1,4 +1,4 @@
-package org.hulei.jdk.nio.reactor;
+package org.hulei.jdk.io.reactor;
 
 import lombok.SneakyThrows;
 import lombok.ToString;
@@ -12,7 +12,6 @@ import java.nio.channels.SocketChannel;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.LockSupport;
 
 /**
  * @author hulei

@@ -1,7 +1,7 @@
 package org.hulei.jdk.jdk.jvm;
 
 import lombok.SneakyThrows;
-import org.hulei.jdk.nio.NIOUtil;
+import org.hulei.jdk.io.NIOUtil;
 
 import java.io.File;
 import java.net.URL;

@@ -1,4 +1,4 @@
-package org.hulei.jdk.nio;
+package org.hulei.jdk.io;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +12,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.locks.LockSupport;
 
 /**
  * @author hulei
