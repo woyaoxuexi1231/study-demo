@@ -10,6 +10,7 @@ import org.hulei.entity.mybatisplus.util.BatchExecutor;
 import org.hulei.springboot.jdbc.transactional.mapper.ProductInfoMapper;
 import org.hulei.springboot.jdbc.transactional.mapper.UserMapper;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,7 +47,11 @@ public class TransactionController {
     final ProductInfoMapper productInfoMapper;
     final ThreadPoolExecutor commonPool;
 
-    public TransactionController(SqlSessionTemplate sqlSessionTemplate, UserMapper userMapperPlus, SubUserService subUserService, ProductInfoMapper productInfoMapper, ThreadPoolExecutor commonPool) {
+    public TransactionController(SqlSessionTemplate sqlSessionTemplate,
+                                 UserMapper userMapperPlus,
+                                 SubUserService subUserService,
+                                 ProductInfoMapper productInfoMapper,
+                                 @Qualifier("commonPool") ThreadPoolExecutor commonPool) {
         this.sqlSessionTemplate = sqlSessionTemplate;
         this.userMapperPlus = userMapperPlus;
         this.subUserService = subUserService;

@@ -2,6 +2,8 @@ package org.hulei.springboot.jdbc.transactional;
 
 import org.hulei.entity.mybatisplus.domain.Employees;
 import org.hulei.springboot.jdbc.transactional.mapper.EmployeesMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,13 +24,20 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class TransactionLostController {
 
     final ThreadPoolExecutor commonPool;
-    final TransactionLostController controller;
     final EmployeesMapper employeesMapper;
 
-    public TransactionLostController(ThreadPoolExecutor commonPool, TransactionLostController controller, EmployeesMapper employeesMapper) {
+    public TransactionLostController(
+            @Qualifier("commonPool") ThreadPoolExecutor commonPool,
+            EmployeesMapper employeesMapper) {
         this.commonPool = commonPool;
-        this.controller = controller;
         this.employeesMapper = employeesMapper;
+    }
+
+    TransactionLostController controller;
+
+    @Autowired
+    public void setController(TransactionLostController controller) {
+        this.controller = controller;
     }
 
     /**
