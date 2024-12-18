@@ -106,3 +106,11 @@ ods dwd dws
 ### 2024-12-07
 
 cloudera manager
+
+
+
+### 2024-12-18
+
+3DES AES Https
+
+jdbc   jdbctemplate
