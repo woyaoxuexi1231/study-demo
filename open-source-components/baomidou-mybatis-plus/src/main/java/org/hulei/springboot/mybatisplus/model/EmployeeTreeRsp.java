@@ -3,7 +3,7 @@ package org.hulei.springboot.mybatisplus.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.hulei.eneity.mybatisplus.domain.Employees;
+import org.hulei.entity.mybatisplus.domain.Employees;
 
 import java.util.List;
 

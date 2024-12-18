@@ -3,7 +3,7 @@ package org.hulei.springboot.mybatisplus.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.ResultHandler;
-import org.hulei.eneity.mybatisplus.domain.Employees;
+import org.hulei.entity.mybatisplus.domain.Employees;
 import org.hulei.springboot.mybatisplus.model.EmployeeTreeRsp;
 import org.hulei.springboot.mybatisplus.model.EmployeeWithCustomersRsp;
 

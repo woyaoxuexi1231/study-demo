@@ -25,6 +25,11 @@
             <version>1.0.0.4-SNAPSHOT</version>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>entity-jpa</artifactId>
+            <version>1.0.0.4-SNAPSHOT</version>
+        </dependency>
 
         <!-- 一些好用的工具包 -->
         <!-- 这里引入是为了写一些工作的便利小工具 -->

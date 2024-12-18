@@ -1,9 +1,9 @@
 package org.hulei.springcloud.client.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.common.core.model.dto.ResultDTO;
-import org.hulei.common.core.model.dto.SimpleReqDTO;
-import org.hulei.common.core.utils.ResultDTOBuild;
+import org.hulei.util.dto.ResultDTO;
+import org.hulei.util.dto.SimpleReqDTO;
+import org.hulei.util.utils.ResultDTOBuild;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

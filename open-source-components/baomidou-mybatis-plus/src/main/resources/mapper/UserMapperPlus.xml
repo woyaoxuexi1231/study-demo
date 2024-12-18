@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="org.hulei.springboot.mybatisplus.mapper.UserMapperPlus">
-    <select id="pageList" resultType="org.hulei.eneity.mybatisplus.domain.User">
+    <select id="pageList" resultType="org.hulei.entity.mybatisplus.domain.User">
         select id, name
         from users
     </select>
@@ -52,7 +52,7 @@
      keyProperty：指定实体类中属性名，用于接收数据库自动生成的主键值。
      keyColumn：指定数据库表中主键列名，用于告知 MyBatis 应该从哪个列获取自动生成的主键值。
      -->
-    <insert id="insertOne" parameterType="org.hulei.eneity.mybatisplus.domain.User" useGeneratedKeys="true"
+    <insert id="insertOne" parameterType="org.hulei.entity.mybatisplus.domain.User" useGeneratedKeys="true"
             keyColumn="id" keyProperty="id">
         insert into users(name)
         values (#{name})

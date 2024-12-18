@@ -25,6 +25,11 @@
         </dependency>
         <dependency>
             <groupId>org.hulei</groupId>
+            <artifactId>entity-mybatis-plus</artifactId>
+            <version>1.0.0.4-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hulei</groupId>
             <artifactId>spring-routing-datasource</artifactId>
             <version>1.0.0.4-SNAPSHOT</version>
         </dependency>

@@ -1,7 +1,6 @@
 package org.hulei.spring.xml.init.listener;
 
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.common.core.annotation.DoneTime;
 import org.springframework.context.ApplicationListener;
 
 /**
@@ -24,7 +23,6 @@ public class SimpleListener implements ApplicationListener<SimpleEvent> {
     这里实现一个简单的事件监听
      */
     @Override
-    @DoneTime
     public void onApplicationEvent(SimpleEvent event) {
         log.info("收到一个spring的监听消息: {}", event.getSource());
     }

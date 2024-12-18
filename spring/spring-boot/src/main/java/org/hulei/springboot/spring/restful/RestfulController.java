@@ -1,6 +1,7 @@
 package org.hulei.springboot.spring.restful;
 
 import lombok.Data;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -92,6 +93,19 @@ public class RestfulController {
     @Data
     static class PostReq {
         String name;
+    }
+
+    @GetMapping("/template-timeout")
+    public void templateTimeout() {
+        log.info("开始调用");
+        Void object = restTemplate.getForObject("http://localhost:9999/restful/sleepForever", Void.class);
+        log.info("调用完毕");
+    }
+
+    @SneakyThrows
+    @GetMapping("/sleepForever")
+    public void sleepForever() {
+        Thread.sleep(Integer.MAX_VALUE);
     }
 
 }

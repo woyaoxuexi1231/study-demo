@@ -10,3 +10,8 @@ out
 **/*.log
 **/*.log.gz
 
+**/node_modules
+/maven-package/release.properties
+/maven-package/src/main/resources/info.json
+/java-ee/spring-boot-vue/spring-boot-vue-server/src/main/resources/public/
+/java-ee/spring-boot-vue/vue2-cli/dist/

@@ -3,8 +3,8 @@ package org.hulei.springboot.mybatisplus.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.hulei.eneity.mybatisplus.domain.OrderDetails;
-import org.hulei.eneity.mybatisplus.domain.Orders;
+import org.hulei.entity.mybatisplus.domain.OrderDetails;
+import org.hulei.entity.mybatisplus.domain.Orders;
 
 import java.util.List;
 

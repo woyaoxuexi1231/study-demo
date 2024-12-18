@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.hulei.springboot.mybatisplus.mapper.BiguserMapper">
-    <resultMap id="BaseResultMap" type="org.hulei.eneity.mybatisplus.domain.BigUser">
+    <resultMap id="BaseResultMap" type="org.hulei.entity.mybatisplus.domain.BigUser">
         <!--@mbg.generated-->
         <!--@Table biguser-->
         <id column="id" jdbcType="BIGINT" property="id"/>
@@ -84,7 +84,7 @@
     </insert>
 
 
-    <select id="fetchSize1Tags" resultType="org.hulei.eneity.mybatisplus.domain.BigUser" fetchSize="1">
+    <select id="fetchSize1Tags" resultType="org.hulei.entity.mybatisplus.domain.BigUser" fetchSize="1">
         select
         <include refid="Base_Column_List">
         </include>
@@ -92,7 +92,7 @@
     </select>
 
 
-    <select id="fetchSize100Tags" resultType="org.hulei.eneity.mybatisplus.domain.BigUser" fetchSize="20000">
+    <select id="fetchSize100Tags" resultType="org.hulei.entity.mybatisplus.domain.BigUser" fetchSize="20000">
         select *
         from biguser
     </select>

@@ -1,7 +1,8 @@
 package org.hulei.jdk.jdbc;
 
+import cn.hutool.core.date.StopWatch;
 import lombok.SneakyThrows;
-import org.hulei.common.core.utils.StopWatch;
+import org.hulei.entity.jpa.pojo.BigUser;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -23,8 +24,8 @@ import java.util.List;
 
 public class SelectModTest {
 
-    public static final String sql100 = "select id, user_name, ssn, name, phone_number, plate, address, building_number, country, birth, company, job, card_number, city, week, email, title, paragraphs, create_time, update_time from biguser limit 0,100";
-    public static final String sql100000 = "select id, user_name, ssn, name, phone_number, plate, address, building_number, country, birth, company, job, card_number, city, week, email, title, paragraphs, create_time, update_time from biguser limit 0,100000";
+    public static final String sql100 = "select id, user_name, ssn, name, phone_number, plate, address, building_number, country, birth, company, job, card_number, city, week, email, title, paragraphs, create_time, update_time from big_user limit 0,100";
+    public static final String sql100000 = "select id, user_name, ssn, name, phone_number, plate, address, building_number, country, birth, company, job, card_number, city, week, email, title, paragraphs, create_time, update_time from big_user limit 0,100000";
 
 
     public static void main(String[] args) {
@@ -118,33 +119,33 @@ public class SelectModTest {
 
     @SneakyThrows
     public static void buildBigUsers(ResultSet resultSet) {
-        List<Biguser> bigusers = new ArrayList<>();
+        List<BigUser> bigUsers = new ArrayList<>();
         while (resultSet.next()) {
-            Biguser biguser = new Biguser();
-            biguser.setId(resultSet.getLong("id"));
-            biguser.setUserName(resultSet.getString("user_name"));
-            biguser.setSsn(resultSet.getString("ssn"));
-            biguser.setName(resultSet.getString("name"));
-            biguser.setPhoneNumber(resultSet.getString("phone_number"));
-            biguser.setPlate(resultSet.getString("plate"));
-            biguser.setAddress(resultSet.getString("address"));
-            biguser.setBuildingNumber(resultSet.getString("building_number"));
-            biguser.setCountry(resultSet.getString("country"));
-            biguser.setBirth(resultSet.getString("birth"));
-            biguser.setCompany(resultSet.getString("company"));
-            biguser.setJob(resultSet.getString("job"));
-            biguser.setCardNumber(resultSet.getString("card_number"));
-            biguser.setCity(resultSet.getString("city"));
-            biguser.setWeek(resultSet.getString("week"));
-            biguser.setEmail(resultSet.getString("email"));
-            biguser.setTitle(resultSet.getString("title"));
-            biguser.setParagraphs(resultSet.getString("paragraphs"));
-            biguser.setParagraphs(resultSet.getString("paragraphs"));
-            biguser.setCreateTime(resultSet.getTime(("create_time")));
-            biguser.setUpdateTime(resultSet.getTime(("update_time")));
-            bigusers.add(biguser);
+            BigUser bigUser = new BigUser();
+            bigUser.setId(resultSet.getLong("id"));
+            bigUser.setUserName(resultSet.getString("user_name"));
+            bigUser.setSsn(resultSet.getString("ssn"));
+            bigUser.setName(resultSet.getString("name"));
+            bigUser.setPhoneNumber(resultSet.getString("phone_number"));
+            bigUser.setPlate(resultSet.getString("plate"));
+            bigUser.setAddress(resultSet.getString("address"));
+            bigUser.setBuildingNumber(resultSet.getString("building_number"));
+            bigUser.setCountry(resultSet.getString("country"));
+            bigUser.setBirth(resultSet.getString("birth"));
+            bigUser.setCompany(resultSet.getString("company"));
+            bigUser.setJob(resultSet.getString("job"));
+            bigUser.setCardNumber(resultSet.getString("card_number"));
+            bigUser.setCity(resultSet.getString("city"));
+            bigUser.setWeek(resultSet.getString("week"));
+            bigUser.setEmail(resultSet.getString("email"));
+            bigUser.setTitle(resultSet.getString("title"));
+            bigUser.setParagraphs(resultSet.getString("paragraphs"));
+            bigUser.setParagraphs(resultSet.getString("paragraphs"));
+            bigUser.setCreateTime(resultSet.getTimestamp(("create_time")).toLocalDateTime());
+            bigUser.setUpdateTime(resultSet.getTimestamp(("update_time")).toLocalDateTime());
+            bigUsers.add(bigUser);
         }
-        System.out.println("查询了" + bigusers.size() + "条数据");
+        System.out.println("查询了" + bigUsers.size() + "条数据");
     }
 
     @SneakyThrows
@@ -153,7 +154,7 @@ public class SelectModTest {
         int pageNum = 0, pageSize = 50000;
         while (true) {
             int count = 0;
-            ResultSet resultSet = statement.executeQuery("select * from biguser limit " + pageNum * pageSize + ","+ pageSize);
+            ResultSet resultSet = statement.executeQuery("select * from big_user limit " + pageNum * pageSize + ","+ pageSize);
             while (resultSet.next()) {
                 count++;
             }
@@ -170,7 +171,7 @@ public class SelectModTest {
         Statement statement = ConnectFactory.getStatement();
         statement.setFetchSize(Integer.MIN_VALUE);
 
-        ResultSet resultSet = statement.executeQuery("select * from biguser");
+        ResultSet resultSet = statement.executeQuery("select * from big_user");
         while (resultSet.next()) {
 
         }

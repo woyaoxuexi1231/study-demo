@@ -1,7 +1,5 @@
 package org.hulei.jdk.annotation;
 
-import org.hulei.common.core.annotation.DoneTime;
-
 import java.lang.reflect.Method;
 
 public class Main {
@@ -10,7 +8,7 @@ public class Main {
 
         // 1. 注解在方法上的继承
         Method method = ChildClass.class.getMethod("someMethod");
-        DoneTime doneTime = method.getAnnotation(DoneTime.class);
+        SimpleAnnotation doneTime = method.getAnnotation(SimpleAnnotation.class);
         System.out.println(doneTime == null ? "方法继承不生效" : "方法继承生效");
 
         // 2. 注解在类上的继承

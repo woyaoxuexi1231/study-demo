@@ -1,7 +1,6 @@
 package org.hulei.springboot.jdbc.transactional;
 
-import lombok.SneakyThrows;
-import org.hulei.eneity.mybatisplus.domain.Employees;
+import org.hulei.entity.mybatisplus.domain.Employees;
 import org.hulei.springboot.jdbc.transactional.mapper.EmployeesMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
