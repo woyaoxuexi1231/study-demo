@@ -26,9 +26,20 @@ public class StreamTest {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
 
         List<String> strings = Arrays.asList("abc", "", "bc", "efg", "abcd", "", "jkl");
+
+        System.out.println(strings.stream().filter(String::isBlank).count());
+
+        /*
+        当 strings.stream() 执行, ArrayList会生成一个 ArrayListSpliterator 的类，这个类实现了Spliterator接口
+         */
         List<String> filtered = strings.stream()
-                .filter(string -> !string.isEmpty())
-                .collect(Collectors.toList());
+                .filter((i)->{
+                    return i.isEmpty();
+                })
+                .map((i)->{
+                    return i.toLowerCase();
+                })
+                .toList();
         System.out.println(strings.stream().filter(string -> !string.isEmpty()).count());
 
         System.out.println(Stream.of(null).count());

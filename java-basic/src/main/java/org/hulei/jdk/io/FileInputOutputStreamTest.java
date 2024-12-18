@@ -97,7 +97,7 @@ public class FileInputOutputStreamTest {
     @SneakyThrows
     private static void fileOutputStream() {
         try (FileOutputStream fos = new FileOutputStream(fileName)) {
-            byte[] bytes = String.valueOf("你").getBytes(StandardCharsets.UTF_8);
+            byte[] bytes = "你".getBytes(StandardCharsets.UTF_8);
             fos.write(bytes);
         }
     }

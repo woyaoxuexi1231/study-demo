@@ -61,7 +61,7 @@ interface PolymorphismInterface {
     /**
      * 现在可以使用 default 关键字在接口中实现一些默认的方法
      */
-    static String s = "a string from a interface";
+    String s = "a string from a interface";
 
     default void defaultMethod() {
         System.out.println("this is a default method from a interface and " + s);

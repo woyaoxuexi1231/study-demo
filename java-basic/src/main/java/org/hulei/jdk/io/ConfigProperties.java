@@ -15,7 +15,7 @@ import java.util.Properties;
 public class ConfigProperties {
 
     private String propertyFileName = "";
-    private Properties properties = new Properties();
+    private final Properties properties = new Properties();
 
 
     public ConfigProperties() {

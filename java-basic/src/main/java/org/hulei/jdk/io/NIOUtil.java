@@ -11,6 +11,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 
 /**
@@ -53,7 +54,7 @@ public class NIOUtil {
         return buffer.remaining();
     }
 
-    private static DecimalFormat fileSizeFormater = decimalFormat(1);
+    private static final DecimalFormat fileSizeFormater = decimalFormat(1);
 
     /**
      * 设置数字格式，保留有效小数位数为fractions
@@ -111,7 +112,7 @@ public class NIOUtil {
         } else {
             path = url.getPath();
         }
-        String decodePath = URLDecoder.decode(path, "UTF-8");
+        String decodePath = URLDecoder.decode(path, StandardCharsets.UTF_8);
         // 如果是 Windows 系统, 路径前缀会有一个 /,这里删除这个无效的 /
         if (JvmUtil.isWin()) {
             return decodePath.substring(1);

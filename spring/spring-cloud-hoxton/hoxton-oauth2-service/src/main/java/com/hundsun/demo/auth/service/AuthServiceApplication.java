@@ -38,7 +38,7 @@ public class AuthServiceApplication {
     @EnableAuthorizationServer
     protected class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdapter {
 
-        private TokenStore tokenStore = new InMemoryTokenStore();
+        private final TokenStore tokenStore = new InMemoryTokenStore();
 
         //JdbcTokenStore tokenStore = new JdbcTokenStore(dataSource);
 

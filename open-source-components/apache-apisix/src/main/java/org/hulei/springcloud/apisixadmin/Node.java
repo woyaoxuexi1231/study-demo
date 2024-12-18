@@ -3,9 +3,9 @@ package org.hulei.springcloud.apisixadmin;
 import java.util.Map;
 
 public class Node {
-    private String host;
-    private int port;
-    private int weight;
+    private final String host;
+    private final int port;
+    private final int weight;
 
     public Node(String host, int port, int weight) {
         this.host = host;

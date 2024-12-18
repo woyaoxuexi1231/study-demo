@@ -46,7 +46,7 @@ public class WrapperedRequest extends HttpServletRequestWrapper {
     @Override
     public ServletInputStream getInputStream() throws IOException {
         return new ServletInputStream() {
-            private InputStream in = new ByteArrayInputStream(
+            private final InputStream in = new ByteArrayInputStream(
                     requestBody.getBytes(req.getCharacterEncoding()));
 
             @Override
