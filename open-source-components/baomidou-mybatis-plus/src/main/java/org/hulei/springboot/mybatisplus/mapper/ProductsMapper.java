@@ -1,7 +1,7 @@
 package org.hulei.springboot.mybatisplus.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.hulei.eneity.mybatisplus.domain.Products;
+import org.hulei.entity.mybatisplus.domain.Products;
 import org.hulei.springboot.mybatisplus.model.ProductFullInfo;
 
 import java.util.List;

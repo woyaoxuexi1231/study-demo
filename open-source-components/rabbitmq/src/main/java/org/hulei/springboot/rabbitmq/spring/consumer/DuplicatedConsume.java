@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rabbitmq.client.Channel;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.eneity.mybatisplus.domain.MQIdempotency;
+import org.hulei.entity.mybatisplus.domain.MQIdempotency;
 import org.hulei.springboot.rabbitmq.model.ConsumerStatus;
 import org.hulei.springboot.rabbitmq.spring.consumer.mapper.MQIdempotencyMapper;
 import org.springframework.amqp.core.Message;

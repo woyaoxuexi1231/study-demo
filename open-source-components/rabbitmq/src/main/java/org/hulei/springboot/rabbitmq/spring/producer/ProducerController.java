@@ -2,7 +2,7 @@ package org.hulei.springboot.rabbitmq.spring.producer;
 
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.eneity.mybatisplus.domain.MQIdempotency;
+import org.hulei.entity.mybatisplus.domain.MQIdempotency;
 import org.hulei.springboot.rabbitmq.basic.config.MQConfig;
 import org.hulei.util.dto.ResultDTO;
 import org.hulei.util.utils.ResultDTOBuild;

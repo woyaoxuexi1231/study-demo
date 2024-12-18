@@ -1,4 +1,4 @@
-package org.hulei.eneity.mybatisplus.domain;
+package org.hulei.entity.mybatisplus.domain;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;

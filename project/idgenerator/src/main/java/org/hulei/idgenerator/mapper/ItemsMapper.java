@@ -2,7 +2,7 @@ package org.hulei.idgenerator.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
-import org.hulei.eneity.mybatisplus.domain.Items;
+import org.hulei.entity.mybatisplus.domain.Items;
 
 import java.util.List;
 

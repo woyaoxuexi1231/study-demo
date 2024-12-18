@@ -3,7 +3,7 @@ package org.hulei.idgenerator;
 import cn.hutool.core.date.StopWatch;
 import com.github.jsonzou.jmockdata.JMockData;
 import lombok.SneakyThrows;
-import org.hulei.eneity.mybatisplus.domain.Items;
+import org.hulei.entity.mybatisplus.domain.Items;
 import org.hulei.idgenerator.mapper.ItemsMapper;
 import org.hulei.idgenerator.segmentid.SegmentIdGenerator;
 import org.hulei.idgenerator.snowflake.SnowflakeConfig;

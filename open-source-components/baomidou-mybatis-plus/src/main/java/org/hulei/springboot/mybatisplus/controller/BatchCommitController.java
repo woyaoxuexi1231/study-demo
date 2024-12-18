@@ -2,8 +2,8 @@ package org.hulei.springboot.mybatisplus.controller;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.eneity.mybatisplus.domain.User;
-import org.hulei.eneity.mybatisplus.util.BatchExecutor;
+import org.hulei.entity.mybatisplus.domain.User;
+import org.hulei.entity.mybatisplus.util.BatchExecutor;
 import org.hulei.springboot.mybatisplus.mapper.UserMapperPlus;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;

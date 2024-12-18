@@ -2,7 +2,7 @@ package org.hulei.springboot.mybatisplus.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
-import org.hulei.eneity.mybatisplus.domain.OrderDetails;
+import org.hulei.entity.mybatisplus.domain.OrderDetails;
 
 import java.util.List;
 

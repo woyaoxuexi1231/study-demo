@@ -1,6 +1,6 @@
 package org.hulei.springboot.jdbc.transactional;
 
-import org.hulei.eneity.mybatisplus.domain.User;
+import org.hulei.entity.mybatisplus.domain.User;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

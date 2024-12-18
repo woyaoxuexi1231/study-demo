@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.hulei.springboot.mybatisplus.mapper.OrdersMapper">
-    <resultMap id="BaseResultMap" type="org.hulei.eneity.mybatisplus.domain.Orders">
+    <resultMap id="BaseResultMap" type="org.hulei.entity.mybatisplus.domain.Orders">
         <!--@mbg.generated-->
         <!--@Table orders-->
         <id column="order_number" jdbcType="INTEGER" property="ordernumber"/>
@@ -17,7 +17,7 @@
         <collection
                 property="details"
                 javaType="java.util.List"
-                ofType="org.hulei.eneity.mybatisplus.domain.Orders"
+                ofType="org.hulei.entity.mybatisplus.domain.Orders"
                 column="order_number"
                 select="org.hulei.common.mapper.mapper.OrderdetailsMapper.selectByOrderId"
         >

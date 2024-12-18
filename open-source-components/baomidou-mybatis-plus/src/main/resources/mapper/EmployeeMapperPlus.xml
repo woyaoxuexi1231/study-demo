@@ -8,7 +8,7 @@
 
     <!-- 描述如何从数据库的结果集中加载对象-->
     <!-- id:当前的映射关系的命名空间 type:映射到的类的全限定类名 autoMapping: 自动将查询结果集映射到Java对象的属性值,这个值默认是开启的 -->
-    <resultMap id="BaseResultMap" type="org.hulei.eneity.mybatisplus.domain.Employees" autoMapping="false">
+    <resultMap id="BaseResultMap" type="org.hulei.entity.mybatisplus.domain.Employees" autoMapping="false">
         <!-- id列被标识为对象的主键 -->
         <!-- column:数据库中的列名, jdbcType: jdbc的类型, property: 映射到列结果的字段或者属性名,也就是Pojo中的属性名 javaType:属性的类型,通常mybatis可以自己推断-->
         <id column="employeeNumber" jdbcType="BIGINT" property="employeeNumber"/>
@@ -76,7 +76,7 @@
          -->
         <collection property="customers"
                     javaType="java.util.List"
-                    ofType="org.hulei.eneity.mybatisplus.domain.Customers"
+                    ofType="org.hulei.entity.mybatisplus.domain.Customers"
                     autoMapping="true"
         >
         </collection>
@@ -211,12 +211,12 @@
         from employees
     </select>
 
-    <select id="mybatisStreamQuery" resultType="org.hulei.eneity.mybatisplus.domain.Employees" fetchSize="-2147483648">
+    <select id="mybatisStreamQuery" resultType="org.hulei.entity.mybatisplus.domain.Employees" fetchSize="-2147483648">
         select *
         from employees
     </select>
 
-    <select id="resultSetOpe" resultType="org.hulei.eneity.mybatisplus.domain.Employees" resultSetType="FORWARD_ONLY">
+    <select id="resultSetOpe" resultType="org.hulei.entity.mybatisplus.domain.Employees" resultSetType="FORWARD_ONLY">
         select *
         from employees
     </select>

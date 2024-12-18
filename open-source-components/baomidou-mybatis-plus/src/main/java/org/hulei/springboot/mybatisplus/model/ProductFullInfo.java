@@ -3,8 +3,8 @@ package org.hulei.springboot.mybatisplus.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.hulei.eneity.mybatisplus.domain.ProductLines;
-import org.hulei.eneity.mybatisplus.domain.Products;
+import org.hulei.entity.mybatisplus.domain.ProductLines;
+import org.hulei.entity.mybatisplus.domain.Products;
 
 /**
  * @author hulei
