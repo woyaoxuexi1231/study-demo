@@ -77,7 +77,7 @@ class CustomJarClassLoader extends URLClassLoader {
      * 此方法在jdk1.2之前就存在,而双亲委派机制在1.2才开始出现
      * 为了兼容之前已经存在的用户自定义的类加载器,Java设计者做出妥协,声明了另一个方法 {@link URLClassLoader#findClass(String)},并且引导用户尽可能地重写这个方法来进行类加载的逻辑
      * 而loadClass这个方法则在 {@link java.lang.ClassLoader} 这个类中实现了双亲委派机制的具体逻辑
-     *
+     * <p>
      * 所以总结: 1.此方法Java不推荐实现,他作为默认的双亲委派机制的实现 2.自定义的类加载行为全部写在findClass内部,在loadClass方法的双亲委派链中会使用findClass来查找类
      * <p>
      * <b>启动类加载器(Bootstrap ClassLoader)</b>

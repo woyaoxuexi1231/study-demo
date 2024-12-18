@@ -28,21 +28,12 @@ public class WrapperedRequest extends HttpServletRequestWrapper {
         this.req = request;
     }
 
-    /**
-     * (non-Javadoc)
-     *
-     * @see javax.servlet.ServletRequestWrapper#getReader()
-     */
+
     @Override
     public BufferedReader getReader() throws IOException {
         return new BufferedReader(new StringReader(requestBody));
     }
 
-    /**
-     * (non-Javadoc)
-     *
-     * @see javax.servlet.ServletRequestWrapper#getInputStream()
-     */
     @Override
     public ServletInputStream getInputStream() throws IOException {
         return new ServletInputStream() {
