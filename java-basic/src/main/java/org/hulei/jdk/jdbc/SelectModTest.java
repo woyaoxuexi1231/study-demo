@@ -2,6 +2,7 @@ package org.hulei.jdk.jdbc;
 
 import cn.hutool.core.date.StopWatch;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.hulei.entity.jpa.pojo.BigUser;
 
 import java.sql.ResultSet;
@@ -22,6 +23,7 @@ import java.util.List;
  * @since 2024/10/8 15:32
  */
 
+@Slf4j
 public class SelectModTest {
 
     public static final String sql100 = "select id, user_name, ssn, name, phone_number, plate, address, building_number, country, birth, company, job, card_number, city, week, email, title, paragraphs, create_time, update_time from big_user limit 0,100";
@@ -29,11 +31,9 @@ public class SelectModTest {
 
 
     public static void main(String[] args) {
-        // normalSelectMod();
-        // streamSelectMod();
-        // cursorSelectMod();
-        // normalSelect();
-        streamSelect();
+        normalSelectMod();
+        streamSelectMod();
+        cursorSelectMod();
     }
 
     /**
@@ -41,85 +41,66 @@ public class SelectModTest {
      * 应用代码简单,数据量小时操作速度快
      * 数据量大时容易导致OOM
      */
-    @SneakyThrows
     public static void normalSelectMod() {
-        Statement statement = ConnectFactory.getStatement();
+        try {
+            Statement statement = ConnectFactory.getStatement();
+            /*
+            查询十万条数据,就显得有点力不从心了, 1.查询时间长 2.消耗内存大
 
-        StopWatch stopWatch = new StopWatch();
-        // 简单的查询100条数据,这是非常快的
-        stopWatch.start("查询100条数据");
-        ResultSet resultSet = statement.executeQuery(sql100);
-        buildBigUsers(resultSet);
-        stopWatch.stop();
-
-        // 查询十万条数据,就显得有点力不从心了, 1.查询时间长 2.消耗内存大
-        // -Xmx10m -Xms10m 这里将导致OOM, 报错 GC overhead limit exceeded
-        stopWatch.start("查询100000条数据");
-        ResultSet resultSet2 = statement.executeQuery(sql100000);
-        buildBigUsers(resultSet2);
-        stopWatch.stop();
-
-        System.out.println(stopWatch.prettyPrint());
+            JDK1.8 -Xmx20m -Xms20m 这里将导致 OOM, 报错 GC overhead limit exceeded
+            JDK17 -Xmx20m -Xms20m java.sql.SQLException: Java heap space
+             */
+            ResultSet resultSet = statement.executeQuery(sql100000);
+            buildBigUsers(resultSet);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
     }
 
-    @SneakyThrows
     public static void streamSelectMod() {
-        Statement statement = ConnectFactory.getConnection().createStatement();
-        // 对于 fetchSize 这个参数来说,jdbc本身想让实现者实现设置拉取数量的这种能力,但是mysql驱动并不支持
-        // 开启mysql的流式查询需要:
-        // 1. statement.setFetchSize(Integer.MIN_VALUE);
-        // 2. ((com.mysql.jdbc.Statement)stat).enableStreamingResults();
-        // 开启后会一行一行的从服务端获取数据,通信开销是比较大的,但是内存问题解决了,即使我们这里设置很小的内存,也不会出现OOM
-        statement.setFetchSize(Integer.MIN_VALUE);
+        try {
+            Statement statement = ConnectFactory.getStatement();
+            /*
+            对于 fetchSize 这个参数来说, jdbc 本身想让实现者实现设置拉取数量的这种能力, 但是 mysql 驱动并不支持
 
-        StopWatch stopWatch = new StopWatch();
-        // 简单的查询100条数据,这是非常快的
-        stopWatch.start("查询100条数据");
-        ResultSet resultSet = statement.executeQuery(sql100);
-        buildBigUsers(resultSet);
-        stopWatch.stop();
+            开启 mysql 的流式查询需要:
+            1. statement.setFetchSize(Integer.MIN_VALUE);
+            2. ((com.mysql.jdbc.Statement)stat).enableStreamingResults();
+            开启后会一行一行的从服务端获取数据,通信开销是比较大的,但是内存问题解决了,即使我们这里设置很小的内存,也不会出现OOM
 
-        // 查询十万条数据,就显得有点力不从心了, 1.查询时间长 2.消耗内存大
-        // -Xmx10m -Xms10m 这里将导致OOM, 报错 GC overhead limit exceeded
-        stopWatch.start("查询100000条数据");
-        ResultSet resultSet2 = statement.executeQuery(sql100000);
-        buildBigUsers(resultSet2);
-        stopWatch.stop();
-
-        System.out.println(stopWatch.prettyPrint());
+            ** 这里需要特别注意的是：如果对于需要把数据全部拿出来再进行处理的场景，游标查询是没有任何用处的。
+            ** 所以游标查询一般要结合 ResultSet 对于数据进行一行一行处理时对于内存消耗是非常小的
+             */
+            statement.setFetchSize(Integer.MIN_VALUE);
+            ((com.mysql.cj.jdbc.JdbcStatement) statement).enableStreamingResults();
+            ResultSet resultSet = statement.executeQuery(sql100000);
+            buildBigUsers(resultSet);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
     }
 
     @SneakyThrows
     public static void cursorSelectMod() {
-        Statement statement = ConnectFactory.getConnection().createStatement();
-        // 游标查询的开启条件:
-        // 1. 设置FetchSize大小
-        // 2. 连接串参数 useCursorFetch=true
-        statement.setFetchSize(20000);
+        try {
+            Statement statement = ConnectFactory.getStatement();
+            /*
+            游标查询的开启条件:
 
-        StopWatch stopWatch = new StopWatch();
-        // 简单的查询100条数据,这是非常快的
-        stopWatch.start("查询100条数据");
-        ResultSet resultSet = statement.executeQuery(sql100);
-        // ConnectFactory.justPrintResultSet(resultSet);
-        buildBigUsers(resultSet);
-        stopWatch.stop();
-
-        // 查询十万条数据,就显得有点力不从心了, 1.查询时间长 2.消耗内存大
-        // -Xmx10m -Xms10m 这里将导致OOM, 报错 GC overhead limit exceeded
-        stopWatch.start("查询100000条数据");
-        ResultSet resultSet2 = statement.executeQuery(sql100000);
-        // ConnectFactory.justPrintResultSet(resultSet2);
-        buildBigUsers(resultSet2);
-        stopWatch.stop();
-
-
-        System.out.println(stopWatch.prettyPrint());
+            1. 设置 FetchSize 大小
+            2. 连接串参数 useCursorFetch=true
+             */
+            statement.setFetchSize(1);
+            ResultSet resultSet = statement.executeQuery(sql100000);
+            buildBigUsers(resultSet);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
     }
 
     @SneakyThrows
     public static void buildBigUsers(ResultSet resultSet) {
-        List<BigUser> bigUsers = new ArrayList<>();
+        int count = 0;
         while (resultSet.next()) {
             BigUser bigUser = new BigUser();
             bigUser.setId(resultSet.getLong("id"));
@@ -143,39 +124,9 @@ public class SelectModTest {
             bigUser.setParagraphs(resultSet.getString("paragraphs"));
             bigUser.setCreateTime(resultSet.getTimestamp(("create_time")).toLocalDateTime());
             bigUser.setUpdateTime(resultSet.getTimestamp(("update_time")).toLocalDateTime());
-            bigUsers.add(bigUser);
+            count++;
         }
-        System.out.println("查询了" + bigUsers.size() + "条数据");
+        System.out.println("查询了" + count + "条数据");
     }
-
-    @SneakyThrows
-    public static void normalSelect() {
-        Statement statement = ConnectFactory.getStatement();
-        int pageNum = 0, pageSize = 50000;
-        while (true) {
-            int count = 0;
-            ResultSet resultSet = statement.executeQuery("select * from big_user limit " + pageNum * pageSize + ","+ pageSize);
-            while (resultSet.next()) {
-                count++;
-            }
-            pageNum++;
-            if (count == 0) {
-                break;
-            }
-        }
-
-    }
-
-    @SneakyThrows
-    public static void streamSelect() {
-        Statement statement = ConnectFactory.getStatement();
-        statement.setFetchSize(Integer.MIN_VALUE);
-
-        ResultSet resultSet = statement.executeQuery("select * from big_user");
-        while (resultSet.next()) {
-
-        }
-    }
-
 
 }
