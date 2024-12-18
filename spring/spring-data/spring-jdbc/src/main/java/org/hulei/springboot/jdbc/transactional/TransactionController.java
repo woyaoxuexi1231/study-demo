@@ -10,7 +10,6 @@ import org.hulei.entity.mybatisplus.util.BatchExecutor;
 import org.hulei.springboot.jdbc.transactional.mapper.ProductInfoMapper;
 import org.hulei.springboot.jdbc.transactional.mapper.UserMapper;
 import org.mybatis.spring.SqlSessionTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,11 +40,19 @@ import java.util.concurrent.ThreadPoolExecutor;
 @RequestMapping("/transactional")
 public class TransactionController {
 
-    @Autowired
-    SqlSessionTemplate sqlSessionTemplate;
+    final SqlSessionTemplate sqlSessionTemplate;
+    final UserMapper userMapperPlus;
+    final SubUserService subUserService;
+    final ProductInfoMapper productInfoMapper;
+    final ThreadPoolExecutor commonPool;
 
-    @Autowired
-    UserMapper userMapperPlus;
+    public TransactionController(SqlSessionTemplate sqlSessionTemplate, UserMapper userMapperPlus, SubUserService subUserService, ProductInfoMapper productInfoMapper, ThreadPoolExecutor commonPool) {
+        this.sqlSessionTemplate = sqlSessionTemplate;
+        this.userMapperPlus = userMapperPlus;
+        this.subUserService = subUserService;
+        this.productInfoMapper = productInfoMapper;
+        this.commonPool = commonPool;
+    }
 
     @Transactional
     public void sqlSessionTransaction() {
@@ -126,8 +133,6 @@ public class TransactionController {
          */
     }
 
-    @Autowired
-    SubUserService subUserService;
 
     /**
      * 测试 @Transactional 注解的继承问题
@@ -137,11 +142,6 @@ public class TransactionController {
         subUserService.save(new User("hulei"));
     }
 
-    @Autowired
-    ProductInfoMapper productInfoMapper;
-
-    @Autowired
-    ThreadPoolExecutor commonPool;
 
     public void deadLock() {
         /*

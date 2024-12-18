@@ -2,7 +2,6 @@ package org.hulei.springboot.jdbc.transactional;
 
 import org.hulei.entity.mybatisplus.domain.Employees;
 import org.hulei.springboot.jdbc.transactional.mapper.EmployeesMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,17 +18,18 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 @SuppressWarnings("CallToPrintStackTrace")
 @RestController
-@RequestMapping("/spring_transactionlost")
+@RequestMapping("/spring-transaction-lost")
 public class TransactionLostController {
 
-    @Autowired
-    ThreadPoolExecutor commonPool;
+    final ThreadPoolExecutor commonPool;
+    final TransactionLostController controller;
+    final EmployeesMapper employeesMapper;
 
-    @Autowired
-    TransactionLostController controller;
-
-    @Autowired
-    EmployeesMapper employeesMapper;
+    public TransactionLostController(ThreadPoolExecutor commonPool, TransactionLostController controller, EmployeesMapper employeesMapper) {
+        this.commonPool = commonPool;
+        this.controller = controller;
+        this.employeesMapper = employeesMapper;
+    }
 
     /**
      * 类没有在 spring 的 IOC 容器中,这样 spring 无法生成事务管理的代理对象, 也就失效了: 可能类是 new 出来的, 没有使用 bean 声明
