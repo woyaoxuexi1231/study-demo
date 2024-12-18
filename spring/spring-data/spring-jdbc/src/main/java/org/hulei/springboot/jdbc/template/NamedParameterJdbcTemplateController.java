@@ -1,7 +1,6 @@
-package org.hulei.springboot.jdbc;
+package org.hulei.springboot.jdbc.template;
 
 import org.hulei.entity.mybatisplus.domain.Employees;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -17,10 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class NamedParameterJdbcTemplateController {
 
     /**
-     * 相较于jdbctemplate,他允许使用命名参数,jdbctemplate只能使用?作为占位符. 使用命名参数可读性和可维护性要强得多
+     * NamedParameterJdbcTemplate 是对 JdbcTemplate 的扩展
+     * 支持使用命名参数而不是传统的 ? 占位符。这使得 SQL 语句更具可读性，特别是在需要大量参数时。
      */
-    @Autowired
-    NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    public NamedParameterJdbcTemplateController(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+    }
 
     @GetMapping("/selectEmployees")
     public void selectEmployees() {
@@ -31,7 +34,9 @@ public class NamedParameterJdbcTemplateController {
         parameters.addValue("name", "Patterson");  // 设置参数的值
 
         namedParameterJdbcTemplate
-                .query(sql, parameters, BeanPropertyRowMapper.newInstance(Employees.class))
+                .query(sql,
+                        parameters,
+                        BeanPropertyRowMapper.newInstance(Employees.class))
                 .forEach(System.out::println);
     }
 }
