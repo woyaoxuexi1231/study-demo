@@ -2,9 +2,12 @@ package org.hulei.springboot.jdbc.template;
 
 import com.github.jsonzou.jmockdata.JMockData;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.hulei.entity.mybatisplus.domain.Employees;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Optional;
@@ -72,7 +76,7 @@ public class JdbcTemplateController {
         log.info("数据插入成功, 返回的id为: {}", generatedId);
     }
 
-    @GetMapping("/wildcard")
+    @RequestMapping("/wildcard")
     public void wildcard() {
         /*
         JdbcTemplate 内部使用了 PreparedStatement 来执行查询和更新操作，PreparedStatement 通过将参数值与 SQL 语句分离来防止 SQL 注入攻击。
@@ -91,7 +95,7 @@ public class JdbcTemplateController {
         ).forEach(entity -> log.info("{}", entity));
     }
 
-    @GetMapping("/rowMapper")
+    @RequestMapping("/rowMapper")
     public void rowMapper() {
 
         /*
@@ -121,5 +125,32 @@ public class JdbcTemplateController {
                         "select * from employees e where e.employee_number = 1002",
                         (RowMapper<Object>) (rs, rowNum) -> rs.getString("last_name"))
                 .forEach(entity -> log.info("custom lambda : {}", entity));
+    }
+
+    @RequestMapping("/execute")
+    public void execute() {
+
+        // execute 用于执行任意的 SQL 语句，通常用于复杂的操作或 DDL（数据定义语言）语句。
+        Object execute = jdbcTemplate.execute(
+                "select * from employees e where e.employee_number = ?",
+                /*
+                PreparedStatementCallback 是 Spring 框架中的一个接口，用于执行 SQL 语句并处理 PreparedStatement 的回调
+                可以定义如何使用 PreparedStatement 执行 SQL 语句，这包括设置参数、执行查询或更新操作，以及处理结果。
+                 */
+                (PreparedStatementCallback<Object>) ps -> {
+                    // 这里你可以设置 PreparedStatement 的参数
+                    ps.setInt(1, 1002);
+
+                    // 执行查询或更新，并处理结果
+                    ResultSet rs = ps.executeQuery();
+                    String name = null;
+                    if (rs.next()) {
+                        // 处理结果集，假设返回一个对象
+                        name = rs.getString("last_name") + "-" + rs.getString("first_name");
+                    }
+                    return name;
+                }
+        );
+        log.info("PreparedStatementCallback result: {}", execute);
     }
 }

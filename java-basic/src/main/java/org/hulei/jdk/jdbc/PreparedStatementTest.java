@@ -7,6 +7,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
+ * PreparedStatement 是 JDBC 中用于执行预编译 SQL 语句的接口。
+ * <p>
+ * 1. 性能提升：预编译的 SQL 语句可以在执行前进行一次编译，这样多次执行相同的 SQL 语句时就不需要重复编译，从而提高了执行速度。
+ * 2. 安全性：通过使用 PreparedStatement，可以防止 SQL 注入攻击。用户输入的数据会被自动转义，确保安全。
+ * 3. 可读性和维护性：预编译的 SQL 语句可以使用占位符，使代码更清晰、更易于维护。
+ *
  * @author hulei
  * @since 2024/9/28 23:29
  */
