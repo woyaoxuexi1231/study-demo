@@ -31,7 +31,7 @@ public class PreparedStatementTest {
 
     static {
         try {
-            queryPS = ConnectFactory.getConnection().prepareStatement("select * from users where id = ?");
+            queryPS = ConnectFactory.getConnection().prepareStatement("select * from users where name = ?");
             updatePS = ConnectFactory.getConnection().prepareStatement("update users set name = ? where id = ?");
             // PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability)
         } catch (SQLException e) {
@@ -41,9 +41,15 @@ public class PreparedStatementTest {
 
     @SneakyThrows
     public static void main(String[] args) {
-        queryPS.setInt(1, 1);
+
+        /*
+        PreparedStatement 之所以是安全的，可以在这些 setXXX 方法中找到答案
+        拿 setString 举例子，在 mysql的启动实现类 ClientPreparedStatement 这个类使用 com.mysql.cj.ClientPreparedQueryBindings.setString 这个方法进行转义操作
+         */
+
+        queryPS.setString(1, "zhangsan");
         ResultSet resultSet = queryPS.executeQuery();
-        CommonUtil.prettyPrintResultSet(resultSet);
+        CommonUtil.simplePrintResultSet(resultSet);
 
         updatePS.setString(1, "psUpdate");
         updatePS.setInt(2, 1);

@@ -38,18 +38,42 @@ public class ConnectFactory {
             数据库连接信息,jdbc使用一种与普通URL相似的语法来描述数据库,不同的数据库有不同的连接标准
             useUnicode=true 指定是否使用 Unicode 字符编码。true 表示使用 Unicode 字符编码，以确保正确处理多语言字符。
             characterEncoding=UTF-8 指定字符编码为 UTF-8。UTF-8 是一种常用的字符编码，能够表示几乎所有的文字和符号。
-            zeroDateTimeBehavior=convertToNull 指定如何处理 0000-00-00 00:00:00 这样的零日期时间值。convertToNull 表示将这些零日期时间值转换为 null。这是因为在某些 SQL 模式下，0000-00-00 00:00:00 不是有效的时间。
-            serverTimezone=Asia/Shanghai 指定数据库服务器的时区。Asia/Shanghai 表示上海时区。设置正确的时区可以避免时区差异导致的时间错误。
-            logger=com.mysql.cj.log.StandardLogger&profileSQL=true 可以打印 jdbc 的操作日志和sql日志
-            profileSQL=true 启用 SQL 语句的性能分析。true 表示启用，这会在日志中记录 SQL 语句的执行时间和其他性能相关信息，便于优化和调试。
-            allowMultiQueries=true 参数设置后允许在 execute 中执行多条语句
-            useCursorFetch=true 允许游标查询设置fetchSize的大小
+            zeroDateTimeBehavior=convertToNull
+            serverTimezone=Asia/Shanghai
+            logger=com.mysql.cj.log.StandardLogger
+            profileSQL=true
+            allowMultiQueries=true
+            useCursorFetch=true
              */
-            String url = "jdbc:mysql://192.168.3.101:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&logger=com.mysql.cj.log.StandardLogger&profileSQL=true&allowMultiQueries=true&useCursorFetch=true";
+            @SuppressWarnings("StringBufferReplaceableByString")
+            StringBuilder url = new StringBuilder("jdbc:mysql://192.168.3.101:3306/test?useUnicode=true&characterEncoding=UTF-8");
+            // 指定如何处理 0000-00-00 00:00:00 这样的零日期时间值。convertToNull 表示将这些零日期时间值转换为 null。这是因为在某些 SQL 模式下，0000-00-00 00:00:00 不是有效的时间。
+            url.append("&zeroDateTimeBehavior=convertToNull");
+            // 指定数据库服务器的时区。Asia/Shanghai 表示上海时区。设置正确的时区可以避免时区差异导致的时间错误。
+            url.append("&serverTimezone=Asia/Shanghai");
+            // 可以打印 jdbc 的操作日志和sql日志
+            url.append("&logger=com.mysql.cj.log.StandardLogger");
+            // 启用 SQL 语句的性能分析。true 表示启用，这会在日志中记录 SQL 语句的执行时间和其他性能相关信息，便于优化和调试。
+            url.append("&profileSQL=true");
+            // 参数设置后允许在 execute 中执行多条语句
+            url.append("&allowMultiQueries=true");
+            // 允许游标查询设置fetchSize的大小
+            url.append("&useCursorFetch=true");
+            /*
+            配置是否使用 com.mysql.cj.jdbc.ServerPreparedStatement，即预编译和转义在服务器进行。
+            这里我配置了很久，发现false不生效，最后在源码的 com.mysql.cj.jdbc.JdbcPropertySetImpl.postInitialization 这个方法内找到了
+
+            if (getBooleanProperty(PropertyKey.useCursorFetch).getValue()) {
+                // assume server-side prepared statements are wanted because they're required for this functionality
+                super.<Boolean>getProperty(PropertyKey.useServerPrepStmts).setValue(true);
+            }
+            TODO 开启游标查询之后，不管这个参数配置成什么，都必须使用 useServerPrepStmts=true
+             */
+            url.append("&useServerPrepStmts=false");
             String username = "root";
             String password = "123456";
             // 连接数据库
-            connection = DriverManager.getConnection(url, username, password);
+            connection = DriverManager.getConnection(url.toString(), username, password);
             // 关闭事务的自动提交
             connection.setAutoCommit(false);
             /*
