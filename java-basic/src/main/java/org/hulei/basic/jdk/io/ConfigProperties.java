@@ -1,0 +1,105 @@
+package org.hulei.basic.jdk.io;
+
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Properties;
+
+
+@SuppressWarnings("CallToPrintStackTrace")
+public class ConfigProperties {
+
+    private String propertyFileName = "";
+    private final Properties properties = new Properties();
+
+
+    public ConfigProperties() {
+
+    }
+
+    public ConfigProperties(String fileName) {
+        this.propertyFileName = fileName;
+    }
+
+    protected void loadFromFile() {
+        InputStream in = null;
+        InputStreamReader ireader = null;
+
+        try {
+
+            ClassLoader loader = ConfigProperties.class.getClassLoader();
+            in = loader.getResourceAsStream(propertyFileName);
+
+            if (null != in) {
+                ireader = new InputStreamReader(in, StandardCharsets.UTF_8);
+            } else {
+                String filePath = NIOUtil.getResourcePath(propertyFileName);
+                in = Files.newInputStream(Paths.get(filePath));
+                //解决读非UTF-8编码的配置文件时，出现的中文乱码问题
+                ireader = new InputStreamReader(in, StandardCharsets.UTF_8);
+            }
+            properties.load(ireader);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 按key获取值
+     *
+     * @param key
+     * @return
+     */
+    public String readProperty(String key) {
+        String value = "";
+
+        value = properties.getProperty(key);
+
+        return value;
+    }
+
+
+    public String getValue(String key) {
+
+        return readProperty(key);
+
+    }
+
+    public int getIntValue(String key) {
+
+        return Integer.parseInt((readProperty(key)));
+
+    }
+
+    public static ConfigProperties loadFromFile(Class aClass)
+            throws IllegalAccessException {
+
+        ConfigProperties propertiesUtil = null;
+
+
+        return propertiesUtil;
+    }
+
+    public static void loadAnnotations(Class aClass) {
+
+        ConfigProperties configProperties = null;
+        try {
+            configProperties = loadFromFile(aClass);
+
+
+            if (null == configProperties) return;
+
+            Field[] fields = aClass.getDeclaredFields();
+
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+}
