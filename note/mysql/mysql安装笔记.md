@@ -176,7 +176,7 @@ A:
 
 ```bash
 # 创建存储目录，日志目录，配置文件目录
-mkdir -p /home/mysql/{conf,data,log,run,binlog,mysql-files} 
+mkdir -p /home/mysql/{conf,data,log,binlog,mysql-files} 
 ```
 
 
@@ -185,16 +185,38 @@ mkdir -p /home/mysql/{conf,data,log,run,binlog,mysql-files}
 
 ```cnf
 [mysqld]
-datadir=/home/mysql/data
+# basedir 参数指定 MySQL 安装目录的路径。这个目录包含 MySQL 的二进制文件、库文件、配置文件等。
+# 默认位置 通常在 /usr 或 /usr/local/mysql 下。
 basedir=/home/mysql
+# datadir 参数指定 MySQL 数据库文件存储的目录。这个目录包含所有的数据库文件、表空间文件、二进制日志文件等。
+# Linux：通常在 /var/lib/mysql 下。
+datadir=/home/mysql/data
+
+
+# 
+# slow-query-log-file=/home/mysql/log/slow.log
+
+# 错误日志配置写入文件后，就不会在控制台输出了，这样docker logs就看不到了, 默认是 stderr
+# log-error=/var/log/mysql/error.log
+
+# 在 MySQL 配置文件中，pid-file 参数指定了 MySQL 服务器进程的 PID（Process ID）文件的位置。PID 文件包含了 MySQL 服务器进程的 ID，用于管理和跟踪 MySQL 服务器的进程状态，例如启动、停止和重启操作。
+# 在一些 Linux 发行版中，默认位置是 /var/run/mysqld/mysqld.pid
+# pid-file=/home/mysql/run/mysqld.pid
+
+# innodb_directories 参数允许指定多个目录，用于 InnoDB 表空间文件的存储位置。这个参数可以用于将表空间文件存储在不同的磁盘或分区上，以提高性能和管理效率。
+# innodb_directories 没有默认值，需要在 MySQL 配置文件中显式设置。如果没有设置此参数，InnoDB 表空间文件将存储在 MySQL 数据目录中。
+# innodb_directories=/home/mysql/data
+
+# log-bin 参数用于启用 MySQL 的二进制日志功能，并指定二进制日志文件的基本文件名和存储位置。二进制日志记录了所有更改数据库的操作，对于复制（replication）和数据恢复非常重要。
+# 如果没有显式设置 log-bin 参数，二进制日志文件将存储在 MySQL 数据目录中，并以主机名为文件名前缀。
+# log-bin=/home/mysql/binlog/mysql-bin
+
 
 user=mysql
 port=3306
 server-id=1
 character-set-server=utf-8
 explicit_defaults_for_timestamp=true
-log-error=/home/mysql/log/error.log
-pid-file=/home/mysql/run/mysqld.pid
 max_connections=4000
 
 # see configurations
@@ -217,7 +239,6 @@ wait_timeout=28800
 skip-name-resolve
 log_bin_trust_function_creators=true
 innodb_strict_mode=true
-innodb_directories=/home/mysql/data
 character-set-server=utf8mb4
 collation_server=utf8mb4_bin
 autocommit=1
@@ -228,7 +249,6 @@ innodb-status-file=TRUE
 default-storage-engine=InnoDB
 innodb_fast_shutdown=0
 binlog_format=row
-log-bin=/home/mysql/binlog/mysql-bin
 log_timestamps=System
 binlog_checksum=NONE
 binlog_row_image=full
@@ -245,7 +265,6 @@ open-files-limit=65535
 innodb_open_files=65535
 log-output=FILE
 slow-query-log
-slow-query-log-file=/home/mysql/log/slow.log
 group_concat_max_len=102400
 innodb_purge_threads=4
 join_buffer_size=134217728
@@ -257,16 +276,6 @@ innodb_flush_method=O_DIRECT
 innodb_flush_log_at_trx_commit=1
 sync_binlog=1
 create_admin_listener_thread=ON
-
-[mysqld]
-socket=/home/mysql/run/mysql.sock
-
-[mysqld_safe]
-log-error=/home/mysql/log/error.log
-socket=/home/mysql/run/mysql.sock
-
-[client]
-socket=/home/mysql/run/mysql.sock
 ```
 
 
