@@ -71,13 +71,6 @@ end
 
 function _M.incoming(self, key, commit, conf, cost)
     -- 调用 resty.limit.count 的 incoming 方法
-    -- 入参:
-    --  key - 限流的唯一标识，例如客户端 IP 或上下文变量。
-    --  commit：是否立即提交计数（true 提交，false 仅测试）。
-    --  cost：每次访问消耗的计数，默认为 1。
-    -- 返回值:
-    --  delay：延迟时间，通常为 0（在计数器限流中意义不大）。
-    --
     local delay, remaining = self.limit_count:incoming(key, commit, cost)
     local reset
 

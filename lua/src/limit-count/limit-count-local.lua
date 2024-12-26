@@ -53,6 +53,11 @@ local function read_reset(self, key)
 end
 
 function _M.new(plugin_name, limit, window)
+
+    core.log.warn("limit-count-local-init: plugin_name ", plugin_name)
+    core.log.warn("limit-count-local-init: limit ", limit)
+    core.log.warn("limit-count-local-init: window ", window)
+
     assert(limit > 0 and window > 0)
 
     local self = {

@@ -45,13 +45,13 @@ local group_conf_lru = core.lrucache.new({
 local schema = {
     type = "object",
     properties = {
-        count = {type = "integer", exclusiveMinimum = 0},
-        time_window = {type = "integer",  exclusiveMinimum = 0},
-        group = {type = "string"},
-        key = {type = "string", default = "remote_addr"},
-        key_type = {type = "string",
-            enum = {"var", "var_combination", "constant"},
-            default = "var",
+        count = { type = "integer", exclusiveMinimum = 0 },
+        time_window = { type = "integer", exclusiveMinimum = 0 },
+        group = { type = "string" },
+        key = { type = "string", default = "remote_addr" },
+        key_type = { type = "string",
+                     enum = { "var", "var_combination", "constant" },
+                     default = "var",
         },
         rejected_code = {
             type = "integer", minimum = 200, maximum = 599, default = 503
@@ -61,17 +61,17 @@ local schema = {
         },
         policy = {
             type = "string",
-            enum = {"local", "redis", "redis-cluster"},
+            enum = { "local", "redis", "redis-cluster" },
             default = "local",
         },
-        allow_degradation = {type = "boolean", default = false},
-        show_limit_quota_header = {type = "boolean", default = true}
+        allow_degradation = { type = "boolean", default = false },
+        show_limit_quota_header = { type = "boolean", default = true }
     },
-    required = {"count", "time_window"},
+    required = { "count", "time_window" },
     ["if"] = {
         properties = {
             policy = {
-                enum = {"redis"},
+                enum = { "redis" },
             },
         },
     },
@@ -80,7 +80,7 @@ local schema = {
         ["if"] = {
             properties = {
                 policy = {
-                    enum = {"redis-cluster"},
+                    enum = { "redis-cluster" },
                 },
             },
         },
@@ -94,11 +94,9 @@ local _M = {
     schema = schema
 }
 
-
 local function group_conf(conf)
     return conf
 end
-
 
 function _M.check_schema(conf)
     local ok, err = core.schema.check(schema, conf)
@@ -131,9 +129,9 @@ function _M.check_schema(conf)
         for _, field in ipairs(fields) do
             if not core.table.deep_eq(prev_conf[field], conf[field]) then
                 core.log.error("previous limit-conn group ", prev_conf.group,
-                            " conf: ", core.json.encode(prev_conf))
+                        " conf: ", core.json.encode(prev_conf))
                 core.log.error("current limit-conn group ", conf.group,
-                            " conf: ", core.json.encode(conf))
+                        " conf: ", core.json.encode(conf))
                 return false, "group conf mismatched"
             end
         end
@@ -142,28 +140,26 @@ function _M.check_schema(conf)
     return true
 end
 
-
 local function create_limit_obj(conf, plugin_name)
     core.log.info("create new " .. plugin_name .. " plugin instance")
 
     if not conf.policy or conf.policy == "local" then
         return limit_local_new("plugin-" .. plugin_name, conf.count,
-                               conf.time_window)
+                conf.time_window)
     end
 
     if conf.policy == "redis" then
         return limit_redis_new("plugin-" .. plugin_name,
-                               conf.count, conf.time_window, conf)
+                conf.count, conf.time_window, conf)
     end
 
     if conf.policy == "redis-cluster" then
         return limit_redis_cluster_new("plugin-" .. plugin_name, conf.count,
-                                       conf.time_window, conf)
+                conf.time_window, conf)
     end
 
     return nil
 end
-
 
 local function gen_limit_key(conf, ctx, key)
     if conf.group then
@@ -177,7 +173,7 @@ local function gen_limit_key(conf, ctx, key)
     local conf_type = ctx.conf_type_without_consumer or ctx.conf_type
     local conf_id = ctx.conf_id_without_consumer or ctx.conf_id
     local new_key = conf_type .. conf_id .. ':' .. apisix_plugin.conf_version(conf)
-                    .. ':' .. key
+            .. ':' .. key
     if conf._vid then
         -- conf has _vid means it's from workflow plugin, add _vid to the key
         -- so that the counter is unique per action.
@@ -187,11 +183,17 @@ local function gen_limit_key(conf, ctx, key)
     return new_key
 end
 
-
 local function gen_limit_obj(conf, ctx, plugin_name)
+
+    core.log.warn("limit-count: conf.group: ", conf.group)
+
     if conf.group then
         return lrucache(conf.group, "", create_limit_obj, conf, plugin_name)
     end
+
+    core.log.warn("limit-count: plugin_name: ", plugin_name)
+    core.log.warn("limit-count: conf._vid: ", conf._vid)
+    core.log.warn("limit-count: conf.policy: ", conf.policy)
 
     local extra_key
     if conf._vid then
@@ -200,17 +202,31 @@ local function gen_limit_obj(conf, ctx, plugin_name)
         extra_key = conf.policy
     end
 
+    core.log.warn("limit-count: extra_key: ", extra_key)
+
+    -- core.lrucache.plugin_ctx 函数会根据传入的键 extra_key 在 lrucache 中查找相应的缓存对象。
+    -- 如果缓存中已经存在，则直接返回缓存的对象。
+    -- 如果缓存中不存在，则调用 create_limit_obj 函数创建新的对象，并将其存入缓存。
+    -- lrucache： 这是之前创建的 LRU 缓存对象，用于存储和复用计算结果。
+    -- ctx： 这是插件的上下文对象，包含请求的相关信息。
+    -- extra_key：这是用于缓存的键，确保缓存项的唯一性。extra_key 是根据策略（policy）和可选的 _vid 生成的。
+    -- create_limit_obj：这是一个函数，负责创建限流对象。如果缓存中没有找到相应的对象，会调用这个函数来创建。
+    -- conf：插件的配置对象，包含限流的具体设置。
+    -- plugin_name：插件的名称，作为创建限流对象的标识。
     return core.lrucache.plugin_ctx(lrucache, ctx, extra_key, create_limit_obj, conf, plugin_name)
 end
 
 function _M.rate_limit(conf, ctx, name, cost)
 
-    core.log.info("limit-count: conf: ", conf)
-    core.log.info("limit-count: ctx: ", ctx)
-    core.log.info("limit-count: name: ", name)
-    core.log.info("limit-count: cost: ", cost)
+    --core.log.info("limit-count-log: conf: ", conf)
+    --core.log.warn("limit-count-log: ctx: ", ctx)
+    --core.log.warn("limit-count-log: name: ", )
+    core.log.warn("limit-count-log: name: ", name)
+    core.log.warn("limit-count-log: cost: ", cost)
 
     local lim, err = gen_limit_obj(conf, ctx, name)
+
+    --core.log.warn("limit-count-log: lim: ", lim)
 
     if not lim then
         core.log.error("failed to fetch limit.count object: ", err)
@@ -245,7 +261,7 @@ function _M.rate_limit(conf, ctx, name, cost)
     end
 
     key = gen_limit_key(conf, ctx, key)
-    core.log.info("limit key: ", key)
+    core.log.warn("limit-count-log: limit key: ", key)
 
     local delay, remaining, reset
     if not conf.policy or conf.policy == "local" then
@@ -260,8 +276,8 @@ function _M.rate_limit(conf, ctx, name, cost)
             -- show count limit header when rejected
             if conf.show_limit_quota_header then
                 core.response.set_header("X-RateLimit-Limit", conf.count,
-                    "X-RateLimit-Remaining", 0,
-                    "X-RateLimit-Reset", reset)
+                        "X-RateLimit-Remaining", 0,
+                        "X-RateLimit-Reset", reset)
             end
 
             if conf.rejected_msg then
@@ -274,15 +290,14 @@ function _M.rate_limit(conf, ctx, name, cost)
         if conf.allow_degradation then
             return
         end
-        return 500, {error_msg = "failed to limit count"}
+        return 500, { error_msg = "failed to limit count" }
     end
 
     if conf.show_limit_quota_header then
         core.response.set_header("X-RateLimit-Limit", conf.count,
-            "X-RateLimit-Remaining", remaining,
-            "X-RateLimit-Reset", reset)
+                "X-RateLimit-Remaining", remaining,
+                "X-RateLimit-Reset", reset)
     end
 end
-
 
 return _M

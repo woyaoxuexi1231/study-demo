@@ -35,14 +35,24 @@ local group_conf_lru = core.lrucache.new({
     type = 'plugin',
 })
 
+-- 定义插件参数的 schema
 local schema = {
     type = "object",
     properties = {
-        name = {type = "string", minLength = 1},
-        count = {type = "integer", minimum = 1},
-        time = {type = "integer", minimum = 1},
+        data = {
+            type = "array",
+            items = {
+                type = "object",
+                properties = {
+                    count = {type = "integer", minimum = 1},
+                    name = {type = "string", minLength = 1},
+                    time = {type = "integer", minimum = 1},
+                },
+                required = {"count", "name", "time"}
+            }
+        }
     },
-    required = {"name", "count", "time"}
+    required = {"data"}
 }
 
 local schema_copy = core.table.deepcopy(schema)
