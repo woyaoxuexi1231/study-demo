@@ -8,6 +8,7 @@ curl -i "http://127.0.0.1:9180/apisix/admin/routes" \
 -H "X-API-Key: edd1c9f034335f136f87ad84b625c8f1" \
 -d '{
   "id": "getting-started-ip",
+  "name": "getting-started-ip"
   "uri": "/ip",
   "upstream": {
     "type": "roundrobin",
