@@ -11,9 +11,11 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -152,6 +154,21 @@ public class SpringbootApplication implements ApplicationRunner {
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
+    }
+
+
+    @Bean
+    public ThreadPoolTaskExecutor commonTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(5);
+        executor.setMaxPoolSize(5);
+        // executor.setQueueCapacity(this.commonTaskExecutorProperties.getQueueCapacity());
+        // executor.setThreadNamePrefix(this.commonTaskExecutorProperties.getThreadNamePrefix());
+        // executor.setAllowCoreThreadTimeOut(this.commonTaskExecutorProperties.getAllowCoreThreadTimeout());
+        // executor.setKeepAliveSeconds((int)this.commonTaskExecutorProperties.getKeepAliveSeconds().getSeconds());
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        executor.initialize();
+        return executor;
     }
 
     @PostMapping("/change")
