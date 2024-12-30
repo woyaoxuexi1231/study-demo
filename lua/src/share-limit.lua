@@ -12,10 +12,11 @@ local http = require("socket.http")
 
 local ngx = ngx
 local ngx_time = ngx.time
+local ngx_today = ngx.today
 local ipairs = ipairs
 local setmetatable = setmetatable
 
-local plugin_name = "custom-limit"
+local plugin_name = "share-limit"
 
 -- 创建一个新的 LRU（Least Recently Used）缓存对象，主要用于插件中的数据缓存和管理。
 local lrucache = core.lrucache.new({
@@ -58,6 +59,11 @@ local function read_reset(self, id_number, key)
     return reset
 end
 
+local function get_today_date()
+    -- 获取当前的日期字符串，格式为 YYYY-MM-DD
+    return ngx_today()
+end
+
 -- 根据用户的统一认证号和上下文信息生成一个特定的 key
 local function gen_limit_key(id_number, conf, ctx)
 
@@ -74,7 +80,7 @@ local function gen_limit_key(id_number, conf, ctx)
     return new_key
 end
 
-local function create_new(id_number, count, daily_visited_num, conf, ctx)
+local function create_new(id_number, visited_freq, daily_visited_num, conf, ctx)
 
     local self = {
         -- 具体的插件配置项，这个内部会保存一个 OpenResty 的限流器，以及对应的各项限流参数
@@ -83,29 +89,28 @@ local function create_new(id_number, count, daily_visited_num, conf, ctx)
 
     local key = gen_limit_key(id_number, conf, ctx)
 
-    core.log.warn("custom-limit-plugin initialing: id_number: ", id_number, " count: ", count, " key: ", key, " daily_visited_num: ", daily_visited_num)
-
-    -- 创建一个新的限流器实例
-    -- 入参: 1.限流器键前缀 2.允许的最大请求数量 3.时间窗口内的大小
-    local lim, err = limit_count.new("plugin-" .. plugin_name, count, 100)
+    core.log.warn("custom-limit-plugin initialing: id_number: ", id_number, " visited_freq: ", visited_freq, " key: ", key, " daily_visited_num: ", daily_visited_num)
 
     -- 将限流器和其他配置项存入 self.limits 下，每个不同的用户拥有不同的限流器
     self.limits[id_number] = {
-        -- 刚才创建的限流器实例
-        limit_count = lim,
+        -- 创建一个新的限流器实例
+        -- 入参: 1.限流器键前缀 2.允许的最大请求数量 3.时间窗口内的大小
+        limit_count = limit_count.new("plugin-" .. plugin_name, visited_freq, 100),
         -- 当前用户的限制访问次数 TODO 目前来说这里没考虑限流数量变化的情况，如果限流数量变化，那么限流器也需要更新的
-        count = count,
+        count = visited_freq,
+        -- 每日访问量
         daily_visited_num = daily_visited_num,
         -- nginx共享内存，这个会用于计算目前的限流次数
-        dict = ngx.shared["plugin-" .. plugin_name .. "-reset-header"]
+        dict = ngx.shared["plugin-" .. plugin_name .. "-reset-header"],
+        daily_dict = ngx.shared["plugin-" .. plugin_name .. "-daily"]
     }
 
-    core.log.warn("custom-limit-plugin successful: id_number: ", id_number, " count: ", count, " key: ", key, " daily_visited_num: ", daily_visited_num)
+    core.log.warn("custom-limit-plugin successful: id_number: ", id_number, " visited_freq: ", visited_freq, " key: ", key, " daily_visited_num: ", daily_visited_num)
 
     return setmetatable(self, mt)
 end
 
-local function gen_limit_obj(id_number, count, daily_visited_num, conf, ctx)
+local function gen_limit_obj(id_number, visited_freq, daily_visited_num, conf, ctx)
     -- 用于管理插件上下文缓存的函数，是一个用于管理插件上下文缓存的函数。它主要用于在插件上下文中创建或获取缓存对象，以确保缓存项的高效利用和一致性。
     -- core.lrucache.plugin_ctx(lrucache, ctx, extra_key, create_func, ...)
     -- 各参数信息如下：
@@ -114,10 +119,10 @@ local function gen_limit_obj(id_number, count, daily_visited_num, conf, ctx)
     -- 3. extra_key：一个附加键，用于唯一标识缓存项。这个键通常基于插件的配置和请求上下文生成，以确保每个缓存项在特定上下文中是唯一的。
     -- 4. create_func：一个函数，用于创建缓存项。如果缓存中没有找到对应的项，会调用这个函数来创建新项。这个函数通常包含创建对象所需的逻辑。
     -- 5. ...（可变参数）：传递给 create_func 的其他参数。这些参数通常包含创建缓存项所需的额外信息。
-    return core.lrucache.plugin_ctx(lrucache, ctx, plugin_name, create_new, id_number, count, daily_visited_num, conf, ctx)
+    return core.lrucache.plugin_ctx(lrucache, ctx, plugin_name, create_new, id_number, visited_freq, daily_visited_num, conf, ctx)
 end
 
-function _M.incoming(self, id_number, count, key, commit, conf, cost)
+function _M.validate_visited_freq(self, id_number, count, key, commit, conf, cost)
 
     -- 这里调用 OpenResty 的 incoming 方法
     -- incoming 方法的作用是记录一次请求并检查当前请求是否超出限流阈值。
@@ -140,10 +145,43 @@ function _M.incoming(self, id_number, count, key, commit, conf, cost)
     return delay, remaining, reset
 end
 
+local function parse_req(conf, ctx)
+
+    local page_size = 10;
+
+    -- 读取请求体
+    ngx.req.read_body()
+
+    -- 获取请求体内容
+    local body = ngx.req.get_body_data()
+
+    if not body then
+        core.log.error("failed to get request body, page_size will be 10")
+        return page_size;
+    end
+
+    -- 解析 JSON 数据
+    local post_args, err = cjson.decode(body)
+    if not post_args then
+        core.log.error("failed to decode JSON, page_size will be 10, : ", err)
+        return page_size;
+    end
+
+    -- 处理 JSON 数据
+    if not post_args.pageSize then
+        core.log.error("failed to get the page_size param, page_size will be 10")
+        return page_size;
+    else
+        return post_args.pageSize;
+    end
+
+end
 
 -- access 方法是 apisix 的插件规范内的方法，http请求触发后，如果启动了该插件，会按照插件顺序依次调用插件的 access 方法
 function _M.access(conf, ctx)
 
+    ------------------------------------------------ 必要参数前置校验 -------------------------------------------------
+    --
     -- 获取 token 参数
     local token = core.request.header(ctx, "token")
     if not token then
@@ -153,61 +191,80 @@ function _M.access(conf, ctx)
 
     -- 获取当前请求的路径 路径格式为 /code/version
     -- 获取当前请求的路由名称
-    local route_name = ctx.matched_route and ctx.matched_route.value and ctx.matched_route.value.name
-    if route_name then
-        core.log.warn("Current request route name: ", route_name)
+    local route_path = ngx.var.uri
+    if route_path then
+        core.log.warn("Current request route path: ", route_path)
     else
-        core.log.warn("Route name not found")
+        core.log.warn("Route path not found")
+        return 401, { error_msg = "Route path is not illegal for this plugin(share-limit)" }
     end
 
-    -- TODO 这里应该调用 共享服务的 http 接口根据 token 获取具体的用户名和目录信息
-    -- token 解析的结果是 统一认证号:用户名:用户部门id:用户部门名称:ip限制:过期时间
-    local url = "http://localhost:10090/decode-token?token=" .. token .. "&path=" .. route_name;
 
+    ------------------------------------------------ 流量控制校验 -------------------------------------------------
+    --
+    -- 解码token，解析的结果是 统一认证号:用户名:用户部门id:用户部门名称:ip限制:过期时间
+    local url = "http://localhost:10090/decode-token?token=" .. token .. "&path=" .. route_path;
     local response, status = http.request(url)
-
     if status == 200 then
 
         core.log.warn("response: ", response)
-
         local rsp_table = cjson.decode(response)
 
         local id_number = rsp_table.data.idNumber;
         local is_admin = rsp_table.data.isAdmin;
         local visited_freq = tonumber(rsp_table.data.visitedFreq);
-        local daily_visited_num = tonumber(rsp_table.da.data.dailyVisitedNum);
-
-        core.log.warn("visited_freq: ", visited_freq)
-        core.log.warn("daily_visited_num: ", daily_visited_num)
+        local daily_visited_num = tonumber(rsp_table.data.dailyVisitedNum);
 
         if (is_admin == false) then
 
+            core.log.warn("current user is not admin, begin to validate")
+
             -- 非管理员并且限制访问次数为0，那么代表无权限，直接 401
             if (visited_freq == 0) then
-                return 401
+                return 401, { error_msg = "current user's visited_freq is 0!" }
             end
 
             -- 获取限流器对象，这里其实拿到的是缓存中生成的这个对象自己
-            local lim, err = gen_limit_obj(id_number, visited_freq, daily_visited_num, conf, ctx)
+            local lim, lim_err = gen_limit_obj(id_number, visited_freq, daily_visited_num, conf, ctx)
             if not lim then
-                core.log.error("failed to fetch limit.count object: ", err)
-                if conf.allow_degradation then
-                    return
-                end
-                return 500
+                core.log.error("failed to fetch limit.count object: ", lim_err)
+                return 500, { error_msg = "failed to fetch limit.count object, this is a plugin internal error!" }
             end
+
 
             -- 获取一个限流 key
             local key = gen_limit_key(id_number, conf, ctx)
-            core.log.warn("limit-key: ", key)
+            core.log.warn("current user's limit-key: ", key)
+
+            ------------------------------------------------ 校验日访问量 -------------------------------------------------
+
+            -- 校验日访问量是否会超过上限
+            local page_size = parse_req(conf, ctx)
+            -- 获取每日访问计数
+            local daily_key = key .. "-" .. get_today_date()
+            local daily_count = lim.limits[id_number].daily_dict:get(daily_key) or 0
+            core.log.warn("current used daily_count: ", daily_count, " total daily_count: ", daily_visited_num)
+            -- 检查每日访问限制
+            if (daily_count + page_size) > daily_visited_num then
+                return 429, { error_msg = "Daily visit limit reached" }
+            end
+            -- 更新每日访问计数
+            local new_daily_count, new_daily_count_err = lim.limits[id_number].daily_dict:incr(daily_key, page_size, 0, 86400)
+            if not new_daily_count then
+                core.log.error("failed to increment daily visit count: ", new_daily_count_err)
+                return 500, { error_msg = "failed to increment daily visit count" }
+            end
+
+
+            ------------------------------------------------ 校验秒访问频率 -------------------------------------------------
 
             local delay, remaining, reset
             -- 这里调用的是本对象的 incoming
-            delay, remaining, reset = lim:incoming(id_number, visited_freq, key, true, conf, 1)
+            delay, remaining, reset = lim:validate_visited_freq(id_number, visited_freq, key, true, conf, 1)
 
-            core.log.warn("custom-limit-plugin access delay: ", delay)
-            core.log.warn("custom-limit-plugin access remaining: ", remaining)
-            core.log.warn("custom-limit-plugin access reset: ", reset)
+            core.log.warn("share-limit-plugin current user's access delay: ", delay)
+            core.log.warn("share-limit-plugin current user's access remaining: ", remaining)
+            core.log.warn("share-limit-plugin current user's access reset: ", reset)
 
             if delay == nil then
                 local err = remaining
@@ -222,10 +279,10 @@ function _M.access(conf, ctx)
                 return 500, { error_msg = "failed to limit count" }
             end
         end
-
     else
-        core.log.error("HTTP request failed with status code: " .. status)
-        return 500;
+        -- 获取限流信息失败，这里网关也抛出 500
+        core.log.error("share-limit plugin get limit info error!" .. status)
+        return 500, { error_msg = "share-limit plugin get limit info error!" };
     end
 
 

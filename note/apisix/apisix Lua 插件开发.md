@@ -4,7 +4,7 @@ curl -i "http://127.0.0.1:9180/apisix/admin/routes" \
 -H "X-API-Key: edd1c98034335f136f87ad84b625c8f1" \
 -d '{
   "name": "getting-started-ip2",
-  "uri": "/",
+  "uri": "/ip",
   "upstream": {
     "type": "roundrobin",
     "nodes": {
@@ -12,20 +12,7 @@ curl -i "http://127.0.0.1:9180/apisix/admin/routes" \
     }
   },
   "plugins": {
-    "custom-limit": {
-  		"data": [
-          {
-            "name": "user1",
-            "count": 3,
-            "time": 10
-          },
-          {
-            "name": "user2",
-            "count": 2,
-            "time": 10
-          }
-        ]
-    }
+    "share-limit": {}
   }
 }'
 
