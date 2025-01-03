@@ -9,7 +9,7 @@
         <version>1.0.0.4-SNAPSHOT</version>
     </parent>
 
-    <artifactId>spring-jdbc</artifactId>
+    <artifactId>leyton-spring-jdbc</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -58,7 +58,7 @@
         <!-- 多数据源 -->
         <dependency>
             <groupId>org.hulei</groupId>
-            <artifactId>spring-routing-datasource</artifactId>
+            <artifactId>leyton-spring-routing-datasource</artifactId>
             <version>1.0.0.4-SNAPSHOT</version>
         </dependency>
 

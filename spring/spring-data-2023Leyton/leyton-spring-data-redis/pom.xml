@@ -9,7 +9,7 @@
         <version>1.0.0.4-SNAPSHOT</version>
     </parent>
 
-    <artifactId>spring-data-redis</artifactId>
+    <artifactId>leyton-spring-data-redis</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

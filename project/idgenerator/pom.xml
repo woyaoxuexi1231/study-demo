@@ -30,7 +30,7 @@
         </dependency>
         <dependency>
             <groupId>org.hulei</groupId>
-            <artifactId>spring-routing-datasource</artifactId>
+            <artifactId>leyton-spring-routing-datasource</artifactId>
             <version>1.0.0.4-SNAPSHOT</version>
         </dependency>
         <dependency>

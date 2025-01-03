@@ -61,7 +61,7 @@ public class RedisListController {
                     log.info("这是一条使用 redis list 实现的消息队列收到的消息, {}", redisTemplate.opsForList().rightPop(QUEUE_NAME, 0, TimeUnit.SECONDS));
                 } catch (Exception e) {
                     log.error("消息接收异常,线程将停止", e);
-                    break;
+                    // break;
                 }
             }
         }, "redis-list-queue-consume").start();

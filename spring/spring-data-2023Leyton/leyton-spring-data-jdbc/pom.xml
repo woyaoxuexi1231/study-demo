@@ -9,7 +9,7 @@
         <version>1.0.0.4-SNAPSHOT</version>
     </parent>
 
-    <artifactId>spring-data-jdbc</artifactId>
+    <artifactId>leyton-spring-data-jdbc</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

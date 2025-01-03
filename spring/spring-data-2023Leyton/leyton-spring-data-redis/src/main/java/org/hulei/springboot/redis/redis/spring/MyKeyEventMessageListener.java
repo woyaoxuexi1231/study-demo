@@ -1,14 +1,17 @@
 package org.hulei.springboot.redis.redis.spring;
 
+import cn.hutool.extra.spring.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.Message;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.listener.KeyExpirationEventMessageListener;
 import org.springframework.data.redis.listener.KeyspaceEventMessageListener;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author hulei
@@ -42,6 +45,9 @@ public class MyKeyEventMessageListener {
                         new String(message.getBody(), StandardCharsets.UTF_8),
                         new String(message.getChannel(), StandardCharsets.UTF_8),
                         new String(pattern, StandardCharsets.UTF_8));
+                StringRedisTemplate stringRedisTemplate = SpringUtil.getBean(StringRedisTemplate.class);
+                stringRedisTemplate.opsForValue().set(new String(message.getBody(), StandardCharsets.UTF_8), "true");
+                stringRedisTemplate.expire(new String(message.getBody(), StandardCharsets.UTF_8), 10, TimeUnit.SECONDS);
             }
         };
     }

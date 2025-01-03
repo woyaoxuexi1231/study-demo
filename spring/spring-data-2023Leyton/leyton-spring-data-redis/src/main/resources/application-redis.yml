@@ -1,7 +1,7 @@
 spring:
   data:
     redis:
-      host: 192.168.3.101
+      host: localhost
       port: 6379
       username: default
       password: 123456
