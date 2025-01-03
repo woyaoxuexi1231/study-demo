@@ -9,6 +9,7 @@ local limit_count = require("resty.limit.count")
 local apisix_plugin = require("apisix.plugin")
 local cjson = require "cjson"
 local http = require("socket.http")
+local socket = require("socket")
 
 local ngx = ngx
 local ngx_time = ngx.time
@@ -180,6 +181,23 @@ end
 -- access 方法是 apisix 的插件规范内的方法，http请求触发后，如果启动了该插件，会按照插件顺序依次调用插件的 access 方法
 function _M.access(conf, ctx)
 
+    ------------------------------------------------ 获取校验 token 的 url 参数 -------------------------------------------------
+    local attr = apisix_plugin.plugin_attr(plugin_name)
+    if attr then
+        local decode_token_url = attr.decode_token_url
+        if decode_token_url then
+            core.log.warn("成功获取解码token的url参数: ", decode_token_url)
+        else
+            core.log.error("未能获取解码token的url配置参数: decode_token_url 不存在")
+            return 401, { error_msg = "please check apisix config, decode_token_url must not be null" }
+        end
+    else
+        core.log.error("未能获取插件配置")
+        return 401, { error_msg = "please check apisix config, decode_token_url must not be null" }
+    end
+
+
+
     ------------------------------------------------ 必要参数前置校验 -------------------------------------------------
     --
     -- 获取 token 参数
@@ -203,7 +221,7 @@ function _M.access(conf, ctx)
     ------------------------------------------------ 流量控制校验 -------------------------------------------------
     --
     -- 解码token，解析的结果是 统一认证号:用户名:用户部门id:用户部门名称:ip限制:过期时间
-    local url = "http://localhost:10090/decode-token?token=" .. token .. "&path=" .. route_path;
+    local url = "http://192.168.3.251:19998/api/share-service/decode-token?token=" .. token .. "&path=" .. route_path;
     local response, status = http.request(url)
     if status == 200 then
 
@@ -214,6 +232,12 @@ function _M.access(conf, ctx)
         local is_admin = rsp_table.data.isAdmin;
         local visited_freq = tonumber(rsp_table.data.visitedFreq);
         local daily_visited_num = tonumber(rsp_table.data.dailyVisitedNum);
+        local expire_time_millis = tonumber(rsp_table.data.expireTimeMillis);
+        local current_time_millis = tonumber(rsp_table.data.currentTimeMillis);
+
+        if (expire_time_millis < current_time_millis) then
+            return 401, { error_msg = "current token's has expired!" }
+        end
 
         if (is_admin == false) then
 

@@ -13,10 +13,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -56,11 +58,19 @@ public class ApisixAdminApplication {
             // ApisixAdminRsp apisixAdminRsp = JSON.parseObject(responseEntity.getBody(), ApisixAdminRsp.class);
             prettyPrint(responseEntity.getBody());
         } else {
-            ResponseEntity<Object> responseEntity = restTemplate.exchange(url + "/" + id, HttpMethod.GET, new HttpEntity<>(buildHeaders()), Object.class);
-            // ApisixAdminRsp apisixAdminRsp = JSON.parseObject(responseEntity.getBody(), ApisixAdminRsp.class);
-            // prettyPrint(responseEntity.getBody());
-            // ApisixRouteRsp apisixAdminRsp = JSON.parseObject(responseEntity.getBody(), ApisixRouteRsp.class);
-            prettyPrint(responseEntity.getBody());
+            try {
+                ResponseEntity<Object> responseEntity = restTemplate.exchange(url + "/" + id, HttpMethod.GET, new HttpEntity<>(buildHeaders()), Object.class);
+                // ApisixAdminRsp apisixAdminRsp = JSON.parseObject(responseEntity.getBody(), ApisixAdminRsp.class);
+                // prettyPrint(responseEntity.getBody());
+                // ApisixRouteRsp apisixAdminRsp = JSON.parseObject(responseEntity.getBody(), ApisixRouteRsp.class);
+                prettyPrint(responseEntity.getBody());
+            } catch (HttpClientErrorException e) {
+                if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
+                    log.error("apisix路由信息未找到, ", e);
+                } else {
+                    log.error("查询apisix路由信息报错, ", e);
+                }
+            }
         }
     }
 
