@@ -137,3 +137,11 @@ Config File Provider、Publish Over SSH、SSH Agent、nodejs、Gitea、git serve
 
 
 
+### 2025-01-09
+
+这两个方法有什么区别
+
+```
+public <T extends IdComparable> List<T> mergeAvailableItems(List<T> items, Long catalogId)
+public List<? extends IdComparable> mergeAvailableItems(List<? extends IdComparable> items, Long catalogId)
+```

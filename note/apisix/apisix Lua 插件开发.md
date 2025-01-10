@@ -128,3 +128,11 @@ nginx_config:
 luarocks install lua-cjson
 ```
 
+插件本身引入外部配置(config-default.yaml)
+
+```yaml
+plugin_attr:
+  access-limit:
+    decode_token_url: "http://192.168.3.251:19998/api/share-service/decode-token"
+```
+
