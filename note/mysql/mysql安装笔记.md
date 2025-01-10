@@ -1,11 +1,84 @@
-### 配置文件更改
+# 源码安装
+
+## 配置文件更改
 
 my.cnf 文件随便找一个就行
-主要修改：
-
+```cnf
 [mysqld]
 datadir=/home/mysql/mysql-8.0.25/data
 basedir=/home/mysql/mysql-8.0.25
+
+user=mysql
+port=3306
+server-id=1
+character-set-server=utf-8
+explicit_defaults_for_timestamp=true
+log-error=/home/mysql/mysql-8.0.25/log/error.log
+pid-file=/home/mysql/mysql-8.0.25/run/mysqld.pid
+max_connections=4000
+
+# see configurations
+# expire_logs_days=${expire_logs_days}
+binlog_expire_logs_seconds=604800
+innodb_lock_wait_timeout=50
+innodb_print_all_deadlocks=OFF
+interactive_timeout=28800
+log-queries-not-using-indexes = OFF
+long_query_time=1
+max_binlog_size=128M
+max_connect_errors=1000
+slow-query-log = OFF
+table_definition_cache=16384
+table_open_cache=16384
+transaction-isolation = READ-COMMITTED
+wait_timeout=28800
+
+
+skip-name-resolve
+log_bin_trust_function_creators=true
+innodb_strict_mode=true
+innodb_directories=/home/mysql/mysql-8.0.25/data
+character-set-server=utf8mb4
+collation_server=utf8mb4_bin
+autocommit=1
+sync_relay_log=1
+innodb_autoinc_lock_mode = 2
+back-log=500
+innodb-status-file=TRUE
+default-storage-engine=InnoDB
+innodb_fast_shutdown=0
+binlog_format=row
+log-bin=/home/mysql/mysql-8.0.25/binlog/mysql-bin
+log_timestamps=System
+binlog_checksum=NONE
+binlog_row_image=full
+binlog_cache_size = 8M
+# max_binlog_cache_size = 128M
+innodb-log-buffer-size=8M
+innodb_log_file_size=1G
+innodb_log_files_in_group=3
+default-tmp-storage-engine=MEMORY
+innodb-autoextend-increment=100
+innodb-file-per-table=true
+innodb_rollback_on_timeout=true
+open-files-limit=65535
+innodb_open_files=65535
+log-output=FILE
+slow-query-log
+slow-query-log-file=/home/mysql/mysql-8.0.25/log/slow.log			
+group_concat_max_len=102400
+innodb_purge_threads=4
+join_buffer_size=134217728
+read_buffer_size=8388608
+read_rnd_buffer_size=8388608
+sort_buffer_size=2097152
+transaction_isolation=READ-COMMITTED
+innodb_flush_method=O_DIRECT
+innodb_flush_log_at_trx_commit=1
+sync_binlog=1
+create_admin_listener_thread=ON
+
+[mysqld]
 socket=/home/mysql/mysql-8.0.25/run/mysql.sock
 
 [mysqld_safe]
@@ -15,7 +88,10 @@ socket=/home/mysql/mysql-8.0.25/run/mysql.sock
 [client]
 socket=/home/mysql/mysql-8.0.25/run/mysql.sock
 
-修改 socket文件的路径, 配置文件中类似 run,log 这样的文件夹要提前建好
+
+```
+
+**修改 socket文件的路径, 配置文件中类似 run,log 这样的文件夹要提前建好**
 
 mysql启动脚本, 可以直接 cp support-file下面的就行
 
@@ -44,7 +120,7 @@ A:
 方法2: ./mysql -S /home/mysql/mysql-8.0.25/run/mysql.sock -uroot -p123456 (-S 用于指定 MySQL 服务器的 socket
 路径（或套接字文件路径），而不是使用默认路径 /tmp/mysql.sock。)
 
-### 主从复制搭建
+## 主从复制搭建
 
 配置复制参数：
 主数据库和从数据库的配置文件都添加一个参数: server-id=xxx
@@ -87,4 +163,192 @@ A:
     - 应用本身控制 或者 使用数据库中间件或代理服务器如ProxySQL、MaxScale等，可以帮助实现读写分离，自动将写请求定向到主数据库，而读请求则可以定向到从数据库
 4. Could not find first log file name in binary log index file
    这个应该是日志同步的日志文件写错了,重新改一下 change master to 语句的参数
+
+
+
+# Docker安装
+
+[Docker部署MySQL8.1版本，并挂载存储，日志，配置文件_docker安装mysql8并且挂载数据日志配置目录-CSDN博客](https://blog.csdn.net/Fly_wd/article/details/133869657)
+
+
+
+创建持久化存储，日志，配置文件目录
+
+```bash
+# 创建存储目录，日志目录，配置文件目录
+mkdir -p /home/mysql/{conf,data,log,binlog,mysql-files} 
+```
+
+
+
+创建配置文件
+
+```cnf
+[mysqld]
+# basedir 参数指定 MySQL 安装目录的路径。这个目录包含 MySQL 的二进制文件、库文件、配置文件等。
+# 默认位置 通常在 /usr 或 /usr/local/mysql 下。
+basedir=/home/mysql
+# datadir 参数指定 MySQL 数据库文件存储的目录。这个目录包含所有的数据库文件、表空间文件、二进制日志文件等。
+# Linux：通常在 /var/lib/mysql 下。
+datadir=/home/mysql/data
+
+
+# 
+# slow-query-log-file=/home/mysql/log/slow.log
+
+# 错误日志配置写入文件后，就不会在控制台输出了，这样docker logs就看不到了, 默认是 stderr
+# log-error=/var/log/mysql/error.log
+
+# 在 MySQL 配置文件中，pid-file 参数指定了 MySQL 服务器进程的 PID（Process ID）文件的位置。PID 文件包含了 MySQL 服务器进程的 ID，用于管理和跟踪 MySQL 服务器的进程状态，例如启动、停止和重启操作。
+# 在一些 Linux 发行版中，默认位置是 /var/run/mysqld/mysqld.pid
+# pid-file=/home/mysql/run/mysqld.pid
+
+# innodb_directories 参数允许指定多个目录，用于 InnoDB 表空间文件的存储位置。这个参数可以用于将表空间文件存储在不同的磁盘或分区上，以提高性能和管理效率。
+# innodb_directories 没有默认值，需要在 MySQL 配置文件中显式设置。如果没有设置此参数，InnoDB 表空间文件将存储在 MySQL 数据目录中。
+# innodb_directories=/home/mysql/data
+
+# log-bin 参数用于启用 MySQL 的二进制日志功能，并指定二进制日志文件的基本文件名和存储位置。二进制日志记录了所有更改数据库的操作，对于复制（replication）和数据恢复非常重要。
+# 如果没有显式设置 log-bin 参数，二进制日志文件将存储在 MySQL 数据目录中，并以主机名为文件名前缀。
+# log-bin=/home/mysql/binlog/mysql-bin
+
+
+user=mysql
+port=3306
+server-id=1
+character-set-server=utf-8
+explicit_defaults_for_timestamp=true
+max_connections=4000
+
+# see configurations
+# expire_logs_days=${expire_logs_days}
+binlog_expire_logs_seconds=604800
+innodb_lock_wait_timeout=50
+innodb_print_all_deadlocks=OFF
+interactive_timeout=28800
+log-queries-not-using-indexes = OFF
+long_query_time=1
+max_binlog_size=128M
+max_connect_errors=1000
+slow-query-log = OFF
+table_definition_cache=16384
+table_open_cache=16384
+transaction-isolation = READ-COMMITTED
+wait_timeout=28800
+
+
+skip-name-resolve
+log_bin_trust_function_creators=true
+innodb_strict_mode=true
+character-set-server=utf8mb4
+collation_server=utf8mb4_bin
+autocommit=1
+sync_relay_log=1
+innodb_autoinc_lock_mode = 2
+back-log=500
+innodb-status-file=TRUE
+default-storage-engine=InnoDB
+innodb_fast_shutdown=0
+binlog_format=row
+log_timestamps=System
+binlog_checksum=NONE
+binlog_row_image=full
+binlog_cache_size = 8M
+# max_binlog_cache_size = 128M
+innodb-log-buffer-size=8M
+innodb_log_file_size=1G
+innodb_log_files_in_group=3
+default-tmp-storage-engine=MEMORY
+innodb-autoextend-increment=100
+innodb-file-per-table=true
+innodb_rollback_on_timeout=true
+open-files-limit=65535
+innodb_open_files=65535
+log-output=FILE
+slow-query-log
+group_concat_max_len=102400
+innodb_purge_threads=4
+join_buffer_size=134217728
+read_buffer_size=8388608
+read_rnd_buffer_size=8388608
+sort_buffer_size=2097152
+transaction_isolation=READ-COMMITTED
+innodb_flush_method=O_DIRECT
+innodb_flush_log_at_trx_commit=1
+sync_binlog=1
+create_admin_listener_thread=ON
+```
+
+
+
+解决权限问题
+
+```bash
+chmod 777 /home/mysql/data/ /home/mysql/log
+
+chmod 644 /home/mysql/conf/my.cnf
+
+# my.cnf配置文件必须设置644权限，设置777在登录mysql时报警告配置文件无法生效。
+```
+
+
+
+启动 Mysql 镜像
+
+解析：
+
+-p：主机端口：容器端口。
+
+-d：启动的镜像名称。
+
+--restart=always：设置docker启动时，容器跟随自启。
+
+--name：设置容器名称。
+
+--privileged=true：赋予容器权限修改宿主文件权利。
+
+-v /home/mysql/log:/var/log/mysql：挂载容器日志到宿主，方便查看日志。
+
+-v /home/mysql/conf/my.cnf:/etc/mysql/my.cnf:挂载容器配置文件到宿主，方便修改配置文件。
+
+-v /home/mysql/data:/var/lib/mysql：挂载容器存储文件到宿主，避免因不小心卸载容器或者容器损坏导致数据丢失不可找回风险。
+
+-v /home/mysql/mysql-files:/var/lib/mysql-files 
+
+-e MYSQL_ROOT_PASSWORD=123456：设置MySQL的root用户的密码。
+
+--lower-case-table-names=1：用于指定表名是否进行大小写不敏感的处理。
+
+```bash
+docker run -p 3306:3306 --restart=always --name mysql \
+-e MYSQL_ROOT_PASSWORD=123456 \
+--privileged=true \
+-v /home/mysql/log:/var/log/mysql \
+-v /home/mysql/data:/var/lib/mysql \
+-v /home/mysql/conf/my.cnf:/etc/mysql/my.cnf \
+-v /home/mysql/mysql-files:/var/lib/mysql-files \
+-d mysql
+
+# 这里报错了
+bfcd0a4b57f4c58de7b4ea3848f47bcd312787d126aabb5b26ddb60e8a5efe50
+docker: Error response from daemon: driver failed programming external connectivity on endpoint mysql (c28ab5b3311970c604eee8cba5962c4f85581a4736fbfef77675128c885c2d99):  (iptables failed: iptables --wait -t nat -A DOCKER -p tcp -d 0/0 --dport 3306 -j DNAT --to-destination 172.17.0.2:3306 ! -i docker0: iptables: No chain/target/match by that name.
+ (exit status 1)).
+ 
+# 这个错误通常是由于 iptables 链或规则不存在导致的
+sudo iptables -F 
+sudo systemctl restart docker
+```
+
+
+
+进入容器配置MySQL可以被远程地址访问
+
+```bash
+docker exec -it mysql bash
+
+mysql -uroot -p123456
+
+use mysql;
+update user set host = '%' where user = 'root';
+flush privileges;
+```
 

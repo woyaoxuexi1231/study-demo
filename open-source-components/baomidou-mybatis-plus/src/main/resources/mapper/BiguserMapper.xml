@@ -3,7 +3,7 @@
 <mapper namespace="org.hulei.springboot.mybatisplus.mapper.BiguserMapper">
     <resultMap id="BaseResultMap" type="org.hulei.entity.mybatisplus.domain.BigUser">
         <!--@mbg.generated-->
-        <!--@Table biguser-->
+        <!--@Table big_user-->
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="user_name" jdbcType="VARCHAR" property="userName"/>
         <result column="ssn" jdbcType="VARCHAR" property="ssn"/>
@@ -63,7 +63,7 @@
     databaseID:
      -->
     <insert id="batchInsert">
-        insert into biguser(user_name, ssn, name, phone_number, plate, address, building_number, country, birth,
+        insert into big_user(user_name, ssn, name, phone_number, plate, address, building_number, country, birth,
                             company, job, card_number, city, week, email, title, paragraphs)
         values
         <!--
@@ -88,17 +88,17 @@
         select
         <include refid="Base_Column_List">
         </include>
-        from biguser
+        from big_user
     </select>
 
 
     <select id="fetchSize100Tags" resultType="org.hulei.entity.mybatisplus.domain.BigUser" fetchSize="20000">
         select *
-        from biguser
+        from big_user
     </select>
 
     <insert id="insertOne" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
-        insert into biguser(user_name, ssn, name, phone_number, plate, address, building_number, country, birth,
+        insert into big_user(user_name, ssn, name, phone_number, plate, address, building_number, country, birth,
                             company, job, card_number, city, week, email, title, paragraphs) value
             (#{userName}, #{ssn}, #{name}, #{phoneNumber}, #{plate}, #{address},
              #{buildingNumber}, #{country},

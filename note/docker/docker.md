@@ -13,6 +13,29 @@ yum-config-manager --add-repo https://mirrors.aliyun.com/docker-ce/linux/centos/
 # 安装 docker-ce
 yum install -y docker-ce
 
+# 启动docker,设置开启自启动
+systemctl enable docker
+# 刷新配置
+systemctl daemon-reload
+# 通过systemctl启动docker
+systemctl restart docker
+
+#镜像配置 
+vim /etc/docker/daemon.json
+
+{
+  "registry-mirrors": [
+    "https://docker.m.daocloud.io",
+    "https://dockerproxy.com",
+    "https://docker.mirrors.ustc.edu.cn",
+    "https://docker.nju.edu.cn",
+    "http://hammal.staronearth.win/",
+    "http://hub.staronearth.win/",
+    "http://hub-mirror.c.163.com",
+    "https://registry.docker-cn.com",
+    "https://1d7bgakn.mirror.aliyuncs.com"
+  ]
+}
 
 
 ```
@@ -28,22 +51,6 @@ yum install -y docker-ce
 cat /etc/redhat-release
 # 查看内核版本
 uname -r
-
-
-#镜像配置
-{
-  "registry-mirrors": [
-    "https://docker.m.daocloud.io",
-    "https://dockerproxy.com",
-    "https://docker.mirrors.ustc.edu.cn",
-    "https://docker.nju.edu.cn",
-    "http://hammal.staronearth.win/",
-    "http://hub.staronearth.win/",
-    "http://hub-mirror.c.163.com",
-    "https://registry.docker-cn.com",
-    "https://1d7bgakn.mirror.aliyuncs.com"
-  ]
-}
 
 # yum源
 wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo

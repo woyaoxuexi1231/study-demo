@@ -1,0 +1,37 @@
+server:
+  port: 10027
+
+spring:
+  profiles:
+    active: db,redis
+  main:
+    allow-circular-references: true
+  datasource:
+    url: jdbc:mysql://192.168.3.101:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    routing:
+      parsing:
+        enable: true
+        first:
+          url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+          username: root
+          password: 123456
+          driverClassName: com.mysql.cj.jdbc.Driver
+#        second:
+#          url: jdbc:mysql://192.168.80.130:3306/yiibaidb?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+#          username: root
+#          password: 123456
+#          driverClassName: com.mysql.cj.jdbc.Driver
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath*:mapper/*.xml
+
+logging:
+  level:
+    org.springframework.jdbc.core.JdbcTemplate: debug
+    org.springframework.jdbc.core.StatementCreatorUtils: trace
+    org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate: debug

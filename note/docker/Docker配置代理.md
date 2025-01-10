@@ -54,7 +54,7 @@ nameserver 8.8.4.4
 
 
 
-配置 docker 的代理文件
+**配置 docker 的代理文件** 这个配置大概率会生效
 
 ```shell
 sudo mkdir -p /etc/systemd/system/docker.service.d

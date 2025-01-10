@@ -7,7 +7,6 @@
         <groupId>org.hulei</groupId>
         <artifactId>dependencies-parent</artifactId>
         <version>1.0.0.4-SNAPSHOT</version>
-        <relativePath>../dependencies-parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>chat</artifactId>

@@ -1,5 +1,7 @@
 # 使用 wget
 
+wget可能不可用，还是推荐使用 curl
+
 ```shell
 # yum源
 wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo

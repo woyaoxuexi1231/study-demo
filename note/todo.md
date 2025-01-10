@@ -81,7 +81,7 @@ minio
 
 
 
-### 2024-11-22
+### 2024-11-22 :white_check_mark:
 
 export https_proxy=http://192.168.3.14:7890
 export http_proxy=http://192.168.3.14:7890
@@ -106,3 +106,42 @@ ods dwd dws
 ### 2024-12-07
 
 cloudera manager
+
+
+
+### 2024-12-18
+
+**3DES** **AES** 
+
+**Https**
+
+**jdbc**  
+
+主要利用 Statement 操作数据库，ResultSet处理结果
+
+**jdbctemplate**
+
+
+
+### 2024-12-19
+
+PreparedStatement
+
+
+
+### 2024-12-20
+
+**Jenkins插件**
+
+Config File Provider、Publish Over SSH、SSH Agent、nodejs、Gitea、git server\Pipeline: Multibranch with defaults、Pipeline: Stage View、SSH Pipeline Steps
+
+
+
+### 2025-01-09
+
+这两个方法有什么区别
+
+```
+public <T extends IdComparable> List<T> mergeAvailableItems(List<T> items, Long catalogId)
+public List<? extends IdComparable> mergeAvailableItems(List<? extends IdComparable> items, Long catalogId)
+```

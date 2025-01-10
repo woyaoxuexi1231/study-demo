@@ -9,10 +9,10 @@ import java.io.InputStream;
 
 public class JSchExecutor {
 
-    private String username;
-    private String host;
-    private int port;
-    private String password;
+    private final String username;
+    private final String host;
+    private final int port;
+    private final String password;
     private Session session;
 
     public JSchExecutor(String username, String host, int port, String password) {

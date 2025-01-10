@@ -26,7 +26,7 @@ public class JSchExecutorController {
 
     private Session session;
 
-    private String upstreamTemplate = "\n" +
+    private final String upstreamTemplate = "\n" +
             "\n" +
             "    upstream " + "%s" + "_" + "%s" + " {\n" +
             "        server " + "%s" + ":" + "%s" + ";\n" +

@@ -32,7 +32,7 @@ public class MybatisPlusApplication {
                 new LinkedBlockingDeque<>(),
                 new ThreadFactory() {
 
-                    AtomicInteger atomicInteger = new AtomicInteger(0);
+                    final AtomicInteger atomicInteger = new AtomicInteger(0);
 
                     @Override
                     public Thread newThread(Runnable r) {

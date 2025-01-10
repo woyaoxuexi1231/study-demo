@@ -88,10 +88,8 @@ public class MybatisCacheController {
          */
 
         log.info("selectById: {}", customerMapper.selectById(103));
-        ;
 
         // 同样的, 虽然这个不是通用 mapper 的 api, 但是他使用 @Select 查询数据, 也只有 @CacheNamespace 才会生效
         log.info("selectByIdWithAnnotation: {}", customerMapper.selectByIdWithAnnotation(103));
-        ;
     }
 }

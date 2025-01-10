@@ -26,7 +26,7 @@ public class ExpressionTokenizer {
         for (String token : tokens) {
             sb.append(token);
         }
-        System.out.println("处理后" + sb.toString());
+        System.out.println("处理后" + sb);
         return sb.toString();
     }
 

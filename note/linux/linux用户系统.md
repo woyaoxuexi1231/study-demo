@@ -37,5 +37,5 @@ groupmod -n newgroupname oldgroupname
 useradd mysql -d /home/mysql -m;
 # echo "es" 将字符串输出到标准输出,  |管道符,把echo命令的输出作为输入传递给后面的命令, --stdin允许从标准输入读取密码,用于自动化脚本
 # 这是一个passwd命令本身支持的操作,不代表其他命令支持
-echo "es" | passwd --stdin es;
+echo "mysql" | passwd --stdin mysql;
 ```
