@@ -79,7 +79,7 @@
         <!-- <redisson.version>3.12.4</redisson.version> -->
         <!-- Redisson 在 3.13.0 and 3.19.0 更换了默认的协议，会报错Unsupported protocol version 118 -->
         <!-- <redisson.spring.boot.starter.verison>3.12.4</redisson.spring.boot.starter.verison> -->
-        <redisson.spring.boot.starter.verison>3.17.7</redisson.spring.boot.starter.verison>
+        <redisson.spring.boot.starter.verison>3.29.0</redisson.spring.boot.starter.verison>
 
 
         <!-- Mybatis框架 -->
