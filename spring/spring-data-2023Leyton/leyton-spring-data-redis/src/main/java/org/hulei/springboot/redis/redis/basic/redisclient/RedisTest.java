@@ -4,11 +4,6 @@ import cn.hutool.core.collection.CollectionUtil;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.async.RedisAsyncCommands;
-import lombok.SneakyThrows;
-import org.redisson.Redisson;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
-import org.redisson.config.Config;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -75,12 +70,11 @@ public class RedisTest {
 
     private final static Jedis JEDIS;
     private final static JedisPool JEDIS_POOL;
-    private final static RedissonClient REDISSON_CLIENT;
     private final static RedisClient LETTUCE_CLIENT;
 
     static {
         /*
-        Java 中一般有三种连接 redis 的客户端, Jedis, Redisson, Lettuce
+        Java 中一般有 2 种连接 redis 的客户端, Jedis, Lettuce
          */
 
         // 1. 使用 Jedis 或者 JedisPool 连接
@@ -90,14 +84,7 @@ public class RedisTest {
         jedisPoolConfig.setMaxTotal(10);
         JEDIS_POOL = new JedisPool(jedisPoolConfig, REDIS_ADDRESS, REDIS_PORT, TIMEOUT, PASSWORD);
 
-        // 2. 使用 Redisson
-        Config redissonConfig = new Config();
-        redissonConfig.useSingleServer()
-                .setAddress("redis://" + REDIS_ADDRESS + ":" + REDIS_PORT)
-                .setPassword(PASSWORD);
-        REDISSON_CLIENT = Redisson.create(redissonConfig);
-
-        // 3. 使用 Lettuce
+        // 2. 使用 Lettuce
         RedisURI redisURI = RedisURI.builder()
                 .withHost(REDIS_ADDRESS)
                 .withPort(REDIS_PORT)
@@ -109,7 +96,6 @@ public class RedisTest {
     private static void closeResources() {
         JEDIS.close();
         JEDIS_POOL.close();
-        REDISSON_CLIENT.shutdown();
         LETTUCE_CLIENT.getResources().shutdown();
     }
 
@@ -119,7 +105,6 @@ public class RedisTest {
         setnxLock();
         luaLock();
         lettuce();
-        redisson();
 
         closeResources();
     }
@@ -208,16 +193,5 @@ public class RedisTest {
     public static void lettuce() {
         RedisAsyncCommands<String, String> async = LETTUCE_CLIENT.connect().async();
         async.set("lettuce", "hello, redis!");
-    }
-
-    /**
-     * redisson 客户端
-     */
-    @SneakyThrows
-    public static void redisson() {
-        RLock rLock = REDISSON_CLIENT.getLock("redisson::lock");
-        rLock.lock();
-        Thread.sleep(20 * 1000);
-        rLock.unlock();
     }
 }

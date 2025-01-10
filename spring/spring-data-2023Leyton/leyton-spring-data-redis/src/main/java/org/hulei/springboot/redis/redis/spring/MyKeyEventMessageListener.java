@@ -41,13 +41,13 @@ public class MyKeyEventMessageListener {
         return new KeyExpirationEventMessageListener(listenerContainer) {
             @Override
             public void onMessage(Message message, byte[] pattern) {
-                log.info("收到 message body: {}, message channel: {}, pattern: {}",
+                log.info("收到键过期的通知信息 message body: {}, message channel: {}, pattern: {}",
                         new String(message.getBody(), StandardCharsets.UTF_8),
                         new String(message.getChannel(), StandardCharsets.UTF_8),
                         new String(pattern, StandardCharsets.UTF_8));
                 StringRedisTemplate stringRedisTemplate = SpringUtil.getBean(StringRedisTemplate.class);
-                stringRedisTemplate.opsForValue().set(new String(message.getBody(), StandardCharsets.UTF_8), "true");
-                stringRedisTemplate.expire(new String(message.getBody(), StandardCharsets.UTF_8), 10, TimeUnit.SECONDS);
+                // stringRedisTemplate.opsForValue().set(new String(message.getBody(), StandardCharsets.UTF_8), "true");
+                // stringRedisTemplate.expire(new String(message.getBody(), StandardCharsets.UTF_8), 10, TimeUnit.SECONDS);
             }
         };
     }

@@ -1,10 +1,8 @@
-package org.hulei.springboot.redis.redisson;
+package org.hulei.springboot.redis.redisson.basic;
 
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.Redisson;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
-import org.redisson.config.Config;
 
 @Slf4j
 @SuppressWarnings("CallToPrintStackTrace")
@@ -12,13 +10,7 @@ public class RedissonLock {
 
     public static void main(String[] args) {
 
-        // 创建 Redisson 配置对象
-        Config config = new Config();
-        config.useSingleServer()
-                .setAddress("redis://192.168.80.128:6379")
-                .setPassword("123456");
-        // 创建 Redisson 客户端
-        RedissonClient redisson = Redisson.create(config);
+        RedissonClient redissonClient = RedissonConnectionFactory.getRedissonClient();
 
         /*
         redisson实现分布式锁的原理:
@@ -29,7 +21,7 @@ public class RedissonLock {
         2. 子线程通过一个Map保存当前线程的信息,然后子线程默认每10秒进行续约
         3. 主线程正常解锁时会删除子线程Map内保存的线程信息,以及发送一条解锁的消息到频道内
          */
-        RLock lock = redisson.getLock("myLock");
+        RLock lock = redissonClient.getLock("myLock");
 
         Runnable task = () -> {
             try {

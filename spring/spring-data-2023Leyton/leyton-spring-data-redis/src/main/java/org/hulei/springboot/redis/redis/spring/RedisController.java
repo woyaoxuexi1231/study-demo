@@ -63,7 +63,7 @@ public class RedisController {
     dbsize 查询数据库一共有多少键, dbsize的时间复杂度是 O(1) 他是直接查询redis的内置的键总数变量,可以放心使用
     exists key 时间复杂度O(1)
     del key 删除键
-    expire key seconds 设置键的过期时间,key如果不存在返回0
+    expire key seconds 设置键的过期时间,key如果不存在返回0   时间小于等于0，键会被立马删除，并且不会发出过期键通知
     type key 查看键的数据类型
 
     rename key newkey 重命名键

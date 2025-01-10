@@ -73,15 +73,15 @@ public class RedisSubPubController {
                 },
                 channelTopic());
 
-        // 键空间监听事件, 可以监听特定键
-        container.addMessageListener((msg, pattern) -> {
-            log.info("键空间事件监听: msgBody: {}, msgChannel: {}", new String(msg.getBody(), StandardCharsets.UTF_8), new String(msg.getChannel(), StandardCharsets.UTF_8));
-        }, new PatternTopic("__keyspace@0__:*"));
-
-        // 键事件监听事件, 可以监听特定事件
-        container.addMessageListener((msg, pattern) -> {
-            log.info("键事件: msgBody: {}, msgChannel: {}", new String(msg.getBody(), StandardCharsets.UTF_8), new String(msg.getChannel(), StandardCharsets.UTF_8));
-        }, new PatternTopic("__keyevent@0__:*"));
+        // // 键空间监听事件, 可以监听特定键
+        // container.addMessageListener((msg, pattern) -> {
+        //     log.info("键空间事件监听: msgBody: {}, msgChannel: {}", new String(msg.getBody(), StandardCharsets.UTF_8), new String(msg.getChannel(), StandardCharsets.UTF_8));
+        // }, new PatternTopic("__keyspace@0__:*"));
+        //
+        // // 键事件监听事件, 可以监听特定事件
+        // container.addMessageListener((msg, pattern) -> {
+        //     log.info("键事件: msgBody: {}, msgChannel: {}", new String(msg.getBody(), StandardCharsets.UTF_8), new String(msg.getChannel(), StandardCharsets.UTF_8));
+        // }, new PatternTopic("__keyevent@0__:*"));
 
         return container;
     }
