@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.locks.LockSupport;
 
 @RestController
 @RequestMapping("order")
@@ -34,15 +35,15 @@ public class TestController {
             try {
                 orderId = blockingDeque.take();
             } catch (Exception e) {
-                System.err.println(e.getStackTrace());
-                continue;
+                e.printStackTrace();
+                LockSupport.parkNanos(100L * 100 * 100);
+                break;
             }
 
-            if (orderId == null) {
-                continue;
-            }
+            // LockSupport.parkNanos(100000000000L * 100 * 100 * 100);
 
             System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + "延时队列收到:" + orderId);
+            addTaskToDelayQueue.addTaskToDelayQueue(1);
         }
     }
 
@@ -52,6 +53,20 @@ public class TestController {
     }
 
     public static void main(String[] args) {
-        System.out.println(JSON.toJSONString(null));
+        System.out.println("local expiredValues = redis.call('zrangebyscore', KEYS[2], 0, ARGV[1], 'limit', 0, ARGV[2]); "
+                + "if #expiredValues > 0 then "
+                + "for i, v in ipairs(expiredValues) do "
+                + "local randomId, value = struct.unpack('Bc0Lc0', v);"
+                + "redis.call('rpush', KEYS[1], value);"
+                + "redis.call('lrem', KEYS[3], 1, v);"
+                + "end; "
+                + "redis.call('zrem', KEYS[2], unpack(expiredValues));"
+                + "end; "
+                // get startTime from scheduler queue head task
+                + "local v = redis.call('zrange', KEYS[2], 0, 0, 'WITHSCORES'); "
+                + "if v[1] ~= nil then "
+                + "return v[2]; "
+                + "end "
+                + "return nil;");
     }
 }
