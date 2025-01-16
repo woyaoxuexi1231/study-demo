@@ -379,23 +379,28 @@ echo
 
 echo
 echo "Creating Templates."
-curl -s -XPUT "$ADDRESS/_template/logging_index_all" -H'Content-Type: application/json' -d'{
-    "template" : "logstash-09-*",
-    "order" : 1,
-    "settings" : {
-        "number_of_shards" : 2,
-        "number_of_replicas" : 1
-    },
-    "aliases" : { "november" : {} }
+curl -s -XPUT "$ADDRESS/_index_template/logging_index_all" -H'Content-Type: application/json' -d '{
+    "index_patterns": ["logstash-09-*"],
+    "priority": 1,
+    "template": {
+        "settings": {
+            "number_of_shards": 2,
+            "number_of_replicas": 1
+        },
+        "aliases": {
+            "november": {}
+        }
+    }
 }'
-
 echo
-curl -s -XPUT "$ADDRESS/_template/logging_index" -H'Content-Type: application/json' -d '{
-    "template" : "logstash-*",
-    "order" : 0,
-    "settings" : {
-        "number_of_shards" : 2,
-        "number_of_replicas" : 1
+curl -s -XPUT "$ADDRESS/_index_template/logging_index" -H'Content-Type: application/json' -d '{
+    "index_patterns": ["logstash-*"],
+    "priority": 0,
+    "template": {
+        "settings": {
+            "number_of_shards": 2,
+            "number_of_replicas": 1
+        }
     }
 }'
 echo
@@ -425,8 +430,11 @@ echo "Done Adding Dynamic Mapping"
 echo
 echo "Adding Aliases"
 curl -s -XDELETE "$ADDRESS/november_2014_invoices" > /dev/null
+#curl -s -XDELETE "http://localhost:9200/november_2014_invoices" > /dev/null
 curl -s -XDELETE "$ADDRESS/december_2014_invoices" > /dev/null
+#curl -s -XDELETE "http://localhost:9200/december_2014_invoices" > /dev/null
 curl -s -XPUT "$ADDRESS/november_2014_invoices"
+#curl -s -XPUT "http://localhost:9200/november_2014_invoices"
 echo
 curl -s -XPUT "$ADDRESS/december_2014_invoices" -H'Content-Type: application/json' -d'
 {
@@ -441,7 +449,7 @@ curl -s -XPUT "$ADDRESS/december_2014_invoices" -H'Content-Type: application/jso
 
 echo
 
-curl -s -XPOST "$ADDRESS/_aliases" -H'Content-Type: application/json' -d'
+curl -s -XPOST "http://localhost:9200/_aliases" -H'Content-Type: application/json' -d'
 {
   "actions" : [
     {"add" : {"index" : "november_2014_invoices", "alias" : "2014_invoices"}},
