@@ -505,3 +505,22 @@ echo
 echo "Done Adding Routing Alias"
 
 echo
+
+
+echo
+echo "other"
+curl -XPUT "http://localhost:9200/new-index"
+# 获取索引信息
+curl "http://localhost:9200/get-together?pretty"
+# 获取文档信息
+curl "http://localhost:9200/get-together/_doc/1"
+# 搜索文档信息
+curl -X GET "localhost:9200/get-together,my_entity_index2/_search?pretty" -H 'Content-Type: application/json' -d'
+{
+  "query": {
+    "query_string": {
+      "query": "Elasticsearch"
+    }
+  }
+}
+'
