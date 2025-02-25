@@ -1,9 +1,12 @@
 package org.hulei.elasticsearch.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.hulei.elasticsearch.entity.Book;
+import org.hulei.elasticsearch.repository.BooksRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.IndexOperations;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
@@ -21,7 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CrudController {
 
-    private final ElasticsearchTemplate elasticsearchTemplate;
+    @Autowired
+    private ElasticsearchTemplate elasticsearchTemplate;
+    @Autowired
+    ElasticsearchOperations operations;
+    @Autowired
+    BooksRepository repository;
 
     @GetMapping("/createIndex")
     public void createIndex() {

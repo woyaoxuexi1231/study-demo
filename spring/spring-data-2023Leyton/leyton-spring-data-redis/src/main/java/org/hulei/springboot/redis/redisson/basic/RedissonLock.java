@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 
+import java.util.concurrent.TimeUnit;
+
 @Slf4j
 @SuppressWarnings("CallToPrintStackTrace")
 public class RedissonLock {
@@ -21,24 +23,31 @@ public class RedissonLock {
         2. 子线程通过一个Map保存当前线程的信息,然后子线程默认每10秒进行续约
         3. 主线程正常解锁时会删除子线程Map内保存的线程信息,以及发送一条解锁的消息到频道内
          */
-        RLock lock = redissonClient.getLock("myLock");
 
         Runnable task = () -> {
+            RLock lock = redissonClient.getLock("myLock");
             try {
-                // 尝试获取锁
-                lock.lock();
-                log.info("已经通过redisson获得锁!");
-                Thread.sleep(5 * 1000); // 模拟业务逻辑执行时间
+                // 尝试获取锁 waiting-等待获取锁的时间 leaseTime-持有锁的时间 unit-时间单位
+                if (lock.tryLock(1, -1, TimeUnit.SECONDS)) {
+                    log.info("已经通过redisson获得锁!");
+                    Thread.sleep(50 * 1000); // 模拟业务逻辑执行时间
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
-                lock.unlock();
-                log.info("已经成功释放锁");
+                log.info("isLocked : {}", lock.isLocked());
+                log.info("isHeldByCurrentThread : {}", lock.isHeldByCurrentThread());
+                if (lock.isLocked() && lock.isHeldByCurrentThread()) {
+                    lock.unlock();
+                    log.info("已经成功释放锁");
+                } else {
+                    log.info("未获取到锁");
+                }
             }
         };
 
         new Thread(task, "redisson_lock_1").start();
-        // new Thread(task, "redisson_lock_2").start();
-        // new Thread(task, "redisson_lock_3").start();
+        new Thread(task, "redisson_lock_2").start();
+        new Thread(task, "redisson_lock_3").start();
     }
 }
