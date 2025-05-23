@@ -232,7 +232,6 @@ max_connect_errors=1000
 slow-query-log = OFF
 table_definition_cache=16384
 table_open_cache=16384
-transaction-isolation = READ-COMMITTED
 wait_timeout=28800
 
 
@@ -271,7 +270,7 @@ join_buffer_size=134217728
 read_buffer_size=8388608
 read_rnd_buffer_size=8388608
 sort_buffer_size=2097152
-transaction_isolation=READ-COMMITTED
+transaction_isolation=REPEATABLE-READ
 innodb_flush_method=O_DIRECT
 innodb_flush_log_at_trx_commit=1
 sync_binlog=1
