@@ -58,31 +58,31 @@ public class ThreadTest {
 
     /* 线程间同步 */
     /**
-     * 线程间同步 - Object 提供的方法
-     * Object.wait() - 调用该方法的线程会释放持有对象的监视器锁
-     * wait(long timeout) 方法, 没有在执行的 timeout 时间内被唤醒会因为超时而返回, wait(0) 等价于 wait 方法
-     * wait(long timeout, int nanos)函数
-     * 调用该方法必须持有对象的监视器锁, 否则会抛出 IllegalMonitorStateException 异常
-     * 调用该方法的线程会被阻塞挂起, 直到以下情况, 会尝试重新获取监视器锁, 然后往下执行:
-     * 1. 其他线程调用 notify() 或者 notifyAll() 方法
-     * 2. 其他线程调用该线程的 interrupt() 方法, 该线程会抛出 InterruptedException 异常而返回
-     * 需要注意的是, 可能会存在虚假唤醒 (虚假唤醒出现在 notifyAll() 的时候, 当多个线程同时被唤醒由只有一个能获得监视器锁的时候, 前面获得监视器锁的线程把限制条件给改掉了, 导致后面获得监视器锁的线程在错误的条件下执行)
-     * 所以在实际使用中, 会在使用 wait 方法的地方使用 while 循环一直判断条件是否满足, 不满足则继续 wait
-     * Object.notify() - 调用该方法的线程会唤醒调用了持有对象的 wait 方法的线程
-     * notify() 和 notifyAll() 也都是必须获得对象的监视器锁才能使用, 否则会抛出 IllegalMonitorStateException 异常
-     * notifyAll() 只会唤醒在调用这个方法前 调用了 wait 系列函数而被放入共享变量等待集合里面的线程, 后面放入的是不会被唤醒的
+     * 线程间同步 - Object 提供的方法 <p>
+     * Object.wait() - 调用该方法的线程会释放持有对象的监视器锁 <p>
+     * Object.wait(long timeout) 方法, 没有在执行的 timeout 时间内被唤醒会因为超时而返回, wait(0) 等价于 wait 方法 <p>
+     * Object.wait(long timeout, int nanos) 函数 <p>
+     * 调用该方法必须持有对象的监视器锁, 否则会抛出 IllegalMonitorStateException 异常 <p>
+     * 调用该方法的线程会被阻塞挂起, 直到以下情况, 会尝试重新获取监视器锁, 然后往下执行: <p>
+     * 1. 其他线程调用 notify() 或者 notifyAll() 方法 <p>
+     * 2. 其他线程调用该线程的 interrupt() 方法, 该线程会抛出 InterruptedException 异常而返回 <p>
+     * 需要注意的是, 可能会存在虚假唤醒 (虚假唤醒出现在 notifyAll() 的时候, 当多个线程同时被唤醒由只有一个能获得监视器锁的时候, 前面获得监视器锁的线程把限制条件给改掉了, 导致后面获得监视器锁的线程在错误的条件下执行) <p>
+     * 所以在实际使用中, 会在使用 wait 方法的地方使用 while 循环一直判断条件是否满足, 不满足则继续 wait <p>
+     * Object.notify() - 调用该方法的线程会唤醒调用了持有对象的 wait 方法的线程 <p>
+     * notify() 和 notifyAll() 也都是必须获得对象的监视器锁才能使用, 否则会抛出 IllegalMonitorStateException 异常 <p>
+     * notifyAll() 只会唤醒在调用这个方法前 调用了 wait 系列函数而被放入共享变量等待集合里面的线程, 后面放入的是不会被唤醒的 <p>
      */
     Object object;
 
     /**
-     * Thread 提供的方法
-     * join - 阻塞调用线程, 去等待被使用 join 方法的线程执行完毕后恢复 - CountDownLatch 相比 join 粒度更细
-     * sleep - 调用线程会让出 cpu 时间片, 并且线程被阻塞挂起, 但是持有的锁是不会被释放的, 指定时间后, 转为就绪状态继而继续争抢 cpu 时间片
-     * yield - 暗示线程调度器让出自己的 cpu 时间片, 但是实际上不一定会让出, 不会被阻塞挂起, 而是直接处于就绪状态, 使用较少
-     * interrupt - 调用该方法会设置线程的中断状态为 true
-     * isInterrupt - 返回当前的线程是否被中断
-     * interrupted() - 返回当前线程是否被中断, 并且清楚中断标志
-     * 线程的切换会伴随着线程上下文的切换
+     * Thread 提供的方法 <p>
+     * join() - 阻塞调用线程, 当前线程去等待被使用 join 方法的线程执行完毕后恢复 - CountDownLatch 相比 join 粒度更细 <p>
+     * sleep() - 调用线程会让出 cpu 时间片, 并且线程被阻塞挂起, 但是持有的锁是不会被释放的, 指定时间后, 转为就绪状态继而继续争抢 cpu 时间片 <p>
+     * yield() - 暗示线程调度器让出自己的 cpu 时间片, 但是实际上不一定会让出, 不会被阻塞挂起, 而是直接处于就绪状态, 使用较少 <p>
+     * interrupt() - 调用该方法会设置线程的中断状态为 true <p>
+     * isInterrupt() - 返回当前的线程是否被中断 <p>
+     * interrupted() - 返回当前线程是否被中断, 并且清楚中断标志 <p>
+     * 线程的切换会伴随着线程上下文的切换 <p>
      */
     Thread thread;
 
@@ -476,9 +476,17 @@ public class ThreadTest {
         // longAdderTest();
 
         // cyclicBarrier();
-        semaphoreTest();
+        // semaphoreTest();
 
         // threadPoolExecutorTest();
+
+        Thread thread = new Thread(() -> {
+            System.out.println(System.currentTimeMillis());
+        });
+
+        thread.start();
+        thread.start();
+
     }
 
 }

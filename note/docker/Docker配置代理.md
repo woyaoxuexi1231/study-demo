@@ -67,3 +67,17 @@ Environment="HTTPS_PROXY=http://192.168.3.14:7890"
 Environment="NO_PROXY=localhost,127.0.0.1,.example.com"
 ```
 
+
+
+修改完配置后，重新刷新一下配置
+
+```shell
+systemctl daemon-reload
+```
+
+重启docker
+
+``` shell
+systemctl restart docker
+```
+

@@ -53,14 +53,14 @@
 
     <properties>
 
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- https://spring.io/projects/spring-cloud 可以查看 spring boot 和 spring cloud 的版本对应 -->
-        <spring.boot.dependencies.version>3.2.11</spring.boot.dependencies.version>
-        <spring-cloud-dependencies.version>2023.0.3</spring-cloud-dependencies.version>
+        <spring.boot.dependencies.version>2.7.18</spring.boot.dependencies.version>
+        <spring-cloud-dependencies.version>2021.0.9</spring-cloud-dependencies.version>
         <spring-cloud-alibaba-dependencies.version>2021.1</spring-cloud-alibaba-dependencies.version>
         <!-- spring admin -->
         <spring-boot-admin-starter-server.version>3.2.3</spring-boot-admin-starter-server.version>

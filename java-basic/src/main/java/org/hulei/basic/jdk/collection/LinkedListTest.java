@@ -40,5 +40,8 @@ public class LinkedListTest {
         // 获取元素如果是获取头尾元素, 那么性能很快, 但是如果根据下标获取, 需要费点时间, 他这里还采用了一次二分法, 稍微快一点
         log.info("linkedList直接获取头尾元素, {}", linkedList.getLast());
         log.info("linkedList采用下标获取元素: {}", linkedList.get(3));
+
+        //
+        linkedList.push("first");
     }
 }

@@ -82,7 +82,7 @@ CREATE TABLE `offices`
 -- ----------------------------
 -- Table structure for `orderdetails`
 -- ----------------------------
-DROP TABLE IF EXISTS `orderde_tails`;
+DROP TABLE IF EXISTS `order_details`;
 CREATE TABLE `order_details`
 (
     `order_number`      int(11)        NOT NULL,
@@ -177,8 +177,8 @@ CREATE TABLE `tokens`
   DEFAULT CHARSET = utf8;
 
 
-DROP TABLE IF EXISTS `autokeytest`;
-CREATE TABLE `autokeytest`
+DROP TABLE IF EXISTS `auto_key`;
+CREATE TABLE `auto_key`
 (
     `id` bigint NOT NULL AUTO_INCREMENT,
     `a`  varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,

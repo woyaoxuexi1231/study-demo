@@ -86,7 +86,7 @@ vim /etc/profile
 # 在文件的最后加上这三行
 # export JAVA_HOME=/usr/local/jdk1.8.0_381    # 这里设置解压的Java目录文件
 # export PATH=$JAVA_HOME/bin:$PATH
-# export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib
+# export CLASSPATH=.:$JAVA_HOME/lib
 
 # 使配置立马生效
 source /etc/profile

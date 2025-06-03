@@ -12,8 +12,8 @@
     <artifactId>dubbo-consumer-api</artifactId>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <common.version>1.0.0.4-SNAPSHOT</common.version>
         <dubbo.demo.provider.api.version>1.0.0.4-SNAPSHOT</dubbo.demo.provider.api.version>
     </properties>

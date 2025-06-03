@@ -16,14 +16,7 @@ public class MyApplicationRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        String banner = """
-                
-                ,------. ,--. ,--.,--.  ,--.,--.  ,--.,------.,------. \s
-                |  .--. '|  | |  ||  ,'.|  ||  ,'.|  ||  .---'|  .--. '\s
-                |  '--'.'|  | |  ||  |' '  ||  |' '  ||  `--, |  '--'.'\s
-                |  |\\  \\ '  '-'  '|  | `   ||  | `   ||  `---.|  |\\  \\ \s
-                `--' '--' `-----' `--'  `--'`--'  `--'`------'`--' '--'\s
-                """;
+        String banner = "";
         log.info("{}", banner);
         // throw new RuntimeException("error");
     }

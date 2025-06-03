@@ -57,7 +57,7 @@ public class MemoryDbUtil {
             page = 1;
         }
 
-        List<Employee> employeeList = data.values().stream().sorted(Comparator.comparing(Employee::getId)).toList();
+        List<Employee> employeeList = data.values().stream().sorted(Comparator.comparing(Employee::getId)).collect(Collectors.toList());
 
         PageInfo<Employee> pageInfo = new PageInfo<>();
         List<Employee> employees = new ArrayList<>();
