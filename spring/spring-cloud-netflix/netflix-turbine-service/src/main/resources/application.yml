@@ -17,7 +17,7 @@ turbine:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:10001/eureka/
+      defaultZone: http://192.168.3.102:10001/eureka/
 
 management:
   endpoints:

@@ -25,6 +25,11 @@
             <version>1.0.0.4-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+
         <!-- Ribbon必须的三个依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -49,6 +54,13 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <!-- 熔断器的监控器 -->
+        <!--
+         Hystrix 是 Netflix 开源的一个容错库，用于处理分布式系统中的延迟和服务故障。其核心能力包括：
+            服务降级
+            服务熔断
+            线程隔离
+            请求缓存和合并
+         -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>

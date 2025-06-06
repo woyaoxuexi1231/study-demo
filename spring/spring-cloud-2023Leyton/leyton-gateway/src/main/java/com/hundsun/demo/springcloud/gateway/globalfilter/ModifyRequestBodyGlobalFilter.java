@@ -51,7 +51,8 @@ public class ModifyRequestBodyGlobalFilter implements GlobalFilter, Ordered {
                             // 解析原始请求体
                             JsonNode jsonNode = objectMapper.readTree(originalRequestBody);
                             // 假设我们正在处理的是一个对象，我们可以直接转换它
-                            if (jsonNode instanceof ObjectNode objectNode) {
+                            if (jsonNode instanceof ObjectNode) {
+                                ObjectNode objectNode = (ObjectNode) jsonNode;
                                 // 新增参数
                                 objectNode.put("newParam", "newValue");
                                 String modifiedBody = objectNode.toString();

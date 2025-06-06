@@ -19,6 +19,9 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 public class FeignClientApplication {
 
     public static void main(String[] args) {
+        /*
+        Feign 是对 REST 请求的封装，让你用接口 + 注解的方式调用远程服务，不用写 HttpClient 或 RestTemplate 的繁琐代码。
+         */
         SpringApplication.run(FeignClientApplication.class, args);
     }
 }

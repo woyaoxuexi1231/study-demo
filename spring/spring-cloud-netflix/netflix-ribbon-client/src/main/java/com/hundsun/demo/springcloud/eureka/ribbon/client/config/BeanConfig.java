@@ -6,12 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * @projectName: study-demo
- * @package: com.hundsun.demo.springcloud.eureka.client.config
- * @className: BeanConfig
- * @description:
- * @author: h1123
- * @createDate: 2023/5/6 22:22
+ * @author hulei
+ * @since 2023/5/6 22:22
  */
 
 @Deprecated

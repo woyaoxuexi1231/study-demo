@@ -25,7 +25,7 @@ import java.util.Optional;
  * @since 2023/5/25 0:37
  */
 
-@Component
+// @Component
 @Slf4j
 public class TokenGlobalFilter implements org.springframework.cloud.gateway.filter.GlobalFilter, Ordered {
 

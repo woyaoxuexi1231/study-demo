@@ -26,6 +26,12 @@
             <version>1.0.0.4-SNAPSHOT</version>
         </dependency>
 
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+
         <!-- =========================================== -->
         <!-- =============使用turbine聚合监控============= -->
         <!-- =========================================== -->

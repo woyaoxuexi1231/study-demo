@@ -17,7 +17,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableFeignClients
 @EnableDiscoveryClient
 @SpringBootApplication
-public class ConsulConsumerApplication {
+public class  ConsulConsumerApplication {
 
     public static void main(String[] args) {
 

@@ -1,9 +1,10 @@
 package com.hundsun.demo.springcloud.eureka.feign.client.controller;
 
 import com.hundsun.demo.springcloud.eureka.feign.client.service.CloudClientFeign;
-import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * @author hulei

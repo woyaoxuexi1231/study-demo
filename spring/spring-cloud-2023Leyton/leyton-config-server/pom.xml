@@ -32,6 +32,38 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
+
+        <!--
+        Spring Cloud Bus 是一个轻量级的分布式消息总线，用于连接分布式系统的节点（微服务实例），主要解决分布式系统中的配置更新广播和事件传播问题。
+
+        核心作用
+            全局配置刷新
+             - 当配置中心（如 Config Server）的配置变更后，无需手动刷新每个微服务实例
+             - 通过 /bus-refresh (新版本为 /busrefresh) 端点一次触发，自动通知所有连接到总线的服务刷新配置
+             - 对比：无 Bus 时需对每个实例调用 /actuator/refresh (N次调用)，有 Bus 只需调用 1 次
+            集群事件广播
+             - 支持自定义事件在分布式系统中传播（如：清除所有节点的缓存、批量重启服务）
+             - 实现服务节点间的通信协调
+            节点状态同步
+             - 确保分布式环境中所有节点状态一致性（如：同时切换功能开关）
+
+        解决的主要问题包括：
+        动态配置更新：结合 Spring Cloud Config 使用时，Spring Cloud Bus 允许配置更新时自动通知服务实例，实现配置的动态刷新（也需要手动调用一次 busrefresh 断电），无需重新启动服务。
+        事件广播：在微服务架构中，服务实例之间可能需要基于某些事件做出响应或通信。Spring Cloud Bus 提供了一条消息通道，使得事件可以被广播到所有订阅了这些事件的服务实例。
+        解耦服务通信：通过使用轻量级消息代理，Spring Cloud Bus 有助于实现服务实例之间的解耦通信，增加系统的灵活性和可扩展性。
+         -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bus-amqp</artifactId>
+        </dependency>
+        <!--
+        config-server 配置 actuator 的目的仅仅只是为了暴露 /bus-refresh 端点
+        当仅使用 /actuator/refresh 来刷新配置的时候，config-server 可以不需要这个依赖，仅仅client使用这个依赖就行
+         -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
     </dependencies>
 
     <profiles>

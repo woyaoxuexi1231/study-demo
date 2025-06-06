@@ -20,11 +20,12 @@
     <dependencies>
 
         <!-- 内部 -->
-        <dependency>
-            <groupId>org.hulei</groupId>
-            <artifactId>utils</artifactId>
-            <version>1.0.0.4-SNAPSHOT</version>
-        </dependency>
+<!--         <dependency> -->
+<!--             <groupId>org.hulei</groupId> -->
+<!--             <artifactId>utils</artifactId> -->
+<!--             <version>1.0.0.4-SNAPSHOT</version> -->
+<!--         </dependency> -->
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -34,6 +35,12 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
         </dependency>
+
+<!--         <dependency> -->
+<!--             <groupId>org.springframework.boot</groupId> -->
+<!--             <artifactId>spring-boot-starter-security</artifactId> -->
+<!--         </dependency> -->
+
     </dependencies>
 
     <profiles>

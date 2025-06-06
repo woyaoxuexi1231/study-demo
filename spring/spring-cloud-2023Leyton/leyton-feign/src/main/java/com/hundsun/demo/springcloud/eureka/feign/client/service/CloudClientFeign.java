@@ -39,9 +39,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Service
 public interface CloudClientFeign {
 
-    @GetMapping("/hi")
+    @GetMapping("/client/hi")
     String sayHiFromClientEureka();
 
-    @GetMapping("/hi2")
+    @GetMapping("/client/hi2")
     String sayHi2FromClientEureka(@RequestParam(required = false, name = "req") String req, @RequestParam(required = false, name = "other") String other);
 }

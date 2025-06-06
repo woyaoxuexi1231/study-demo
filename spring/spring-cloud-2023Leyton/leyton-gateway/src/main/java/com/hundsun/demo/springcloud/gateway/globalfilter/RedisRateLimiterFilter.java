@@ -3,7 +3,6 @@ package com.hundsun.demo.springcloud.gateway.globalfilter;
 import cn.hutool.core.lang.Pair;
 import com.hundsun.demo.springcloud.gateway.config.RedisLimit;
 import com.hundsun.demo.springcloud.gateway.config.RedisLimitConfig;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -15,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import javax.annotation.PostConstruct;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;

@@ -1,6 +1,21 @@
 server:
   port: 10001
 
+spring:
+  application:
+    name: eureka-server
+  security:
+    user:
+      name: test  # 用户名
+      password: 123456   # 密码
+  cloud:
+    inetutils: ## 网卡设置
+      ignoredInterfaces:  ## 忽略的网卡
+        - docker0
+        - veth.*
+        - VM.*
+      preferredNetworks:  ## 优先的网段
+        - 192.168
 eureka:
   instance:
     # 此配置项指定 Eureka 实例在注册时是否优先使用 IP 地址而不是主机名

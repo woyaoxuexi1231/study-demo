@@ -1,7 +1,16 @@
+# ================================================ 服务基础配置 ==================================================
+server:
+  port: 20013
+
+
+# ================================================ spring cloud 配置 ==================================================
 spring:
   application:
     name: config-client
   cloud:
+    # 存在多张网卡的时候，注册到注册中心的时候可能会出现 ip 地址混乱的情况，这可能导致请求并不通，这里忽略一下虚拟机的额外网卡
+    inetutils:
+      ignored-interfaces: [ 'VMware.*' ]
     config:
       # 配置 Spring Cloud Config 客户端在启动时是否快速失败。当设置为 true 时，如果配置服务器不可用，应用将快速失败启动。默认为 false。
       fail-fast: true
@@ -32,17 +41,25 @@ spring:
     # 指定当前应用的活动配置文件为 dev，这意味着应用将会加载名为 application-dev.yml 或 application-dev.properties 的配置文件。
     active: dev
   rabbitmq:
-    username: rabbitmq
-    password: rabbitmq
+    username: admin
+    password: admin
     virtual-host: /
-    addresses: 192.168.80.128
+    addresses: 192.168.3.102
     port: 5672
 eureka:
+  instance:
+    prefer-ip-address: true
+  #    ip-address: 192.168.3.2
+  # 这是 Eureka 客户端(服务实例)的唯一标识符
+  # 同一个 application-name 下使用相同的 instance-id 会导致注册中心无法区分，而仅识别一个服务
+  # 不同 application-name 使用相同 instance-id 问题不大
+  # 默认格式通常是 ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${server.port}}
+  #    instance-id: config
   client:
     service-url:
-      defaultZone: http://localhost:10001/eureka/
-server:
-  port: 10013
+      defaultZone: http://192.168.3.102:10001/eureka/
+
+# ================================================ 端点暴露 ==================================================
 management:
   #  这是用于配置 Spring Boot Actuator 端点的管理端口属性。
   #  默认情况下，Actuator 端点使用与主服务相同的端口（即 server.port）。但是，如果你想要为 Actuator 端点配置一个不同的端口，你可以使用 management.server.port 属性来指定。
@@ -56,6 +73,7 @@ management:
 #    refresh:
 #      # management.endpoint.refresh.enabled 是 Spring Boot Actuator 的配置选项之一，用于启用或禁用刷新配置的端点。当这个配置项被设置为 true 时，Actuator 将会暴露一个 /actuator/refresh 的端点，允许通过发送 POST 请求来刷新应用程序的配置。
 #      enabled: true
+
 
 refresh: "124"
 # curl -X POST http://localhost:9161/actuator/refresh

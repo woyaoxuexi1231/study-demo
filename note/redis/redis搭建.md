@@ -140,3 +140,5 @@ esac
 # Dcoker
 
  
+
+[Docker 安装 Redis 容器 (完整详细版) - 鹏星 - 博客园](https://www.cnblogs.com/lzp110119/p/17869310.html)

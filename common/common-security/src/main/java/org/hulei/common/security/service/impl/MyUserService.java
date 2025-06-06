@@ -5,7 +5,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import jakarta.annotation.Resource;
+import javax.annotation.Resource;
+
 
 /**
  * @projectName: study-demo

@@ -92,6 +92,7 @@ public class MyFilter extends ZuulFilter {
                 // 尝试将 "token is empty" 写入响应体，以便返回给客户端。
                 ctx.getResponse().getWriter().write("token is empty");
             } catch (Exception e) {
+                log.error(e.getMessage());
             }
             return null;
         }

@@ -12,7 +12,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * FallbackProvider 是 Spring Cloud 中用于定义服务降级的接口。当某个服务不可用时，FallbackProvider 允许你定义一个备用的逻辑来处理请求，以避免在服务不可用时返回错误信息给客户端。它是服务熔断的一种实现方式。
+ * FallbackProvider 是 Spring Cloud 中用于定义服务降级的接口。
+ * 当某个服务不可用时，FallbackProvider 允许你定义一个备用的逻辑来处理请求，以避免在服务不可用时返回错误信息给客户端。它是服务熔断的一种实现方式。
  *
  * @author h1123
  * @since 2023/5/7 16:09
