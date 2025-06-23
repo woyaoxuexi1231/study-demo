@@ -183,7 +183,7 @@ public class SpringbootApplication implements ApplicationRunner {
         return map;
     }
 
-    @Autowired
+    @Autowired(required = false)
     PropertiesConfig propertiesConfig;
 
     @Override

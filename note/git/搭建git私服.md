@@ -67,8 +67,8 @@ MAX_DAYS = 7
 ```shell
 git config --global user.name hulei
 git config --global user.email 154347188@qq.com
-git config --global http.proxy "socks5://192.168.3.14:7890"
-git config --global https.proxy "socks5://192.168.3.14:7890"
+git config --global http.proxy "socks5://192.168.3.2:12310"
+git config --global https.proxy "socks5://192.168.3.2:12310"
 
 
 git config --global --unset http.proxy

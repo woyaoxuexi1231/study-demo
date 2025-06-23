@@ -26,9 +26,9 @@ public class MvcControllerTest {
 
     @Test
     public void testHomePage() throws Exception {
-        mockMvc.perform(get("/"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("home"))
-                .andExpect(content().string(containsString("Welcome to...")));
+        mockMvc.perform(get("/"))  // 模拟一个 HTTP GET 请求，访问应用的根路径 /。
+                .andExpect(status().isOk())  // 期望服务器返回的 HTTP 状态码是 200 OK，表示请求成功。
+                .andExpect(view().name("home"))  // 期望返回的视图（View）名称是 "home"，通常对应一个 Thymeleaf、JSP 或其他模板引擎的视图文件（如 home.html 或 home.jsp）。
+                .andExpect(content().string(containsString("Welcome to..."))); // 期望返回的响应内容（HTML、JSON 或其他文本）中包含字符串 "Welcome to..."。
     }
 }
