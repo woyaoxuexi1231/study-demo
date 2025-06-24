@@ -16,7 +16,9 @@
 
 [Jenkins安装后，安装插件失败，报错Caused: java.io.IOException: Failed to download from 和SunCertPathBuilderException - 乌鸦哥 - 博客园](https://www.cnblogs.com/crowbrother/p/13789230.html)
 
-## publish over ssh 插件
+## publish over ssh 插件 SSH: Transferred 0 file(s)
+
+主要还是 Source files 不对
 
 - Source files 需要上传的源文件，路径是当前的流水线的工作目录，这个工作目录应该是基于 pom 文件来的
 
@@ -28,7 +30,52 @@
 
 
 
-这是一个通用的启动jar包的脚本，具体jar包名字通过命令行传入
+# **笔记**
+
+jenkins在安装完成后，数据都会保存在 .jenkins 中， root用户安装的话会在 /root/.jenkins 文件夹中
+
+
+
+账户
+
+admin bce9c6402e7247009fb6b97e9220fbf9
+
+
+
+## 使用 publish over  ssh 插件
+
+### 直接上传jar包然后后台运行
+
+springboot项目为例：
+
+Source files
+
+```
+spring/spring-boot/target/spring-boot.jar
+```
+
+Remove prefix
+
+```
+spring/spring-boot/target/
+```
+
+Remote directory
+
+```
+```
+
+Exec command
+
+```
+. /etc/profile
+cd /root/jenkins/uploads
+sh restart.sh spring-boot.jar
+```
+
+
+
+restart.sh脚本如下，这是一个通用的启动脚本，具体jar包名字通过命令行传入
 
 ```shell
 #!/bin/bash
@@ -86,15 +133,38 @@ fi
 
 
 
+### 使用docker外挂jar包运行
+
+以eureka-server为例
+
+Source files
+
+```
+spring/spring-cloud-netflix/netflix-eureka-server/target/netflix-eureka-server.jar
+```
+
+Remove prefix
+
+```
+spring/spring-cloud-netflix/netflix-eureka-server/target/
+```
+
+Remote directory
+
+```
+```
+
+Exec command
+
+```
+cd /root/jenkins/uploads
+docker stop eureka-server
+docker run -d -p 10001:10001 --name eureka-server -v /root/jenkins/uploads/netflix-eureka-server.jar:/app.jar --restart=unless-stopped openjdk:11 java -jar app.jar
+```
+
+相当于仅使用openjdk:11这个进行来创建容器，jar包在宿主机上而不在docker镜像内
 
 
-# **暂记**
 
-jenkins在安装完成后，数据都会保存在 .jenkins 中， root用户安装的话会在 /root/.jenkins 文件夹中
-
-
-
-账户
-
-admin bce9c6402e7247009fb6b97e9220fbf9
+### 使用docker打包jar镜像运行
 

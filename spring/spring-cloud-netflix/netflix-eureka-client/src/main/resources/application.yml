@@ -3,5 +3,5 @@ spring:
     active: eureka
 
 server:
-  port: 20002
+  port: 10002
 
