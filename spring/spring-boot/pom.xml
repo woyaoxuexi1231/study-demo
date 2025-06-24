@@ -194,6 +194,8 @@
     </dependencies>
 
     <profiles>
+        <!-- ============================================= dev 环境配置 ========================================== -->
+        <!-- 这里配置了 springboot 的打包方式以及配置了一个自动打包 docker 镜像的配置，docker 打包的操作在 package 阶段的前后进行 -->
         <profile>
             <id>dev</id>
             <!--默认激活状态-->
@@ -203,17 +205,9 @@
             <build>
                 <finalName>${project.name}</finalName>
                 <plugins>
+
+                    <!-- ============================================= spring boot 打包插件 ========================================== -->
                     <plugin>
-                        <!--
-                        使用 2.2.6.RELEASE 版本 spring-boot-maven-plugin 进行打包的时候我发现 jsp 即使被打进包里也访问不了
-                        使用 1.4.2.RELEASE 版本的也不行
-                        打出来的包启动会报错
-                        Failed to scan [jar:file:/C:/Project/study-demo/demo-spring/demo-springboot/target/demo-springboot.jar!/BOOT-INF/lib/spring-webmvc-5.2.7.RELEASE.jar!/] from classloader hierarchy
-                        Caused by: java.lang.IllegalStateException: Not a file URL
-                        Failed to scan [jar:file:/C:/Project/study-demo/demo-spring/demo-springboot/target/demo-springboot.jar!/BOOT-INF/lib/jstl-1.2.jar!/] from classloader hierarchy
-                        Caused by: java.lang.IllegalStateException: Not a file URL
-                        这两个日志是 WARN 级别的, 不知道是什么原因
-                        -->
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-maven-plugin</artifactId>
                         <configuration>
@@ -238,6 +232,7 @@
                         </executions>
                     </plugin>
 
+                    <!-- ============================================= exec-maven-plugin 执行清理插件 ========================================== -->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
@@ -261,7 +256,7 @@
                         </executions>
                     </plugin>
 
-                    <!--   dockerfile-maven-plugin      -->
+                    <!-- ============================================= docker 打包插件 ========================================== -->
                     <plugin>
                         <groupId>com.spotify</groupId>
                         <artifactId>dockerfile-maven-plugin</artifactId>
@@ -283,9 +278,9 @@
                             </buildArgs>
                         </configuration>
                     </plugin>
-
-
                 </plugins>
+
+                <!-- ============================================= 配置额外资源文件打包 ========================================== -->
                 <resources>
                     <resource>
                         <directory>src/main/resources</directory>
@@ -304,6 +299,10 @@
                 </resources>
             </build>
         </profile>
+
+
+
+
         <profile>
             <id>pro</id>
             <activation>
