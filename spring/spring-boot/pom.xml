@@ -248,6 +248,7 @@
                                 <configuration>
                                     <executable>sh</executable>
                                     <arguments>
+                                        <!-- 这里会出现的一个问题：我这里没有使用镜像仓库，直接把镜像上传到本机的docker了，这导致之前已经有在运行的容器了，这里删除镜像会导致失败 -->
                                         <argument>clear_image.sh</argument>
                                         <argument>${project.artifactId}:${project.version}</argument>
                                     </arguments>
