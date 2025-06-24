@@ -6,6 +6,5 @@
 FROM openjdk:11
 VOLUME /tmp
 
-EXPOSE 10001
 ADD netflix-eureka-client.jar /app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
