@@ -23,7 +23,15 @@ public class SemaphoreTest {
 
     public static void semaphore() {
 
-        // 创建一个 Semaphore 实例，允许同时访问的线程数量为2
+        /*
+        Semaphore - 信号量
+        acquire()/acquire(int permits) - 调用该线程的方法会被阻塞, 直到 Semaphore 的信号量值达到 1/permits, 内部采用具体的公平策略在 AQS 中选择线程进行唤醒
+        release() - 调用该方法的线程会使 Semaphore 的信号量递增
+
+        原理: 内部使用AQS作为基础实现,和线程池有些类似,多个线程抢占permits,没有抢到的进行阻塞,相当于就是线程池的任务都抢占线程执行任务
+            1. 每次执行acquire()的时候对permits进行削减,如果为0,那么直接阻塞
+            2. 直到有线程主动释放资源,也就是执行release()方法,然后被唤醒的线程继续执行acquire()的逻辑,反复的尝试去获取permits
+         */
         java.util.concurrent.Semaphore semaphore = new java.util.concurrent.Semaphore(2);
 
         // 创建五个线程，并将 Semaphore 传递给它们

@@ -2,6 +2,7 @@ package org.hulei.basic.jdk.juc.aqs;
 
 import lombok.SneakyThrows;
 
+import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.Lock;
 
 /**
@@ -19,8 +20,22 @@ public class ReentrantLockTest {
 
     @SneakyThrows
     public static void reentrantLock() {
-        // Lock lock = new java.util.concurrent.locks.ReentrantLock(true);
-        // 默认非公平锁
+        /*
+        通过 CAS 和 AQS 实现的可重复锁
+        Lock lock = new java.util.concurrent.locks.ReentrantLock(true);
+        默认非公平锁
+
+
+        AbstractQueuedSynchronizer - AQS, 实现同步器的基础组件, 锁底层使用 AQS 实现
+
+        实现原理如下: 只提供内部维护的'阻塞队列的功能',内部维护了两个Node(链表对象)对象,一个头节点,一个尾节点
+        1. 尝试获取锁的 tryAcquire 由具体子类实现, ReentrantLock 通过一个 state 参数的CAS来尝试获取锁
+        2. 每个获取锁的线程都创建新的 Node 对象尝试用尾插法插入链表中,然后阻塞当前线程
+        3. 释放锁的 release 方法从链表中移除当前头节点,然后循环往下唤醒等待的线程
+        4. 支持可重入,但是具体的逻辑需要子类实现
+
+        AbstractQueuedSynchronizer abstractQueuedSynchronizer;
+         */
         Lock lock = new java.util.concurrent.locks.ReentrantLock();
 
         // 创建一个线程，模拟对共享资源的访问

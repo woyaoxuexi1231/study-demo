@@ -5,6 +5,7 @@ import lombok.Data;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -32,13 +33,9 @@ public class StreamTest {
         当 strings.stream() 执行, ArrayList会生成一个 ArrayListSpliterator 的类，这个类实现了Spliterator接口
          */
         List<String> filtered = strings.stream()
-                .filter((i)->{
-                    return i.isEmpty();
-                })
-                .map((i)->{
-                    return i.toLowerCase();
-                })
-                .toList();
+                .filter(String::isEmpty)
+                .map(String::toLowerCase)
+                .collect(Collectors.toList());
         System.out.println(strings.stream().filter(string -> !string.isEmpty()).count());
 
         System.out.println(Stream.of(null).count());

@@ -1,18 +1,12 @@
 package org.hulei.basic.jdk.juc;
 
-import cn.hutool.core.thread.ThreadFactoryBuilder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.FutureTask;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.LongAdder;
@@ -55,37 +49,6 @@ public class ThreadTest {
             System.out.println("2. 通过实现 Runnable 接口来创建任务, 并通过 Thread 类来创建线程");
         }
     }
-
-    /* 线程间同步 */
-    /**
-     * 线程间同步 - Object 提供的方法 <p>
-     * Object.wait() - 调用该方法的线程会释放持有对象的监视器锁 <p>
-     * Object.wait(long timeout) 方法, 没有在执行的 timeout 时间内被唤醒会因为超时而返回, wait(0) 等价于 wait 方法 <p>
-     * Object.wait(long timeout, int nanos) 函数 <p>
-     * 调用该方法必须持有对象的监视器锁, 否则会抛出 IllegalMonitorStateException 异常 <p>
-     * 调用该方法的线程会被阻塞挂起, 直到以下情况, 会尝试重新获取监视器锁, 然后往下执行: <p>
-     * 1. 其他线程调用 notify() 或者 notifyAll() 方法 <p>
-     * 2. 其他线程调用该线程的 interrupt() 方法, 该线程会抛出 InterruptedException 异常而返回 <p>
-     * 需要注意的是, 可能会存在虚假唤醒 (虚假唤醒出现在 notifyAll() 的时候, 当多个线程同时被唤醒由只有一个能获得监视器锁的时候, 前面获得监视器锁的线程把限制条件给改掉了, 导致后面获得监视器锁的线程在错误的条件下执行) <p>
-     * 所以在实际使用中, 会在使用 wait 方法的地方使用 while 循环一直判断条件是否满足, 不满足则继续 wait <p>
-     * Object.notify() - 调用该方法的线程会唤醒调用了持有对象的 wait 方法的线程 <p>
-     * notify() 和 notifyAll() 也都是必须获得对象的监视器锁才能使用, 否则会抛出 IllegalMonitorStateException 异常 <p>
-     * notifyAll() 只会唤醒在调用这个方法前 调用了 wait 系列函数而被放入共享变量等待集合里面的线程, 后面放入的是不会被唤醒的 <p>
-     */
-    Object object;
-
-    /**
-     * Thread 提供的方法 <p>
-     * join() - 阻塞调用线程, 当前线程去等待被使用 join 方法的线程执行完毕后恢复 - CountDownLatch 相比 join 粒度更细 <p>
-     * sleep() - 调用线程会让出 cpu 时间片, 并且线程被阻塞挂起, 但是持有的锁是不会被释放的, 指定时间后, 转为就绪状态继而继续争抢 cpu 时间片 <p>
-     * yield() - 暗示线程调度器让出自己的 cpu 时间片, 但是实际上不一定会让出, 不会被阻塞挂起, 而是直接处于就绪状态, 使用较少 <p>
-     * interrupt() - 调用该方法会设置线程的中断状态为 true <p>
-     * isInterrupt() - 返回当前的线程是否被中断 <p>
-     * interrupted() - 返回当前线程是否被中断, 并且清楚中断标志 <p>
-     * 线程的切换会伴随着线程上下文的切换 <p>
-     */
-    Thread thread;
-
 
     /*
     synchronized 原子性内置锁, 监视器锁, 内部锁
@@ -158,314 +121,7 @@ public class ThreadTest {
      */
     ThreadLocalRandom threadLocalRandom;
 
-    /**
-     * LockSupport 工具类 - 主要作用是挂起和唤醒线程
-     * <p>
-     * park() 类似于 wait() , 被 interrupt() 不会抛异常
-     * unpark(Thread thread) 类似与 notify()
-     * parkNanos(long nanos)
-     */
-    LockSupport lockSupport;
-
-    /**
-     * AbstractQueuedSynchronizer - AQS, 实现同步器的基础组件, 锁底层使用 AQS 实现
-     * <p>
-     * 实现原理如下: 只提供内部维护的'阻塞队列的功能',内部维护了两个Node(链表对象)对象,一个头节点,一个尾节点
-     * 1. 尝试获取锁的 tryAcquire 由具体子类实现, ReentrantLock 通过一个 state 参数的CAS来尝试获取锁
-     * 2. 每个获取锁的线程都创建新的 Node 对象尝试用尾插法插入链表中,然后阻塞当前线程
-     * 3. 释放锁的 release 方法从链表中移除当前头节点,然后循环往下唤醒等待的线程
-     * 4. 支持可重入,但是具体的逻辑需要子类实现
-     */
-    AbstractQueuedSynchronizer abstractQueuedSynchronizer;
-
-    /*
-     JDK 提供了一些并发队列 - 按照实现方式不同可以分为阻塞队列和非阻塞队列, 顾名思义, 阻塞队列使用锁实现 非阻塞队列使用 CAS 实现
-     非阻塞队列
-           ConcurrentLinkedQueue
-     阻塞队列
-           LinkedBlockingQueue(有界) - 内部主要使用 ReentrantLock,
-           ArrayBlockingQueue(有界)
-           PriorityBlockingQueue(无界) - 通过比较优先级来确定出列顺序
-           DelayQueue(无界) - 元素带有过期时间, 只有过期元素才会出列, 队列头元素是最快要过期的元素. 元素需要继承 Delayed 接口
-     */
-
-
-    /*
-     * ThreadPoolExecutor (无脑使用ArrayBlockingQueue+CallerRunsPolicy策略这个不会丢掉任何一个任务)
-     *
-     *  corePoolSize: 指定了线程池中的线程数量, 它的数量决定了添加的任务是开辟新的线程去执行, 还是放到workQueue任务队列中去
-     *  maximumPoolSize: 指定了线程池中的最大线程数量, 这个参数会根据你使用的workQueue任务队列的类型, 决定线程池会开辟的最大线程数量,这个参数在无界队列时是无效的(因为任务不会达到上限,也就不会触发线程扩容,更不会触发拒绝策略)
-     *  keepAliveTime: 当线程池中空闲线程数量超过corePoolSize时, 多余的线程会在多长时间内被销毁
-     *  unit: keepAliveTime的单位
-     *  workQueue: 任务队列, 被添加到线程池中, 但尚未被执行的任务; 它一般分为直接提交队列(SynchronousQueue)、有界任务队列(ArrayBlockingQueue)、无界任务队列(LinkedBlockingQueue)、优先任务队列（PriorityBlockingQueue）几种；
-     *      SynchronousQueue - 提交的任务不会被保存，总是会马上提交执行。如果用于执行任务的线程数量小于maximumPoolSize
-     *                          ，则尝试创建新的进程，如果达到maximumPoolSize设置的最大值，则根据你设置的handler
-     *                          执行拒绝策略。因此这种方式你提交的任务不会被缓存起来，而是会被马上执行，在这种情况下，你需要对你程序的并发量有个准确的评估，才能设置合适的maximumPoolSize数量，否则很容易就会执行拒绝策略；
-     *      ArrayBlockingQueue - 若有新的任务需要执行时，线程池会创建新的线程，直到创建的线程数量达到corePoolSize
-     *                      时，则会将新的任务加入到等待队列中。若等待队列已满，即超过ArrayBlockingQueue初始化的容量，则继续创建线程，直到线程数量达到maximumPoolSize
-     *                      设置的最大线程数量，若大于maximumPoolSize
-     *                      ，则执行拒绝策略。在这种情况下，线程数量的上限与有界任务队列的状态有直接关系，如果有界队列初始容量较大或者没有达到超负荷的状态，线程数将一直维持在corePoolSize
-     *                      以下，反之当任务队列已满时，则会以maximumPoolSize为最大线程数上限。
-     *      LinkedBlockingQueue - 使用无界任务队列，线程池的任务队列可以无限制的添加新的任务，而线程池创建的最大线程数量就是你corePoolSize设置的数量，也就是说在这种情况下maximumPoolSize
-     *                      这个参数是无效的，哪怕你的任务队列中缓存了很多未执行的任务，当线程池的线程数达到corePoolSize
-     *                      后，就不会再增加了；若后续有新的任务加入，则直接进入队列等待，当使用这种任务队列模式时，一定要注意你任务提交与处理之间的协调与控制，不然会出现队列中的任务由于无法及时处理导致一直增长，直到最后资源耗尽的问题。
-     *      PriorityBlockingQueue - 其实是一个特殊的无界队列，它其中无论添加了多少个任务，线程池创建的线程数也不会超过corePoolSize
-     *                      的数量，只不过其他队列一般是按照先进先出的规则处理任务，而PriorityBlockingQueue队列可以自定义规则根据任务的优先级顺序先后执行。
-     *  threadFactory:线程工厂，用于创建线程，一般用默认即可
-     *  handler:拒绝策略；当任务太多来不及处理时，如何拒绝任务
-     *      1、AbortPolicy策略(会丢弃任务)：该策略会直接抛出异常，阻止系统正常工作
-     *      2、CallerRunsPolicy策略(不会丢弃任务)：如果线程池的线程数量达到上限，该策略会把任务队列中的任务放在调用者线程当中运行
-     *      3、DiscardOledestPolicy策略(会丢弃任务)：该策略会丢弃任务队列中最老的一个任务，也就是当前任务队列中最先被添加进去的，马上要被执行的那个任务，并尝试再次提交
-     *      4、DiscardPolicy策略(会丢弃任务)：该策略会默默丢弃无法处理的任务，不予任何处理。当然使用此策略，业务场景中需允许任务的丢失
-     */
-    private static final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
-            10,
-            10,
-            20,
-            TimeUnit.SECONDS,
-            new ArrayBlockingQueue<>(200),
-            new ThreadFactoryBuilder().setNamePrefix("juc-threadPoolExecutor").build(),
-            new ThreadPoolExecutor.CallerRunsPolicy());
-
-    /**
-     * 通过 CAS 和 AQS 实现的可重复锁
-     */
-    ReentrantLock reentrantLock;
-
-    // ThreadPoolExecutor 通过worker队列+getTask()阻塞循环获取任务的方式来实现线程的复用
-    // protected Runnable getTask() {
-    //     boolean timedOut = false; // 标记上一次从队列获取是否超时
-    //
-    //     for (;;) { // 无限循环以保证线程可以反复获取任务
-    //         int c = ctl.get(); // 获取线程池的当前控制状态
-    //         int rs = runStateOf(c); // 提取当前的运行状态
-    //
-    //         // 如果线程池关闭且队列为空，或处于 STOP 状态，则不再接受新任务
-    //         if (rs >= SHUTDOWN && (rs >= STOP || workQueue.isEmpty())) {
-    //             decrementWorkerCount(); // 线程即将退出，减少工作线程计数
-    //             return null; // 返回 null 让工作者线程退出循环
-    //         }
-    //
-    //         int wc = workerCountOf(c); // 获取线程池的工作者线程数量
-    //         // 根据核心线程超时策略和当前线程数量来决定是否设置超时
-    //         boolean timed = allowCoreThreadTimeOut || wc > corePoolSize;
-    //
-    //         // 如果工作者线程数超过最大值或上次获取超时，并且存在多于一个工作者或队列为空，尝试减少线程
-    //         if ((wc > maximumPoolSize || (timed && timedOut)) && (wc > 1 || workQueue.isEmpty())) {
-    //             if (compareAndDecrementWorkerCount(c)) return null; // 如果成功减少计数则让线程退出
-    //             continue; // 如果未能减少，重新尝试
-    //         }
-    //
-    //         try {
-    //             // 根据超时设置从工作队列中获取任务，或等待直到有任务可获取
-    //             // 而避免CPU空转浪费资源就在于 workQueue.take(), 没有任务会阻塞获取
-    //             Runnable r = timed ? workQueue.poll(keepAliveTime, TimeUnit.NANOSECONDS) : workQueue.take();
-    //             if (r != null) {
-    //                 return r; // 成功获取到任务，返回该任务以供执行
-    //             }
-    //             timedOut = true; // 如果poll超时且没有获取到任务，则设置超时标志为真
-    //         } catch (InterruptedException retry) {
-    //             timedOut = false; // 如果在获取任务时被中断，重置超时标志
-    //         }
-    //     }
-    // }
-
     @SneakyThrows
-    private static void futureTaskAndCallable() {
-        FutureTask<String> futureTask = new FutureTask<>(() -> {
-            LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(3000));
-            return (System.currentTimeMillis() % 2) == 1 ? "当前毫秒数是单数" : "当前毫秒数是双数";
-        });
-        new Thread(futureTask).start();
-
-        // futureTask.get() 为阻塞执行, 实现的原理如下: 巧妙的地方在于,原理基于AQS,但是他没有在AQS的基础上实现,或许他认为AQS太重了
-        // 1. 内部通过 CAS 去改变stateOffset的值,来标记任务的完成状态
-        // 2. 各个线程通过futureTask.get()去获得值的时候,如果在任务没有完成的状态下,会把包装WaitNode(单链表节点)对象,通过CAS去排队塞入futureTask的waiters变量中
-        // 3. 排队成功的线程会通过 LockSupport.park(this) 阻塞自己, 后续当 futureTask完成任务后会通过waiters循环 LockSupport.unpark() 唤醒之前阻塞的线程
-        new Thread(new Runnable() {
-            @SneakyThrows
-            @Override
-            public void run() {
-                System.out.println(futureTask.get());
-            }
-        }).start();
-        new Thread(new Runnable() {
-            @SneakyThrows
-            @Override
-            public void run() {
-                System.out.println(futureTask.get());
-            }
-        }).start();
-    }
-
-    @SneakyThrows
-    public static void atomicTest() {
-        /*
-         * 原理类似, 内部都是通过 Unsafe 类来实现原子性的递增或者递减
-         * 在没有这些原子操作类的时候我们可以通过 synchronized 来保证线程安全, 但是使用 synchronized 是一种阻塞算法
-         * 这些原子操作类都是基于 cas 非阻塞算法实现的, 所以性能会更好
-         */
-        AtomicInteger atomicInteger = new AtomicInteger();
-        CountDownLatch countDownLatch = new CountDownLatch(2);
-        new Thread(() -> {
-            for (int i = 0; i < 1000; i++) {
-                atomicInteger.addAndGet(1);
-            }
-            countDownLatch.countDown();
-        }).start();
-        new Thread(() -> {
-            for (int i = 0; i < 1000; i++) {
-                atomicInteger.addAndGet(1);
-            }
-            countDownLatch.countDown();
-        }).start();
-        countDownLatch.await();
-        System.out.println(atomicInteger);
-    }
-
-    @SneakyThrows
-    public static void longAdderTest() {
-        /*
-         * 为了解决高并发下大量线程同时竞争一个原子变量而造成的大量线程不断自旋尝试 cas 操作, 这会浪费 cpu 资源
-         * LongAdder应运而生,原理如下:
-         * 由一个 base 值 和 cell[] 数组构成
-         * 1. 并发比较低的情况下,数值全部由base记录,所有线程对base进行cas操作
-         * 2. 并发逐渐提升,base的cas失败会触发cell[]的初始化,初始大小为 2,base cas操作失败的线程会随机选一个 cell进行cas操作进行数值的累加
-         * 3. cell[]最大只能是cpu数量,达到cpu数量之后将不在触发扩容,会一直尝试随机在某一个cell里面进行操作
-         * 4. 得到最终值是通过计算base+cell[]所有的数值得到
-         */
-        LongAdder longAdder = new LongAdder();
-        CountDownLatch countDownLatch = new CountDownLatch(2);
-        new Thread(() -> {
-            for (int i = 0; i < 1000; i++) {
-                longAdder.add(1);
-            }
-            countDownLatch.countDown();
-        }).start();
-        new Thread(() -> {
-            for (int i = 0; i < 1000; i++) {
-                longAdder.add(1);
-            }
-            countDownLatch.countDown();
-        }).start();
-        countDownLatch.await();
-        System.out.println(longAdder);
-
-    }
-
-    @SneakyThrows
-    public static void countDownLatch() {
-        /*
-         * CountDownLatch - 指定数量的线程被执行后, 调用了 CountDownLatch.await() 方法的线程会被唤醒
-         * countDown() - 线程调用该方法后, CountDownLatch 内部的计数器会递减, 递减后如果计数器的值为 0, 则唤醒所有因调用 await() 方法被阻塞的线程
-         * await() - 线程调用该方法后会被阻塞, 直到 CountDownLatch 内部的计数器值为 0 或者其他线程调用了当先线程的 interrupt() 方法中断了该线程
-         *
-         * 原理: 内部有一个AQS变量,通过这个变量来控制并发
-         * 1. 初始化会赋值给定的State值,这个State值代表需要等待的计数器值
-         * 2. 调用countDown()的线程会cas自旋进行state值的递减,知道state=0,那么会唤醒所有在等待的线程
-         * 3. 调用await()的线程会尝试是否state=0,如果不等于0,加入AQS等待队列
-         */
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        new Thread(countDownLatch::countDown).start();
-        countDownLatch.await();
-    }
-
-    @SneakyThrows
-    public static void cyclicBarrier() {
-        /*
-         * CyclicBarrier - 回环屏障
-         * parties 用来记录总的线程个数, count 用来记录当前有多少个线程调用了 await
-         * await() - 调用该方法的线程会被阻塞, 直到指定数量的线程都调用了 await() 方法, 也就是线程都到了屏障点
-         * 所有线程都被唤醒后, CyclicBarrier 的 count 会被重新赋值, 以达到复用的目的
-         *
-         * 原理:内部持有一个ReentrantLock
-         * 1. 每个线程await()的时候先lock上锁, 尝试判断 count-1 是否为0, 如果不为0, 上锁后中途解锁(解锁并不直接unlock(),通过直接操作AQS的state完成),并且加入队列中, 并阻塞当前线程
-         * 2. 知道有一个线程 count-1为0, 那么会依次唤醒所有之前阻塞的线程, 这个唤醒操作也有点不同,每个被唤醒的线程先去试图改变state的值(换言之先加锁),完事之后直接 unlock,然后每个线程释放锁之后就继续执行业务代码
-         *
-         * 相比于CountDownLatch,两者的区别像是 CountDownLatch倾向于一个人等待多个人的结果 而 CyclicBarrier像是一辆公交车等待满员直接发车
-         */
-        CyclicBarrier cyclicBarrier = new CyclicBarrier(3);
-
-        new Thread(() -> {
-            try {
-                System.out.println("调用 cyclicBarrier.await() ");
-                cyclicBarrier.await();
-            } catch (InterruptedException | BrokenBarrierException e) {
-                throw new RuntimeException(e);
-            }
-        }).start();
-        new Thread(() -> {
-            try {
-                System.out.println("调用 cyclicBarrier.await() ");
-                cyclicBarrier.await();
-            } catch (InterruptedException | BrokenBarrierException e) {
-                throw new RuntimeException(e);
-            }
-        }).start();
-
-    }
-
-    @SneakyThrows
-    public static void semaphoreTest() {
-        /*
-         * Semaphore - 信号量
-         * acquire()/acquire(int permits) - 调用该线程的方法会被阻塞, 直到 Semaphore 的信号量值达到 1/permits, 内部采用具体的公平策略在 AQS 中选择线程进行唤醒
-         * release() - 调用该方法的线程会使 Semaphore 的信号量递增
-         *
-         * 原理: 内部使用AQS作为基础实现,和线程池有些类似,多个线程抢占permits,没有抢到的进行阻塞,相当于就是线程池的任务都抢占线程执行任务
-         * 1. 每次执行acquire()的时候对permits进行削减,如果为0,那么直接阻塞
-         * 2. 直到有线程主动释放资源,也就是执行release()方法,然后被唤醒的线程继续执行acquire()的逻辑,反复的尝试去获取permits
-         */
-        Semaphore semaphore = new Semaphore(1);
-        new Thread(() -> {
-            try {
-                log.info("调用 semaphore.acquire() ");
-                semaphore.acquire();
-                LockSupport.parkNanos(1000 * 1000 * 1000 * 3L);
-                log.info("finish semaphore.acquire() ");
-                semaphore.release();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }).start();
-        new Thread(() -> {
-            try {
-                log.info("调用 semaphore.acquire() ");
-                semaphore.acquire();
-                LockSupport.parkNanos(1000 * 1000 * 1000 * 3L);
-                log.info("finish semaphore.acquire() ");
-                semaphore.release();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }).start();
-        semaphore.acquire();
-        log.info("finish semaphore.acquire() ");
-        semaphore.release();
-    }
-
-    public static void threadPoolExecutorTest() {
-
-        /*
-        通过 execute 提交任务 -> 提交任务的同时来决定是任务入列还是新建线程 -> 线程池创建的worker线程run方法只有一个目的,那就是从阻塞队列获取Runnable任务然后执行
-        注意: 异常是不会显式抛出的,所以线程池的线程是不会终止的
-         */
-        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
-                1,
-                2,
-                20,
-                TimeUnit.SECONDS,
-                new LinkedBlockingQueue<>(),
-                new ThreadFactoryBuilder().setNamePrefix("threadPoolExecutorTest-").build(),
-                new ThreadPoolExecutor.DiscardPolicy());
-
-        for (int i = 0; i < 100; i++) {
-            threadPoolExecutor.execute(() -> {
-                log.info("{}", System.currentTimeMillis());
-            });
-        }
-    }
-
     public static void main(String[] args) {
 
         // createThread();
@@ -480,13 +136,31 @@ public class ThreadTest {
 
         // threadPoolExecutorTest();
 
+
+        /*
+        Thread 提供的方法
+            join() - 阻塞调用线程, 当前线程去等待被使用 join 方法的线程执行完毕后恢复 - CountDownLatch 相比 join 粒度更细
+            sleep() - 调用线程会让出 cpu 时间片, 并且线程被阻塞挂起, 但是持有的锁是不会被释放的, 指定时间后, 转为就绪状态继而继续争抢 cpu 时间片
+            yield() - 暗示线程调度器让出自己的 cpu 时间片, 但是实际上不一定会让出, 不会被阻塞挂起, 而是直接处于就绪状态, 使用较少
+            interrupt() - 调用该方法会设置线程的中断状态为 true
+            isInterrupt() - 返回当前的线程是否被中断
+            interrupted() - 返回当前线程是否被中断, 并且清楚中断标志
+        线程的切换会伴随着线程上下文的切换
+         */
         Thread thread = new Thread(() -> {
-            System.out.println(System.currentTimeMillis());
+            log.info("{}", System.currentTimeMillis());
+            try {
+                Thread.sleep(TimeUnit.SECONDS.toMillis(3));
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            log.info("{}", System.currentTimeMillis());
         });
 
         thread.start();
-        thread.start();
 
+        thread.join();
+        System.out.println("all task has finished");
     }
 
 }

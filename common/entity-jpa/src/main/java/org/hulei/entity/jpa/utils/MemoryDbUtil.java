@@ -3,6 +3,7 @@ package org.hulei.entity.jpa.utils;
 import cn.hutool.core.collection.ConcurrentHashSet;
 import cn.hutool.core.lang.Snowflake;
 import com.github.javafaker.Faker;
+import lombok.extern.slf4j.Slf4j;
 import org.hulei.entity.jpa.pojo.Employee;
 import org.hulei.util.dto.PageInfo;
 
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
  * @since 2024/11/16 0:53
  */
 
+@Slf4j
 public class MemoryDbUtil {
 
     /**
@@ -39,7 +41,8 @@ public class MemoryDbUtil {
     static {
         Faker faker = new Faker(Locale.CHINA);
         for (int i = 0; i < initSize; i++) {
-            long id = snowflake.nextId();
+            // long id = snowflake.nextId();
+            long id = i + 1;
             data.put(id, new Employee()
                     .setId(id)
                     .setLastName(faker.name().firstName())
@@ -79,6 +82,10 @@ public class MemoryDbUtil {
         pageInfo.setList(employees);
 
         return pageInfo;
+    }
+
+    public static Employee getEmployeeById(long id) {
+        return data.get(id);
     }
 
     public static void insert(Employee employee) {

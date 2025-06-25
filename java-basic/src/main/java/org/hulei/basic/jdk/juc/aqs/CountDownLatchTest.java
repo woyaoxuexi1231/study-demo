@@ -1,5 +1,7 @@
 package org.hulei.basic.jdk.juc.aqs;
 
+import java.util.concurrent.CountDownLatch;
+
 /**
  * @ProductName: Hundsun amust
  * @ProjectName: study-demo
@@ -20,8 +22,17 @@ public class CountDownLatchTest {
     }
 
     public static void countDownLatch() {
-        // 创建一个 CountDownLatch 实例，计数器初始化为3
-        java.util.concurrent.CountDownLatch latch = new java.util.concurrent.CountDownLatch(3);
+        /*
+        CountDownLatch - 指定数量的线程被执行后, 调用了 CountDownLatch.await() 方法的线程会被唤醒
+        countDown() - 线程调用该方法后, CountDownLatch 内部的计数器会递减, 递减后如果计数器的值为 0, 则唤醒所有因调用 await() 方法被阻塞的线程
+        await() - 线程调用该方法后会被阻塞, 直到 CountDownLatch 内部的计数器值为 0 或者其他线程调用了当先线程的 interrupt() 方法中断了该线程
+
+        原理: 内部有一个AQS变量,通过这个变量来控制并发
+            1. 初始化会赋值给定的State值,这个State值代表需要等待的计数器值
+            2. 调用countDown()的线程会cas自旋进行state值的递减,直到state=0,那么会唤醒所有在等待的线程
+            3. 调用await()的线程会尝试是否state=0,如果不等于0,加入AQS等待队列
+         */
+        CountDownLatch latch = new CountDownLatch(3);
 
         // 创建三个线程，并将 CountDownLatch 传递给它们
         Thread worker1 = new Thread(new Worker(latch, "Worker 1"));
@@ -45,10 +56,10 @@ public class CountDownLatchTest {
 
     static class Worker implements Runnable {
 
-        private final java.util.concurrent.CountDownLatch latch;
+        private final CountDownLatch latch;
         private final String name;
 
-        Worker(java.util.concurrent.CountDownLatch latch, String name) {
+        Worker(CountDownLatch latch, String name) {
             this.latch = latch;
             this.name = name;
         }

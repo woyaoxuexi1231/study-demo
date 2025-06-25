@@ -20,6 +20,15 @@ public class LockSupportTest {
     }
 
     public static void lockSupport() {
+
+        /*
+        LockSupport 工具类 - 主要作用是挂起和唤醒线程
+            park() 类似于 wait() , 被 interrupt() 不会抛异常
+            unpark(Thread thread) 类似与 notify()
+            parkNanos(long nanos)
+         */
+
+
         Thread thread = new Thread(() -> {
             System.out.println("Thread starts.");
             // 当前线程进入等待状态

@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.function.Consumer;
 
 /**
@@ -81,21 +82,34 @@ public class CommonUtil {
 
         while (rs.next()) {
             for (int i = 1; i <= columnCount; i++) {
-                if (i > 1) System.out.print(" | ");
-
+                if (i > 1) {
+                    System.out.print(" | ");
+                }
                 // 根据列类型获取值并打印
-                String value = switch (metaData.getColumnType(i)) {
-                    case java.sql.Types.INTEGER -> String.valueOf(rs.getInt(i));
-                    case java.sql.Types.VARCHAR, java.sql.Types.CHAR -> rs.getString(i);
-                    case java.sql.Types.DOUBLE, java.sql.Types.FLOAT -> String.valueOf(rs.getDouble(i));
-                    case java.sql.Types.DATE -> String.valueOf(rs.getDate(i));
-                    case java.sql.Types.TIMESTAMP -> String.valueOf(rs.getTimestamp(i));
-                    default -> String.valueOf(rs.getObject(i));
-                };
-
+                String value = getColumnType(metaData, rs, i);
                 System.out.print(value);
             }
             System.out.println(); // 每打印完一行换行
+        }
+    }
+
+    public static String getColumnType(ResultSetMetaData metaData, ResultSet rs, int column) throws SQLException {
+        switch (metaData.getColumnType(column)) {
+
+            case Types.INTEGER:
+                return String.valueOf(rs.getInt(column));
+            case Types.VARCHAR:
+            case Types.CHAR:
+                return rs.getString(column);
+            case Types.DOUBLE:
+            case Types.FLOAT:
+                return String.valueOf(rs.getDouble(column));
+            case Types.DATE:
+                return String.valueOf(rs.getDate(column));
+            case Types.TIMESTAMP:
+                return String.valueOf(rs.getTimestamp(column));
+            default:
+                return String.valueOf(rs.getObject(column));
         }
     }
 

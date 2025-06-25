@@ -683,3 +683,21 @@ docker通过联合文件系统(Union File System)将上述不同的每一层,整
 如你只是构建并传输至远程服务器，**spring-boot-maven-plugin（Buildpacks）** 或 **Jib** 会是最佳选择。如果你喜欢直接控制 Dockerfile，**Fabric8** 更灵活。
 
 如需，我可以为你推荐最佳插件并帮你配好 `pom.xml`。要吗？
+
+
+
+
+
+# 问题汇总
+
+## docker打包镜像，注册中心的服务显示为乱码
+
+使用docker打包jar成镜像运行后，注册中心显示为 a07e0425e6ce:eureka-client:10002 乱码host
+
+这里的 a07e0425e6ce 实则是容器ID
+
+解决方案：
+
+1. 运行images时加上  `--net "host"` ，此参数指定使用主机网络模式
+
+2. 手动设置ip地址信息 `-e DUBBO_IP_TO_REGISTRY=192.168.2.102` 
