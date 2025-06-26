@@ -1,6 +1,8 @@
 package org.hulei.springboot.mybatisplus.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.ResultHandler;
 import org.hulei.entity.mybatisplus.domain.Employees;
@@ -8,6 +10,7 @@ import org.hulei.springboot.mybatisplus.model.EmployeeTreeRsp;
 import org.hulei.springboot.mybatisplus.model.EmployeeWithCustomersRsp;
 
 import java.util.List;
+import java.util.Map;
 
 public interface EmployeesMapper extends BaseMapper<Employees> {
 
@@ -59,4 +62,6 @@ public interface EmployeesMapper extends BaseMapper<Employees> {
      * @param handler
      */
     void resultSetOpe(ResultHandler<Employees> handler);
+
+    IPage<Map<String, Object>> getData(@Param("page") Page<?> page, @Param("sql") String sql);
 }

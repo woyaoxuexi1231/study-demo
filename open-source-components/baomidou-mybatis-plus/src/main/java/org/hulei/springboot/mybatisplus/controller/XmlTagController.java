@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.javafaker.Faker;
 import com.github.jsonzou.jmockdata.JMockData;
+import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.SneakyThrows;
@@ -18,19 +19,14 @@ import org.hulei.entity.mybatisplus.domain.Employees;
 import org.hulei.springboot.mybatisplus.LocalDateTimeTypeAdapter;
 import org.hulei.springboot.mybatisplus.mapper.BiguserMapper;
 import org.hulei.springboot.mybatisplus.mapper.CustomersMapper;
-import org.hulei.springboot.mybatisplus.mapper.EmployeeMapper2;
 import org.hulei.springboot.mybatisplus.mapper.EmployeesMapper;
-import org.hulei.springboot.mybatisplus.mapper.OrderDetailsMapper;
-import org.hulei.springboot.mybatisplus.mapper.OrdersMapper;
-import org.hulei.springboot.mybatisplus.mapper.ProductLinesMapper;
 import org.hulei.springboot.mybatisplus.mapper.ProductsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.annotation.Resource;
-
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -55,15 +51,9 @@ public class XmlTagController {
      * 一堆mapper配置
      */
     @Resource
-    EmployeesMapper employeeMapper;
-    @Resource
-    OrdersMapper ordersMapper;
-    @Autowired
-    private OrderDetailsMapper orderdetailsMapper;
+    EmployeesMapper employeesMapper;
     @Autowired
     ProductsMapper productsMapper;
-    @Autowired
-    ProductLinesMapper productlinesMapper;
     @Autowired
     BiguserMapper biguserMapper;
     @Autowired
@@ -91,20 +81,25 @@ public class XmlTagController {
     public List<Employees> selectListWithResultMap() {
         // employeeMapper.getEmployeeTree();
         // 创建一个Gson实例并启用漂亮打印
-        return employeeMapper.getEmployeeWithResultMap();
+        return employeesMapper.getEmployeeWithResultMap();
     }
 
     /**
-     * collection标签的使用
+     * collection 标签的使用
+     * MyBatis 的 collection 标签是 用于处理一对多（One-to-Many）关联映射 的核心组件
+     * 其核心作用是将数据库查询结果中的多行关联数据映射到 Java 对象的集合属性中
      *
      * @return rsp
      */
     @GetMapping("/selectListWithCollection")
     public List<?> selectListWithCollection(Long employeeId) {
 
-        // 通过Collection来通过Mybatis构建列表对象
-        return employeeMapper.getEmployeeWithCustomers(employeeId);
+        // 由于 collection 使用的是笛卡尔积查询后的结果再来拼接，如果分页查询会导致结果不正确！！ 所以这种方式不能进行分页
+        // PageHelper.startPage(1, 50);
+        // 通过Collection 来通过 Mybatis 构建列表对象
+        return employeesMapper.getEmployeeWithCustomers(employeeId);
 
+        // return employeesMapper.selectList(Wrappers.<Employees>lambdaQuery());
         // return ordersMapper.selectOrderFullInfo();
 
         // 通过Collection来快速构建树状结果
@@ -113,6 +108,8 @@ public class XmlTagController {
 
     /**
      * association标签的使用
+     * 处理 一对一（One-to-One） 或 多对一（Many-to-One） 的关联关系。
+     * 将单条关联数据映射到目标对象的单个属性中。
      *
      * @return rsp
      */
@@ -233,12 +230,9 @@ public class XmlTagController {
         customerMapper.insert(customerDO1);
     }
 
-    @Autowired
-    EmployeeMapper2 employeeMapper2;
-
     @GetMapping("/selectByPage")
     public void selectByPage() {
-        IPage<Map<String, Object>> data = employeeMapper2.getData(new Page<>(1, 10), "select * from employees");
+        IPage<Map<String, Object>> data = employeesMapper.getData(new Page<>(1, 10), "select * from employees");
         data.getRecords().forEach(i -> {
             log.info("{}", i);
         });

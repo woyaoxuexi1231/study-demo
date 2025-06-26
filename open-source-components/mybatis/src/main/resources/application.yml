@@ -9,7 +9,7 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
   datasource:
-    url: jdbc:mysql://192.168.80.128:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&connectionCollation=utf8mb4&rewriteBatchedStatements=true
+    url: jdbc:mysql://192.168.3.102:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&connectionCollation=utf8mb4&rewriteBatchedStatements=true
     username: root
     password: 123456
 
@@ -21,6 +21,8 @@ mybatis:
     local-cache-scope: statement
     # mybatis提供的二级缓存，决定一个 mapper 文件在整个程序的声明周期内的缓存行为, 这是一个总开关，这里关闭之后，是不会启动二级缓存的
     cache-enabled: false
+    lazy-loading-enabled: true
+    aggressive-lazy-loading: false
   mapper-locations: classpath:mapper/*.xml
 
 # pagehelper

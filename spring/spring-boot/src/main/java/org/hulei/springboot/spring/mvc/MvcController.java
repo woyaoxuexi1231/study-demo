@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -31,7 +32,10 @@ public class MvcController {
 
     @GetMapping("/get-ip")
     @ResponseBody
-    public void getIp(HttpServletRequest request, HttpServletResponse response) {
+    public void getIp(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+        /*
+        要使用 Request Response 或者 Session 都是可以直接写在方法上的
+         */
         System.out.println("hi");
     }
 }

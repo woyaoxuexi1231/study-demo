@@ -4,7 +4,10 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.RequiredArgsConstructor;
 import org.hulei.entity.jpa.pojo.Customer;
+import org.hulei.entity.jpa.pojo.ProductInfo;
 import org.hulei.mybatis.mapper.CustomerMapper;
+import org.hulei.mybatis.mapper.ProductInfoMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,5 +43,14 @@ public class MybatisController {
         customerMapper.updateOne(customer);
 
         throw new RuntimeException("error");
+    }
+
+    @Autowired
+    ProductInfoMapper productInfoMapper;
+
+    @GetMapping("get-product-info-by-id/{id}")
+    public void getProductInfoById(@PathVariable("id") Integer id) {
+        ProductInfo productInfo = productInfoMapper.selectById(id);
+        System.out.println(productInfo.getProductName());
     }
 }

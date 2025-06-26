@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.hulei.springboot.mybatisplus.mapper.ProductInfoMapper">
-  <resultMap id="BaseResultMap" type="org.hulei.entity.mybatisplus.domain.ProductInfo">
+<mapper namespace="org.hulei.springboot.mybatisplus.mapper.ProductLinesMapper">
+  <resultMap id="BaseResultMap" type="org.hulei.entity.mybatisplus.domain.ProductLines">
     <!--@mbg.generated-->
-    <!--@Table productlines-->
-    <id column="productLine" jdbcType="VARCHAR" property="productline" />
-    <result column="textDescription" jdbcType="VARCHAR" property="textdescription" />
-    <result column="htmlDescription" jdbcType="LONGVARCHAR" property="htmldescription" />
+    <!--@Table product_lines-->
+    <id column="product_line" jdbcType="VARCHAR" property="productLine" />
+    <result column="text_description" jdbcType="VARCHAR" property="textDescription" />
+    <result column="html_description" jdbcType="LONGVARCHAR" property="htmlDescription" />
     <result column="image" jdbcType="BLOB" property="image" />
   </resultMap>
-  <sql id="Base_Column_List">
-    <!--@mbg.generated-->
-    productLine, textDescription, htmlDescription, image
-  </sql>
 </mapper>

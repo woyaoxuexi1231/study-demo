@@ -4,41 +4,41 @@
     <resultMap id="customBaseMapper" type="org.hulei.entity.mybatisplus.domain.Customers">
         <!--@mbg.generated-->
         <!--@Table customers-->
-        <id column="customer_number" jdbcType="INTEGER" property="customernumber"/>
-        <result column="customer_name" jdbcType="VARCHAR" property="customername"/>
-        <result column="contact_last_name" jdbcType="VARCHAR" property="contactlastname"/>
-        <result column="contact_first_name" jdbcType="VARCHAR" property="contactfirstname"/>
+        <id column="customer_number" jdbcType="INTEGER" property="customerNumber"/>
+        <result column="customer_name" jdbcType="VARCHAR" property="customerName"/>
+        <result column="contact_last_name" jdbcType="VARCHAR" property="contactLastName"/>
+        <result column="contact_first_name" jdbcType="VARCHAR" property="contactFirstName"/>
         <result column="phone" jdbcType="VARCHAR" property="phone"/>
-        <result column="address_line1" jdbcType="VARCHAR" property="addressline1"/>
-        <result column="address_line2" jdbcType="VARCHAR" property="addressline2"/>
+        <result column="address_line1" jdbcType="VARCHAR" property="addressLine1"/>
+        <result column="address_line2" jdbcType="VARCHAR" property="addressLine2"/>
         <result column="city" jdbcType="VARCHAR" property="city"/>
         <result column="state" jdbcType="VARCHAR" property="state"/>
-        <result column="postal_code" jdbcType="VARCHAR" property="postalcode"/>
+        <result column="postal_code" jdbcType="VARCHAR" property="postalCode"/>
         <result column="country" jdbcType="VARCHAR" property="country"/>
-        <result column="sales_rep_employee_number" jdbcType="INTEGER" property="salesrepemployeenumber"/>
-        <result column="credit_limit" jdbcType="DECIMAL" property="creditlimit"/>
+        <result column="sales_rep_employee_number" jdbcType="INTEGER" property="salesRepEmployeeNumber"/>
+        <result column="credit_limit" jdbcType="DECIMAL" property="creditLimit"/>
     </resultMap>
 
     <update id="updateOne" parameterType="org.hulei.entity.mybatisplus.domain.Customers">
         update customers
         <set>
-            <if test="customername != null">
-                customer_name = #{customername},
+            <if test="customerName != null">
+                customer_name = #{customerName},
             </if>
-            <if test="contactlastname != null">
-                contact_last_name = #{contactlastname},
+            <if test="contactLastName != null">
+                contact_last_name = #{contactLastName},
             </if>
-            <if test="contactfirstname != null">
-                contact_first_name = #{contactfirstname},
+            <if test="contactFirstName != null">
+                contact_first_name = #{contactFirstName},
             </if>
             <if test="phone != null">
                 phone = #{phone},
             </if>
-            <if test="addressline1 != null">
-                address_line1 = #{addressline1},
+            <if test="addressLine1 != null">
+                address_line1 = #{addressLine1},
             </if>
-            <if test="addressline2 != null">
-                address_line2 = #{addressline2},
+            <if test="addressLine2 != null">
+                address_line2 = #{addressLine2},
             </if>
             <if test="city != null">
                 city = #{city},
@@ -46,16 +46,16 @@
             <if test="state != null">
                 state = #{state},
             </if>
-            <if test="postalcode != null">
-                postal_code = #{postalcode},
+            <if test="postalCode != null">
+                postal_code = #{postalCode},
             </if>
             <if test="country != null">
                 country = #{country},
             </if>
-            <if test="salesrepemployeenumber != null">
-                sales_rep_employee_number = #{salesrepemployeenumber},
+            <if test="salesRepEmployeeNumber != null">
+                sales_rep_employee_number = #{salesRepEmployeeNumber},
             </if>
-            <if test="creditlimit != null">
+            <if test="creditLimit != null">
                 <!--
                 参数设置同样也有很多参数
                 1.参数名
@@ -65,11 +65,11 @@
                 5.mode IN，OUT 或 INOUT todo
                 -->
                 <!-- creditlimit = #{creditlimit,javaType=java.math.BigDecimal,jdbcType=DECIMAL,numericScale=3} -->
-                credit_limit = #{creditlimit}
+                credit_limit = #{creditLimit}
             </if>
         </set>
         <where>
-            customer_number = #{customernumber}
+            customer_number = #{customerNumber}
         </where>
     </update>
 

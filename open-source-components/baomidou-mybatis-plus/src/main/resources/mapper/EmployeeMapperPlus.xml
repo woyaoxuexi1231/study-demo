@@ -11,28 +11,28 @@
     <resultMap id="BaseResultMap" type="org.hulei.entity.mybatisplus.domain.Employees" autoMapping="false">
         <!-- id列被标识为对象的主键 -->
         <!-- column:数据库中的列名, jdbcType: jdbc的类型, property: 映射到列结果的字段或者属性名,也就是Pojo中的属性名 javaType:属性的类型,通常mybatis可以自己推断-->
-        <id column="employeeNumber" jdbcType="BIGINT" property="employeeNumber"/>
-        <result column="lastName" jdbcType="VARCHAR" property="lastName"/>
-        <result column="firstName" jdbcType="VARCHAR" property="firstName"/>
+        <id column="employee_number" jdbcType="BIGINT" property="employeeNumber"/>
+        <result column="last_name" jdbcType="VARCHAR" property="lastName"/>
+        <result column="first_name" jdbcType="VARCHAR" property="firstName"/>
         <result column="extension" jdbcType="VARCHAR" property="extension"/>
         <result column="email" jdbcType="VARCHAR" property="email"/>
-        <result column="officeCode" jdbcType="VARCHAR" property="officeCode"/>
-        <result column="reportsTo" jdbcType="INTEGER" property="reportsTo"/>
-        <result column="jobTitle" jdbcType="VARCHAR" property="jobTitle"/>
+        <result column="office_code" jdbcType="VARCHAR" property="officeCode"/>
+        <result column="reports_to" jdbcType="INTEGER" property="reportsTo"/>
+        <result column="job_title" jdbcType="VARCHAR" property="jobTitle"/>
         <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime"/>
     </resultMap>
 
     <!-- sql可以定义宠用的sql代码段 -->
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
-        employeeNumber,
-        lastName,
-        firstName,
+        employee_number,
+        last_name,
+        first_name,
         extension,
         email,
-        officeCode,
-        reportsTo,
-        jobTitle,
+        office_code,
+        reports_to,
+        job_title,
         last_update_time
     </sql>
 
@@ -82,30 +82,28 @@
         </collection>
     </resultMap>
 
-    <resultMap id="employessTreeMap" type="org.hulei.springboot.mybatisplus.model.EmployeeTreeRsp" extends="BaseResultMap">
+    <resultMap id="employessTreeMap" type="org.hulei.springboot.mybatisplus.model.EmployeeTreeRsp"
+               extends="BaseResultMap">
         <collection
                 property="children"
                 javaType="java.util.List"
                 ofType="org.hulei.springboot.mybatisplus.model.EmployeeTreeRsp"
-                column="employeeNumber"
-                select="getEmployeeByReportNumber"
-        >
+                column="employee_number"
+                select="getEmployeeByReportNumber">
         </collection>
     </resultMap>
 
-    <select
-            id="getEmployeeWithResultMap"
+    <select id="getEmployeeWithResultMap"
             resultMap="BaseResultMap"
-            useCache="true"
-    >
-        select e.employeeNumber,
-               e.lastName,
-               e.firstName,
+            useCache="true">
+        select e.employee_number,
+               e.last_name,
+               e.first_name,
                e.extension,
                e.email,
-               e.officeCode,
-               e.reportsTo,
-               e.jobTitle,
+               e.office_code,
+               e.reports_to,
+               e.job_title,
                e.last_update_time
         from employees e
     </select>
@@ -114,69 +112,69 @@
         <!-- 使用#作为占位符, myabtis会创建一个预编译的SQL语句, 把我们实际的参数解析为一个普通的字符串,即使是遇到一些特殊的字符也会被转义, 这有效的防止了 SQL的注入-->
         select *
         from employees
-        where employeeNumber = #{employeeId};
+        where employee_number = #{employeeId};
         <!--如果使用$作为占位符,由于没有任何的转移操作和处理,所以如果传入的值有恶意的sql,会直接改变原本sql的逻辑,导致安全风险-->
     </select>
 
     <select id="getEmployeeWithCustomers" resultMap="employeeWithCustomCollection">
-        select e.employeeNumber,
-               e.lastName,
-               e.firstName,
+        select e.employee_number,
+               e.last_name,
+               e.first_name,
                e.extension,
                e.email,
-               e.officeCode,
-               e.reportsTo,
-               e.jobTitle,
+               e.office_code,
+               e.reports_to,
+               e.job_title,
                e.last_update_time,
-               c.customerNumber,
-               c.customerName,
-               c.contactLastName,
-               c.contactFirstName,
+               c.customer_number,
+               c.customer_name,
+               c.contact_last_name,
+               c.contact_first_name,
                c.phone,
-               c.addressLine1,
-               c.addressLine2,
+               c.address_line1,
+               c.address_line2,
                c.city,
                c.state,
-               c.postalCode,
+               c.postal_code,
                c.country,
-               c.salesRepEmployeeNumber,
-               c.creditLimit
+               c.sales_rep_employee_number,
+               c.credit_limit
         from employees e
-                 left join customers c on e.employeeNumber = c.salesRepEmployeeNumber
+                 left join customers c on e.employee_number = c.sales_rep_employee_number
         <!--Where标签的好处就是会帮我们移除语句开头的and或者or关键字,避免sql出错,也能避免在没有条件的情况下不输出where-->
         <where>
             <if test="employeeNumber != null">
-                employeeNumber = #{employeeNumber}
+                employee_number = #{employeeNumber}
             </if>
         </where>
     </select>
 
     <select id="getEmployeeTree" resultMap="employessTreeMap">
-        select e.employeeNumber,
-               e.lastName,
-               e.firstName,
+        select e.employee_number,
+               e.last_name,
+               e.first_name,
                e.extension,
                e.email,
-               e.officeCode,
-               e.reportsTo,
-               e.jobTitle,
+               e.office_code,
+               e.reports_to,
+               e.job_title,
                e.last_update_time
         from employees e
-        where e.employeeNumber = #{employeeNumber}
+        where e.employee_number = #{employeeNumber}
     </select>
 
     <select id="getEmployeeByReportNumber" resultMap="employessTreeMap">
-        select e.employeeNumber,
-               e.lastName,
-               e.firstName,
+        select e.employee_number,
+               e.last_name,
+               e.first_name,
                e.extension,
                e.email,
-               e.officeCode,
-               e.reportsTo,
-               e.jobTitle,
+               e.office_code,
+               e.reports_to,
+               e.job_title,
                e.last_update_time
         from employees e
-        where e.reportsTo = #{reportsTo}
+        where e.reports_to = #{reportsTo}
     </select>
 
     <!-- 以select为例子, 内部标签也是非常多的
@@ -219,5 +217,9 @@
     <select id="resultSetOpe" resultType="org.hulei.entity.mybatisplus.domain.Employees" resultSetType="FORWARD_ONLY">
         select *
         from employees
+    </select>
+
+    <select id="getData" resultType="java.util.Map">
+        ${sql}
     </select>
 </mapper>

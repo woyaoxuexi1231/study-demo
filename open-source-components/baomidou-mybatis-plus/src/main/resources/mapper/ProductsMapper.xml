@@ -4,28 +4,16 @@
     <resultMap id="BaseResultMap" type="org.hulei.entity.mybatisplus.domain.Products">
         <!--@mbg.generated-->
         <!--@Table products-->
-        <id column="productCode" jdbcType="VARCHAR" property="productCode"/>
-        <result column="productName" jdbcType="VARCHAR" property="productName"/>
-        <result column="productLine" jdbcType="VARCHAR" property="productLine"/>
-        <result column="productScale" jdbcType="VARCHAR" property="productScale"/>
-        <result column="productVendor" jdbcType="VARCHAR" property="productVendor"/>
-        <result column="productDescription" jdbcType="LONGVARCHAR" property="productDescription"/>
-        <result column="quantityInStock" jdbcType="SMALLINT" property="quantityInStock"/>
-        <result column="buyPrice" jdbcType="DECIMAL" property="buyPrice"/>
-        <result column="MSRP" jdbcType="DECIMAL" property="msrp"/>
+        <id column="product_code" jdbcType="VARCHAR" property="productCode"/>
+        <result column="product_name" jdbcType="VARCHAR" property="productName"/>
+        <result column="product_line" jdbcType="VARCHAR" property="productLine"/>
+        <result column="product_scale" jdbcType="VARCHAR" property="productScale"/>
+        <result column="product_vendor" jdbcType="VARCHAR" property="productVendor"/>
+        <result column="product_description" jdbcType="LONGVARCHAR" property="productDescription"/>
+        <result column="quantity_in_stock" jdbcType="SMALLINT" property="quantityInStock"/>
+        <result column="buy_price" jdbcType="DECIMAL" property="buyPrice"/>
+        <result column="msrp" jdbcType="DECIMAL" property="msrp"/>
     </resultMap>
-    <sql id="Base_Column_List">
-        <!--@mbg.generated-->
-        productCode,
-        productName,
-        productLine,
-        productScale,
-        productVendor,
-        productDescription,
-        quantityInStock,
-        buyPrice,
-        MSRP
-    </sql>
 
     <resultMap id="productFullInfoMap" type="org.hulei.springboot.mybatisplus.model.ProductFullInfo" extends="BaseResultMap">
         <!-- 对于 association 和 collection 标签,都可以不用写 select 子查询,只要一次查询的sql的字段没有重复,并且可以唯一映射上就行-->
@@ -39,25 +27,25 @@
                 property="productlineInfo"
                 javaType="org.hulei.entity.mybatisplus.domain.ProductLines"
                 columnPrefix="pl_"
-                resultMap="org.hulei.common.mapper.mapper.ProductlinesMapper.BaseResultMap"
+                resultMap="org.hulei.springboot.mybatisplus.mapper.ProductLinesMapper.BaseResultMap"
         />
     </resultMap>
 
     <select id="selectProductFullInfo" resultMap="productFullInfoMap">
-        select p.productCode,
-               p.productName,
-               p.productLine,
-               p.productScale,
-               p.productVendor,
-               p.productDescription,
-               p.quantityInStock,
-               p.buyPrice,
-               p.MSRP,
-               pl.productLine     as pl_productLine,
-               pl.textDescription as pl_textDescription,
-               pl.htmlDescription as pl_htmlDescription,
+        select p.product_code,
+               p.product_name,
+               p.product_line,
+               p.product_scale,
+               p.product_vendor,
+               p.product_description,
+               p.quantity_in_stock,
+               p.buy_price,
+               p.msrp,
+               pl.product_line     as pl_productLine,
+               pl.text_description as pl_textDescription,
+               pl.html_description as pl_htmlDescription,
                pl.image           as pl_image
         from products p
-                 inner join productlines pl on p.productLine = pl.productLine
+                 inner join product_lines pl on p.product_line = pl.product_line
     </select>
 </mapper>

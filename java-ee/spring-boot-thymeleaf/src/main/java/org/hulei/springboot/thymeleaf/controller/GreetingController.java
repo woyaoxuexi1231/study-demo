@@ -2,7 +2,6 @@ package org.hulei.springboot.thymeleaf.controller;
 
 import cn.hutool.core.lang.Snowflake;
 import com.github.javafaker.Faker;
-import jakarta.annotation.PostConstruct;
 import lombok.Data;
 import org.hulei.entity.jpa.pojo.Employee;
 import org.hulei.entity.jpa.utils.MemoryDbUtil;
