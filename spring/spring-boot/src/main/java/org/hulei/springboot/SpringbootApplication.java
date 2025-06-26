@@ -5,13 +5,13 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.hulei.springboot.spring.config.PropertiesConfig;
 import org.hulei.springboot.spring.listener.MyApplicationReadyEvent;
+import org.hulei.springboot.spring.scope.ProtoTypeBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -44,6 +44,9 @@ import java.util.concurrent.TimeUnit;
 3. 启动组件扫描, 这将默认扫描这个类所在的包及其子包下所有的bean
  */
 @ServletComponentScan(basePackages = {"org.hulei.springboot.spring.mvc.filter.webfilter"})
+/*
+作为 springboot 启动类的默认注解，包含 ComponentScan 注解，默认扫描当前配置类所在包及其子包。
+ */
 @SpringBootApplication
 @Data
 @RestController("/application")
@@ -185,6 +188,19 @@ public class SpringbootApplication implements ApplicationRunner {
 
     @Autowired(required = false)
     PropertiesConfig propertiesConfig;
+
+
+    @Autowired
+    ProtoTypeBean protoTypeBean;
+
+    @GetMapping("/protoTypeBeanTest")
+    public void protoTypeBeanTest() {
+        // for (int i = 0; i < 10; i++) {
+        //     ProtoTypeBean bean = SpringbootApplication.applicationContext.getBean(ProtoTypeBean.class);
+        //     log.info("获取的多例bean为: {}", bean);
+        // }
+        log.info("获取的多例bean为: {}", protoTypeBean);
+    }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {

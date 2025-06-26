@@ -1,6 +1,5 @@
-package org.hulei.springboot.spring;
+package org.hulei.springboot.spring.scope;
 
-import org.hulei.springboot.SpringbootApplication;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -36,12 +35,12 @@ public class SpringBean implements BeanNameAware, BeanFactoryAware, ApplicationC
         log.info("1. 这是一个spring bean的生命周期的第一步: 实例化");
     }
 
-    SimpleSpringBean simpleSpringBean;
+    SingletonBean singletonBean;
 
     @Autowired
-    public void setSimpleSpringBean(SimpleSpringBean simpleSpringBean) {
+    public void setSimpleSpringBean(SingletonBean singletonBean) {
         log.info("2. 第二步: 属性填充");
-        this.simpleSpringBean = simpleSpringBean;
+        this.singletonBean = singletonBean;
     }
 
     @Override
@@ -89,24 +88,24 @@ public class SpringBean implements BeanNameAware, BeanFactoryAware, ApplicationC
         log.info("7. destroy, 相当于 @PreDestroy 注解");
     }
 
-    @GetMapping("/getProtoTypeBean")
-    public void getProtoTypeBean() {
-        for (int i = 0; i < 10; i++) {
-            ProtoTypeBean bean = SpringbootApplication.applicationContext.getBean(ProtoTypeBean.class);
-            log.info("获取的多例bean为: {}", bean);
-        }
+    @Autowired
+    ProtoTypeBean protoTypeBean;
+
+    @GetMapping("/protoTypeBeanTest")
+    public void protoTypeBeanTest() {
+        // for (int i = 0; i < 10; i++) {
+        //     ProtoTypeBean bean = SpringbootApplication.applicationContext.getBean(ProtoTypeBean.class);
+        //     log.info("获取的多例bean为: {}", bean);
+        // }
+        log.info("获取的多例bean为: {}", protoTypeBean);
     }
 
+    @Autowired
+    RequestBean requestBean;
+
+    @GetMapping("/requestBeanTest")
+    public void requestBeanTest() {
+        log.info("获取的 request bean 为: {}", requestBean);
+    }
 }
 
-@Scope(scopeName = "singleton")
-@Component
-class SimpleSpringBean {
-
-}
-
-@Scope(scopeName = "prototype")
-@Component
-class ProtoTypeBean {
-
-}

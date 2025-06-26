@@ -3,16 +3,12 @@ package org.hulei.basic.jdk.juc;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.Semaphore;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.LongAdder;
-import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.LockSupport;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @projectName: study-demo
@@ -121,6 +117,7 @@ public class ThreadTest {
      */
     ThreadLocalRandom threadLocalRandom;
 
+
     @SneakyThrows
     public static void main(String[] args) {
 
@@ -143,24 +140,103 @@ public class ThreadTest {
             sleep() - 调用线程会让出 cpu 时间片, 并且线程被阻塞挂起, 但是持有的锁是不会被释放的, 指定时间后, 转为就绪状态继而继续争抢 cpu 时间片
             yield() - 暗示线程调度器让出自己的 cpu 时间片, 但是实际上不一定会让出, 不会被阻塞挂起, 而是直接处于就绪状态, 使用较少
             interrupt() - 调用该方法会设置线程的中断状态为 true
-            isInterrupt() - 返回当前的线程是否被中断
+            isInterrupt() - 返回当前线程是否被中断
             interrupted() - 返回当前线程是否被中断, 并且清楚中断标志
         线程的切换会伴随着线程上下文的切换
          */
         Thread thread = new Thread(() -> {
-            log.info("{}", System.currentTimeMillis());
-            try {
-                Thread.sleep(TimeUnit.SECONDS.toMillis(3));
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            while (!Thread.currentThread().isInterrupted()) {
+                log.info("当前时间：{}", LocalDateTime.now());
+                try {
+                    /*
+                    这里 sleep() 和 yield() 方法被设计为静态方法：1.考虑到这两个方法都是针对当前线程 2.全局行为
+                     */
+                    Thread.sleep(TimeUnit.SECONDS.toMillis(3));
+                } catch (InterruptedException e) {
+                    break;
+                }
             }
-            log.info("{}", System.currentTimeMillis());
+            log.info("当前线程已被中断");
         });
 
         thread.start();
 
-        thread.join();
+        // LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(10));
+        thread.interrupt();
         System.out.println("all task has finished");
+
+        // 线程获取栈
+        for (StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
+            System.out.println(stackTraceElement);
+        }
+
+        Task task = new Task();
+        new Thread(task).start();
+
+        // 主线程等待一秒后终止任务
+        Thread.sleep(1000);
+        task.stop();
+
+
+        Data shared = new Data();
+        new Thread(new Task2(shared)).start();
+
+        Thread.sleep(1000);
+        shared.value = 1;
+
+
+        Map<String, Integer> map = new HashMap<>();
+        map.put("1", 1);
+
+        new Thread(() -> {
+            while (map.get("1") == 1) {
+
+            }
+            System.out.println("Thread stopped.");
+        }).start();
+
+        Thread.sleep(1000);
+        map.put("1", 2);
+
     }
 
 }
+
+class Task implements Runnable {
+
+    volatile boolean running = true;
+
+    @Override
+    public void run() {
+        while (running) {
+            // do something
+        }
+        System.out.println("Thread stopped.");
+    }
+
+    public void stop() {
+        running = false;
+    }
+}
+
+
+class Data {
+    public volatile int value = 0;
+}
+
+class Task2 implements Runnable {
+    Data data;
+
+    public Task2(Data data) {
+        this.data = data;
+    }
+
+    @Override
+    public void run() {
+        while (data.value == 0) {
+            // do nothing
+        }
+        System.out.println("Value changed to: " + data.value);
+    }
+}
+
