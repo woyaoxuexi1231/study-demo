@@ -67,9 +67,12 @@ public class ConnectFactory {
         // 声明队列, 这里执行这个方法之后就会创建相应的队列, 但是只是创建了队列
         channel.queueDeclare(MQConfig.TOPIC_MASTER_QUEUE, true, false, false, null);
         channel.queueDeclare(MQConfig.TOPIC_PULL_QUEUE, true, false, false, null);
+        channel.queueDeclare(MQConfig.DIRECT_MASTER_QUEUE, true, false, false, null);
+
         // 这里在创建队列之后用 routing key 与 交换机进行绑定
         channel.queueBind(MQConfig.TOPIC_MASTER_QUEUE, MQConfig.TOPIC_EXCHANGE_NAME, MQConfig.TOPIC_MASTER_ROUTE_KEY);
         channel.queueBind(MQConfig.TOPIC_PULL_QUEUE, MQConfig.TOPIC_EXCHANGE_NAME, MQConfig.TOPIC_PULL_ROUTE_KEY);
+        channel.queueBind(MQConfig.DIRECT_MASTER_QUEUE, MQConfig.DIRECT_EXCHANGE_NAME, MQConfig.DIRECT_MASTER_ROUTE_KEY);
 
 
         // 配置当前队列的消息如果出现 1.被拒绝 2.过期 3.达到队列的最大消息数量 时应该投往死信队列的配置

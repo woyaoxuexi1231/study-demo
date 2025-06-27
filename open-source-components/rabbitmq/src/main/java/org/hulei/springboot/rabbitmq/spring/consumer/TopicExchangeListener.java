@@ -1,6 +1,7 @@
 package org.hulei.springboot.rabbitmq.spring.consumer;
 
 import com.alibaba.fastjson.JSON;
+import com.rabbitmq.client.AMQP;
 import lombok.SneakyThrows;
 import org.hulei.springboot.rabbitmq.basic.config.MQConfig;
 import com.rabbitmq.client.Channel;
@@ -18,6 +19,8 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author h1123
@@ -42,19 +45,16 @@ public class TopicExchangeListener {
     }
 
     /**
-     * 如果你没有配置自定义的 SimpleRabbitListenerContainerFactory，Spring AMQP 会使用默认的 RabbitListenerContainerFactory 实现(SimpleRabbitListenerContainerFactory 的一个实例)
-     * 默认的工厂配置旨在提供一套合理的默认行为，适用于大多数简单场景。
-     * RabbitAnnotationDrivenConfiguration会默认配置一个 SimpleRabbitListenerContainerFactory
-     * <p>
-     * 指定了containerFactory之后, 会使用指定的containerFactory来注册这个监听器, 不会再使用springboot默认的监听器容器来注册了
-     * <p>
-     * author: hulei42031
-     * date: 2024-03-12 18:09
+     * RabbitListener 注解会自动生成队列，交换机，以及映射关系
      *
      * @param message message
      * @param channel channel
      */
     @RabbitListener(
+            // 如果你没有配置自定义的 SimpleRabbitListenerContainerFactory，Spring AMQP 会使用默认的 RabbitListenerContainerFactory 实现(SimpleRabbitListenerContainerFactory 的一个实例)
+            // 默认的工厂配置旨在提供一套合理的默认行为，适用于大多数简单场景。
+            // RabbitAnnotationDrivenConfiguration
+            // 指定了containerFactory之后, 会使用指定的containerFactory来注册这个监听器, 不会再使用springboot默认的监听器容器来注册了
             containerFactory = "myContainerFactory",
             bindings = @QueueBinding(
                     value = @Queue(
@@ -95,8 +95,21 @@ public class TopicExchangeListener {
         try {
             // Thread.sleep(5000);
             channel.basicAck(msg.getMessageProperties().getDeliveryTag(), false);
+
+            channel.basicPublish(
+                    "",
+                    msg.getMessageProperties().getReplyTo(),
+                    new AMQP.BasicProperties().builder().correlationId(msg.getMessageProperties().getCorrelationId()).build(),
+                    ("org.hulei.springboot.rabbitmq.spring.consumer.TopicExchangeListener.receiveMasterMsg 收到消息了").getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
             log.error("ack异常", e);
         }
+    }
+
+    @SneakyThrows
+    @RabbitListener(queues = {MQConfig.TOPIC_MASTER_QUEUE, MQConfig.DIRECT_MASTER_QUEUE})
+    public void receive2(Message msg, Channel channel) {
+        log.info("收到消息，{}", msg);
+        channel.basicAck(msg.getMessageProperties().getDeliveryTag(), false);
     }
 }

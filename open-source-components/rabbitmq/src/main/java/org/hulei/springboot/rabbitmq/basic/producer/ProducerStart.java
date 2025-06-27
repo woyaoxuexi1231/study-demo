@@ -29,7 +29,7 @@ public class ProducerStart {
                 break;
             }
             // 封装了一个专门发消息的工具类来发消息
-            MsgProducer.postMsg(MQConfig.TOPIC_EXCHANGE_NAME, MQConfig.TOPIC_FOR_DEAD_QUEUE_ROUTE_KEY, msg);
+            MsgProducer.postMsg(MQConfig.TOPIC_EXCHANGE_NAME, MQConfig.TOPIC_MASTER_ROUTE_KEY, msg);
             // MsgProducer.postMsg(MQConfig.TOPIC_EXCHANGE_NAME, MQConfig.TOPIC_FOR_DEAD_ROUTING_KEY, msg);
             // MsgProducer.postMsg(exchange, "direct.key.test", msg);
         }

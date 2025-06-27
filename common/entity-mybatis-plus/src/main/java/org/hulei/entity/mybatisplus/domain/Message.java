@@ -14,7 +14,7 @@ import lombok.Data;
 
 @Data
 @TableName(value = "rabbitmq_test")
-public class MQIdempotency {
+public class Message {
 
     /**
      * uuid

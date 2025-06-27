@@ -25,7 +25,6 @@ import java.util.UUID;
  * @createDate: 2023/2/28 23:19
  */
 
-@Slf4j
 public class MsgProducer {
 
     private static final Connection connection;
@@ -37,30 +36,36 @@ public class MsgProducer {
     private static DefaultConsumer consumer;
 
     static {
+
         // 通过连接工厂获取连接, 连接工厂已经配置好了连接 mq 的配置信息
         connection = ConnectFactory.getConnect();
 
         // 初始化信道
         try {
+
+            // ============================================ 初始化信道的配置 ==================================================
             channel = connection.createChannel();
             // 开启发布确认, 在消息发送失败的情况下可以用于消息的重新处理, 为了消息可靠性一定要开启
             channel.confirmSelect();
 
-            // 开启一个确认回调
+            // ============================================ 确认回调 ==================================================
+            // 开启确认回调，确认回调会在不同的时期触发不同的方法来达到回调的效果
             channel.addConfirmListener(new ConfirmListener() {
                 @Override
                 public void handleAck(long deliveryTag, boolean multiple) {
                     // 此方法的触发条件是消息成功到达交换机
-                    log.info("消息发送成功, deliveryTag(消息唯一标识符): {}, multiple(批量确认): {}", deliveryTag, multiple);
+                    // multiple会标识当前这一次确认是否为批量确认，如果为批量确认则代表标识符(在channel内是递增的)之前的所有消息都已经被broker确认完成
+                    System.out.printf("消息发送成功, deliveryTag(消息唯一标识符): %s, multiple(批量确认): %s%n", deliveryTag, multiple);
                 }
 
                 @Override
                 public void handleNack(long deliveryTag, boolean multiple) {
-                    log.info("消息发送失败, deliveryTag(消息唯一标识符): {}, multiple(批量确认): {}", deliveryTag, multiple);
+                    System.out.printf("消息发送失败, deliveryTag(消息唯一标识符): %s, multiple(批量确认): %s%n", deliveryTag, multiple);
                 }
             });
 
-
+            // ============================================ 返回回调 ==================================================
+            // 开启一个返回回调，当消息无法被路由到目标队列时，该方法会被调用
             channel.addReturnListener(
                         /*
                         用于处理当消息无法被路由到对应的队列时触发的返回（Return）事件。
@@ -84,79 +89,93 @@ public class MsgProducer {
                         @Override
                         public void handleReturn(int replyCode, String replyText, String exchange, String routingKey, AMQP.BasicProperties properties, byte[] body) throws IOException {
                             String replyString = new String(body, StandardCharsets.UTF_8);
-                            log.info("消息未找到指定的队列, exchange: {}, routingKey: {}, replyString: {}", exchange, routingKey, replyString);
+                            System.out.printf("消息未找到指定的队列, exchange: %s, routingKey: %s, replyString: %s%n", exchange, routingKey, replyString);
                         }
 
                     });
 
-            // rpc实现, 回复队列
+
+            // ============================================ 注册回复队列监听 ==================================================
+            // 声明一个回复队列，使用channel.queueDeclare().getQueue()这个方法生成的队列是一个独占的、非持久的、自动删除的，这非常符合一个回复队列的特征
             replyQueueName = channel.queueDeclare().getQueue();
+            // 创建一个消费者来消费这个回复队列的消息，在消息成功发送后，如果消费者端有需要传回来的消息就可以使用这种方法接受回复消息了
             consumer = new DefaultConsumer(channel) {
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                     String reply = new String(body, StandardCharsets.UTF_8);
-                    log.info("收到回复的消息: {}", reply);
+                    System.out.printf("收到回复的消息: %s%n", reply);
                 }
             };
-
-
+            // 启动回复队列的监听
             channel.basicConsume(replyQueueName, true, consumer);
+
         } catch (Exception e) {
-            log.info("信道初始化失败.", e);
+            System.out.printf("信道初始化失败. error: %s%n", e.getMessage());
         }
     }
 
     public static void postMsg(String exchangeName, String routingKey, String msg) {
 
         try {
+
+            // =============================================== 消息配置信息 ==============================================
             /*
-             contentType	消息体的MIME类型，如 application/octet-stream(二进制),application/json(json格式)
-             contentEncoding	消息的编码类型, 如是否压缩
-             headers	键/值对表, 用户自定义任意的键和值
-             deliveryMode 消息的持久化类型 - 1为非持久化, 2为持久化, 性能影响巨大
-             priority 指定队列中消息的优先级
-             correlationId 一般用作关联消息的 message-id, 常用于消息的响应. 多个消息同时收到响应的时候就可以使用这个字段进行区分到底是哪个消息已经正确响应了
-             replyTo	构建回复消息的私有响应队列
-             expiration 消息的过期时刻, 字符串, 但是呈现格式为整型, 精确到秒
-             messageId 消息的唯一性标识, 由应用进行设置
-             timestamp 消息的创建时刻, 整型, 精确到秒
-             type 消息类型名称, 完全由应用决定如何使用该字段
-             userId 标识已登录用户, 极少使用
-             appId 应用程序的类型和版本号
-             clusterId 集群 ID
+            BasicProperties 主要用于配置消息体的各种参数信息
+
+             contentType - 标明是 application/octet-stream(二进制)，application/json、text/plain、application/xml，方便消费者解析
+             contentEncoding - 如果消息经过压缩，比如 gzip
+             headers - 传递自定义的键值对，用于路由、过滤、额外上下文
+             deliveryMode - 1：非持久化，2：持久化（broker 重启后仍保留消息）
+             priority - 如果队列支持优先级（需要声明队列时设置 x-max-priority），高优先级先消费
+             correlationId - 关联 ID，RPC 场景：关联请求和响应，如果仅仅是发消息，那么这个属性似乎用户并不大
+             replyTo - RPC 场景：告诉消费者把响应发到哪个队列
+             expiration - 单条消息 TTL，过期后消息会被丢弃或进入死信队列
+             messageId - 方便幂等性、去重
+             timestamp - 消息生成时间
+             type - 业务自定义标识，比如 order.created
+             userId - 用于验证消息发送者是否与连接用户一致（可选）
+             appId - 标识哪个应用发的
+             clusterId - 集群 ID，几乎不用，保留字段
              */
-            AMQP.BasicProperties basicProperties = new AMQP.BasicProperties(
-                    "application/json",
-                    null,
-                    null,
-                    2,
-                    0,
-                    UUID.randomUUID().toString(),
-                    replyQueueName,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null);
-            /*
-             * 发送消息 basicPublish
-             * String exchange, 交换机
-             * String routingKey, 路由键
-             * BasicProperties props, 消息属性（需要单独声明）
-             * mandatory true:交换机无法根据自身的类型和路由键找到一个符合条件的队列,那么会调用Basic.return命令将消息返回给生产者 false:出现上述情况,消息将直接被丢弃
-             * immediate 参数将判断队列中是否存在消费者,如果在所有满足条件的队列中都没有消费者,这条消息将被返回给生产者, 3.0之后这个参数被取消支持
-             * byte[] body，消息体
-             */
-            log.info("准备发送消息, 交换机: {}, 路由: {}", exchangeName, routingKey);
-            channel.basicPublish(exchangeName, routingKey, true, basicProperties, msg.getBytes(StandardCharsets.UTF_8));
-            // 等待确认(这是同步的方式等待确认, 已采用addConfirmListener的方式添加异步回调确认)
-            // if (!channel.waitForConfirms()) {
-            //     log.error("消息发送失败!");
-            // }
+
+            for (int i = 0; i < 1; i++) {
+                AMQP.BasicProperties basicProperties = new AMQP.BasicProperties(
+                        "application/octet-stream", // 配置消息格式是 json
+                        null,
+                        null,
+                        2,
+                        0,
+                        UUID.randomUUID().toString(), // 配置关联 ID
+                        replyQueueName, // 配置一个回复队列，提示消费者如果回复消息应该往这个回复队列内发送消息
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null);
+
+
+                // =============================================== 消息发送 ==============================================
+                System.out.printf("准备发送消息, 交换机: %s, 路由: %s%n", exchangeName, routingKey);
+                channel.basicPublish(
+                        exchangeName, // 配置交换机
+                        routingKey, // 配置路由键
+                        true, // true:交换机无法根据自身的类型和路由键找到一个符合条件的队列,那么会调用Basic.return命令将消息返回给生产者 false:出现上述情况,消息将直接被丢弃
+                        basicProperties, // 消息属性（需要单独声明）
+                        msg.getBytes(StandardCharsets.UTF_8) // 消息体
+                );
+
+                // =============================================== 发布确认 ==============================================
+                // 开启同步确认后，每条消息都会同步去确认，异步回调虽然也会起作用，但是批量确认就已经失效了，可以看到异步回调中每条消息都是确认过的
+                // 如果把这个地方注释掉，就可以看到异步回调其实有很多是批量确认的
+                boolean confirms = channel.waitForConfirms();
+                if (confirms) {
+                    System.out.println("交换机成功收到了消息！");
+                }
+            }
         } catch (Exception e) {
-            log.error("发送消息异常! ", e);
+            System.out.printf("消息发送异常. error: %s%n", e.getMessage());
         }
     }
 }

@@ -1,6 +1,5 @@
-package org.hulei.springboot.rabbitmq.spring;
+package org.hulei.springboot.rabbitmq.spring.config;
 
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.hulei.springboot.rabbitmq.basic.config.MQConfig;
 import org.springframework.amqp.core.Binding;
@@ -12,6 +11,8 @@ import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.annotation.PostConstruct;
 
 
 /**
@@ -50,18 +51,20 @@ public class RabbitAdminConfig {
     private void exchangeDeclare() {
         // 声明交换机
         TopicExchange exchange = new TopicExchange(
-                MQConfig.TOPIC_EXCHANGE_NAME,
-                true,
-                false,
-                null);
+                MQConfig.TOPIC_EXCHANGE_NAME,   // topic类型的交换机名字
+                true,  // 交换机是否持久化
+                false, // 交换机是否删除
+                null // 交换机的其他额外参数
+        );
         rabbitAdmin.declareExchange(exchange);
         log.info("使用 RabbitAdmin 创建交换机 {} 成功! ", exchange);
 
         DirectExchange directExchange = new DirectExchange(
-                MQConfig.DIRECT_EXCHANGE_NAME,
-                true,
-                false,
-                null);
+                MQConfig.DIRECT_EXCHANGE_NAME,  // direct 类型的交换机名字
+                true, // 交换机是否持久化
+                false, // 交换机是否删除
+                null // 交换机的其他额外参数
+        );
         rabbitAdmin.declareExchange(directExchange);
         log.info("使用 RabbitAdmin 创建交换机 {} 成功! ", directExchange);
     }
@@ -82,13 +85,23 @@ public class RabbitAdminConfig {
          */
         Queue queue = new Queue(
                 "rabbit_admin_queue",
+                true, // 是否持久化
+                false, // 是否排他，只能允许创建者消费，也意味着如果配置了自动删除，那么在创建者断开连接后队列将自动删除
+                false, // 队列是否在程序停止后自动删除（删除时机是当队列最后一个消费者断开连接时，队列会自动删除）
+                null // arguments 队列的其他参数
+        );
+        rabbitAdmin.declareQueue(queue);
+        log.info("使用 RabbitAdmin 创建队列 {} 成功", queue);
+
+        Queue directQueue = new Queue(
+                "direct-test",
                 true,
                 false,
                 false,
                 null
         );
-        rabbitAdmin.declareQueue(queue);
-        log.info("使用 RabbitAdmin 创建队列 {} 成功", queue);
+        rabbitAdmin.declareQueue(directQueue);
+        log.info("使用 RabbitAdmin 创建队列 {} 成功", directQueue);
     }
 
     private void bindingDeclare() {
@@ -114,6 +127,7 @@ public class RabbitAdminConfig {
         rabbitAdmin.declareBinding(exchangeBinding);
         log.info("使用 RabbitAdmin 创建绑定关系 {} 成功! ", exchangeBinding);
 
+        // 这里引入一个注意点：这个绑定关系的操作必须要建立在队列已经存在的前提下进行，否则会直接报错 404 找不到队列
         Binding directQueue = new Binding(
                 "direct-test",
                 Binding.DestinationType.QUEUE,

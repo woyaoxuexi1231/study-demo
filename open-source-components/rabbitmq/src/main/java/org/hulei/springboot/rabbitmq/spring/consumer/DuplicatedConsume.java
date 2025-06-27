@@ -2,12 +2,10 @@ package org.hulei.springboot.rabbitmq.spring.consumer;
 
 import com.alibaba.fastjson.JSONObject;
 import com.rabbitmq.client.Channel;
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.entity.mybatisplus.domain.MQIdempotency;
+import org.hulei.entity.mybatisplus.domain.Message;
 import org.hulei.springboot.rabbitmq.model.ConsumerStatus;
 import org.hulei.springboot.rabbitmq.spring.consumer.mapper.MQIdempotencyMapper;
-import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.connection.RedisStringCommands;
@@ -18,6 +16,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -61,9 +60,9 @@ public class DuplicatedConsume {
      * @param msg     msg
      * @param channel 信道
      */
-    private void repeatConsumer(Message msg, Channel channel) {
+    private void repeatConsumer(org.springframework.amqp.core.Message msg, Channel channel) {
         log.info("接收到消息 msg: {}", msg);
-        MQIdempotency validation = JSONObject.parseObject(new String(msg.getBody(), StandardCharsets.UTF_8), MQIdempotency.class);
+        Message validation = JSONObject.parseObject(new String(msg.getBody(), StandardCharsets.UTF_8), Message.class);
         ConsumerStatus status = msgConsumableByRedis(validation);
         // ConsumerStatus status = msgConsumableByMysql(validation);
 
@@ -114,7 +113,7 @@ public class DuplicatedConsume {
      *
      * @param validation 消息
      */
-    private ConsumerStatus msgConsumableByMysql(MQIdempotency validation) {
+    private ConsumerStatus msgConsumableByMysql(Message validation) {
 
         // 创建一个消息的过期时间, 如果状态是 正在消费中&时间过期 那代表
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // 定义格式，不显示毫秒
@@ -131,9 +130,9 @@ public class DuplicatedConsume {
 
             // 主键冲突报错, 进行延迟消费, 假设消息的过期时间是 十分钟
             // 首先去查看这个消息的消费状态
-            MQIdempotency mqIdempotency = mqIdempotencyMapper.selectById(validation.getUuid());
+            Message message = mqIdempotencyMapper.selectById(validation.getUuid());
             // 如果有其他消费者正在消费这个消息
-            if (CONSUMING.equals(mqIdempotency.getStatus())) {
+            if (CONSUMING.equals(message.getStatus())) {
                 // 1. 判断消息是否过期
                 validation.setStatus(CONSUMING);
                 validation.setTime(exploreTime);
@@ -158,7 +157,7 @@ public class DuplicatedConsume {
                 }
             }
             // 如果这个消息已经被成功消费过了, 就不再次消费(相较于)
-            if (CONSUMED.equals(mqIdempotency.getStatus())) {
+            if (CONSUMED.equals(message.getStatus())) {
                 return new ConsumerStatus(false, true);
             }
         }
@@ -172,7 +171,7 @@ public class DuplicatedConsume {
      *
      * @param validation msg
      */
-    private void finishConsumerByMysql(MQIdempotency validation) {
+    private void finishConsumerByMysql(Message validation) {
         validation.setStatus(CONSUMED);
         mqIdempotencyMapper.updateByTime(validation);
     }
@@ -182,7 +181,7 @@ public class DuplicatedConsume {
      *
      * @param validation 消息
      */
-    private ConsumerStatus msgConsumableByRedis(MQIdempotency validation) {
+    private ConsumerStatus msgConsumableByRedis(Message validation) {
 
         // TODO 这里应该设置成锁的结果，而不应该是这个键值对
         // 执行设置键值对操作的结果 (false表示设置不成功[有其他线程在消费], true表示当前线程可以消费)
@@ -216,7 +215,7 @@ public class DuplicatedConsume {
      *
      * @param validation msg
      */
-    private void finishConsumerByRedis(MQIdempotency validation) {
+    private void finishConsumerByRedis(Message validation) {
         // 没有设置过期时间, 保存消息消费已经被消费的这个状态
         stringRedisTemplate.opsForValue().set(validation.getUuid(), CONSUMED);
     }

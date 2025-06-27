@@ -15,9 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 public class MQConfig {
 
     /* RabbitMQ */
-    public static final String RABBITMQ_USERNAME = "rabbitmq";
-    public static final String RABBITMQ_PASSWORD = "rabbitmq";
-    public static final String RABBITMQ_HOST = "192.168.80.128";
+    public static final String RABBITMQ_USERNAME = "admin";
+    public static final String RABBITMQ_PASSWORD = "admin";
+    public static final String RABBITMQ_HOST = "192.168.3.102";
     public static final Integer RABBITMQ_PORT = 5672;
 
     /*

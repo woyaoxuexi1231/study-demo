@@ -1,7 +1,7 @@
 package org.hulei.springboot.rabbitmq.spring.consumer.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.hulei.entity.mybatisplus.domain.MQIdempotency;
+import org.hulei.entity.mybatisplus.domain.Message;
 
 /**
  * @projectName: study-demo
@@ -12,7 +12,7 @@ import org.hulei.entity.mybatisplus.domain.MQIdempotency;
  * @createDate: 2023/3/18 22:51
  */
 
-public interface MQIdempotencyMapper extends BaseMapper<MQIdempotency> {
+public interface MQIdempotencyMapper extends BaseMapper<Message> {
 
     /**
      * 根据过期时间和消息ID来判断消息是否超时
@@ -20,12 +20,12 @@ public interface MQIdempotencyMapper extends BaseMapper<MQIdempotency> {
      * @param validation
      * @return
      */
-    int deleteByTime(MQIdempotency validation);
+    int deleteByTime(Message validation);
 
     /**
      * 更新消费状态
      *
      * @param validation
      */
-    void updateByTime(MQIdempotency validation);
+    void updateByTime(Message validation);
 }

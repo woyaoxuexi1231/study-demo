@@ -1,6 +1,5 @@
 package org.hulei.springboot.rabbitmq.spring.producer;
 
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.ReturnedMessage;
@@ -9,6 +8,8 @@ import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
 
 
 /**
@@ -84,14 +85,14 @@ public class Callback implements RabbitTemplate.ConfirmCallback, RabbitTemplate.
         // ack = true 交换机收到了消息, ack = false 交换机没收到消息
         // 我这里在项目启动之后直接把交换机删掉了,来模拟消息到不了交换机的场景
         if (ack) {
-            log.info("回调函数收到通知, 交换机成功收到了消息, correlationData: {}", correlationData);
+            log.info("confirm 函数收到通知, 交换机成功收到了消息, correlationData: {}", correlationData);
         } else {
-            log.error("回调函数收到通知, 交换机没能收到消息, correlationData: {}, 失败的原因是: {}", correlationData, cause);
+            log.error("confirm 函数收到通知, 交换机没能收到消息, correlationData: {}, 失败的原因是: {}", correlationData, cause);
         }
     }
 
     @Override
     public void returnedMessage(ReturnedMessage returned) {
-        log.info("回调函数收到通知,消息并没有发送到任何有效的队列中, returned: {}", returned);
+        log.info("returned 函数收到通知, 消息并没有发送到任何有效的队列中, returned: {}", returned);
     }
 }
