@@ -1,12 +1,13 @@
 package org.hulei.springboot.redis.redis.spring;
 
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.RedissonShutdownException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.annotation.PostConstruct;
+import javax.annotation.PostConstruct;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -55,6 +56,7 @@ public class RedisListController {
     @PostConstruct
     public void init() {
         new Thread(() -> {
+            log.info("开始使用 brpop 阻塞的从 redis-list-queue-consume 队列中获取消息...");
             while (true) {
                 try {
                     // 其实这里是 brpop key timout

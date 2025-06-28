@@ -65,6 +65,7 @@ public class RedisController {
     del key 删除键
     expire key seconds 设置键的过期时间,key如果不存在返回0   时间小于等于0，键会被立马删除，并且不会发出过期键通知
     type key 查看键的数据类型
+    select db 切换数据库
 
     rename key newkey 重命名键
     randomkey 随机返回一个
@@ -214,21 +215,21 @@ public class RedisController {
         lazyfree_pending_objects:0 - 懒惰删除机制中等待删除的对象数量。
         lazyfreed_objects:0 - 懒惰删除机制已经删除的对象数量。
          */
-        // commonPool.execute(() -> {
-        //     for (int i = 0; i < 500000; i++) {
-        //         strObjRedisTemplate.opsForValue().set(JMockData.mock(String.class), JMockData.mock(String.class));
-        //         insertCount++;
-        //     }
-        //     log.info("五十万条字符串类型数据添加完成!");
-        // });
-
         commonPool.execute(() -> {
-            for (int i = 0; i < 500000; i++) {
-                strObjRedisTemplate.opsForList().leftPush("blocking::list", JMockData.mock(String.class));
+            for (int i = 0; i < 100; i++) {
+                strObjRedisTemplate.opsForValue().set(JMockData.mock(String.class), JMockData.mock(String.class));
                 insertCount++;
             }
-            log.info("五十万条list类型数据添加完成!");
+            log.info("{} 条字符串类型数据添加完成!", insertCount);
         });
+
+        // commonPool.execute(() -> {
+        //     for (int i = 0; i < 500000; i++) {
+        //         strObjRedisTemplate.opsForList().leftPush("blocking::list", JMockData.mock(String.class));
+        //         insertCount++;
+        //     }
+        //     log.info("五十万条list类型数据添加完成!");
+        // });
     }
 
     @GetMapping("/blocking")

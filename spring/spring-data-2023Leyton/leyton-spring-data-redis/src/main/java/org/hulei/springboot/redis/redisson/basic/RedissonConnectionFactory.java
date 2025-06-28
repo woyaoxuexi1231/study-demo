@@ -17,8 +17,8 @@ public class RedissonConnectionFactory {
     static {
         config = new Config();
         config.useSingleServer()
-                .setAddress("redis://localhost:6379")
-                // .setPassword("123456")
+                .setAddress("redis://192.168.3.102:6379")
+                .setPassword("123456")
         ;
     }
 
