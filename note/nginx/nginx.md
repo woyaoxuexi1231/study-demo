@@ -1,3 +1,7 @@
+# 源码安装
+
+
+
 https://nginx.org/en/download.html
 
 下载源码包 解压
@@ -18,9 +22,47 @@ nginx -c /etc/nginx/nginx.conf -s reload
 
 
 
+# Docker 安装
+
+```sh
+docker pull nginx
+
+# 创建挂载目录
+mkdir -p /root/nginx/conf
+mkdir -p /root/nginx/log
+mkdir -p /root/nginx/html
+
+# 先运行一个 nginx，然后把配置文件拿出来，懒得自己手动创建了
+# 生成容器
+docker run --name nginx -p 80:80 -d nginx
+# 将容器nginx.conf文件复制到宿主机
+docker cp nginx:/etc/nginx/nginx.conf /root/nginx/conf/nginx.conf
+# 将容器conf.d文件夹下内容复制到宿主机
+docker cp nginx:/etc/nginx/conf.d /root/nginx/conf/conf.d
+# 将容器中的html文件夹复制到宿主机
+docker cp nginx:/usr/share/nginx/html /root/nginx/
+
+# 删除这个nginx重新再跑一个有文件挂载的nginx服务
+# 直接执行docker rm nginx或者以容器id方式关闭容器
+docker stop nginx
+# 删除该容器
+docker rm nginx
+# 删除正在运行的nginx容器
+docker rm -f nginx
+
+docker run \
+-p 80:80 --restart=unless-stopped \
+--name nginx \
+-v /root/nginx/conf/nginx.conf:/etc/nginx/nginx.conf \
+-v /root/nginx/conf/conf.d:/etc/nginx/conf.d \
+-v /root/nginx/log:/var/log/nginx \
+-v /root/nginx/html:/usr/share/nginx/html \
+-d nginx:latest
+```
 
 
-### 配置端口转发
+
+# 配置端口转发
 
 stream 可以配置 TCP/UDP 流量转发
 

@@ -176,33 +176,40 @@ A:
 
 ```bash
 # 创建存储目录，日志目录，配置文件目录
-mkdir -p /home/mysql/{conf,data,log,binlog,mysql-files} 
+mkdir -p /root/mysql/{conf,data,log,binlog,mysql-files} 
 ```
 
 
 
 创建配置文件
 
+```sh
+touch /root/mysql/conf/my.cnf
+```
+
+
+
 ```cnf
+[client]
+#设置客户端默认字符集utf8mb4
+default-character-set=utf8mb4
+[mysql]
+#设置服务器默认字符集为utf8mb4
+default-character-set=utf8mb4
+
 [mysqld]
 # basedir 参数指定 MySQL 安装目录的路径。这个目录包含 MySQL 的二进制文件、库文件、配置文件等。
 # 默认位置 通常在 /usr 或 /usr/local/mysql 下。
-basedir=/home/mysql
+# basedir=/home/mysql
 # datadir 参数指定 MySQL 数据库文件存储的目录。这个目录包含所有的数据库文件、表空间文件、二进制日志文件等。
 # Linux：通常在 /var/lib/mysql 下。
-datadir=/home/mysql/data
-
-
-# 
+# datadir=/home/mysql/data
 # slow-query-log-file=/home/mysql/log/slow.log
-
 # 错误日志配置写入文件后，就不会在控制台输出了，这样docker logs就看不到了, 默认是 stderr
 # log-error=/var/log/mysql/error.log
-
 # 在 MySQL 配置文件中，pid-file 参数指定了 MySQL 服务器进程的 PID（Process ID）文件的位置。PID 文件包含了 MySQL 服务器进程的 ID，用于管理和跟踪 MySQL 服务器的进程状态，例如启动、停止和重启操作。
 # 在一些 Linux 发行版中，默认位置是 /var/run/mysqld/mysqld.pid
 # pid-file=/home/mysql/run/mysqld.pid
-
 # innodb_directories 参数允许指定多个目录，用于 InnoDB 表空间文件的存储位置。这个参数可以用于将表空间文件存储在不同的磁盘或分区上，以提高性能和管理效率。
 # innodb_directories 没有默认值，需要在 MySQL 配置文件中显式设置。如果没有设置此参数，InnoDB 表空间文件将存储在 MySQL 数据目录中。
 # innodb_directories=/home/mysql/data
@@ -210,7 +217,6 @@ datadir=/home/mysql/data
 # log-bin 参数用于启用 MySQL 的二进制日志功能，并指定二进制日志文件的基本文件名和存储位置。二进制日志记录了所有更改数据库的操作，对于复制（replication）和数据恢复非常重要。
 # 如果没有显式设置 log-bin 参数，二进制日志文件将存储在 MySQL 数据目录中，并以主机名为文件名前缀。
 # log-bin=/home/mysql/binlog/mysql-bin
-
 
 user=mysql
 port=3306
@@ -282,9 +288,9 @@ create_admin_listener_thread=ON
 解决权限问题
 
 ```bash
-chmod 777 /home/mysql/data/ /home/mysql/log
+chmod 777 /root/mysql/data/ /root/mysql/log
 
-chmod 644 /home/mysql/conf/my.cnf
+chmod 644 /root/mysql/conf/my.cnf
 
 # my.cnf配置文件必须设置644权限，设置777在登录mysql时报警告配置文件无法生效。
 ```
@@ -305,13 +311,13 @@ chmod 644 /home/mysql/conf/my.cnf
 
 --privileged=true：赋予容器权限修改宿主文件权利。
 
--v /home/mysql/log:/var/log/mysql：挂载容器日志到宿主，方便查看日志。
+-v /root/mysql/log:/var/log/mysql：挂载容器日志到宿主，方便查看日志。
 
--v /home/mysql/conf/my.cnf:/etc/mysql/my.cnf:挂载容器配置文件到宿主，方便修改配置文件。
+-v /root/mysql/conf/my.cnf:/etc/mysql/my.cnf:挂载容器配置文件到宿主，方便修改配置文件。
 
--v /home/mysql/data:/var/lib/mysql：挂载容器存储文件到宿主，避免因不小心卸载容器或者容器损坏导致数据丢失不可找回风险。
+-v /root/mysql/data:/var/lib/mysql：挂载容器存储文件到宿主，避免因不小心卸载容器或者容器损坏导致数据丢失不可找回风险。
 
--v /home/mysql/mysql-files:/var/lib/mysql-files 
+-v /root/mysql/mysql-files:/var/lib/mysql-files 
 
 -e MYSQL_ROOT_PASSWORD=123456：设置MySQL的root用户的密码。
 
@@ -321,10 +327,10 @@ chmod 644 /home/mysql/conf/my.cnf
 docker run -p 3306:3306 --restart=always --name mysql \
 -e MYSQL_ROOT_PASSWORD=123456 \
 --privileged=true \
--v /home/mysql/log:/var/log/mysql \
--v /home/mysql/data:/var/lib/mysql \
--v /home/mysql/conf/my.cnf:/etc/mysql/my.cnf \
--v /home/mysql/mysql-files:/var/lib/mysql-files \
+-v /root/mysql/log:/var/log/mysql \
+-v /root/mysql/data:/var/lib/mysql \
+-v /root/mysql/conf/my.cnf:/etc/mysql/my.cnf \
+-v /root/mysql/mysql-files:/var/lib/mysql-files \
 -d mysql
 
 # 这里报错了

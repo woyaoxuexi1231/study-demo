@@ -94,7 +94,7 @@
         <!-- mybatis-plus -->
         <mybatis.plus.boot.starter.version>3.5.9</mybatis.plus.boot.starter.version>
         <!-- tkmybatis -->
-        <mapper.spring.boot.starter.version>5.0.1</mapper.spring.boot.starter.version>
+        <mapper.spring.boot.starter.version>2.1.5</mapper.spring.boot.starter.version>
 
         <!-- 分页插件 -->
         <pagehelper.version>6.1.0</pagehelper.version>

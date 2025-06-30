@@ -1,0 +1,48 @@
+# ========== Dubbo 核心配置 ==========
+dubbo:
+  application:
+    # 应用名称（用于服务注册）
+    name: demo-dubbo-provider
+    # QOS 是 Dubbo 内置的运维和管理服务，提供以下能力：
+    # - 在线运维命令：通过 Telnet 或 HTTP 执行命令（如查看服务状态、动态修改配置）。
+    # - 服务查询：列出所有提供的服务、消费者信息、接口详情等。
+    # - 流量管理：限流、熔断等操作的入口（部分高级功能需配合其他配置）。
+    # - 健康检查：监控服务提供者的健康状态。
+    qos-port: 20101
+#    qos-host: 192.168.3.2
+  consumer:
+    check: false  # 启动时不检查服务提供者
+  registry:
+    address: zookeeper://192.168.3.102:2181  # 注册中心地址（Zookeeper）
+    # address: nacos://192.168.80.128:8848   # 可选：Nacos 注册中心（已注释）
+  protocol:
+    # 协议名称
+    name: dubbo
+    # 协议端口（未配置则使用随机端口）
+    port: 20100
+    # serialization: hessian2  # 序列化方式（已注释）
+#    host: 192.168.3.2
+
+  scan:
+    base-packages: com.hundsun.demo.dubbo.provider.service  # Dubbo 服务扫描包路径
+
+  # 全局配置中心（已注释）
+  # config-center:
+  #   address: zookeeper://192.168.80.128:2181
+
+  # 监控中心（已注释）
+  # monitor:
+  #   address: zookeeper://192.168.80.128:2181
+
+  # 提供者全局配置（已注释）
+  # provider:
+  #   serialization: hessian2
+
+# ========== Curator Zookeeper 客户端配置 ==========
+curator:
+  enable: true  # 是否启用Curator
+  retry-count: 4  # 最大重试次数
+  elapsed-time-ms: 500  # 重试间隔时间(ms)
+  session-timeout-ms: 60000  # Session会话超时时间(ms)
+  connection-timeout-ms: 10000  # 连接超时时间(ms)
+  connect-string: 192.168.3.102:2181  # Zookeeper连接地址

@@ -1,7 +1,6 @@
 package org.hulei.springboot.redis.redis.spring;
 
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.RedissonShutdownException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,0 +1,45 @@
+# ========== RabbitMQ 核心配置 ==========
+spring:
+  rabbitmq:
+    # 连接配置
+    addresses: 192.168.3.102  # 集群配置示例: "host1:5672,host2:5672"
+    port: 5672                # 默认端口5672
+    username: admin        # 认证用户名
+    password: admin        # 认证密码（建议使用加密值）
+    virtual-host: /           # 虚拟主机（生产环境建议使用独立vhost）
+
+    # 发布者配置
+    publisher-confirm-type: correlated  # 消息确认模式（可选值: none/correlated/simple）
+    publisher-returns: true             # 启用返回机制（未路由消息回调）
+
+    # 消费者配置
+    listener:
+      simple:
+        acknowledge-mode: manual        # 手动ACK模式（确保消息可靠处理）
+        prefetch: 1                     # 每次从broker获取1条消息（流控优化）
+        # concurrency: 3-5              # 消费者并发数范围（可选）
+        # max-concurrency: 10           # 最大并发数（可选）
+        # retry:
+        #   enabled: true               # 启用消费重试（可选）
+        #   max-attempts: 3              # 最大重试次数
+        #   initial-interval: 1000       # 初始重试间隔(ms)
+
+# ========== 配置说明 ==========
+# 1. 发布者确认模式说明：
+#    - none: 禁用发布确认
+#    - correlated: 异步确认（推荐，需实现RabbitTemplate.ConfirmCallback）
+#    - simple: 同步确认（性能较低）
+#
+# 2. 消费者prefetch优化：
+#    - 默认值250可能导致消息堆积在客户端，设为1可实现：
+#      a) 更均匀的消息分发
+#      b) 避免某个消费者积压大量消息
+#      c) 适合长时间处理的任务
+#
+# 3. 生产环境建议：
+#    - 添加连接超时配置：
+#      connection-timeout: 5000
+#    - 启用SSL加密（如需要）：
+#      ssl:
+#        enabled: true
+#    - 使用配置中心管理敏感信息

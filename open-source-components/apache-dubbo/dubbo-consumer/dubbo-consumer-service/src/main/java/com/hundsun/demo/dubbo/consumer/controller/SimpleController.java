@@ -64,7 +64,7 @@ public class SimpleController {
     @GetMapping("/simpleRpcInvoke")
     public ResultDTO<?> simpleRpcInvoke() {
         Map<String, Integer> map = new HashMap<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1; i++) {
             String s = providerService.RpcInvoke();
             if (map.containsKey(s)) {
                 map.put(s, map.get(s) + 1);

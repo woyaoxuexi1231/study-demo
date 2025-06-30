@@ -1,6 +1,27 @@
+# 安装
+
+Jenkins 版本为：Jenkins v2.462.3
+
+jdk 版本：jdk 11
+
 [Jenkins - 安装并启动Jenkins - hanease - 博客园](https://www.cnblogs.com/hanease/p/18677103)
 
 [11-自动化发布到测试服务器并自动运行_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1bS4y1471A/?spm_id_from=333.1391.0.0&p=11&vd_source=8d7ce9dd45b35258ee11a3c3ce982ea9)
+
+
+
+# Dokcer安装Jenkins
+
+```
+docker pull jenkins/jenkins:2.452-jdk11
+
+mkdir -p /root/jenkins_mount
+chmod 777 /root/jenkins_mount
+
+docker run -d -p 8080:8080 -p 50000:50000 -v /root/jenkins_docker:/var/jenkins_home -v /etc/localtime:/etc/localtime --name myjenkins jenkins/jenkins:2.462.3-jdk11
+```
+
+
 
 
 

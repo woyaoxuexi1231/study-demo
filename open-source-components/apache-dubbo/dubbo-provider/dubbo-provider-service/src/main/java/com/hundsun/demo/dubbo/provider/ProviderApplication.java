@@ -38,6 +38,12 @@ public class ProviderApplication {
         dubbo.registry.file
         在某些情况下，我们可能希望 Dubbo 服务不直接连接到注册中心，而是通过加载一个本地文件来模拟注册中心的行为。这在测试和调试阶段非常有用，因为可以避免对真实的注册中心进行访问，而直接使用本地文件来配置和管理服务信息。
         通过设置 dubbo.registry.file 参数，我们可以指定一个包含注册中心信息的本地文件的路径。Dubbo 将会读取该文件，并将其作为注册中心来使用，从而模拟注册中心的行为。
+
+
+
+
+        关于如何在 zk 看注册信息：
+·           在 zk 的 dubbo 目录下，每一个服务都会被会注册成一个目录，服务下会有提供者，消费者，已经服务的配置信息
          */
         log.info("provider开始启动");
         ApplicationContext applicationContext = SpringApplication.run(ProviderApplication.class, args);

@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    url: jdbc:mysql://192.168.3.102:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+    username: root
+    password: "123456"  # 如果密码包含特殊字符，建议用引号包裹
+
+  redis:
+    host: 192.168.3.102
+    port: 6379
+    password: "123456"
+    # sentinel 配置（已注释）
+    # sentinel:
+    #   master: mymaster
+    #   nodes: 1.15.232.5:26379,1.15.232.5:26380,1.15.232.5:26381
+
+# MyBatis 配置
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/*Mapper.xml
+
+# PageHelper 配置
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params:
+    count: countSql
+  page-size-zero: true

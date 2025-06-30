@@ -1,0 +1,20 @@
+# ========== Spring 基础配置 ==========
+spring:
+  profiles:
+    active: registry,db,mq  # 激活的Profile（可多选）
+  main:
+    allow-circular-references: true  # 允许循环依赖（谨慎使用）
+
+# ========== 服务端口 ==========
+server:
+  port: 11002  # 服务启动端口
+
+# ========== 自定义开关 ==========
+done:
+  time:
+    enable: true  # 示例：任务完成时间记录功能开关
+
+# ========== 日志配置（已注释） ==========
+# logging:
+#   level:
+#     root: debug  # 全局日志级别（生产环境建议info或warn）

@@ -1,0 +1,12 @@
+# ========== RabbitMQ 配置 ==========
+spring:
+  rabbitmq:
+    addresses: 192.168.3.102  # RabbitMQ 服务地址
+    port: 5672                 # 端口（默认5672）
+    username: admin         # 登录用户名
+    password: admin         # 登录密码
+    virtual-host: /            # 虚拟主机（默认"/"）
+
+    # 发布者确认配置
+    publisher-confirm-type: SIMPLE  # 确认模式：SIMPLE(同步确认) | CORRELATED(异步确认) | NONE(关闭)
+    publisher-returns: true         # 开启发布者返回机制（未送达消息返回）

@@ -1,0 +1,21 @@
+spring:
+  profiles:
+    active: registry,db,mq
+  main:
+    allow-circular-references: true
+
+server:
+  port: 11003  # 服务HTTP端口
+
+# custom config
+custom:
+  config:
+    demo:
+      name: provider
+    done:
+      time:
+        enable: true
+
+#logging:
+#  level:
+#    root: debug

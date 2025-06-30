@@ -1,0 +1,59 @@
+# ========== Dubbo 核心配置 ==========
+dubbo:
+  application:
+    name: demo-dubbo-consumer  # 消费者应用名称
+    # QOS运维端口（默认22222）
+    qos-port: 20001
+#    qos-host: 192.168.3.2
+  registry:
+    address: zookeeper://192.168.3.102:2181  # 注册中心地址（Zookeeper）
+    # address: nacos://192.168.80.128:8848   # 可选：Nacos注册中心（已注释）
+
+  protocol:
+    # 协议名称（默认dubbo）
+    name: dubbo
+    # 协议端口（默认20880）
+    port: 20000
+#    host: 192.168.3.2
+
+#  consumer:
+#    group: g       # 订阅的服务分组
+#    version: 1.0   # 订阅的服务版本
+    # mock: true   # 启用本地mock（已注释）
+    # timeout: 5000 # 全局调用超时时间（可选）
+    # check: false # 启动时不检查服务可用性（可选）
+
+  # 监控中心配置（已注释）
+  # monitor:
+  #   protocol: registry  # 从注册中心发现监控中心
+  #   address: http://127.0.0.1:20000  # 监控中心地址
+
+  # 高级特性（已注释）
+  # provider:
+  #   mock: false  # 提供者端mock配置
+
+# ========== Curator Zookeeper 客户端配置 ==========
+curator:
+  enable: true                # 启用Curator客户端
+  retry-count: 4              # 最大重试次数
+  elapsed-time-ms: 500        # 重试间隔时间(ms)
+  session-timeout-ms: 60000   # 会话超时时间(ms)
+  connection-timeout-ms: 10000 # 连接超时时间(ms)
+  connect-string: 192.168.3.102:2181  # Zookeeper连接地址
+
+# ========== 配置说明 ==========
+# 1. 服务分组与版本控制：
+#    - group/version 用于区分不同环境/版本的服务
+#    - 生产环境建议使用明确的版本号（如1.0.0）
+#
+# 2. 监控中心建议：
+#    - 生产环境推荐使用专业的APM系统（如SkyWalking、Pinpoint）
+#    - 如需使用Dubbo监控中心，建议单独部署
+#
+# 3. 生产环境增强配置：
+#    - 添加服务引用超时控制：
+#      dubbo.consumer.timeout: 3000
+#    - 启用参数验证：
+#      dubbo.consumer.validation: true
+#    - 配置负载均衡策略：
+#      dubbo.consumer.loadbalance: roundrobin

@@ -1,5 +1,7 @@
 # 安装
 
+## 源码安装
+
 **安装教程： https://blog.csdn.net/weixin_43755251/article/details/127512751**
 
 ```shell
@@ -39,6 +41,20 @@ vim /etc/docker/daemon.json
 
 
 ```
+
+## Docker 安装
+
+[Zookeeper——Docker下安装部署 - 曹伟雄 - 博客园](https://www.cnblogs.com/caoweixiong/p/12325410.html)
+
+```sh
+docker pull zookeeper
+cd /usr/local && mkdir zookeeper && cd zookeeper
+mkdir data
+
+docker run -d -e TZ="Asia/Shanghai" -p 2181:2181 -v $PWD/data:/data --name zookeeper --restart unless-stopped zookeeper
+```
+
+
 
 
 
