@@ -18,7 +18,7 @@ docker pull jenkins/jenkins:2.452-jdk11
 mkdir -p /root/jenkins_mount
 chmod 777 /root/jenkins_mount
 
-docker run -d -p 8080:8080 -p 50000:50000 -v /root/jenkins_docker:/var/jenkins_home -v /etc/localtime:/etc/localtime --name myjenkins jenkins/jenkins:2.462.3-jdk11
+docker run -d -p 8080:8080 -p 50000:50000 -v /root/jenkins_docker:/var/jenkins_home -v /etc/localtime:/etc/localtime --name myjenkins --restart=unless-stopped jenkins/jenkins:2.462.3-jdk11
 ```
 
 

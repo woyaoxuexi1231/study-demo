@@ -7,6 +7,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author hulei
@@ -15,10 +18,20 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @Slf4j
 @SpringBootApplication
+@RequestMapping("/application")
+@RestController
 public class NacosApplication {
+
+    @Value("${remote-config:null}")
+    public String remoteConfig;
 
     public static void main(String[] args) {
         // System.setProperty("spring.cloud.bootstrap.enabled", "true");
         SpringApplication.run(NacosApplication.class, args);
+    }
+
+    @RequestMapping(value = "/getRemoteConfig", method = RequestMethod.GET)
+    public void getRemoteConfig() {
+        log.info("remoteConfig: {}", remoteConfig);
     }
 }

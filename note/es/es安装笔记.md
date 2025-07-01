@@ -323,9 +323,49 @@ processors:
 
 
 
-# Docker 环境安装(windows)
+# Docker 环境安装
+
+[Docker 上安装部署 Elasticsearch（ES）详细教程 - SHENHUANJIE - 博客园](https://www.cnblogs.com/shenhuanjie/p/18085468/docker-installation-and-deployment-elasticsearch-es-detailed-tutorial-zntn2c)
 
 
+
+```sh
+# 因为我们还需要部署 Kibanna 容器，因此需要让 ES 和 Kibana 容器互联，这里先创建一个网络。
+docker network create es-net
+
+# 我这里使用的 springboot 版本是 2.7.18 在依赖关系中可以找到 es依赖绑定的版本 7.17.15
+docker pull elasticsearch:7.17.15
+docker pull kibana:7.17.15
+
+
+docker run -d \
+--name elasticsearch \
+--restart=unless-stopped \
+-e "ES_JAVA_OPTS=-Xms512m -Xmx512m" \
+-e "discovery.type=single-node" \
+-e "http.host=0.0.0.0" \
+-v ./es/es-data:/usr/share/elasticsearch/data \
+-v ./es/es-plugins:/usr/share/elasticsearch/plugins \
+-v ./es/es-logs:/usr/share/elasticsearch/logs \
+--privileged \
+--network es-net \
+-p 9200:9200 \
+-p 9300:9300 \
+elasticsearch:7.17.15
+
+
+docker run -d \
+--name kibana \
+--restart=unless-stopped \
+-e "I18N_LOCALE=zh-CN" \
+-e ELASTICSEARCH_HOSTS=http://elasticsearch:9200 \
+--network=es-net \
+-p 5601:5601 \
+kibana:7.17.15
+
+
+
+```
 
 
 
