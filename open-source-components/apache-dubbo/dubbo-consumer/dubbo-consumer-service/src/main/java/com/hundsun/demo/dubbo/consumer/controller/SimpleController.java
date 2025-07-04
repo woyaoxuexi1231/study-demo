@@ -1,11 +1,13 @@
 package com.hundsun.demo.dubbo.consumer.controller;
 
 import com.hundsun.demo.dubbo.provider.api.service.ProviderService;
+import com.mysql.cj.protocol.ResultBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.rpc.cluster.loadbalance.RoundRobinLoadBalance;
 import org.hulei.util.dto.ResultDTO;
+import org.hulei.util.utils.ResultDTOBuild;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,24 +65,12 @@ public class SimpleController {
      */
     @GetMapping("/simpleRpcInvoke")
     public ResultDTO<?> simpleRpcInvoke() {
-        Map<String, Integer> map = new HashMap<>();
-        for (int i = 0; i < 1; i++) {
-            String s = providerService.RpcInvoke();
-            if (map.containsKey(s)) {
-                map.put(s, map.get(s) + 1);
-            } else {
-                map.put(s, 1);
-            }
-        }
-        log.info("==============================================================");
-        map.forEach((k, v) -> log.info("{}: {} times", k, v));
-        log.info("==============================================================");
-        return new ResultDTO<>();
+        return ResultDTOBuild.resultErrorBuild(providerService.RpcInvoke());
     }
 
 
     @GetMapping("/sticky")
-    public void sticky(){
+    public void sticky() {
         /*
         ReferenceConfig 类用于配置 Dubbo 服务的相关信息，例如应用信息、注册中心信息、服务接口、负载均衡策略、集群容错策略等。通过配置 ReferenceConfig 对象，我们可以告诉 Dubbo 如何访问和调用远程的 Dubbo 服务。
 

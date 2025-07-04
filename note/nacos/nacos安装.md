@@ -108,6 +108,8 @@ docker run -d \
 --name nacos-standalone \
 --restart=unless-stopped \
 -p 8848:8848 \
+-p 9848:9848 \
+-p 9849:9849 \
 -e MODE=standalone \
 -e NACOS_AUTH_ENABLE=true \
 -e NACOS_AUTH_IDENTITY_KEY=serverIdentity \
@@ -126,7 +128,11 @@ nacos/nacos-server:v2.2.1
 
   比如 echo -n "SecretKey012345678901234567890123456789012345678901234567890123456789" | base64
 
-只要有值，它就不会报错了。
+- **Nacos2.0版本新增了gRPC的通信方式，需要再多开放俩个端口：**
+
+  (与主端口偏移量1000,1001）
+  9948： 8848+1000
+  9949： 8848+1001
 
 ------
 

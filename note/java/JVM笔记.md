@@ -527,6 +527,122 @@ Concurrent Mark-Sweep GC
 
 (（也称为晚期绑定或运行时多态性）是一种在运行时（而非编译时）确定要调用方法的对象的机制)
 
+
+
+## 类加载的时机
+
+一个类被加载到虚拟机内存中开始, 到卸载出内存为止, 一共会经历七个阶段:   
+**加载** -> (**验证** -> **准备** ->**解析**) -> **初始化** -> **使用** -> **卸载**
+其中 加载,验证,准备,初始化,卸载 这五个阶段的顺序是确定的, 而解析则不一定, 在某些情况下, 它可以在初始化阶段之后再开始
+
+加载阶段并没有强制规定, 可以由具体的虚拟机决定在什么情况下进行
+对于初始化阶段: 有六种情况必须立刻对类进行初始化
+
+1. 遇到 new, getstatic, putstatic, invokestatic 四条字节码指令的时候, 如果类型没有进行初始化, 则需要触发其初始化阶段
+   使用 new 关键字创建一个对象的实例
+   读取或设置一个类型的静态字段(非常量, 常量不会初始化, 会直接在常量池获取这个值)
+   调用一个类型的静态方法
+2. 对类型进行反射的时候, 如果类型没有进行过初始化, 则需要先触发其初始化
+3. 当初始化类的时候, 如果发现其父类没有进行过初始化, 那么会先触发其父类的初始化
+4. 当虚拟机启动的时候, 用户需要指定一个要执行的类, 虚拟机会先初始化这个类
+5. 当使用 jdk7 新加入的动态语言支持的时候 // todo
+6. 当一个接口中定义了 jdk8 新加入的默认方法(被 default 修饰的接口方法)时, 如果有这个接口的实现类发生了初始化,
+   那么该接口要在其之前初始化
+   除了以上六种, 那么其他的场景, 都不会触发初始化, 称为被动引用
+
+典型的
+
+1. 通过子类引用父类的静态字段, 不会导致子类初始化
+2. 通过数组来引用类, 不会触发类的初始化
+3. 常量在编译阶段会存入调用类的常量池, 本质上没有直接引用到定义常量的类, 因此不会触发这个类的初始化
+
+## 类加载的过程
+
+1. 加载
+   加载阶段虚拟机需要完成三件事
+   a. 获取这个类的二进制流
+   b. 字节流转换成运行时数据结构
+   c. 在内存中生成一个 class 对象, 作为方法区的这个类的数据访问入口
+   Java虚拟机规范没有规定我们需要从哪里获取这个类的二进制流, 促使我们可以采用多种方式来加载类, 典型的有 jar包获取, 动态代理类
+   对于数组来说, 数组类本身不通过类加载器创建, 它是由 Java 虚拟机直接在内存中动态构造出来的, 但是数组类的元素类型(
+   Element Type)最终还是需要类加载器来完成加载 // todo
+2. 验证
+   这一阶段的目的是确保 class 文件的字节流中包含的信息符合 Java虚拟机规范 的全部约束要求, 保证这些信息被当作代码运行后不会危害虚拟机自身的安全
+   这个阶段大致分为四个阶段的检验动作:
+     1. 文件格式检验 - 主要验证字节流是否符合 class 文件格式的规范
+     2. 元数据检验 - 主要验证其描述的信息是否符合 Java语言规范
+     3. 字节码检验 - 主要目的是确定语义是合法的, 符合逻辑的, 这个阶段需要保证被验证的类的方法在运行的时候不会做出危害虚拟机安全的行为
+     4. 符号引用检验 - 主要对类自身以外的各类信息进行匹配性校验 - 这个校验行为发生在连接的第三阶段(解析)
+3. 准备
+   该阶段正式为类中定义的变量(被 static 关键字修饰的变量)分配内存并设置类变量的初始值的阶段
+   而在这个阶段, 进行内存分配的仅仅只有类变量(静态变量), 没有实例变量
+   如果类变量没有被 final 修饰, 那么在这个阶段只会被赋零值, 相对应的是 boolean 类型为 false, int 类型为 0, 如果被 final
+   修饰, 在这个阶段就会被赋值
+4. 解析
+   Java虚拟机将常量池内的符号引用替换为直接引用的过程
+     1. 类或接口的解析
+     2. 字段的解析
+     3. 方法解析 // todo
+     4. 接口方法 // todo
+5. 初始化
+   类加载过程的最后一个阶段
+   初始化阶段会把准备阶段赋零值的变量赋程序编码给定的值
+   初始化阶段就是执行类构造器<clinit>()方法的过程
+     1. <clinit>()由所有类变量的赋值动作和所有静态代码块中的语句合并而成, 顺序由源文件定义的顺序决定,
+        静态代码块只能访问到定义在它之前的变量,
+        定义在它之后的变量, 静态代码块可以赋值但是不能访问
+     2. Java虚拟机会保证在子类的 <clinit>() 方法执行前, 父类的  <clinit>() 方法已经被执行了, 这意味着 Object
+        的  <clinit>() 方法是第一个被执行的  <clinit>()
+     3. 父类的静态代码块会先于子类的赋值操作
+     4. <clinit>() 方法并不是必须的, 如果没有静态代码块和静态变量的赋值操作, 可以没有 <clinit>()
+     5. 接口中不能有静态代码块, 但可以有变量的赋值操作, 也就意味着接口也可以有 <clinit>() 方法, 但是对于接口来说,
+        执行子类的 <clinit>() 并不会先执行父接口的 <clinit>(), 因为只有父接口定义的变量被访问的时候才会执行 <clinit>(),
+        因此接口的实现类被初始化的时候也不会去调用接口的 <clinit>()
+     6. Java虚拟机必须保证多线程下, 一个类的 <clinit>() 方法能被正确的加锁同步, 如果多个线程同时初始化一个类,
+        那么只会有一个线程去执行这个类的 <clinit>() 方法, 其他线程阻塞
+
+## 类加载器
+
+通过一个类的全限定类名来获取描述该类的二进制字节流的加载器
+对于任何一个类, 都必须和加载它的类加载器一起共同确立其在 Java 虚拟机中的唯一性
+
+双亲委派机制
+在 Java 虚拟机的角度上来说, 只存在两种不同的类加载器:
+一种是启动类加载器(Bootstrap ClassLoader), 这个类加载器使用 C++ 语言实现, 是Java虚拟机自身的一部分
+另外一种就是其他的所有的类加载器, 这些类加载器由 Java 语言实现, 独立存在于 Java 虚拟机的外部, 并且全部继承于 ClassLoader
+类
+在开发人员的角度来说, 分为三层结构:
+
+1. 启动类加载器(Bootstrap ClassLoader)
+   这个加载器负责加载存放在 JAVA_HOME/lib 目录或被 -Xbootclasspath 参数所指定的路径存放的, 可被 Java 虚拟机识别的类库加载到虚拟机的内存中
+   如果需要把加载请求委托给引导类加载器去处理, 那直接返回 null 即可
+
+2. 扩展类加载器(Extension ClassLoader)
+   这个类加载器是在类 sun.misc.Launcher$ExtClassLoader 中以 java 代码形式实现的
+   它负责加载 JAVA_HOME/lib/ext 目录中或者被 java.ext.dirs 系统变量所指定的路径中所有的类库
+3. 应用程序类加载器(Application ClassLoader)
+   这个类加载器由 sun.misc.Launcher$Application 来实现的
+   它负责加载用户类路径上所有的类库, 可以直接在代码中使用这个类加载器
+   Application ClassLoader -> Extension ClassLoader -> Bootstrap ClassLoader
+   如上的这种关系被称为类加载器的 双亲委派模型
+   双亲委派模型要求除了顶层的启动类加载器之外, 其他所有的类加载器都应该有自己的父类加载器
+   双亲委派模型的工作过程是: 如果一个类加载器收到了类加载的请求, 他不会首先自己去加载这个类, 而是把请求委派给它的父类加载器去完成,
+   每一个层次的加载器都是如此
+   因此所有的加载请求最终都会传到最顶层的启动类加载器, 只有当父类加载器反馈自己无法完成对类的加载的时候, 子加载器才会自己去加载
+   使用双亲委派机制的一个好处就是, 类似于 jdk rt.jar 包内的这种类, 始终都会由启动类加载器来加载,
+   进而保证在各种加载器环境中都能够保证加载的类是同一个类
+   所以这里如果我们自己去声明一些 jdk 官方存在的一些同名类, 这些类是不会生效的, 也不会被加载
+   破坏双亲委派机制
+
+
+- 在 JDK 1.2 之前, 由于双亲委派机制还未提出
+- SPI的出现使得双亲委派机制不得不被破坏掉, 而在 JDK 6 之后, 提供了 ServiceLoader 才得以合理的解决
+- 第三次被破坏出现在 "热", 类似代码热替换, 模块热部署(OSGi)-Java模块化
+
+## Java 模块化系统
+
+
+
 # 程序编译与代码优化
 
 ## JVM的解释器和JIT(just-in-time)
@@ -638,18 +754,209 @@ JVM 实现上，程序的行为是一致的。
 
 ---
 
----
+# Java内存泄漏
+
+![image-20250703143845281](C:\dataz\Project\study-demo\note\java\Idea分析hprof文件.png)
+
+------
+
+## ✅ 先看你截图里主要结构
+
+你的界面是典型的 **类直方图（Histogram）视图**，分左右两块：
+
+| 区域                       | 作用                                                   |
+| -------------------------- | ------------------------------------------------------ |
+| 左边（Class 列表）         | 显示内存里当前有哪些类、数组，按对象数量和内存占用统计 |
+| 右边（Biggest Objects 等） | 显示某些类/对象具体被谁引用、谁是根、谁在“保活”它们    |
+
+------
+
+## ✅ 每一列含义解释
+
+### 📌 1️⃣ **Class**
+
+- **作用**：显示类的名称
+- 比如 `byte[]`、`int[]`、`java.lang.String`、`java.lang.Class`
+- `byte[]` 和 `int[]` 就是数组，通常占用很大，泄漏里典型是被当缓存或者缓冲区
+- 其他 `java.util.HashMap$Node` 这类，是容器内部实现节点
+
+------
+
+### 📌 2️⃣ **Count**
+
+- **作用**：表示这种类（或数组）**有多少个实例**
+   例如：
+  - `byte[]` -> 18,011  → 有 1.8 万个字节数组
+  - `java.lang.String` -> 16,878 个字符串实例
+- **怎么看**：
+  - 如果 Count 很大，且 Retained 很大，就很可能是泄漏了
+  - 比如你的 `byte[]`，说明有 18,000 多个数组一直被引用着，且没被回收
+
+------
+
+### 📌 3️⃣ **Shallow Size**
+
+- **作用**：**浅大小**，指单个类实例本身占的内存，不包含它引用的其他对象
+   例如：
+  - 一个 `byte[]` 的 Shallow Size 就是这个数组自己的大小（比如 1 MB）
+  - 一个 `HashMap` 的 Shallow Size 只包含 map 对象本身，不包含里面存放的 Entry
+
+------
+
+### 📌 4️⃣ **Retained Size**
+
+- **作用**：**保留大小**（保活大小）
+   Retained Size = 如果这个对象被回收，**连带着它引用的所有对象**都会释放掉的总内存大小
+- 例如：
+  - `MemoryLeakDemo` 这个类的 Retained Size 351.29 MB，意思是如果这个类实例没被引用了，那么挂在它下面的所有对象（比如 `staticList`）也会释放掉
+  - 所以 Retained Size 往往能反映**“大根源是谁”**
+
+------
+
+## ✅ 右侧区域 “Biggest Objects” 区域
+
+这块显示的是：
+
+| 列       | 意义                             |
+| -------- | -------------------------------- |
+| Item     | 具体的对象（如某个类的单个实例） |
+| Shallow  | 该对象自身占用                   |
+| Retained | 它和它挂住的子对象一共占用多少   |
+
+比如：
+
+- `org.hulei.basic.jdk.jvm.MemoryLeakDemo` → 这是你 Demo 的主类实例，说明它还活着
+- `java.lang.Thread` → 线程对象还在运行（GC Root）
+- `ClassLoader` → 类加载器没有卸载
+
+这右边是帮你找**是哪个对象持有了最大块的内存**
 
 ---
 
-# 问题排查
+## ✅GC Roots
 
-## jvm oom了如何排查
+**意思**：显示当前选中对象**是怎么从 GC Root 被引用的**。
+
+**GC Root** 是 JVM 永远不会被回收的起点，比如：
+
+- 当前运行的 `Thread` 对象
+- 静态变量
+- JNI Global 引用
+- 系统类加载器
+
+**用途**：搞清楚**为什么没被 GC 回收**，看到完整引用链。
+
+---
+
+## ✅Merged Paths
+
+**意思**：把从 GC Roots 到选中对象的所有路径合并起来显示，帮你找到**多条链路中公共的引用点**。
+
+**用途**：
+
+- 复杂泄漏场景下，一条条链看不清，用 Merged Paths 可以看到**共同持有者**。
+- 比如多线程共用一个静态 Map，这里一看就能看出来是哪个 Map hold 住了。
+
+---
+
+## ✅Summary
+
+**意思**：汇总整个 heap dump 的总体内存使用概况，比如：
+
+- 总实例个数
+- 总共多少 MB
+- 各个类占多少 %
+
+**用途**：快速看是 `byte[]` 多，还是 `String` 多，还是大对象过多。
+
+---
+
+## ✅Packages
+
+**意思**：按包名（Java 的包）分组统计，哪些包占内存最多。
+
+**用途**：
+
+- 看是自己写的代码占多，还是第三方库（如 `java.util`）占多。
+- 排除 JDK 自带占用，聚焦自研业务代码。
+
+------
+
+## ✅ 怎么用这些信息找泄漏？
+
+1️⃣ **先看左边 Retained Size 最大的类**
+
+- `byte[]` 很大 ➜ 说明内存都被一堆字节数组占住了
+
+2️⃣ **看 Biggest Objects → 找引用链**
+
+- 看到 `MemoryLeakDemo` 占了 351 MB ➜ 大概率是你那个 `staticList`、`listeners` 或 `Cache` 还挂着没释放
+- 看到 `Thread` 占了 ➜ 配合 ThreadLocal 泄漏
+
+3️⃣ **双击某个对象，看 “Path to GC Roots”**
+
+- 这个功能可以显示是谁一直引用着这个对象
+
+- 常见路径：
+
+  ```
+  org.hulei.basic.jdk.jvm.MemoryLeakDemo → staticList → ArrayList → [byte[]]
+  ```
+
+4️⃣ **找出为什么没断开**
+
+- 如果是 `Thread` 持有 ➜ 可能是 ThreadLocal
+- 如果是 `static` 持有 ➜ 没 clear
+- 如果是 Listener 集合 ➜ 没 remove
+
+------
+
+## ✅ 总结：常用分析思路
+
+| 做什么           | 怎么做                                                   |
+| ---------------- | -------------------------------------------------------- |
+| 找最大内存占用   | 排序看 Retained                                          |
+| 看引用链         | `Path to GC Roots`                                       |
+| 定位是哪个根对象 | `Biggest Objects` 右键 Expand                            |
+| 判断原因         | 静态、线程、缓存、Listener、类加载器                     |
+| 修复思路         | 该 clear 的 clear，线程池 ThreadLocal remove，缓存加过期 |
+
+------
+
+## ✅ 实战建议
+
+- 你现在这张截图就能看出：
+  - `MemoryLeakDemo` 是大根
+  - `Thread` 很可能是 ThreadLocal
+  - `HashMap`、`ConcurrentHashMap` 对应你的 Cache 和 listeners
+  - `byte[]` 数量和大小完全对得上
+
+所以，**都是预期内的泄漏点**！
+
+------
+
+## 📌 一句话口诀
+
+> **“看大对象、找保活、顺链条、定根因”**
+
+------
+
+要是需要，我可以：
+
+- 把这张 `.hprof` 拿去做个示例分析报告
+- 画一张引用链路的图
+- 或者帮你写个分析小脚本
+
+要不要帮你整一个？需要就直接说！💪
+
+
+
+# jvm oom了如何排查
 
 1. 一个拥有一百多万行的excel(大小也就6M),上传后使用XSSFWorkbook进行解析之后,内存涨到了3个G,后续导致调用rpc接口OOM
    XSSFWorkbook会创建大量的对象,当然excel本身数据也有点太多了
 
-## 讲一讲JVM调优，有哪些参数可以修改，新生代什么情况要修改。
+# 讲一讲JVM调优，有哪些参数可以修改，新生代什么情况要修改。
 
 JVM调优是一个复杂的过程，涉及到多种参数的调整，以确保应用程序运行的高效与稳定。
 JVM调优主要目的是优化堆内存的管理，减少垃圾回收的影响，增强应用的响应能力和吞吐量。以下是一些关键的参数和考虑因素：
@@ -679,7 +986,7 @@ JVM调优主要目的是优化堆内存的管理，减少垃圾回收的影响�
     - `-XX:MaxGCPauseMillis`：希望GC的最大停顿时间。
     - `-XX:GCTimeRatio`：设置吞吐量目标等。
 
-#### 新生代的调整时机和理由
+### 新生代的调整时机和理由
 
 新生代的大小直接影响应用性能，尤其是垃圾回收的频率和持续时间。下面是一些可能需要调整新生代大小的情况：
 
@@ -690,19 +997,698 @@ JVM调优主要目的是优化堆内存的管理，减少垃圾回收的影响�
 
     - 如果系统的内存占用过高，而新生代设置过大，减少新生代的大小可能有助于余留更多内存给老年代，或者其他应用使用。
 3. **应用启动性能**：
-
-    - 在应用启动阶段，可能会大量使用堆内存。合理的调整新生代大小可以改善启动性能和响应速度。
+- 在应用启动阶段，可能会大量使用堆内存。合理的调整新生代大小可以改善启动性能和响应速度。
 4. **调整GC停顿时间**：
 
     - 如果应用需要非常短的GC停顿时间，调整新生代的大小和选择合适的GC算法是关键。
 
 综合以上，JVM调优通常需要基于实际应用的行为、资源消耗和性能指标进行。通常建议进行全面的性能测试，收集和分析GC日志，然后根据测试结果和业务需求调整JVM参数。调优是一个迭代的过程，可能需要多次调整才能达到最佳性能。
 
-## 哪个命令可以查看GC次数？哪个命令可以看线程？有没有研究过这些命令是怎么起作用的，为什么这写命令能拿到进程或者线程的状态？
+# JVM命令
 
-在监控和调试 JVM 性能时，了解垃圾回收（GC）次数和线程状况是很有帮助的。下面是一些相关的命令和工具：
+| 工具        | 主要功能                             |
+| ----------- | ------------------------------------ |
+| `java`      | 启动 JVM                             |
+| `javac`     | 编译 Java 源码                       |
+| `jps`       | 列出正在运行的 Java 进程             |
+| `jstack`    | 导出线程堆栈                         |
+| `jmap`      | 导出内存信息、生成 heap dump         |
+| `jstat`     | 查看 JVM 统计信息（如 GC）           |
+| `jcmd`      | 多功能命令，替代部分 `jmap`/`jstack` |
+| `jinfo`     | 查看和修改 JVM 参数                  |
+| `jshell`    | 交互式 Java REPL                     |
+| `jdeps`     | 分析依赖                             |
+| `jlink`     | 自定义运行时镜像                     |
+| `jconsole`  | GUI 监控工具                         |
+| `jvisualvm` | 可视化监控、分析工具                 |
 
-### 查看 GC 次数
+## **jinfos**
+
+
+
+查看和修改 JVM 参数（部分参数可动态生效）
+
+```sh
+ # 查看已启用的 JVM 参数
+jinfo -flags 27788
+# 查看系统属性
+jinfo -sysprops 27788
+```
+
+## **jstat**
+
+查看 JVM 统计信息（如 GC），class统计信息也可以看，主要是查看统计信息。
+
+以下是 `jstat` 各个选项的详细解释和用途说明：
+
+---
+
+### **1. `-class`：类加载统计**
+**命令**：`jstat -class <pid>`
+**输出示例**：
+```
+Loaded  Bytes  Unloaded  Bytes     Time
+  5000  8000K       50    100K     1.25
+```
+**字段说明**：
+- **Loaded**：已加载的类数量
+- **Bytes**：加载的类占用的字节数
+- **Unloaded**：已卸载的类数量
+- **Bytes**：卸载的类释放的字节数
+- **Time**：类加载和卸载耗时（秒）
+
+**用途**：监控类的动态加载/卸载行为，排查类加载泄漏或元空间（Metaspace）问题。
+
+---
+
+### **2. `-compiler`：JIT编译器统计**
+**命令**：`jstat -compiler <pid>`
+**输出示例**：
+```
+Compiled Failed Invalid   Time   FailedType FailedMethod
+    1500     2      1    5.25      java/lang/String hashCode
+```
+**字段说明**：
+- **Compiled**：编译任务数
+- **Failed**：编译失败数
+- **Invalid**：无效编译数（代码被优化后废弃）
+- **Time**：编译耗时（秒）
+- **FailedType/Method**：最后一次失败的类型和方法
+
+**用途**：诊断JIT编译器性能问题或热点方法编译失败。
+
+---
+
+### **3. `-gc`：垃圾回收堆行为统计**
+**命令**：`jstat -gc <pid>`
+**输出示例**：
+```
+S0C    S1C    S0U    S1U      EC       EU        OC         OU       MC     MU    CCSC   CCSU   YGC     YGCT    FGC    FGCT     GCT
+5120K  5120K  0.0K   1024K  33280K   20480K    87552K     12345K   32000K 31000K 4000K  3800K     10     0.250     2     0.100    0.350
+```
+**字段说明**：
+- **S0C/S1C**：Survivor 0/1区容量（Capacity）
+- **S0U/S1U**：Survivor 0/1区使用量（Used）
+- **EC/EU**：Eden区容量/使用量
+- **OC/OU**：老年代容量/使用量
+- **MC/MU**：元空间（Metaspace）容量/使用量
+- **CCSC/CCSU**：压缩类空间容量/使用量
+- **YGC/YGCT**：Young GC次数/总耗时
+- **FGC/FGCT**：Full GC次数/总耗时
+- **GCT**：GC总耗时
+
+**用途**：全面分析堆内存使用和GC行为。
+
+---
+
+### **4. `-gccapacity`：堆内存各区域容量**
+**命令**：`jstat -gccapacity <pid>`
+**输出示例**：
+
+```
+NGCMN    NGCMX     NGC     S0C   S1C       EC      OGCMN      OGCMX       OGC         OC       MCMN     MCMX      MC     CCSMN    CCSMX     CCSC    YGC    FGC
+4194304 33554432 16777216 5120K 5120K 33280K   4194304  67108864  16777216   16777216      0  10485760  32000K      0   4000K   4000K     10     2
+```
+**字段说明**：
+
+- **NGCMN/NGCMX/NGC**：新生代最小/最大/当前容量
+- **OGCMN/OGCMX/OGC**：老年代最小/最大/当前容量
+- **MCMN/MCMX/MC**：元空间最小/最大/当前容量
+- **CCSMN/CCSMX/CCSC**：压缩类空间最小/最大/当前容量
+
+**用途**：查看各内存区域的动态调整情况（如自适应大小调整）。
+
+---
+
+### **5. `-gccause`：GC原因（扩展`-gcutil`）**
+**命令**：`jstat -gccause <pid>`
+**输出示例**：
+```
+S0     S1     E      O      M     CCS    YGC     YGCT    FGC    FGCT     GCT    LGCC                 GCC
+0.00  99.80  25.50  45.30  95.20  90.10     10     0.250     2     0.100    0.350 Allocation Failure   No GC
+```
+**新增字段**：
+- **LGCC**：上次GC原因（如`Allocation Failure`、`System.gc()`）
+- **GCC**：当前GC原因
+
+**用途**：明确触发GC的具体原因，区分是系统自动触发还是代码调用。
+
+---
+
+### **6. `-gcmetacapacity`：元空间详细统计**
+**命令**：`jstat -gcmetacapacity <pid>`
+**输出示例**：
+
+```
+MCMN       MCMX        MC       CCSMN      CCSMX       CCSC     YGC   FGC    FGCT     GCT
+0.0    10485760     32000K        0.0    4000K     3800K     10     2     0.100    0.350
+```
+**字段说明**：
+- 聚焦元空间（Metaspace）和压缩类空间的容量变化。
+
+**用途**：专用于诊断Metaspace内存问题（如类加载泄漏）。
+
+---
+
+### **7. `-gcnew`：新生代GC统计**
+**命令**：`jstat -gcnew <pid>`
+**输出示例**：
+```
+S0C    S1C    S0U    S1U   TT MTT  DSS      EC       EU     YGC     YGCT
+5120K  5120K    0K   1024K 15  15  5120K  33280K   20480K     10     0.250
+```
+**新增字段**：
+- **TT**：对象晋升年龄阈值
+- **MTT**：最大晋升年龄
+- **DSS**：期望的Survivor大小
+
+**用途**：分析新生代对象晋升行为。
+
+---
+
+### **8. `-gcnewcapacity`：新生代容量统计**
+**命令**：`jstat -gcnewcapacity <pid>`
+**输出示例**：
+```
+NGCMN      NGCMX       NGC      S0CMX     S0C     S1CMX     S1C       ECMX        EC      YGC   FGC
+4194304  33554432  16777216    5120K    5120K    5120K    5120K   33280K    33280K     10     2
+```
+**用途**：查看新生代各区域的最大/最小容量限制。
+
+---
+
+### **9. `-gcold`：老年代统计**
+**命令**：`jstat -gcold <pid>`
+**输出示例**：
+```
+MC       MU      CCSC     CCSU       OC          OU       YGC    FGC    FGCT     GCT
+32000K  31000K    4000K    3800K    87552K      12345K     10     2     0.100    0.350
+```
+**用途**：聚焦老年代和元空间使用情况。
+
+---
+
+### **10. `-gcoldcapacity`：老年代容量统计**
+**命令**：`jstat -gcoldcapacity <pid>`
+**输出示例**：
+```
+OGCMN       OGCMX        OGC         OC       YGC   FGC    FGCT     GCT
+4194304   67108864   16777216   16777216     10     2     0.100    0.350
+```
+**用途**：分析老年代容量动态变化。
+
+---
+
+### **11. `-gcutil`：GC汇总百分比**
+**命令**：`jstat -gcutil <pid>`
+**输出示例**：
+```
+S0     S1     E      O      M     CCS    YGC     YGCT    FGC    FGCT     GCT
+0.00  99.80  25.50  45.30  95.20  90.10     10     0.250     2     0.100    0.350
+```
+**特点**：以百分比形式显示使用率，适合快速查看。
+
+---
+
+### **12. `-printcompilation`：JIT编译方法统计**
+**命令**：`jstat -printcompilation <pid>`
+**输出示例**：
+```
+Compiled  Size  Type Method
+    1500   1024    1 java/lang/String hashCode
+```
+**字段说明**：
+- **Compiled**：已编译的方法数
+- **Size**：生成的代码大小（字节）
+- **Type**：编译类型（1=普通，2=栈上替换OSR）
+- **Method**：最后编译的方法
+
+**用途**：监控JIT热点方法编译情况。
+
+---
+
+### **总结：何时使用哪个命令？**
+| **场景**           | **推荐命令**                      |
+| ------------------ | --------------------------------- |
+| 快速查看GC健康状态 | `-gcutil` 或 `-gccause`           |
+| 内存泄漏分析       | `-gcold` + `-gcmetacapacity`      |
+| JIT编译问题        | `-compiler` + `-printcompilation` |
+| 详细堆内存分配     | `-gc` + `-gccapacity`             |
+| 新生代行为分析     | `-gcnew` + `-gcnewcapacity`       |
+
+通过组合这些命令，可以全面诊断JVM的内存、GC和编译行为。
+
+---
+
+## jstack
+
+`jstack` 是 JDK 自带的线程堆栈分析工具，用于生成 Java 虚拟机（JVM）当前时刻的线程快照（Thread Dump）。以下是该命令的全面解析：
+
+### 一、基本用法
+
+```bash
+jstack [options] <pid>
+```
+
+#### 常用参数说明
+
+| 参数          | 作用                                               |
+| ------------- | -------------------------------------------------- |
+| `-F`          | 强制生成线程转储（当JVM无响应时使用）              |
+| `-l`          | 显示额外的锁信息（如持有的锁、等待的锁）           |
+| `-m`          | 混合模式输出（包含Java和本地方法栈帧，需调试符号） |
+| `-h`/`--help` | 显示帮助信息                                       |
+
+### 二、输出内容解析
+
+#### 1. 线程状态标识
+
+```java
+"main" #1 prio=5 os_prio=0 tid=0x00007f4874009800 nid=0x2a1c waiting on condition [0x00007f487b4e4000]
+```
+- **线程名**：`"main"`
+- **线程优先级**：`prio=5`
+- **本地线程ID**：`nid=0x2a1c`（十六进制，对应操作系统的线程ID）
+- **线程状态**：`waiting on condition`（常见状态见下表）
+
+常见线程状态
+
+| 状态                | 含义                                                        |
+| ------------------- | ----------------------------------------------------------- |
+| `RUNNABLE`          | 正在运行或准备运行                                          |
+| `BLOCKED`           | 等待获取监视器锁（可能发生死锁）                            |
+| `WAITING`           | 无限期等待（通过`Object.wait()`或`LockSupport.park()`进入） |
+| `TIMED_WAITING`     | 有限期等待（带超时参数的`wait()`/`sleep()`）                |
+| `WAITING (parking)` | 通过`LockSupport.park()`进入的等待状态                      |
+
+#### 2. 锁信息（使用`-l`参数时）
+
+```java
+- locked <0x000000076bf62200> (a java.lang.Object)
+- waiting to lock <0x000000076bf62210> (a java.lang.String)
+```
+- **locked**：当前线程持有的锁
+- **waiting to lock**：当前线程等待的锁（可能形成死锁）
+
+#### 3. 本地方法栈（使用`-m`参数时）
+
+```c
+"VM Thread" os_prio=0 tid=0x00007f487406e000 nid=0x2a2e runnable
+----------------- 1008 -----------------
+[0x00007f487a5f9700] VMThread::loop()+0x1a8
+[0x00007f487a5f9b60] VMThread::run()+0x40
+[0x00007f487a3f7420] java_start(Thread*)+0x100
+```
+
+### 三、实战应用场景
+
+#### 1. 检测死锁
+
+```bash
+jstack -l <pid> | grep -A 10 deadlock
+```
+当输出中包含`Found one Java-level deadlock`时，会显示死锁的完整链条。
+
+#### 2. 分析CPU高负载
+
+1. 先用`top -Hp <pid>`找到高CPU的线程ID（十进制）
+2. 转换为十六进制：`printf "%x\n" <线程ID>`
+3. 在jstack输出中搜索`nid=0x<十六进制ID>`
+
+#### 3. 监控线程数变化
+
+```bash
+while true; do 
+  jstack <pid> | grep 'java.lang.Thread.State' | wc -l
+  sleep 2
+done
+```
+
+### 四、高级技巧
+
+#### 1. 自动化分析脚本
+
+```bash
+#!/bin/bash
+PID=$1
+THREAD_HEX=$(printf "%x" $(top -H -bn1 -p $PID | sed '1,7d' | head -1 | awk '{print $1}'))
+jstack $PID | grep -A 30 "nid=0x$THREAD_HEX"
+```
+
+#### 2. 结合其他工具使用
+
+- **与`jstat`配合**：先通过`jstat`发现GC问题，再用`jstack`分析GC线程
+- **与`jmap`配合**：内存泄漏时，同时分析对象持有和线程栈
+
+#### 3. 生产环境注意事项
+
+1. **安全获取**：避免直接在生产环境频繁执行，建议：
+   
+   ```bash
+   # 将输出保存到文件
+   jstack -l <pid> > thread_dump_$(date +%s).log
+   ```
+2. **时间戳记录**：建议在文件名中加入时间戳
+3. **多次采样**：间隔5-10秒采集3次以上，用于对比分析
+
+### 五、输出示例解读
+
+典型线程堆栈片段分析：
+```java
+"http-nio-8080-exec-1" #31 daemon prio=5 os_prio=0 tid=0x00007f8a44011000 nid=0x2b1c waiting on condition [0x00007f8a2a7f6000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+        at java.lang.Thread.sleep(Native Method)
+        at com.example.MyService.process(MyService.java:42)
+        - locked <0x000000076bf62200> (a java.util.HashMap)
+```
+
+解读：
+1. 线程名：`http-nio-8080-exec-1`（Tomcat工作线程）
+2. 状态：`TIMED_WAITING (sleeping)`（正在睡眠）
+3. 代码位置：`MyService.java:42`
+4. 持有锁：`HashMap`对象（`0x000000076bf62200`）
+
+### 六、常见问题解决
+
+#### 问题1：`jstack`无法连接
+**解决方案**：
+
+- 确认PID正确：`jps -l`
+- 检查用户权限：需与JVM进程同用户
+- 尝试强制模式：`jstack -F <pid>`
+
+#### 问题2：无符号信息
+**解决方案**：
+
+- 确保使用`-XX:+PrintConcurrentLocks`参数启动应用
+- 使用`-m`参数获取本地方法栈（需调试符号）
+
+#### 问题3：大量`WAITING`线程
+**可能原因**：
+
+- 线程池配置过大
+- 任务处理阻塞（如数据库连接池耗尽）
+**检查方法**：
+```bash
+jstack <pid> | grep 'java.lang.Thread.State' | sort | uniq -c
+```
+
+通过`jstack`的深入分析，可以快速定位线程阻塞、死锁、资源竞争等问题，是Java应用性能调优和故障排查的重要工具。
+
+### **JDK 9+(Windows) 使用 `jhsdb jstack` 替代**
+
+#### **错误原因**
+1. **`-F` 选项的限制**：
+   - 在较新的 JDK 版本中，`jstack -F` 的底层实现已变更，直接使用会报错。
+   - 需要改用 `jhsdb` 工具（JDK 自带的"HotSpot Debugger"）。
+
+2. **Windows 平台的差异**：
+   - 在 Linux/Mac 上可能仍支持 `jstack -F`，但 Windows 上需要特殊处理。
+
+---
+
+#### **解决方案（JDK 9+）**
+
+##### 方法 1：使用 `jhsdb jstack` 替代
+```bash
+jhsdb jstack --pid 16476 --locks > deadlock.txt
+```
+**参数说明**：
+- `--pid`：指定目标 JVM 进程 ID
+- `--locks`：等价于 `-l`，显示锁信息
+- `> deadlock.txt`：输出重定向到文件
+
+##### 方法 2：直接使用 `jcmd`（推荐）
+```bash
+jcmd 16476 Thread.print -l > deadlock.txt
+```
+这是最新 JDK 中更推荐的方式，功能与 `jstack -l` 相同。
+
+---
+
+#### **步骤详解（Windows 示例）**
+
+1. **打开 PowerShell/CMD**：
+   
+   ```bash
+   # 确认进程存在
+   jps -l
+   ```
+   
+2. **生成线程转储**：
+   
+   ```bash
+   # 方式1：用 jhsdb（需管理员权限）
+   jhsdb jstack --pid 16476 --locks > deadlock.txt
+   
+   # 方式2：用 jcmd（无需特殊权限）
+   jcmd 16476 Thread.print -l > deadlock.txt
+   ```
+   
+3. **分析输出文件**：
+   用文本编辑器打开 `deadlock.txt`，搜索 `deadlock` 关键词：
+   
+   ```bash
+   Select-String -Path .\deadlock.txt -Pattern "deadlock" -CaseSensitive -SimpleMatch
+   ```
+
+---
+
+#### **各版本兼容性**
+
+| JDK 版本 | 推荐命令                   | 备注               |
+| -------- | -------------------------- | ------------------ |
+| JDK 8    | `jstack -F -l <pid>`       | 传统方式           |
+| JDK 9+   | `jhsdb jstack --pid <pid>` | 模块化后的新工具链 |
+| 所有版本 | `jcmd <pid> Thread.print`  | 最通用，优先使用   |
+
+---
+
+#### **输出文件分析技巧**
+1. **快速定位死锁**：
+   
+   ```bash
+   # 在PowerShell中搜索
+   Get-Content .\deadlock.txt | Select-String -Pattern "BLOCKED|deadlock" -Context 10
+   ```
+   
+2. **统计线程状态**：
+   ```bash
+   (Get-Content .\deadlock.txt | Select-String "java.lang.Thread.State:" -AllMatches).Matches.Count
+   ```
+
+3. **可视化分析**：
+   - 使用工具如 [FastThread](https://fastthread.io/) 上传 `deadlock.txt` 文件自动分析。
+
+
+
+## jmap
+
+`jmap`（Java Memory Map）是 JDK 自带的堆内存分析工具，用于生成堆转储文件、查看内存对象统计和类加载信息。以下是全面使用指南：
+
+### 一、基本语法
+
+```bash
+jmap [options] <pid>
+```
+
+### 二、核心功能选项
+
+| 选项                                    | 作用                                           |
+| --------------------------------------- | ---------------------------------------------- |
+| `-heap`                                 | 显示堆内存配置和使用情况（JDK 8及之前）        |
+| `-histo[:live]`                         | 显示堆中对象统计直方图（`live`只统计存活对象） |
+| `-dump:[live,]format=b,file=<filename>` | 生成堆转储文件（HPROF格式）                    |
+| `-clstats`                              | 显示类加载器统计信息（JDK 8+）                 |
+| `-finalizerinfo`                        | 显示等待终结的对象                             |
+| `-F`                                    | 强制模式（当JVM无响应时使用）                  |
+
+### 三、实战用法详解
+
+#### 1. 查看堆内存概要（JDK 8及之前）
+
+```bash
+jmap -heap <pid>
+```
+**输出示例**：
+```
+Attaching to process ID 12345, please wait...
+Debugger attached successfully.
+Server compiler detected.
+JVM version is 25.221-b11
+
+using thread-local object allocation.
+Parallel GC with 8 thread(s)
+
+Heap Configuration:
+   MinHeapFreeRatio         = 40
+   MaxHeapFreeRatio         = 70
+   MaxHeapSize              = 4294967296 (4096.0MB)
+   NewSize                  = 89128960 (85.0MB)
+   MaxNewSize               = 1431306240 (1365.0MB)
+   OldSize                  = 179306496 (171.0MB)
+   NewRatio                 = 2
+   SurvivorRatio            = 8
+   MetaspaceSize            = 21807104 (20.796875MB)
+   CompressedClassSpaceSize = 1073741824 (1024.0MB)
+   MaxMetaspaceSize         = 17592186044415 MB
+   G1HeapRegionSize         = 0 (0.0MB)
+
+Heap Usage:
+PS Young Generation
+Eden Space:
+   capacity = 67108864 (64.0MB)
+   used     = 13421728 (12.8MB)
+   free     = 53687136 (51.2MB)
+   20.0% used
+From Space:
+   capacity = 11010048 (10.5MB)
+   used     = 0 (0.0MB)
+   free     = 11010048 (10.5MB)
+   0.0% used
+To Space:
+   capacity = 11010048 (10.5MB)
+   used     = 0 (0.0MB)
+   free     = 11010048 (10.5MB)
+   0.0% used
+PS Old Generation
+   capacity = 179306496 (171.0MB)
+   used     = 0 (0.0MB)
+   free     = 179306496 (171.0MB)
+   0.0% used
+```
+
+#### 2. 对象内存统计（快速定位内存大户）
+
+```bash
+jmap -histo:live <pid> | head -20
+```
+**输出示例**：
+```
+ num     #instances         #bytes  class name
+----------------------------------------------
+   1:         65213       42931248  [B  # byte数组
+   2:         23456       18764800  java.lang.String
+   3:          1234        5678080  [I  # int数组
+   4:          5678        4544000  java.util.HashMap$Node
+   5:           890        2848000  [Ljava.util.HashMap$Node;
+```
+
+#### 3. 生成堆转储文件（用于MAT等工具分析）
+
+```bash
+jmap -dump:live,format=b,file=heap.hprof <pid>
+```
+**关键参数**：
+
+- `live`：只dump存活对象（建议生产环境使用）
+- `format=b`：二进制格式
+- `file`：输出文件路径
+
+#### 4. 类加载器统计（JDK 8+）
+
+```bash
+jmap -clstats <pid>
+```
+**输出示例**：
+```
+class_loader    classes  bytes   parent_loader   alive?  type  
+<bootstrap>     2411     4345420   null          live    <internal>
+0x000000076bf62200  15     327680    null          live    sun/misc/Launcher$AppClassLoader@0x12345
+```
+
+### 四、高级使用技巧
+
+#### 1. 自动化内存监控脚本
+
+```bash
+#!/bin/bash
+PID=$(jps | grep MyApp | awk '{print $1}')
+OUTPUT="memory_$(date +%Y%m%d_%H%M%S).hprof"
+
+# 每小时生成一次堆转储
+while true; do
+  jmap -dump:live,format=b,file=$OUTPUT $PID
+  sleep 3600
+done
+```
+
+#### 2. 结合OQL查询（需MAT工具）
+
+生成转储文件后，使用Eclipse Memory Analyzer执行OQL：
+```sql
+SELECT * FROM java.util.HashMap WHERE size() > 1000
+```
+
+#### 3. 容器环境使用
+
+```bash
+# Docker容器内执行
+docker exec <container_id> jmap -histo:live 1
+```
+
+### 五、生产环境注意事项
+
+1. **性能影响**：
+   - `-dump`操作会暂停应用线程（STW）
+   - 建议在低峰期执行
+   - 大型堆（>8GB）可能耗时数分钟
+
+2. **安全建议**：
+   ```bash
+   # 使用live选项减少dump大小
+   jmap -dump:live,format=b,file=heap.hprof <pid>
+   
+   # 限制文件权限
+   chmod 600 heap.hprof
+   ```
+
+3. **替代方案**：
+   - **JDK 11+**：优先使用`jcmd`更安全
+     ```bash
+     jcmd <pid> GC.heap_dump heap.hprof
+     ```
+   - **Arthas**：在线诊断不中断服务
+     ```bash
+     heapdump --live /path/to/dump.hprof
+     ```
+
+### 六、常见问题解决
+
+#### 问题1：`AttachNotSupportedException`
+
+**原因**：进程用户权限不匹配  
+**解决**：
+```bash
+sudo -u <process_user> jmap -histo <pid>
+```
+
+#### 问题2：生成超大堆转储
+
+**优化方法**：
+```bash
+# 先压缩再传输
+jmap -dump:live,format=b,file=heap.hprof <pid>
+gzip heap.hprof
+```
+
+#### 问题3：`-heap`不可用（JDK 11+）
+
+**替代方案**：
+```bash
+jhsdb jmap --heap --pid <pid>
+```
+
+### 七、可视化分析工具推荐
+
+1. **Eclipse MAT**：功能最强大的堆分析工具
+2. **VisualVM**：JDK自带，适合快速分析
+3. **JProfiler**：商业工具，性能优异
+4. **HeapHero**：在线分析服务
+
+通过合理使用`jmap`，可以快速定位内存泄漏、大对象占用等问题，是Java性能调优不可或缺的工具。建议结合`jstat`监控和`jstack`线程分析，形成完整的诊断方案。
+
+# 查看 GC 次数
 
 1. **JStat：**
    `jstat` 是一个命令行工具，提供了监控 JVM 中各种性能统计信息的功能。你可以使用它来查看 GC 信息。例如：
@@ -715,19 +1701,24 @@ JVM调优主要目的是优化堆内存的管理，减少垃圾回收的影响�
 2. **JMX (Java Management Extensions)：**
    利用 JMX，你也可以访问 GC 信息。例如，使用 `jconsole` 或者通过编写 Java 程序连接到 JMX 服务，查看垃圾回收的 MBean 信息。
 
-### 查看线程
+# 查看线程
 
-1. **JStack：**
-   `jstack` 是一个命令行工具，用于生成 Java 线程的转储（thread dump），显示当前所有线程的状态，包括线程栈信息。
+### **JStack**
 
-   ```sh
-   jstack <pid>
-   ```
-2. **JVisualVM：**
-   `jvisualvm` 是一个更高级的图形化监控工具。你可以在其中查看详细的线程信息，包括线程的运行状态、堆栈跟踪等。
-3. **JConsole：**
-   `jconsole` 是一个基于 JMX 的图形化监控工具，也可以用来查看线程信息。启动 `jconsole` 并连接到目标 JVM
-   后，可以浏览线程的状态和线程堆栈信息。
+`jstack` 是一个命令行工具，用于生成 Java 线程的转储（thread dump），显示当前所有线程的状态，包括线程栈信息。
+
+```sh
+jstack <pid>
+```
+
+### **JVisualVM**
+
+`jvisualvm` 是一个更高级的图形化监控工具。你可以在其中查看详细的线程信息，包括线程的运行状态、堆栈跟踪等。
+
+### **JConsole**
+
+`jconsole` 是一个基于 JMX 的图形化监控工具，也可以用来查看线程信息。启动 `jconsole` 并连接到目标 JVM
+后，可以浏览线程的状态和线程堆栈信息。
 
 ### 这些命令如何起作用
 
@@ -958,6 +1949,92 @@ PS Old Generation
 - 老年代使用率较低，约 15%。
 - Metaspace 和压缩类空间的配置显示，系统为类元数据和类定义保留了较大的空间。
 - 使用的是 Parallel GC，并行垃圾回收机制，配置了 10 个 GC 线程。
+
+# 查看当前当前jvm的参数信息
+
+
+
+# JVM 内存配置详解
+
+## 默认内存配置
+
+当不指定任何内存参数时，JVM 会根据系统资源自动配置内存：
+
+### 1. 堆内存 (Heap)
+- **初始值 (-Xms)**：物理内存的 **1/64**（但至少 8MB）
+- **最大值 (-Xmx)**：物理内存的 **1/4**（或 1GB，取较小值）
+
+例如在 16GB 内存的机器上：
+- 初始堆 ≈ 256MB (16GB/64)
+- 最大堆 ≈ 4GB (16GB/4)
+
+### 2. 元空间 (Metaspace)
+- **初始值**：平台依赖（通常 20.8MB 左右）
+- **最大值**：默认无限制（仅受系统内存限制）
+
+### 3. 新生代/老年代
+- 新生代与老年代的比例由 JVM 自动管理
+- 默认新生代约占堆的 **1/3**（使用 -XX:NewRatio=2）
+
+## 可配置性
+
+| 内存区域   | 是否可配置 | 配置参数                                  | 说明          |
+| ---------- | ---------- | ----------------------------------------- | ------------- |
+| **堆内存** | ✅          | -Xms, -Xmx                                | 基础配置      |
+| **元空间** | ✅          | -XX:MetaspaceSize<br>-XX:MaxMetaspaceSize | 需用 -XX 参数 |
+| **新生代** | ✅          | -Xmn<br>-XX:NewRatio<br>-XX:SurvivorRatio | 精细控制      |
+| **老年代** | ✅          | 通过堆和新生代计算得出                    | 间接控制      |
+
+## 关键关系
+
+### 1. 堆与分代的关系
+```
+堆大小 (-Xmx) = 新生代 + 老年代
+```
+- 通过 `-Xmn` 直接设置新生代大小
+- 或通过 `-XX:NewRatio=n` 设置比例（默认 n=2 表示 新生代:老年代=1:2）
+
+### 2. 元空间独立于堆
+- 元空间使用本地内存（非堆内存）
+- 经典问题：`OutOfMemoryError: Metaspace` 与堆 OOM 无关
+
+### 3. 默认行为示例
+```bash
+# 不指定任何参数时：
+堆内存 = 系统内存的 1/64 ~ 1/4
+元空间 = 约21MB开始，可无限增长
+新生代 ≈ 堆的 1/3
+```
+
+## 配置建议
+
+1. **生产环境必须明确设置**：
+   ```bash
+   -Xms4g -Xmx4g -XX:MetaspaceSize=256m -XX:MaxMetaspaceSize=512m
+   ```
+   - 避免动态扩容性能损耗
+   - 防止元空间无限增长
+
+2. **新生代调优**（高吞吐应用）：
+   ```bash
+   -Xmn2g  # 或 -XX:NewRatio=1
+   ```
+
+3. **监控确认**：
+   ```bash
+   jcmd <pid> VM.flags  # 查看最终生效参数
+   jstat -gc <pid>      # 观察各区域使用情况
+   ```
+
+## 常见误区
+
+❌ 误认为元空间属于堆内存
+✅ 实际：元空间与堆完全独立，使用本地内存
+
+❌ 认为 -Xmx 包含所有内存
+✅ 实际：JVM 总内存 = 堆 + 元空间 + 栈 + 代码缓存 + 其他
+
+
 
 # JVM的一些常见启动参数
 

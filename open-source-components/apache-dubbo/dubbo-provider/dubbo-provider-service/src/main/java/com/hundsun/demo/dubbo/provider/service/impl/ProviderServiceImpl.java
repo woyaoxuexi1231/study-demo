@@ -8,12 +8,8 @@ import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Value;
 
 /**
- * @ProductName: Hundsun amust
- * @ProjectName: dubbo-demo
- * @Package: com.hundsun.amust.dubbodemo.service.impl
- * @Description:
- * @Author: hulei42031
- * @Date: 2022-05-21 15:15
+ * @author hulei42031
+ * @since 2022-05-21 15:15
  */
 
 @DubboService(weight = 70)

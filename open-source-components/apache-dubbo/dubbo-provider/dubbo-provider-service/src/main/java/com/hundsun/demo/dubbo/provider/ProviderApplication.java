@@ -44,6 +44,9 @@ public class ProviderApplication {
 
         关于如何在 zk 看注册信息：
 ·           在 zk 的 dubbo 目录下，每一个服务都会被会注册成一个目录，服务下会有提供者，消费者，已经服务的配置信息
+
+
+        http端口一直冲突的问题：Windows可能被系统保留了端口 使用这个命令 netsh interface ipv4 show excludedportrange protocol=tcp 调整一下服务的端口不要在这个区间
          */
         log.info("provider开始启动");
         ApplicationContext applicationContext = SpringApplication.run(ProviderApplication.class, args);

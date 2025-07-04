@@ -1,5 +1,6 @@
 package org.hulei.springboot.spring.circle;
 
+import org.hulei.common.autoconfigure.annotation.DoneTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,7 @@ public class ClassB {
         this.classA = a;
     }
 
+    @DoneTime
     public void methodB() {
         System.out.println(classA);
     }

@@ -237,8 +237,7 @@ CREATE TABLE product_info
     product_name VARCHAR(100) NOT NULL,
     category     VARCHAR(50),
     price        DECIMAL(10, 2),
-    description  TEXT,
-    UNIQUE INDEX unique_product (product_name, category)
+    description  TEXT
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 0;
 

@@ -39,7 +39,7 @@
         </dependency>
 
         <!--Springboot-->
-        <!--mq-->
+        <!-- 如果一个纯dubbo服务器是可以不需要web容器的，这里不加web容器都是可以启动的 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

@@ -61,12 +61,12 @@
         <!-- https://spring.io/projects/spring-cloud 可以查看 spring boot 和 spring cloud 的版本对应 -->
         <spring.boot.dependencies.version>2.7.18</spring.boot.dependencies.version>
         <spring-cloud-dependencies.version>2021.0.9</spring-cloud-dependencies.version>
-        <spring-cloud-alibaba-dependencies.version>2021.1</spring-cloud-alibaba-dependencies.version>
+        <spring-cloud-alibaba-dependencies.version>2021.0.6.2</spring-cloud-alibaba-dependencies.version>
         <!-- spring admin -->
         <spring-boot-admin-starter-server.version>2.7.16</spring-boot-admin-starter-server.version>
 
         <!-- dubbo -->
-        <apache.dubbo.springboot.starter.version>3.2.7</apache.dubbo.springboot.starter.version>
+        <apache.dubbo.springboot.starter.version>2.7.23</apache.dubbo.springboot.starter.version>
 
         <!-- 某些springcloud依赖 -->
         <spring-cloud-starter-eureka.version>1.4.7.RELEASE</spring-cloud-starter-eureka.version>
@@ -253,11 +253,11 @@
                 <artifactId>dubbo-spring-boot-starter</artifactId>
                 <version>${apache.dubbo.springboot.starter.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.apache.dubbo.extensions</groupId>
-                <artifactId>dubbo-mock-admin</artifactId>
-                <version>3.0.0</version>
-            </dependency>
+<!--             <dependency> -->
+<!--                 <groupId>org.apache.dubbo.extensions</groupId> -->
+<!--                 <artifactId>dubbo-mock-admin</artifactId> -->
+<!--                 <version>3.0.0</version> -->
+<!--             </dependency> -->
             <!-- https://mvnrepository.com/artifact/org.apache.dubbo/dubbo-registry-nacos -->
             <dependency>
                 <groupId>org.apache.dubbo</groupId>

@@ -5,7 +5,7 @@ spring:
     allow-circular-references: true
 
 server:
-  port: 11003  # 服务HTTP端口
+  port: 13003  # 服务HTTP端口
 
 # custom config
 custom:
@@ -16,6 +16,7 @@ custom:
       time:
         enable: true
 
-#logging:
-#  level:
-#    root: debug
+logging:
+  level:
+    org.apache.dubbo: DEBUG
+    com.alibaba.nacos: DEBUG
