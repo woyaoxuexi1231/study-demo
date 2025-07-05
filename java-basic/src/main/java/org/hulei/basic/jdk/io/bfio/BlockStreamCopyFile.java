@@ -1,18 +1,19 @@
-package org.hulei.basic.jdk.io;
+package org.hulei.basic.jdk.io.bfio;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.hulei.basic.jdk.io.NIOUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 /**
+ * 使用 FileInputStream 和 FileOutputStream 完成一次文件的复制
  * @author hulei
  * @since 2024/9/13 12:14
  */
 
-@Slf4j
 public class BlockStreamCopyFile {
 
     @SneakyThrows

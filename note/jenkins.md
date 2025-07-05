@@ -12,6 +12,10 @@ jdk 版本：jdk 11
 
 # Dokcer安装Jenkins
 
+[使用 Docker 安装 Jenkins 并实现项目自动化部署-阿里云开发者社区](https://developer.aliyun.com/article/892646)
+
+
+
 ```
 docker pull jenkins/jenkins:2.452-jdk11
 
@@ -21,9 +25,14 @@ chmod 777 /root/jenkins_mount
 docker run -d -p 8080:8080 -p 50000:50000 -v /root/jenkins_docker:/var/jenkins_home -v /etc/localtime:/etc/localtime --name myjenkins --restart=unless-stopped jenkins/jenkins:2.462.3-jdk11
 ```
 
+这里会涉及到docker内部的 java环境配置 git环境配置 maven环境配置
 
+```sh
+# Java环境这里直接使用容器内部的 jdk, 这样直接找到 jdk位置
+echo $JAVA_HOME 
+```
 
-
+git 在 docker 版本的 jenkins 容器中自带有  maven 直接选择自动安装一个
 
 # 各种报错
 

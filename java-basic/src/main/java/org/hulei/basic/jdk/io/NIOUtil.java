@@ -25,24 +25,24 @@ public class NIOUtil {
     /**
      * 服务器端保存的客户端对象，对应一个客户端文件
      */
-    static class Session {
+    public static class Session {
 
-        int step = 1; // 1 读取文件名称的长度，2 读取文件名称  ，3 ，读取文件内容的长度， 4 读取文件内容
+        public int step = 1; // 1 读取文件名称的长度，2 读取文件名称  ，3 ，读取文件内容的长度， 4 读取文件内容
 
         // 文件名长度
-        int fileNameLength;
+        public int fileNameLength;
         // 文件名称
-        String fileName = null;
+        public String fileName = null;
         // 长度
-        long fileLength;
+        public long fileLength;
         // 开始传输的时间
-        long startTime;
+        public long startTime;
         // 客户端的地址
-        InetSocketAddress remoteAddress;
+        public InetSocketAddress remoteAddress;
         // 输出的文件通道
-        FileChannel fileChannel;
+        public FileChannel fileChannel;
         // 接收长度
-        long receiveLength;
+        public long receiveLength;
 
         public boolean isFinished() {
             return receiveLength >= fileLength;

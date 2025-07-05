@@ -1,7 +1,8 @@
-package org.hulei.basic.jdk.io;
+package org.hulei.basic.jdk.io.nfio;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.hulei.basic.jdk.io.NIOUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,58 +27,58 @@ import java.util.Map;
  */
 
 @SuppressWarnings("resource")
-@Slf4j
 public class NIOFileReceiveServer {
 
-    // 使用Map保存每个客户端传输，当OP_READ通道可读时，根据channel找到对应的对象
+    /**
+     * 使用 Map 保存每个客户端传输，当 OP_READ 通道可读时，根据 channel 找到对应的对象
+     */
     static Map<SelectableChannel, NIOUtil.Session> clientMap = new HashMap<SelectableChannel, NIOUtil.Session>();
 
+    /**
+     * 读写数据都用这个 buffer
+     */
     private static final ByteBuffer buffer = ByteBuffer.allocate(1024);
 
     @SneakyThrows
     public static void main(String[] args) {
+
+        // ============================================== 创建监听socket的channel ============================================
         // 创建一个服务端的通信信道, 以这个信道创建一个可以通信的 socket
         ServerSocketChannel serverChannel = ServerSocketChannel.open();
         ServerSocket serverSocket = serverChannel.socket();
-        // 设置这个 socket 为非阻塞,绑定的端口为 8888
         serverChannel.configureBlocking(false);
-        serverSocket.bind(new InetSocketAddress(8888));
+        serverSocket.bind(new InetSocketAddress(18888));
 
-        // 将通道注册到选择器上, 并注册的IO事件为：“接收新连接”
+        // ============================================== 信道绑定选择器 ============================================
+        // 将通道注册到选择器上, 并注册的IO事件为：“接收新连接”，每个channel最多只能向 selector注册一次,注册之后就形成了固定的 selectionKey
         Selector selector = Selector.open();
-        // 每个channel最多只能向 selector注册一次,注册之后就形成了固定的 selectionKey
         serverChannel.register(selector, SelectionKey.OP_ACCEPT);
-        log.info("serverChannel is listening...");
+        System.out.println("serverChannel is listening...");
 
-        int select;
-        // 阻塞当前线程,直到至少有一个通道准备好进行I/O操作,选择器内有信道准备好之后会返回
-        while ((select = selector.select()) > 0) {
 
-            // 返回 Selector中的所有已准备好进行I/O操作的通道的 SelectionKey集合。
-            if (null == selector.selectedKeys()) {
-                continue;
-            }
-            // 7、遍历所有已经准备好的 SelectionKey集合
+        while (true) {
+            // 当前主线程一直轮询的查询是否有 IO 事件就绪，调用 select 方法是会被阻塞，直到至少有一个注册的信道有就绪的 IO 事件
+            selector.select();
+            // 遍历所有已经准备好的 SelectionKey集合
             Iterator<SelectionKey> it = selector.selectedKeys().iterator();
             while (it.hasNext()) {
 
-                // 8、获取单个的选择键，并处理
+                // ============================================== 处理选择键的 IO 事件 ============================================
+                // 获取单个的选择键，并处理
                 SelectionKey key = it.next();
                 if (null == key) {
                     continue;
                 }
 
-                // 9、如果是一个建立新连接的操作
+                // ========================== 处理连接事件 =======================
                 if (key.isAcceptable()) {
-
-                    // 10、若接受的事件是“新连接”事件, 再通过 SelectionKey 获取这个 key对应的信道
+                    // 若接受的事件是新连接事件, 再通过 SelectionKey 获取这个 key 对应的信道
                     ServerSocketChannel ssChannel = (ServerSocketChannel) key.channel();
                     SocketChannel socketChannel = ssChannel.accept();
                     if (socketChannel == null) {
                         continue;
                     }
-
-                    // 11、客户端新连接，切换为非阻塞模式
+                    // 客户端新连接，切换为非阻塞模式
                     socketChannel.configureBlocking(false);
                     socketChannel.setOption(StandardSocketOptions.TCP_NODELAY, true);
 
@@ -87,9 +88,11 @@ public class NIOFileReceiveServer {
                     NIOUtil.Session session = new NIOUtil.Session();
                     session.remoteAddress = (InetSocketAddress) socketChannel.getRemoteAddress();
                     clientMap.put(socketChannel, session);
-                    log.info("{} 连接成功...", socketChannel.getRemoteAddress());
+                    System.out.printf("%s 连接成功...%n", socketChannel.getRemoteAddress());
 
-                } else if (key.isReadable()) {
+                }
+                // ========================== 处理读事件 =======================
+                else if (key.isReadable()) {
                     // 如果这是一个可读的事件, 那么就扔去处理数据的方法
                     handleData(key);
                 }
@@ -107,19 +110,24 @@ public class NIOFileReceiveServer {
 
         SocketChannel socketChannel = (SocketChannel) key.channel();
         int num = 0;
-        NIOUtil.Session session = clientMap.get(key.channel());
+        NIOUtil.Session session = clientMap.get(socketChannel);
         // 写模式
         buffer.clear();
-        // 在客户端已经关闭的情况下, 这里的读事件依旧会触发, 但是使用 read() 方法得到的数字是 -1
-        //   TCP    127.0.0.1:8888         127.0.0.1:10355        CLOSE_WAIT      30284
-        //   TCP    127.0.0.1:10355        127.0.0.1:8888         FIN_WAIT_2      30920
-        // 关闭过程为
-        //          客户端FIN(客户端进入FIN_WAIT_1) -> 服务端收到FIN,发送ACK(服务端进入CLOSE_WAIT)
-        //          -> 客户端收到ACK(进入FIN_WAIT_2),等待服务端的FIN -> 服务端发送FIN(进入LAST_ACK状态)
-        //          -> 客户端收到FIN,发送ACK(进入TIME_WAIT,一段时间后变为CLOSED状态) -> 服务器收到ACK(进入CLOSED状态)
-        // 由此可见,这里停在了服务端没有发送FIN请求给客户端
+        /*
+        在客户端已经关闭的情况下, 这里的读事件依旧会触发, 但是使用 read() 方法得到的数字是 -1
+           TCP    127.0.0.1:8888         127.0.0.1:10355        CLOSE_WAIT      30284
+           TCP    127.0.0.1:10355        127.0.0.1:8888         FIN_WAIT_2      30920
+        关闭过程为
+            客户端FIN(客户端进入FIN_WAIT_1)
+            -> 服务端收到FIN,发送ACK(服务端进入CLOSE_WAIT)
+            -> 客户端收到ACK(进入FIN_WAIT_2),等待服务端的FIN
+            -> 服务端发送FIN(进入LAST_ACK状态)
+            -> 客户端收到FIN,发送ACK(进入TIME_WAIT,一段时间后变为CLOSED状态)
+            -> 服务器收到ACK(进入CLOSED状态)
+        由此可见,这里停在了服务端没有发送FIN请求给客户端
+         */
         while ((num = socketChannel.read(buffer)) > 0) {
-            log.info("收到的字节数 = {}", num);
+            System.out.printf("收到的字节数 = %s%n", num);
             // 切换到读模式
             buffer.flip();
             process(session, buffer);
@@ -128,11 +136,11 @@ public class NIOFileReceiveServer {
         }
         if (num == -1) {
             // 如果连接断开,那么直接取消绑定key
-            log.info("客户端的连接已经断开,取消绑定key");
+            System.out.println("客户端的连接已经断开,取消绑定key");
             key.cancel();
         }
         if (num == 0) {
-            log.info("此次数据已经读取完成.");
+            System.out.println("此次数据已经读取完成.");
         }
     }
 
@@ -151,7 +159,7 @@ public class NIOFileReceiveServer {
                 // 半包问题就是客户端本来发的是 ABC, 但是由于传输层协议拆包或者其他原因, 导致服务端先收到了 AB, 再收到 C
                 // TODO netty怎么解决的?
                 if (buffer.remaining() < 4) {
-                    log.info("出现半包问题，需要更加复杂的拆包方案");
+                    System.out.println("出现半包问题，需要更加复杂的拆包方案");
                     throw new RuntimeException("出现半包问题，需要更加复杂的拆包方案");
                 }
                 // 获取文件名称长度
@@ -162,7 +170,7 @@ public class NIOFileReceiveServer {
             } else if (2 == session.step) {
                 // 第二步, 处理文件名
                 if (NIOUtil.len(buffer) < session.fileNameLength) {
-                    log.info("出现半包问题，需要更加复杂的拆包方案");
+                    System.out.println("出现半包问题，需要更加复杂的拆包方案");
                     throw new RuntimeException("出现半包问题，需要更加复制的拆包方案");
                 }
                 // 按照第一步收到的文件名长度读取固定长度的内容
@@ -181,7 +189,7 @@ public class NIOFileReceiveServer {
             } else if (3 == session.step) {
                 // 第三步,处理文件大小
                 if (buffer.remaining() < 4) {
-                    log.info("出现半包问题，需要更加复杂的拆包方案");
+                    System.out.println("出现半包问题，需要更加复杂的拆包方案");
                     throw new RuntimeException("出现半包问题，需要更加复杂的拆包方案");
                 }
                 // 获取文件内容长度
@@ -195,7 +203,7 @@ public class NIOFileReceiveServer {
                 // 写入文件
                 session.fileChannel.write(buffer);
                 if (session.isFinished()) {
-                    log.info("文件接收成功, File Name：{}, Size: {}, NIO传输时间: {}", session.fileName, NIOUtil.getFormatFileSize(session.fileLength), System.currentTimeMillis() - session.startTime);
+                    System.out.printf("文件接收成功, File Name：%s, Size: %s, NIO传输时间: %s%n", session.fileName, NIOUtil.getFormatFileSize(session.fileLength), System.currentTimeMillis() - session.startTime);
                 }
             }
         }

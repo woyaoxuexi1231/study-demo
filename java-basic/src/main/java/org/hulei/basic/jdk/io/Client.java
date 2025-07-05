@@ -31,7 +31,7 @@ public class Client {
     public static void main(String[] args) {
 
         try {
-            Socket s = new Socket("127.0.0.1", 8104);
+            Socket s = new Socket("127.0.0.1", 8100);
 
             // 构建IO
             InputStream is = s.getInputStream();
@@ -54,7 +54,7 @@ public class Client {
                 bw.write(userMessage + "\n");
                 bw.flush();
 
-                // 读取服务器端返回的消息
+                // 读取一行，遇到换行或者EOF会停止读取。 **注意：这个命令是阻塞的
                 String mess = br.readLine();
                 System.out.println("服务器：" + mess);
 
