@@ -1,113 +1,118 @@
 package org.hulei.basic.jdk.io.reactor;
 
 import lombok.SneakyThrows;
-import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
+import org.hulei.basic.jdk.io.NIOUtil;
 
 import java.io.IOException;
+import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.LockSupport;
 
-/**
- * @author hulei
- * @since 2024/9/13 21:34
- */
-
-@SuppressWarnings("CallToPrintStackTrace")
-@ToString
-@Slf4j
-public class MultiThreadEchoHandler implements Runnable {
-
+@SuppressWarnings({"resource", "CallToPrintStackTrace"})
+class MultiThreadEchoHandler implements Runnable {
     final SocketChannel channel;
     final SelectionKey sk;
     final ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
     static final int RECIEVING = 0, SENDING = 1;
-    // 默认状态是读数据的状态,表示新连接刚上来
     int state = RECIEVING;
+    // 引入线程池
+    static ExecutorService pool = Executors.newFixedThreadPool(4);
 
-    ThreadPoolExecutor poolExecutor;
-
-    /**
-     * 创建一个新连接的请求处理类
-     *
-     * @param selector 选择器
-     * @param c        新连接的 socket信道
-     */
-    @SneakyThrows
-    MultiThreadEchoHandler(Selector selector, SocketChannel c) {
-        poolExecutor = new ThreadPoolExecutor(
-                5,
-                5,
-                60L,
-                TimeUnit.SECONDS,
-                new LinkedBlockingQueue<>(),
-                new ThreadPoolExecutor.AbortPolicy());
-        byteBuffer.clear();
+    MultiThreadEchoHandler(Selector selector, SocketChannel c) throws IOException {
         channel = c;
-        // 非阻塞的
         channel.configureBlocking(false);
-        // 仅仅把信道注册到选择器上,但是不监听任何事件
-        // 这里遇到一个问题,在这一行被阻塞了,导致后面所有的操作都不可用了,通过 jstack 查看线程占用情况可以看到
-        // 在 selector.select()方法的调用栈中, at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86) 这个方法会锁住一个 publicKeys的对象
-        // 而在 channel.register 的调用栈中, at sun.nio.ch.SelectorImpl.register(SelectorImpl.java:132) 这个方法也需要持有一个 publicKeys的对象
-        // 但是 selector.select()我们阻塞的执行了,在底层还在执行epoll,他不会释放这个锁,所以导致 register也阻塞了, 所以select这里要使用非阻塞形式的
-        // 单线程的这里没有解决这个问题是因为单线程处理的逻辑到这里的时候 selector.select已经放开了
+        channel.setOption(StandardSocketOptions.TCP_NODELAY, true);
+
+        // 唤醒选择,防止register时 boss线程被阻塞，netty 处理方式比较优雅，会在同一个线程注册事件，避免阻塞boss
+        // selector.wakeup();
+
+        // 仅仅取得选择键，后设置感兴趣的IO事件
         sk = channel.register(selector, 0);
-        // 将 Handler 作为选择键的附件
+        // 将本Handler作为sk选择键的附件，方便事件dispatch
         sk.attach(this);
-        // 在选择器内注册好再加上把处理类都注册好之后, 再注册读事件
+        // 向sk选择键注册Read就绪事件
         sk.interestOps(SelectionKey.OP_READ);
-        // 1. 当 B 线程阻塞在 select() 或 select(long) 方法上时, A线程调用 wakeup 后, B线程会立刻返回
-        // 2. 如果没有线程阻塞在 select() 方法上, 那么下一次某个线程调用 select() 或 select(long) 方法时, 会立刻返回.
-        // 所以, 当在 Handler 中完成 SocketChannel 注册后, 显示的调用 selector.wakeup() 方法, 虽然当前没有阻塞在 select() 上, 但是会影响下一次调用 select().
+
+        // 唤醒选择，是的OP_READ生效
         selector.wakeup();
+        NIOUtil.info("新的连接 注册完成");
+
     }
 
-    @Override
     public void run() {
-        poolExecutor.execute(() -> {
-            // MultiThreadEchoHandler.this 这个表示当前外部类的实例对象
-            synchronized (MultiThreadEchoHandler.this) {
-                try {
-                    // 从通道读
-                    int length = 0;
-                    while ((length = channel.read(byteBuffer)) > 0) {
-                        log.info("收到数据: {}", new String(byteBuffer.array(), 0, length));
-                    }
-                    if (length == -1) {
-                        // 如果连接断开,那么直接取消绑定key
-                        log.info("客户端的连接已经断开,取消绑定key");
-                        sk.cancel();
-                        return;
-                    }
-                    // 读完后，准备开始写入通道,byteBuffer切换成读模式
-                    byteBuffer.flip();
-                    // LockSupport.parkNanos((long) 1000 * 1000 * 1000);
-                    // 读取数据后,立马注册写事件,主要是现在这个程序的功能主要用于回显,读取到数据之后立马准备返回去,注册写事件也是为了同一时间的其他读事件不干扰
-                    int write = channel.write(byteBuffer);
-                    log.info("写入了 {} 个字节", write);
-                    byteBuffer.clear();
-                    // 处理结束了, 这里不能关闭select key，需要重复使用
-                    // sk.cancel();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                    // SelectionKey.cancel() 是一个方法, 它用于取消选择键的注册. 每当一个通道向选择器注册时, 都会创建一个选择键
-                    // 选择键在以下情况下保持有效: 通过调用其 cancel 方法取消, 通过关闭其通道, 或通过关闭其选择器
-                    // 取消选择键不会立即从选择器中移除它: 它会被添加到选择器的已取消键集中，在下一次 select 操作期间移除, 可以使用 SelectionKey.isValid() 方法来测试键的有效性
-                    sk.cancel();
-                    try {
-                        channel.finishConnect();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+        // 异步任务，在独立的线程池中执行
+        pool.execute(new AsyncTask());
+    }
+
+    // 异步任务，不在Reactor线程中执行
+    @SneakyThrows
+    public synchronized void asyncRun() {
+        try {
+            /*
+            问题1：既然线程池执行，这里还在执行过程中，那边又收到读事件怎么办？这边读channel会读到奇怪的数据吗？这个方法还是同步的，即使进来再多任务也不能同时执行啊？那线程池的意思是啥？
+            问题2：这里进行的读事件和写事件的切换，那么这个是否会影响接受读事件的消息呢？如果客户端还在发数据怎么办？
+            问题3：我发现客户端在断开连接后，这里一直会触发读事件，然后会一直报错 远程主机强迫关闭了一个现有的连接。
+            问题4：这里的逻辑在切换到写事件后，会一直触发写事件，不停的进入asyncRun这个方法
+
+            这里弄着弄着发现一个问题，多线程的情况下：
+            1.如果复用EchoHandler.run的逻辑,在切换到写事件的同时,这里的selector会一直触发写事件,那么写事件的任务会堆积在线程池内
+            2.在客户端断开连接的情况下,服务器收到FIN消息,没有进行处理,这里会一直触发读事件
+            上面两个都会造成非常大的CPU资源消耗, TODO 这个怎么解决呢
+             */
+            if (state == SENDING) {
+                // 写入通道
+                channel.write(byteBuffer);
+                NIOUtil.info("触发写事件了");
+                // 写完后,准备开始从通道读,byteBuffer切换成写模式
+                byteBuffer.clear();
+                // 写完后,注册read就绪事件
+                sk.interestOps(SelectionKey.OP_READ);
+                // 写完后,进入接收的状态
+                state = RECIEVING;
+            } else if (state == RECIEVING) {
+                // 从通道读
+                int length = 0;
+                NIOUtil.info("触发读事件了");
+                // 假设每次处理需要 3 秒
+                LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(3));
+                while ((length = channel.read(byteBuffer)) > 0) {
+                    NIOUtil.info(new String(byteBuffer.array(), 0, length));
                 }
+                if (length == -1) {
+                    // 远程关闭了连接，自己也要关闭
+                    sk.cancel();
+                    channel.close();
+                    return;
+                }
+                // 读完后，准备开始写入通道,byteBuffer切换成读模式
+                byteBuffer.flip();
+                // 读完后，注册write就绪事件
+                sk.interestOps(SelectionKey.OP_WRITE);
+                // 读完后,进入发送的状态
+                state = SENDING;
             }
-        });
+            // 处理结束了, 这里不能关闭select key，需要重复使用
+            // sk.cancel();
+        } catch (IOException ex) {
+            // 远程关闭了连接，自己也要关闭
+            // NIOUtil.info("IO异常，客户端可能已经断开连接了。" + ex.getMessage());
+            sk.cancel();
+            channel.close();
+        }
+    }
+
+    // 异步任务的内部类
+    class AsyncTask implements Runnable {
+        public void run() {
+            MultiThreadEchoHandler.this.asyncRun();
+        }
     }
 
 }
+

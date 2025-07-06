@@ -1,7 +1,6 @@
 package org.hulei.basic.jdk.io.reactor;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.CollectionUtils;
+import org.hulei.basic.jdk.io.NIOUtil;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -10,136 +9,131 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Set;
-
-/**
- * 多线程版本的 reactor 分发器, 考虑从下面两个方面进行多线程的延伸
- * 1. 单线程版本的 selector 就一个, 对于连接事件的检测和读写事件的检测可以分别使用不同的 selector 来完成
- * 2. 单线程版本的 handler 处理都也堆在主线程内执行, 可以考虑把业务处理变成多线程处理(线程池)
- *
- * @author hulei
- * @since 2024/9/13 21:09
- */
+import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressWarnings({"resource", "CallToPrintStackTrace"})
-@Slf4j
-public class MultiThreadEchoServerReactor implements Runnable {
+class MultiThreadEchoServerReactor {
+    ServerSocketChannel serverSocket;
     /**
-     * 用于检测连接事件的选择器
+     * 使用一个 AtomicInteger 来做 轮询分配，把新连接平均分配到不同的子反应器
      */
-    Selector acceptSelector;
-    /**
-     * 用于检测读写事件的选择器
-     */
-    Selector[] workerSelectors = new Selector[2];
+    AtomicInteger next = new AtomicInteger(0);
+    Selector bossSelector = null;
+    Reactor bossReactor = null;
+    // selectors集合,引入多个selector选择器
+    Selector[] workSelectors = new Selector[2];
+    // 引入多个子反应器
+    Reactor[] workReactors = null;
 
-    int index = 0;
 
     MultiThreadEchoServerReactor() throws IOException {
 
-        // 创建选择器和服务监听套接字
-        acceptSelector = Selector.open();
-        // 初始化读写事件选择器
-        workerSelectors[0] = Selector.open();
-        workerSelectors[1] = Selector.open();
+        // 初始化 Boss Reactor（主反应器）用于监听 OP_ACCEPT 新连接事件
+        bossSelector = Selector.open();
 
-        ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-        // 设置监听端口,开始监听
+        // 初始化多个 Work Reactor（子反应器），用于处理读写 I/O 事件
+        workSelectors[0] = Selector.open();
+        workSelectors[1] = Selector.open();
+        serverSocket = ServerSocketChannel.open();
+
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", 8103);
-        serverSocketChannel.socket().bind(address);
-        log.info("服务端已经开始监听：{}", address);
+        serverSocket.socket().bind(address);
         // 非阻塞
-        serverSocketChannel.configureBlocking(false);
+        serverSocket.configureBlocking(false);
 
-        // 分步处理,第一步,接收accept事件
-        SelectionKey sk = serverSocketChannel.register(acceptSelector, 0);
-        // 将对象附加到 SelectionKey 上, attach会搭配 attachment()方法一起使用, 这里attach之后, 在后面处理的时候会通过 attachment()拿出来, 埋点数据
-        sk.attach((Runnable) () -> {
-            try {
-                SocketChannel channel = serverSocketChannel.accept();
-                if (channel != null) {
-                    log.info("接收到一个连接 socket: {}", channel.socket().getPort());
-                    MultiThreadEchoHandler handler = new MultiThreadEchoHandler(workerSelectors[(index = (index + 1) % 2)], channel);
-                }
-            } catch (Throwable e) {
-                System.out.println(e.getMessage());
-            }
-        });
-        sk.interestOps(SelectionKey.OP_ACCEPT);
+        // 第一个selector,负责监控新连接事件
+        SelectionKey sk = serverSocket.register(bossSelector, SelectionKey.OP_ACCEPT);
+        // 附加新连接处理handler处理器到SelectionKey（选择键）
+        sk.attach(new AcceptorHandler());
+
+        // 处理新连接的反应器
+        bossReactor = new Reactor(bossSelector);
+
+        // 第一个子反应器，一子反应器负责一个选择器
+        Reactor subReactor1 = new Reactor(workSelectors[0]);
+        // 第二个子反应器，一子反应器负责一个选择器
+        Reactor subReactor2 = new Reactor(workSelectors[1]);
+        workReactors = new Reactor[]{subReactor1, subReactor2};
     }
 
-    @Override
-    public void run() {
-        try {
-            // 除非线程中断, 否则程序会一直跑
-            while (true) {
-                // 阻塞的去查询选择器上是否有事件了,一旦有事件这个方法会立马返回
-                acceptSelector.select();
-                // 遍历所有准备好的键
-                Set<SelectionKey> selected = acceptSelector.selectedKeys();
-                for (SelectionKey sk : selected) {
-                    // Reactor负责 dispatch 收到的事件
-                    EchoServerReactor.dispatch(sk);
+    private void startService() {
+        new Thread(bossReactor).start();
+        // 一子反应器对应一条线程
+        new Thread(workReactors[0]).start();
+        new Thread(workReactors[1]).start();
+    }
+
+    // 反应器
+    static class Reactor implements Runnable {
+        // 每条线程负责一个选择器的查询
+        final Selector selector;
+
+        public Reactor(Selector selector) {
+            this.selector = selector;
+        }
+
+        public void run() {
+            try {
+                while (!Thread.interrupted()) {
+                    // 单位为毫秒
+                    selector.select(1);
+                    Set<SelectionKey> selectedKeys = selector.selectedKeys();
+                    if (null == selectedKeys || selectedKeys.isEmpty()) {
+                        continue;
+                    }
+                    for (SelectionKey sk : selectedKeys) {
+                        NIOUtil.info("Reactor 收到事件 " + sk.interestOps());
+                        // Reactor负责dispatch收到的事件
+                        dispatch(sk);
+                    }
+                    selectedKeys.clear();
                 }
-                selected.clear();
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        }
+
+
+        void dispatch(SelectionKey sk) {
+            if (!sk.isValid()) {
+                return; // 跳过无效 Key
+            }
+            Runnable handler = (Runnable) sk.attachment();
+            // 调用之前attach绑定到选择键的handler处理器对象
+            if (handler != null) {
+                handler.run();
+            }
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        // 这里弄着弄着发现一个问题
-        // 多线程的情况下
-        // 1.如果复用EchoHandler.run的逻辑,在切换到写事件的同时,这里的selector会一直触发写事件,那么写事件的任务会堆积在线程池内
-        // 2.在客户端断开连接的情况下,服务器收到FIN消息,没有进行处理,这里会一直触发读事件
-        // 上面两个都会造成非常大的CPU资源消耗, TODO 这个怎么解决呢
-        MultiThreadEchoServerReactor acceptReactor = new MultiThreadEchoServerReactor();
-        new Thread(acceptReactor,"accept_thread").start();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    // 除非线程中断, 否则程序会一直跑
-                    while (true) {
-                        // 阻塞的去查询选择器上是否有事件了,一旦有事件这个方法会立马返回
-                        acceptReactor.workerSelectors[0].select(100L);
-                        // 遍历所有准备好的键
-                        Set<SelectionKey> selected = acceptReactor.workerSelectors[0].selectedKeys();
-                        for (SelectionKey sk : selected) {
-                            // Reactor负责 dispatch 收到的事件
-                            EchoServerReactor.dispatch(sk);
-                        }
-                        selected.clear();
-                    }
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        },"work_1").start();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    // 除非线程中断, 否则程序会一直跑
-                    while (true) {
-                        // 阻塞的去查询选择器上是否有事件了,一旦有事件这个方法会立马返回
-                        acceptReactor.workerSelectors[1].select(100L);
-                        // 遍历所有准备好的键
-                        Set<SelectionKey> selected = acceptReactor.workerSelectors[1].selectedKeys();
-                        if(!CollectionUtils.isEmpty(selected)){
-                            log.info("有读事件触发");
-                        }
-                        for (SelectionKey sk : selected) {
-                            // Reactor负责 dispatch 收到的事件
-                            EchoServerReactor.dispatch(sk);
-                        }
-                        selected.clear();
-                    }
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        },"work_2").start();
 
+    // Handler:新连接处理器
+    class AcceptorHandler implements Runnable {
+        public void run() {
+            try {
+                SocketChannel channel = serverSocket.accept();
+                NIOUtil.info("接收到一个新的连接");
+
+                if (channel != null) {
+                    int index = next.get();
+                    NIOUtil.info("选择器的编号：" + index);
+                    Selector selector = workSelectors[index];
+                    new MultiThreadEchoHandler(selector, channel);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (next.incrementAndGet() == workSelectors.length) {
+                next.set(0);
+            }
+        }
     }
+
+
+    public static void main(String[] args) throws IOException {
+        MultiThreadEchoServerReactor server =
+                new MultiThreadEchoServerReactor();
+        server.startService();
+    }
+
 }

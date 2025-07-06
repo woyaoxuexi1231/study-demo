@@ -2,6 +2,7 @@ package org.hulei.basic.jdk.io.reactor;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.hulei.basic.jdk.io.NIOUtil;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -18,16 +19,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.LockSupport;
 
 
-@Slf4j
 public class EchoClient {
 
     public void start() throws IOException {
 
-        InetSocketAddress address = new InetSocketAddress("127.0.0.1", 8102);
+        InetSocketAddress address = new InetSocketAddress("127.0.0.1", 8103);
 
         // 1、获取通道（channel）
         SocketChannel socketChannel = SocketChannel.open(address);
-        log.info("客户端连接成功, 端口: {}", socketChannel.socket().getLocalPort());
+        NIOUtil.info(String.format("客户端连接成功, 端口: %s", socketChannel.socket().getLocalPort()));
         // 2、切换成非阻塞模式
         socketChannel.configureBlocking(false);
         socketChannel.setOption(StandardSocketOptions.TCP_NODELAY, true);
@@ -35,7 +35,7 @@ public class EchoClient {
         while (!socketChannel.finishConnect()) {
 
         }
-        log.info("客户端启动成功！");
+        NIOUtil.info("客户端启动成功！");
 
         // 启动接受线程
         MsgSendHandler msgSendHandler = new MsgSendHandler(socketChannel);
@@ -59,11 +59,11 @@ public class EchoClient {
             while (!Thread.interrupted()) {
                 ByteBuffer buffer = msgSendHandler.getSendBuffer();
                 while (msgSendHandler.hasData.get()) {
-                    log.info("还有消息没有发送完，请稍等, {}", msgSendHandler.sendBuffer);
+                    NIOUtil.info(String.format("还有消息没有发送完，请稍等, %s", msgSendHandler.sendBuffer));
                     LockSupport.parkNanos(1000 * 1000L * 1000L);
 
                 }
-                log.info("请输入发送内容:");
+                NIOUtil.info("请输入发送内容:");
                 Scanner scanner = new Scanner(System.in);
                 if (scanner.hasNext()) {
                     String next = scanner.next();
@@ -71,7 +71,7 @@ public class EchoClient {
                         msgSendHandler.getIsFinished().set(true);
                         break;
                     } else {
-                        buffer.put((new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime()) + " >>" + next).getBytes());
+                        buffer.put((new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime()) + " >> " + next).getBytes());
                         msgSendHandler.hasData.set(true);
                     }
                 }
@@ -125,7 +125,7 @@ public class EchoClient {
                                 sendBuffer.flip();
                                 // 操作三：发送数据
                                 socketChannel.write(sendBuffer);
-                                log.info("消息发送完成, {}", sendBuffer);
+                                NIOUtil.info(String.format("消息发送完成, %s", sendBuffer));
                                 sendBuffer.clear();
                                 hasData.set(false);
                             }
@@ -137,7 +137,7 @@ public class EchoClient {
                             int length = 0;
                             while ((length = socketChannel.read(readBuffer)) > 0) {
                                 readBuffer.flip();
-                                log.info("server echo:{}", new String(readBuffer.array(), 0, length));
+                                NIOUtil.info(String.format("server echo:%s ", new String(readBuffer.array(), 0, length)));
                                 readBuffer.clear();
                             }
                         }
