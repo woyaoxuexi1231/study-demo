@@ -23,7 +23,7 @@ public class EchoClient {
 
     public void start() throws IOException {
 
-        InetSocketAddress address = new InetSocketAddress("127.0.0.1", 8103);
+        InetSocketAddress address = new InetSocketAddress("127.0.0.1", 8102);
 
         // 1、获取通道（channel）
         SocketChannel socketChannel = SocketChannel.open(address);

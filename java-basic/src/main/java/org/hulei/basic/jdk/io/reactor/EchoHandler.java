@@ -99,11 +99,6 @@ class EchoHandler implements Runnable {
             // 选择键在以下情况下保持有效: 通过调用其 cancel 方法取消, 通过关闭其通道, 或通过关闭其选择器
             // 取消选择键不会立即从选择器中移除它: 它会被添加到选择器的已取消键集中，在下一次 select 操作期间移除, 可以使用 SelectionKey.isValid() 方法来测试键的有效性
             sk.cancel();
-            try {
-                channel.finishConnect();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 

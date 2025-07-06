@@ -25,7 +25,7 @@ chmod 777 /root/jenkins_mount
 docker run -d -p 8080:8080 -p 50000:50000 -v /root/jenkins_docker:/var/jenkins_home -v /etc/localtime:/etc/localtime --name myjenkins --restart=unless-stopped jenkins/jenkins:2.462.3-jdk11
 ```
 
-这里会涉及到docker内部的 java环境配置 git环境配置 maven环境配置
+## docker内部的 java环境配置 git环境配置 maven环境配置
 
 ```sh
 # Java环境这里直接使用容器内部的 jdk, 这样直接找到 jdk位置
@@ -33,6 +33,40 @@ echo $JAVA_HOME
 ```
 
 git 在 docker 版本的 jenkins 容器中自带有  maven 直接选择自动安装一个
+
+## maven依赖下载很慢
+
+在容器内生成一份setting配置文件，然后在全局工具配置 使用这个配置文件
+
+```sh
+cat > settings-default.xml << 'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 https://maven.apache.org/xsd/settings-1.2.0.xsd">
+  <pluginGroups>
+  </pluginGroups>
+
+  <proxies>
+  </proxies>
+  
+  <mirrors>
+    <mirror>
+      <!--This sends everything else to /public -->
+      <id>aliyun</id>
+      <mirrorOf>*</mirrorOf>
+      <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+    </mirror>
+  </mirrors>
+
+  <profiles>
+  </profiles>
+</settings>
+
+EOF
+```
+
+
 
 # 各种报错
 
