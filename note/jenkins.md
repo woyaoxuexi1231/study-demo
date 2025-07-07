@@ -206,6 +206,8 @@ fi
 
 ### 使用docker外挂jar包运行
 
+#### 直接配置
+
 以eureka-server为例
 
 Source files
@@ -307,7 +309,66 @@ docker run -d \
 openjdk:11 java -jar leyton-admin-server.jar
 ```
 
+#### 偷懒脚本
 
+```
+#!/bin/bash
+
+# 脚本用法说明
+usage() {
+    echo "用法: $0 <服务名称> <JVM参数>"
+    echo "示例: $0 dubbo-consumer-service \"-Ddubbo.protocol.host=192.168.3.102 -Ddubbo.application.qos-host=192.168.3.102 -Xms256m -Xmx512m\""
+    exit 1
+}
+
+# 检查参数数量
+if [ $# -ne 2 ]; then
+    usage
+fi
+
+SERVICE_NAME=$1
+JVM_PARAMS=$2
+
+# 停止并删除现有容器和镜像
+echo "停止并移除现有容器和镜像..."
+docker stop $SERVICE_NAME >/dev/null 2>&1
+docker rm $SERVICE_NAME >/dev/null 2>&1
+docker rmi $SERVICE_NAME >/dev/null 2>&1
+
+# 进入上传目录
+cd /root/jenkins/uploads || { echo "无法进入/root/jenkins/uploads目录"; exit 1; }
+
+# 检查JAR文件是否存在
+if [ ! -f "${SERVICE_NAME}.jar" ]; then
+    echo "错误: ${SERVICE_NAME}.jar 文件不存在"
+    exit 1
+fi
+
+# 运行新的容器
+echo "启动新的容器..."
+docker run -d \
+--network host \
+--name $SERVICE_NAME \
+-v /root/jenkins/uploads/${SERVICE_NAME}.jar:/${SERVICE_NAME}.jar \
+-e TZ=Asia/Shanghai \
+--cap-add=SYS_PTRACE \
+--restart=unless-stopped \
+openjdk:11 \
+java -jar $JVM_PARAMS /${SERVICE_NAME}.jar
+
+if [ $? -eq 0 ]; then
+    echo "容器 $SERVICE_NAME 已成功启动"
+else
+    echo "容器 $SERVICE_NAME 启动失败"
+    exit 1
+fi
+```
+
+```sh
+sh /root/jenkins/uploads/docker-start.sh dubbo-consumer-service "-Ddubbo.protocol.host=192.168.3.102 -Ddubbo.application.qos-host=192.168.3.102 -Xms512m -Xmx512m"
+
+sh /root/jenkins/uploads/docker-start.sh spring-boot "-Xms512m -Xmx512m"
+```
 
 
 

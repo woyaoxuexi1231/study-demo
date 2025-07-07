@@ -825,3 +825,7 @@ docker run --network my-net ...
 
 ------
 
+## docker容器内使用jmap查看堆信息提示权限不足
+
+错误信息：Can't attach to the process: ptrace(PTRACE_ATTACH, ..) failed for 1: Operation not permitted
+

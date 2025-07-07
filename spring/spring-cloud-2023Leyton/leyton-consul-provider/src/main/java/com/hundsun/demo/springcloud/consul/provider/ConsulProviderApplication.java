@@ -27,6 +27,21 @@ public class ConsulProviderApplication {
             config/application-dev
             config/application
             每个路径下都有一个名为 data 的文件
+
+
+        consul上有时候会出现某些服务已经不在了，但是服务依旧显示在
+        可以进行强制下线
+        API：
+            # 下线指定节点上的指定服务
+            curl --request PUT http://<consul-server>:8500/v1/agent/service/deregister/<service-id>
+            # 示例
+            curl --request PUT http://192.168.3.102:8500/v1/agent/service/deregister/consul-consumer-10015
+
+        consul client 下线：
+            consul services deregister -id=<service-id>
+            # 示例
+            consul services deregister -id=redis1
+
          */
         SpringApplication.run(ConsulProviderApplication.class, args);
     }
