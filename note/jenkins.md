@@ -237,8 +237,8 @@ docker run -d \
 --name dubbo-provider-service \
 -v /root/jenkins/uploads/dubbo-provider-service.jar:/dubbo-provider-service.jar \
 --restart=unless-stopped \
--Dspring.cloud.nacos.discovery.ip=192.168.3.102 \
-openjdk:11 java -jar dubbo-provider-service.jar
+openjdk:11 \
+java -jar -Dspring.cloud.nacos.discovery.ip=192.168.3.102 dubbo-provider-service.jar
 ```
 
 相当于仅使用openjdk:11这个进行来创建容器，jar包在宿主机上而不在docker镜像内
