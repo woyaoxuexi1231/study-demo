@@ -248,7 +248,7 @@ openjdk:11 java -jar eureka-server.jar
 
 dubbo + nacos
 
-```
+```sh
 docker stop dubbo-provider-service
 docker rm dubbo-provider-service
 docker rmi dubbo-provider-service
@@ -264,7 +264,7 @@ java -jar -Ddubbo.protocol.host=192.168.3.102 -Ddubbo.application.qos-host=192.1
 
 springcloudalibaba + nacos
 
-```
+```sh
 docker stop alibaba-nacos-config
 docker rm alibaba-nacos-config
 docker rmi alibaba-nacos-config
@@ -279,7 +279,7 @@ openjdk:11 java -jar alibaba-nacos-config.jar
 
 springcloud + consul
 
-```
+```sh
 docker stop leyton-consul-provider
 docker rm leyton-consul-provider
 docker rmi leyton-consul-provider
@@ -290,6 +290,21 @@ docker run -d \
 -v /root/jenkins/uploads/leyton-consul-provider.jar:/leyton-consul-provider.jar \
 --restart=unless-stopped \
 openjdk:11 java -jar leyton-consul-provider.jar
+```
+
+springcloud+eureka
+
+```sh
+docker stop eureka-server
+docker rm eureka-server
+docker rmi eureka-server
+cd /root/jenkins/uploads
+docker run -d \
+-p 10001:10001 \
+--name eureka-server \
+-v /root/jenkins/uploads/netflix-eureka-server.jar:/eureka-server.jar \
+--restart=unless-stopped \
+openjdk:11 java -jar eureka-server.jar
 ```
 
 

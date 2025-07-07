@@ -11,7 +11,7 @@ eureka:
   client:
     registryFetchIntervalSeconds: 5
     service-url:
-      defaultZone: ${EUREKA_SERVICE_URL:http://localhost:10001}/eureka/
+      defaultZone: ${EUREKA_SERVICE_URL:http://192.168.3.102:10001}/eureka/
   instance:
     leaseRenewalIntervalInSeconds: 10
     health-check-url-path: /actuator/health
