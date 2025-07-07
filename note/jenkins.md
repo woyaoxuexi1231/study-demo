@@ -295,16 +295,16 @@ openjdk:11 java -jar leyton-consul-provider.jar
 springcloud+eureka
 
 ```sh
-docker stop eureka-server
-docker rm eureka-server
-docker rmi eureka-server
+docker stop leyton-admin-server
+docker rm leyton-admin-server
+docker rmi leyton-admin-server
 cd /root/jenkins/uploads
 docker run -d \
--p 10001:10001 \
---name eureka-server \
--v /root/jenkins/uploads/netflix-eureka-server.jar:/eureka-server.jar \
+--network host \
+--name leyton-admin-server \
+-v /root/jenkins/uploads/leyton-admin-server.jar:/leyton-admin-server.jar \
 --restart=unless-stopped \
-openjdk:11 java -jar eureka-server.jar
+openjdk:11 java -jar leyton-admin-server.jar
 ```
 
 
