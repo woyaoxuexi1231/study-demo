@@ -22,7 +22,14 @@ docker pull jenkins/jenkins:2.452-jdk11
 mkdir -p /root/jenkins_mount
 chmod 777 /root/jenkins_mount
 
-docker run -d -p 8080:8080 -p 50000:50000 -v /root/jenkins_docker:/var/jenkins_home -v /etc/localtime:/etc/localtime --name myjenkins --restart=unless-stopped jenkins/jenkins:2.462.3-jdk11
+docker run -d \
+-p 8080:8080 \
+-p 50000:50000 \
+-v /root/jenkins_docker:/var/jenkins_home \
+-e TZ=Asia/Shanghai \
+--name myjenkins \
+--restart=unless-stopped \
+jenkins/jenkins:2.462.3-jdk11
 ```
 
 ## docker内部的 java环境配置 git环境配置 maven环境配置
@@ -221,9 +228,17 @@ Remote directory
 Exec command
 
 ```
+docker stop dubbo-provider-service
+docker rm dubbo-provider-service
+docker rmi dubbo-provider-service
 cd /root/jenkins/uploads
-docker stop eureka-server
-docker run -d -p 10001:10001 --name eureka-server -v /root/jenkins/uploads/netflix-eureka-server.jar:/app.jar --restart=unless-stopped openjdk:11 java -jar app.jar
+docker run -d \
+--network host \
+--name dubbo-provider-service \
+-v /root/jenkins/uploads/dubbo-provider-service.jar:/dubbo-provider-service.jar \
+--restart=unless-stopped \
+-Dspring.cloud.nacos.discovery.ip=192.168.3.102 \
+openjdk:11 java -jar dubbo-provider-service.jar
 ```
 
 相当于仅使用openjdk:11这个进行来创建容器，jar包在宿主机上而不在docker镜像内
