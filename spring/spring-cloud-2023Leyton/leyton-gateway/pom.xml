@@ -68,6 +68,13 @@
             <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
             <version>2021.1</version>
         </dependency>
+
+
+        <!-- 暴露健康状态 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
     </dependencies>
 
     <profiles>

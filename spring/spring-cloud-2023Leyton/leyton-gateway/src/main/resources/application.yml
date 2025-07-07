@@ -8,6 +8,7 @@ spring:
     active: redis-connect,eureka
   main:
     allow-circular-references: true
+    web-application-type: reactive
 
 logging:
   level:
