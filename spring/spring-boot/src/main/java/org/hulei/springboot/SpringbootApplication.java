@@ -1,6 +1,8 @@
 package org.hulei.springboot;
 
 import cn.hutool.core.thread.ThreadFactoryBuilder;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.hulei.springboot.spring.config.PropertiesConfig;
@@ -51,6 +53,7 @@ import java.util.concurrent.TimeUnit;
 @Data
 @RestController("/application")
 @Slf4j
+// @Tag(name = "", description = "仅用于开发和测试阶段2") // 用于 Controller，给接口分组（替代旧的 @Api）
 // @EnableDynamicDataSource
 public class SpringbootApplication implements ApplicationRunner {
 
@@ -125,6 +128,10 @@ public class SpringbootApplication implements ApplicationRunner {
          */
     }
 
+    /**
+     * 仅作为调试使用的 debug 入口
+     */
+    @Operation(summary = "仅用于开发和测试阶段") // 用于方法，描述接口功能（替代旧的 @ApiOperation）
     @GetMapping("/debug")
     public void applicationApi() {
         System.out.println("debug mode");
