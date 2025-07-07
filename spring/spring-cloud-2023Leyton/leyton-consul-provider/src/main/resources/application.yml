@@ -18,7 +18,7 @@ spring:
         # 服务在 Consul 注册中心中的名称，设置为 consul-provider。
         service-name: consul-provider
         # instanceId 是一个可选属性，允许你自定义服务实例的ID。你可以利用Spring表达式语言（SpEL）来构建一个复杂的ID。例如，包括应用IP、应用实例ID和一些随机值。
-        instance-id: ${spring.application.name}:${server.port}
+        instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
         # 定义健康检查的相对路径 以 / 开头的路径 (如 /actuator/health) 当服务使用标准端口和协议时
         # 而 health-check-url 定义完整的健康检查 URL，(如 http://${ip}:${port}/custom/health) 需要自定义协议、端口或特殊路径时
         health-check-path: /actuator/health
@@ -55,7 +55,11 @@ spring:
           wait-time: 1
     # # 存在多张网卡的时候，注册到注册中心的时候可能会出现 ip 地址混乱的情况，这可能导致请求并不通，这里忽略一下虚拟机的额外网卡
     inetutils:
-      ignored-interfaces: [ 'VMware.*' ]
+      ignored-interfaces:
+        - vEthernet.*
+        - vmnet.*
+        - VirtualBox.*
+        - VMware.*
   # spring.config 是 Spring Boot 中用于控制配置文件加载行为的核心配置前缀，它提供了细粒度的配置管理能力
   config:
     # spring.config.import 属性被用来明确声明配置信息应从哪里被加载

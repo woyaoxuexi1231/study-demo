@@ -228,6 +228,27 @@ Remote directory
 Exec command
 
 ```
+docker stop eureka-server
+docker rm eureka-server
+docker rmi eureka-server
+cd /root/jenkins/uploads
+docker run -d \
+-p 10001:10001 \
+--name eureka-server \
+-v /root/jenkins/uploads/netflix-eureka-server.jar:/eureka-server.jar \
+--restart=unless-stopped \
+openjdk:11 java -jar eureka-server.jar
+```
+
+相当于仅使用openjdk:11这个进行来创建容器，jar包在宿主机上而不在docker镜像内
+
+
+
+这里对于docker内的jar包向注册中心注册时，我这里都统一使用 host 网络模式 以及指定宿主机ip的形式注册
+
+dubbo + nacos
+
+```
 docker stop dubbo-provider-service
 docker rm dubbo-provider-service
 docker rmi dubbo-provider-service
@@ -238,10 +259,40 @@ docker run -d \
 -v /root/jenkins/uploads/dubbo-provider-service.jar:/dubbo-provider-service.jar \
 --restart=unless-stopped \
 openjdk:11 \
-java -jar -Dspring.cloud.nacos.discovery.ip=192.168.3.102 dubbo-provider-service.jar
+java -jar -Ddubbo.protocol.host=192.168.3.102 -Ddubbo.application.qos-host=192.168.3.102 dubbo-provider-service.jar
 ```
 
-相当于仅使用openjdk:11这个进行来创建容器，jar包在宿主机上而不在docker镜像内
+springcloudalibaba + nacos
+
+```
+docker stop alibaba-nacos-config
+docker rm alibaba-nacos-config
+docker rmi alibaba-nacos-config
+cd /root/jenkins/uploads
+docker run -d \
+--network host \
+--name alibaba-nacos-config \
+-v /root/jenkins/uploads/alibaba-nacos-config.jar:/alibaba-nacos-config.jar \
+--restart=unless-stopped \
+openjdk:11 java -jar alibaba-nacos-config.jar
+```
+
+springcloud + consul
+
+```
+docker stop leyton-consul-provider
+docker rm leyton-consul-provider
+docker rmi leyton-consul-provider
+cd /root/jenkins/uploads
+docker run -d \
+--network host \
+--name leyton-consul-provider \
+-v /root/jenkins/uploads/leyton-consul-provider.jar:/leyton-consul-provider.jar \
+--restart=unless-stopped \
+openjdk:11 java -jar leyton-consul-provider.jar
+```
+
+
 
 
 
