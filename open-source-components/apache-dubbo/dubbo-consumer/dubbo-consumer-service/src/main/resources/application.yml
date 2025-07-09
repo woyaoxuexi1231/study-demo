@@ -15,6 +15,6 @@ done:
     enable: true  # 示例：任务完成时间记录功能开关
 
 # ========== 日志配置（已注释） ==========
-# logging:
-#   level:
-#     root: debug  # 全局日志级别（生产环境建议info或warn）
+logging:
+  level:
+    root: info  # 全局日志级别（生产环境建议info或warn）

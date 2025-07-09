@@ -9,12 +9,12 @@ dubbo:
     # - 流量管理：限流、熔断等操作的入口（部分高级功能需配合其他配置）。
     # - 健康检查：监控服务提供者的健康状态。
     qos-port: 20101
-#    qos-host: 192.168.3.2
+    qos-host: 192.168.3.2
   consumer:
     check: false  # 启动时不检查服务提供者
   registry:
     #  # 注册中心地址（Zookeeper）
-#    address: zookeeper://192.168.3.102:2181
+    #    address: zookeeper://192.168.3.102:2181
     # 可选：Nacos 注册中心（已注释）
     address: nacos://192.168.3.102:8848
     username: nacos
@@ -26,7 +26,8 @@ dubbo:
     # 协议端口（未配置则使用随机端口）
     port: 20100
     # serialization: hessian2  # 序列化方式（已注释）
-#    host: 192.168.3.2
+    host: 192.168.3.2
+
 
   scan:
     base-packages: com.hundsun.demo.dubbo.provider.service  # Dubbo 服务扫描包路径
@@ -42,6 +43,9 @@ dubbo:
   # 提供者全局配置（已注释）
   # provider:
   #   serialization: hessian2
+  provider:
+    group: g
+    version: v
 
 # ========== Curator Zookeeper 客户端配置 ==========
 curator:

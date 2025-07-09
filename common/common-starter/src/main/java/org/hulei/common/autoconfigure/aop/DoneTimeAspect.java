@@ -42,12 +42,20 @@ public class DoneTimeAspect {
         // 方法参数
         Object[] param = joinPoint.getArgs();
 
+        // 方法结果
+        Object rsp = null;
+
         try {
             stopWatch.start();
-            return joinPoint.proceed();
+            rsp = joinPoint.proceed();
+            return rsp;
         } finally {
             stopWatch.stop();
-            log.info("time: {} ms, method: {}, param: {} ", new DecimalFormat("#,###").format(stopWatch.getLastTaskTimeNanos() / 1000 / 1000), joinPoint.getSignature().getName(), param);
+            log.info("方法名：{}，耗时：{}，入参：{}，结果：{}",
+                    joinPoint.getSignature().getName(),
+                    new DecimalFormat("#,###").format(stopWatch.getLastTaskTimeNanos() / 1000 / 1000),
+                    param,
+                    rsp);
         }
 
     }

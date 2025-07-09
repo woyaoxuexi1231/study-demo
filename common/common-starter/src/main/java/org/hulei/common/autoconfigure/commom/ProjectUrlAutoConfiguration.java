@@ -34,6 +34,7 @@ class ServerPortListener {
         this.port = event.getWebServer().getPort();
         log.info("获得端口：{}", port);
         log.info("project url: http://{}:{}", InetAddress.getLocalHost().getHostAddress(), port);
+        log.info("swagger-ui index: http://{}:{}/swagger-ui/index.html", InetAddress.getLocalHost().getHostAddress(), port);
     }
 
 }

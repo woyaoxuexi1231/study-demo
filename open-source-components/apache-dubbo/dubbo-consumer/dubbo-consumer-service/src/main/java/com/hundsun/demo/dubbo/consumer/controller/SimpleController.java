@@ -2,6 +2,7 @@ package com.hundsun.demo.dubbo.consumer.controller;
 
 import com.hundsun.demo.dubbo.provider.api.service.ProviderService;
 import com.mysql.cj.protocol.ResultBuilder;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -45,11 +46,11 @@ public class SimpleController {
             loadbalance = RoundRobinLoadBalance.NAME, // 负载均衡策略
             // cluster = "forking", // 集群策略
             mock = "true", // 实现服务降级,当服务不可用(服务可以但是不报错,这个mock配置是不会生效的)时,会自动进行本地服务降级
-            // 分组和版本的*配置,会影响负载均衡,但是不清楚原因 TODO 2024年3月24日
-            // group = "*", // *代表匹配所有
-            // version = "*",
+            // 分组和版本的*配置，会影响负载均衡，但是不清楚原因 TODO 2024年3月24日
+            group = "*",
+            version = "*"
             // merger = "true",
-            timeout = 30000 // 服务调用超时,0则不触发超时报错
+            // timeout = 30000 // 服务调用超时,0则不触发超时报错
     )
     ProviderService providerService;
 
@@ -66,6 +67,20 @@ public class SimpleController {
     @GetMapping("/simpleRpcInvoke")
     public ResultDTO<?> simpleRpcInvoke() {
         return ResultDTOBuild.resultSuccessBuild(providerService.RpcInvoke());
+    }
+
+    @Operation(description = "测试 DubboReference 的负载均衡")
+    @GetMapping("/testRandomInvoke")
+    public ResultDTO<?> testRandomInvoke() {
+        Map<String, Integer> map = new HashMap<>();
+        for (int i = 0; i < 100; i++) {
+            String s = providerService.RpcInvoke();
+            map.put(s, map.getOrDefault(s, 0) + 1);
+        }
+        log.info("==============================================================");
+        map.forEach((k, v) -> log.info("{}: {} times", k, v));
+        log.info("==============================================================");
+        return ResultDTOBuild.resultSuccessBuild(map);
     }
 
 
