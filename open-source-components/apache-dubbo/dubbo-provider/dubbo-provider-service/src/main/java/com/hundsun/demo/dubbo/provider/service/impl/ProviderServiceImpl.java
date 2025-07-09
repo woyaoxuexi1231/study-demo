@@ -19,10 +19,10 @@ public class ProviderServiceImpl implements ProviderService {
     @Value(value = "${server.port}")
     String port;
 
-    @Value(value = "${dubbo.provider.group:null}")
+    @Value(value = "${dubbo.provider.group:default}")
     String group;
 
-    @Value(value = "${dubbo.provider.version:null}")
+    @Value(value = "${dubbo.provider.version:0}")
     String version;
 
     @DoneTime

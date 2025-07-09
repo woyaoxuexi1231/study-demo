@@ -65,7 +65,7 @@ public class SimpleController {
      */
     @GetMapping("/simpleRpcInvoke")
     public ResultDTO<?> simpleRpcInvoke() {
-        return ResultDTOBuild.resultErrorBuild(providerService.RpcInvoke());
+        return ResultDTOBuild.resultSuccessBuild(providerService.RpcInvoke());
     }
 
 
