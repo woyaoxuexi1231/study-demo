@@ -1,4 +1,4 @@
-package org.hulei.basic.jdk.io;
+package org.hulei.basic.jdk.io.client;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,12 +26,12 @@ import java.net.Socket;
 
 @SuppressWarnings("CallToPrintStackTrace")
 @Slf4j
-public class Client {
+public class EchoClient {
 
     public static void main(String[] args) {
 
         try {
-            Socket s = new Socket("127.0.0.1", 8100);
+            Socket s = new Socket("127.0.0.1", 8105);
 
             // 构建IO
             InputStream is = s.getInputStream();

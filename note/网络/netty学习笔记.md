@@ -233,7 +233,7 @@ Java I/O系统设计采用了装饰器模式，可以通过组合各种流类来
 
 服务端代码：org.hulei.basic.jdk.io.ConnectionPerThread
 
-客户端代码：org.hulei.basic.jdk.io.Client
+客户端代码：org.hulei.basic.jdk.io.client.EchoClient
 
 
 

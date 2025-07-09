@@ -1,6 +1,5 @@
 package org.hulei.springdata.routingdatasource.config.coding;
 
-import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.hulei.springdata.routingdatasource.core.DataSourceToggleUtil;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;

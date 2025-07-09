@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /*
-每次注入或通过 getBean 获取时创建新的实例。
-测试会发现一个点是容器启动阶段所有的bean注入的也都是同一个bean
+prototype 只在你显式向容器索取时才生效（context.getBean()）。
+也就是说每一个注入 prototype bean 的地方是不同 bean 对象，但是一旦注入，对象就被固定了。
  */
 @Scope(scopeName = "prototype")
 @Component

@@ -27,5 +27,6 @@ public class AopAutoProxyConfig {
 
     使用 springboot 就完全不需要配置了。
     AopAutoConfiguration 类已经自动配置好了，通过 spring 的自动配置完全自动化的配置完成
+    通过 AopAutoConfiguration 的配置，spring 会在 AspectJAutoProxyRegistrar 注册好 AnnotationAwareAspectJAutoProxyCreator
      */
 }

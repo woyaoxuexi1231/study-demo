@@ -26,7 +26,7 @@ import java.nio.file.Paths;
  * @since 2024/9/11 18:23
  */
 
-public class FileInputOutputStreamTest {
+public class InputOutputStreamDemo {
 
     private static final String fileName = "test2.txt";
 
