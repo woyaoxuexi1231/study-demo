@@ -6,6 +6,7 @@ import com.hundsun.demo.dubbo.provider.api.service.ProviderService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.hulei.common.autoconfigure.commom.ProjectUrlAutoConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.net.InetAddress;
@@ -49,12 +50,12 @@ public class ProviderServiceImpl implements ProviderService {
 
         try {
             return String.format("hello rpc! here address is : %s, port: %s, group: %s, version: %s",
-                    InetAddress.getLocalHost().getHostAddress(),
+                    InetAddress.getLocalHost().getHostName() + " -- " + ProjectUrlAutoConfiguration.getLocalHost(),
                     port,
                     StringUtils.isEmpty(ProviderServiceImpl.class.getAnnotation(DubboService.class).group()) ? group : ProviderServiceImpl.class.getAnnotation(DubboService.class).group(),
                     StringUtils.isEmpty(ProviderServiceImpl.class.getAnnotation(DubboService.class).version()) ? version : ProviderServiceImpl.class.getAnnotation(DubboService.class).version()
             );
-        } catch (UnknownHostException e) {
+        } catch (Exception e) {
             // 只有当抛出Rpc异常或其他dubbo的业务异常时，在服务消费端才会进行服务降级，其他异常不会服务降级
             throw new RpcException(e);
         }
