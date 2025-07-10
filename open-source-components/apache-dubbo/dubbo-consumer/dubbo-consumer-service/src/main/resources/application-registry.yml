@@ -14,7 +14,7 @@ dubbo:
     # 启动时不检查服务提供者
     check: false
     # 订阅的服务分组
-    group: g
+    group: test
     # 订阅的服务版本
     version: v
   registry:

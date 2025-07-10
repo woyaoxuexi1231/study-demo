@@ -5,7 +5,7 @@ dubbo:
     base-packages: com.hundsun.demo.dubbo.provider.service
   # 配置一个公共的服务分组和版本信息
   provider:
-    group: g
+    group: test
     version: v
   application:
     # 应用名称（用于服务注册）
@@ -24,20 +24,20 @@ dubbo:
     address: nacos://192.168.3.102:8848
     username: nacos
     password: nacos
-#  protocol:
-#    # 协议名称
-#    name: dubbo
-#    # 协议端口（未配置则使用随机端口）
-#    port: 20100
-#    # serialization: hessian2  # 序列化方式（已注释）
-#    host: 192.168.3.2
+  protocol:
+    # 协议名称
+    name: dubbo
+    # 协议端口（未配置则使用随机端口）
+    port: 20100
+    # serialization: hessian2  # 序列化方式（已注释）
+    host: 192.168.3.2
 
   # 如果涉及多协议，可以像下面这样配置
-  protocols:
-    dubbo:
-      name: dubbo
-      port: 20100
-      host: 192.168.3.2
+#  protocols:
+#    dubbo:
+#      name: dubbo
+#      port: 20100
+#      host: 192.168.3.2
     # http 配置，但是目前不知道这样配置的意义何在
 #    http:
 #      name: http

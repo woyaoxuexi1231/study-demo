@@ -1,4 +1,4 @@
-# 1.redis基础
+# redis基础
 
 ## 什么是redis
 
@@ -535,7 +535,7 @@ ZINTERSTORE result 2 tmp price_index WEIGHTS 0 1
 
 Redis 的威力在于**选择正确的数据结构解决特定问题**，合理使用可使系统性能提升10-100倍。但在引入时需严格评估数据一致性和持久化需求，避免误用为“万能数据库”。
 
-# 2.redis高可用
+# redis高可用
 
 ## 1.redis复制
 

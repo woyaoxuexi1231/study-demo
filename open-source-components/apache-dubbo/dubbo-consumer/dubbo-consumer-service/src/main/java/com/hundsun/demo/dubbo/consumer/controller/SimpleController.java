@@ -49,6 +49,7 @@ public class SimpleController {
                 5.(ShortestResponseLoadBalance)优先选择响应时间最短的服务提供者来处理新的请求。这种策略的目的是减少系统的平均响应时间，并提高服务的整体性能。[相同响应时间,受权重影响]
              */
             , loadbalance = RoundRobinLoadBalance.NAME
+
             // 集群策略
             // , cluster = "forking"
             // 实现服务降级,当服务不可用(服务可以但是不报错,这个mock配置是不会生效的)时,会自动进行本地服务降级
@@ -61,7 +62,13 @@ public class SimpleController {
             // 注册了多个相同服务时，分组和版本又相同，测试时可以通过url来指定消费
             // , url = "dubbo://192.168.3.2:20102"
             // , protocol = "dubbo"
-            , cache = "lru"
+
+            /*
+            Dubbo 内置有缓存策略
+            1. LRU 缓存 (最近最少使用)
+            2. 线程本地缓存 (ThreadLocal)，服务提供者下线后，缓存会失效
+             */
+            // , cache = "lru"
     )
     ProviderService providerService;
 
