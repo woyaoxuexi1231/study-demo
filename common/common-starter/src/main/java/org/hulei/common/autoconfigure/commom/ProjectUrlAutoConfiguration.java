@@ -16,6 +16,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -114,13 +115,18 @@ public class ProjectUrlAutoConfiguration {
         }
     }
 
+    private static volatile String localhost = null;
+
     public static String getLocalHost() {
         try {
-            if (InetAddress.getLocalHost().getHostName().equals("MS-7E13")) {
-                return ProjectUrlAutoConfiguration.getIPByInterface("eth13");
-            } else {
-                return ProjectUrlAutoConfiguration.getPhysicalIP();
+            if (Objects.isNull(localhost)) {
+                if (InetAddress.getLocalHost().getHostName().equals("MS-7E13")) {
+                    localhost = ProjectUrlAutoConfiguration.getIPByInterface("eth13");
+                } else {
+                    localhost = ProjectUrlAutoConfiguration.getPhysicalIP();
+                }
             }
+            return localhost;
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         }

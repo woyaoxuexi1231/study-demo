@@ -49,9 +49,8 @@ public class ProviderServiceImpl implements ProviderService {
         // LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(4));
 
         try {
-            return String.format("hello rpc! here address is : %s, port: %s, group: %s, version: %s",
+            return String.format("hello rpc! here address is : %s, group: %s, version: %s",
                     InetAddress.getLocalHost().getHostName() + " -- " + ProjectUrlAutoConfiguration.getLocalHost(),
-                    port,
                     StringUtils.isEmpty(ProviderServiceImpl.class.getAnnotation(DubboService.class).group()) ? group : ProviderServiceImpl.class.getAnnotation(DubboService.class).group(),
                     StringUtils.isEmpty(ProviderServiceImpl.class.getAnnotation(DubboService.class).version()) ? version : ProviderServiceImpl.class.getAnnotation(DubboService.class).version()
             );

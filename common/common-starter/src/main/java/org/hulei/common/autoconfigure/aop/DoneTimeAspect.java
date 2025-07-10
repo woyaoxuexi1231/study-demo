@@ -51,8 +51,9 @@ public class DoneTimeAspect {
             return rsp;
         } finally {
             stopWatch.stop();
-            log.info("方法名：{}，耗时：{}，入参：{}，结果：{}",
+            log.info("方法名：{}，耗时：{} 毫秒，入参：{}，结果：{}",
                     joinPoint.getSignature().getName(),
+                    // 创建数字格式化对象，模式"#,###"表示：#：可选数字位（如果是0则不显示），,：千分位分隔符
                     new DecimalFormat("#,###").format(stopWatch.getLastTaskTimeNanos() / 1000 / 1000),
                     param,
                     rsp);

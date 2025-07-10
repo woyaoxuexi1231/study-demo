@@ -264,6 +264,55 @@
                 <artifactId>dubbo-registry-nacos</artifactId>
                 <version>${apache.dubbo.springboot.starter.version}</version>
             </dependency>
+            <!--
+            这是 Dubbo 提供的一个最简单的 HTTP 协议支持。
+            本质是把 Dubbo 的请求直接封装成 HTTP POST，然后远程传输，但是它并不提供 RESTful 风格（没有路径映射、没有 JAX-RS）。
+            主要是为了在一些网络环境不允许 TCP/Netty 时，可以用 HTTP 代理转发 RPC。
+
+            特点：
+                调用依然是二进制 RPC，不是 RESTful API。
+                消费方和提供方都需要使用 Dubbo 的 Client 和 Server。
+                没有面向开放 API 的设计，调用方式和 Dubbo 协议几乎一样，只是换了传输层。
+             -->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-rpc-http</artifactId>
+                <version>${apache.dubbo.springboot.starter.version}</version>
+            </dependency>
+            <!--
+             这是 Dubbo 提供的真正的 REST 协议支持，基于 JAX-RS。
+             可以把 Dubbo 服务用 rest 协议暴露出去，提供标准的 HTTP RESTful 接口。
+             URL、Method（GET/POST）、PathParam、QueryParam 都是标准 REST 设计。
+
+             特点：
+                消费方可以是任意 HTTP Client（Postman、curl、浏览器都能调）。
+                这是你想要的 “一个实现，双协议暴露” 的方案。
+                Dubbo 内置 Netty / Tomcat / Jetty 作为 REST Server。
+             -->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-rpc-rest</artifactId>
+                <version>${apache.dubbo.springboot.starter.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.ws.rs</groupId>
+                <artifactId>javax.ws.rs-api</artifactId>
+                <version>2.1.1</version>
+            </dependency>
+
+            <!-- 可选：如果需要 Jackson JSON Provider -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.jaxrs</groupId>
+                <artifactId>jackson-jaxrs-json-provider</artifactId>
+                <version>2.13.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.ws.rs</groupId>
+                <artifactId>jakarta.ws.rs-api</artifactId>
+                <version>2.1.6</version>
+            </dependency>
 
 
             <!--......................................................................................................-->

@@ -1,5 +1,12 @@
 # ========== Dubbo 核心配置 ==========
 dubbo:
+  # 配置服务扫描包路径
+  scan:
+    base-packages: com.hundsun.demo.dubbo.provider.service
+  # 配置一个公共的服务分组和版本信息
+  provider:
+    group: g
+    version: v
   application:
     # 应用名称（用于服务注册）
     name: demo-dubbo-provider
@@ -10,8 +17,6 @@ dubbo:
     # - 健康检查：监控服务提供者的健康状态。
     qos-port: 20101
     qos-host: 192.168.3.2
-  consumer:
-    check: false  # 启动时不检查服务提供者
   registry:
     #  # 注册中心地址（Zookeeper）
     #    address: zookeeper://192.168.3.102:2181
@@ -19,18 +24,31 @@ dubbo:
     address: nacos://192.168.3.102:8848
     username: nacos
     password: nacos
+#  protocol:
+#    # 协议名称
+#    name: dubbo
+#    # 协议端口（未配置则使用随机端口）
+#    port: 20100
+#    # serialization: hessian2  # 序列化方式（已注释）
+#    host: 192.168.3.2
 
-  protocol:
-    # 协议名称
-    name: dubbo
-    # 协议端口（未配置则使用随机端口）
-    port: 20100
-    # serialization: hessian2  # 序列化方式（已注释）
-    host: 192.168.3.2
+  # 如果涉及多协议，可以像下面这样配置
+  protocols:
+    dubbo:
+      name: dubbo
+      port: 20100
+      host: 192.168.3.2
+    # http 配置，但是目前不知道这样配置的意义何在
+#    http:
+#      name: http
+#      port: 20102
+#      host: 192.168.3.2
+#    rest:
+#      name: rest
+#      port: 20103
+#      server: jetty
+#      host: 192.168.3.2
 
-
-  scan:
-    base-packages: com.hundsun.demo.dubbo.provider.service  # Dubbo 服务扫描包路径
 
   # 全局配置中心（已注释）
   # config-center:
@@ -43,9 +61,7 @@ dubbo:
   # 提供者全局配置（已注释）
   # provider:
   #   serialization: hessian2
-  provider:
-    group: g
-    version: v
+
 
 # ========== Curator Zookeeper 客户端配置 ==========
 curator:

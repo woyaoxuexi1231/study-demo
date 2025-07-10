@@ -5,7 +5,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.Method;
 import org.apache.dubbo.rpc.cluster.loadbalance.RoundRobinLoadBalance;
+import org.hulei.common.autoconfigure.annotation.DoneTime;
 import org.hulei.util.dto.ResultDTO;
 import org.hulei.util.utils.ResultDTOBuild;
 import org.springframework.validation.annotation.Validated;
@@ -47,13 +49,19 @@ public class SimpleController {
                 5.(ShortestResponseLoadBalance)优先选择响应时间最短的服务提供者来处理新的请求。这种策略的目的是减少系统的平均响应时间，并提高服务的整体性能。[相同响应时间,受权重影响]
              */
             , loadbalance = RoundRobinLoadBalance.NAME
-            // cluster = "forking", // 集群策略
-            , mock = "true" // 实现服务降级,当服务不可用(服务可以但是不报错,这个mock配置是不会生效的)时,会自动进行本地服务降级
-            // 分组和版本的*配置，会影响负载均衡，但是不清楚原因 TODO 2024年3月24日
-            // , group = "*"
+            // 集群策略
+            // , cluster = "forking"
+            // 实现服务降级,当服务不可用(服务可以但是不报错,这个mock配置是不会生效的)时,会自动进行本地服务降级
+            // , mock = "true"
+            // 分组和版本的 * 配置，会影响负载均衡，但是不清楚原因 TODO 2024年3月24日
+            // , group = "test"
             // , version = "*"
             // merger = "true",
             // timeout = 30000 // 服务调用超时,0则不触发超时报错
+            // 注册了多个相同服务时，分组和版本又相同，测试时可以通过url来指定消费
+            // , url = "dubbo://192.168.3.2:20102"
+            // , protocol = "dubbo"
+            , cache = "lru"
     )
     ProviderService providerService;
 
@@ -67,11 +75,13 @@ public class SimpleController {
      *
      * @return rsp
      */
+    @DoneTime
     @GetMapping("/simpleRpcInvoke")
     public ResultDTO<?> simpleRpcInvoke() {
         return ResultDTOBuild.resultSuccessBuild(providerService.RpcInvoke());
     }
 
+    @DoneTime
     @Operation(description = "测试 DubboReference 的负载均衡")
     @GetMapping("/testRandomInvoke")
     public ResultDTO<?> testRandomInvoke() {

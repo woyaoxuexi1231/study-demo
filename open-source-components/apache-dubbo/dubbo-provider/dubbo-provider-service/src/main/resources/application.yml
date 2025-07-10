@@ -16,7 +16,8 @@ custom:
       time:
         enable: true
 
-#logging:
-#  level:
+logging:
+  level:
+    root: info
 #    org.apache.dubbo: DEBUG
 #    com.alibaba.nacos: DEBUG
