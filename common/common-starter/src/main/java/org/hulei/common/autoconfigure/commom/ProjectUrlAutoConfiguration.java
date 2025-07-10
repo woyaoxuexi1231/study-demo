@@ -6,6 +6,8 @@ import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -98,11 +100,11 @@ public class ProjectUrlAutoConfiguration {
         throw new RuntimeException("No physical network interface found!");
     }
 
-    private static void getNetworkInterfaces() throws SocketException {
+    public static void getNetworkInterfaces() throws SocketException {
         Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
         while (interfaces.hasMoreElements()) {
             NetworkInterface iface = interfaces.nextElement();
-            System.out.println("Interface: " + iface.getName() + " (" + iface.getDisplayName() + ")");
+            log.info("Interface: {} ({})", iface.getName(), iface.getDisplayName());
 
             Enumeration<InetAddress> addresses = iface.getInetAddresses();
             while (addresses.hasMoreElements()) {
@@ -131,6 +133,8 @@ public class ProjectUrlAutoConfiguration {
 
 }
 
+@RequestMapping("/server-port-listener")
+@RestController
 @Getter
 @Slf4j
 class ServerPortListener {
@@ -148,4 +152,8 @@ class ServerPortListener {
         log.info("当前应用的唯一标识：{}", uuid);
     }
 
+    @RequestMapping("/print-network-interfaces")
+    public void printNetworkInterfaces() throws SocketException {
+        ProjectUrlAutoConfiguration.getNetworkInterfaces();
+    }
 }

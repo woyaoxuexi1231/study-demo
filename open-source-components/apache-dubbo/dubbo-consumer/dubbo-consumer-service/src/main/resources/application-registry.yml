@@ -11,7 +11,12 @@ dubbo:
     qos-port: 20001
     qos-host: 192.168.3.2
   consumer:
-    check: false  # 启动时不检查服务提供者
+    # 启动时不检查服务提供者
+    check: false
+    # 订阅的服务分组
+    group: g
+    # 订阅的服务版本
+    version: v
   registry:
     #  # 注册中心地址（Zookeeper）
     #    address: zookeeper://192.168.3.102:2181
@@ -28,9 +33,9 @@ dubbo:
     # serialization: hessian2  # 序列化方式（已注释）
     host: 192.168.3.2
 
-#  consumer:
-#    group: g       # 订阅的服务分组
-#    version: 1.0   # 订阅的服务版本
+    #  consumer:
+    #    group: g       # 订阅的服务分组
+    #    version: 1.0   # 订阅的服务版本
     # mock: true   # 启用本地mock（已注释）
     # timeout: 5000 # 全局调用超时时间（可选）
     # check: false # 启动时不检查服务可用性（可选）

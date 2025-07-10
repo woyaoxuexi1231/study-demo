@@ -1,7 +1,6 @@
 package com.hundsun.demo.dubbo.consumer.controller;
 
 import com.hundsun.demo.dubbo.provider.api.service.ProviderService;
-import com.mysql.cj.protocol.ResultBuilder;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -33,22 +32,26 @@ import java.util.Map;
 public class SimpleController {
 
     /**
-     * 微服务
-     * loadbalance:
-     * -- 1.随机负载均衡（RandomLoadBalance）：随机选择一个服务提供者来处理请求，每个服务提供者被选择的概率相等。[完全的随机,但是受权重影响]
-     * -- 2.轮询负载均衡（RoundRobinLoadBalance）：按照固定顺序轮询选择服务提供者来处理请求，每个服务提供者均匀分配请求。[完全的公平,但是受权重影响]
-     * -- 3.最小活跃数负载均衡（LeastActiveLoadBalance）：选择活跃数最小的服务提供者来处理请求，用于尽可能地避免某些服务提供者负载过高。[相同活跃数,受权重影响]
-     * -- 4.一致性哈希算法(ConsistentHashLoadBalance )将服务消费者的请求根据请求的特征（通常是请求的某些属性，如请求的 IP 地址、服务接口等）映射到固定数量的虚拟节点上。
-     * -- 5.(ShortestResponseLoadBalance)优先选择响应时间最短的服务提供者来处理新的请求。这种策略的目的是减少系统的平均响应时间，并提高服务的整体性能。[相同响应时间,受权重影响]
+     * DubboReference 是 Apache Dubbo 框架中用于 引用远程 Dubbo 服务 的核心注解，类似于 Spring 的 @Autowired，但用于 跨 JVM 的 RPC 调用。
+     * 它的主要作用是在 服务消费者（Consumer） 端注入 Dubbo 提供的远程服务接口，让开发者可以像调用本地方法一样调用远程服务。
      */
     @DubboReference(
-            check = false, // 不检查提供者是否可用
-            loadbalance = RoundRobinLoadBalance.NAME, // 负载均衡策略
+            // 不检查提供者是否可用
+            check = false
+            /*
+            负载均衡，dubbo 默认提供了多种负载均衡策略：
+                1.随机负载均衡（RandomLoadBalance）：随机选择一个服务提供者来处理请求，每个服务提供者被选择的概率相等。[完全的随机,但是受权重影响]
+                2.轮询负载均衡（RoundRobinLoadBalance）：按照固定顺序轮询选择服务提供者来处理请求，每个服务提供者均匀分配请求。[完全的公平,但是受权重影响]
+                3.最小活跃数负载均衡（LeastActiveLoadBalance）：选择活跃数最小的服务提供者来处理请求，用于尽可能地避免某些服务提供者负载过高。[相同活跃数,受权重影响]
+                4.一致性哈希算法(ConsistentHashLoadBalance )将服务消费者的请求根据请求的特征（通常是请求的某些属性，如请求的 IP 地址、服务接口等）映射到固定数量的虚拟节点上。
+                5.(ShortestResponseLoadBalance)优先选择响应时间最短的服务提供者来处理新的请求。这种策略的目的是减少系统的平均响应时间，并提高服务的整体性能。[相同响应时间,受权重影响]
+             */
+            , loadbalance = RoundRobinLoadBalance.NAME
             // cluster = "forking", // 集群策略
-            mock = "true", // 实现服务降级,当服务不可用(服务可以但是不报错,这个mock配置是不会生效的)时,会自动进行本地服务降级
+            , mock = "true" // 实现服务降级,当服务不可用(服务可以但是不报错,这个mock配置是不会生效的)时,会自动进行本地服务降级
             // 分组和版本的*配置，会影响负载均衡，但是不清楚原因 TODO 2024年3月24日
-            group = "*",
-            version = "*"
+            // , group = "*"
+            // , version = "*"
             // merger = "true",
             // timeout = 30000 // 服务调用超时,0则不触发超时报错
     )
