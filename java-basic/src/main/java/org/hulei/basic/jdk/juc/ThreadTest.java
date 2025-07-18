@@ -158,9 +158,7 @@ public class ThreadTest {
             }
             log.info("当前线程已被中断");
         });
-
         thread.start();
-
         // LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(10));
         thread.interrupt();
         System.out.println("all task has finished");
@@ -170,33 +168,58 @@ public class ThreadTest {
             System.out.println(stackTraceElement);
         }
 
+
+        /*
+        使用 volatile 来保证内存可见性
+        可以防止变量被读取到线程私有内存上后，后续对变量的改变不会再被线程从主内存中获取
+         */
         Task task = new Task();
         new Thread(task).start();
-
         // 主线程等待一秒后终止任务
         Thread.sleep(1000);
         task.stop();
 
-
+        /*
+        对于 Data 这种对象类型的变量，内部的基础类型也是一样的需要使用 volatile 来修饰的
+        否则也会导致内存可见性问题
+         */
         Data shared = new Data();
         new Thread(new Task2(shared)).start();
-
         Thread.sleep(1000);
         shared.value = 1;
 
 
+        /*
+        get 会读取 HashMap 的内部结构，编译器和 CPU 不会把整个 map 的引用直接缓存成一个不可变的快照（因为它不是 final 的），因此 CPU 会重新从主内存读取结构。
+        但这并不是一个线程安全的操作，所以一定杜绝这种写法
+         */
         Map<String, Integer> map = new HashMap<>();
         map.put("1", 1);
-
         new Thread(() -> {
             while (map.get("1") == 1) {
 
             }
             System.out.println("Thread stopped.");
         }).start();
-
         Thread.sleep(1000);
         map.put("1", 2);
+
+
+        /*
+        新启动一个线程，然后在线程中启动一个守护线程
+        如果没有用户线程，jvm不会等待守护线程执行完毕就直接退出
+         */
+        new Thread(() -> {
+            Thread child = new Thread(() -> {
+                while (true) {
+                    System.out.println("当前是守护线程。");
+                }
+            });
+            child.setDaemon(true);
+            child.start();
+            LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(2));
+            System.out.println("线程将会终止");
+        }).start();
 
     }
 

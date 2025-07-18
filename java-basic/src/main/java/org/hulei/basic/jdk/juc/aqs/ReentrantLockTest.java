@@ -54,7 +54,7 @@ public class ReentrantLockTest {
                 e.printStackTrace();
             } finally {
                 // 释放锁
-                // lock.unlock();
+                lock.unlock();
                 System.out.println("Thread has released the lock.");
             }
         }, "reentrantLock-test-thread");

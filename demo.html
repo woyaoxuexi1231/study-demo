@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小人的寻爱之旅</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            touch-action: none;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            height: 500px;
+            border: 2px solid #333;
+            background-color: white;
+            overflow: hidden;
+        }
+
+        #stick-man {
+            position: absolute;
+            width: 30px;
+            height: 50px;
+            left: 50px;
+            bottom: 50px;
+            z-index: 10;
+        }
+
+        #heart {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            z-index: 5;
+            transition: transform 0.3s;
+        }
+
+        #heart:hover {
+            transform: scale(1.2);
+        }
+
+        .line {
+            position: absolute;
+            background-color: black;
+            transform-origin: 0 0;
+            z-index: 2;
+        }
+
+        #narration {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 80%;
+            text-align: center;
+            font-size: 18px;
+            min-height: 60px;
+        }
+
+        #proposal {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            text-align: center;
+            z-index: 100;
+        }
+
+        #proposal h1 {
+            color: #e74c3c;
+            margin-bottom: 20px;
+        }
+
+        #yes-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s;
+        }
+
+        #yes-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: firework 1s ease-out;
+        }
+
+        @keyframes firework {
+            0% { transform: translate(0, 0); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)); opacity: 0; }
+        }
+
+        .obstacle {
+            position: absolute;
+            background-color: #333;
+            z-index: 3;
+        }
+
+        .cloud {
+            position: absolute;
+            background-color: #ddd;
+            border-radius: 50%;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+<h1>小人的寻爱之旅</h1>
+<div id="game-container">
+    <div id="stick-man">👨</div>
+    <div id="heart">❤️</div>
+    <div id="proposal">
+        <h1>Will you marry me?</h1>
+        <button id="yes-btn">Yes!</button>
+    </div>
+</div>
+<div id="narration">那天，我空白的世界里，突然出现了你。</div>
+
+<script>
+    // 游戏状态
+    const gameState = {
+        currentStep: 1,
+        isDrawing: false,
+        startPoint: { x: 0, y: 0 },
+        lines: [],
+        stickManPos: { x: 50, y: 450 },
+        heartPos: { x: 700, y: 450 },
+        heartSpeed: 0,
+        obstacles: []
+    };
+
+    // 获取DOM元素
+    const gameContainer = document.getElementById('game-container');
+    const stickMan = document.getElementById('stick-man');
+    const heart = document.getElementById('heart');
+    const narration = document.getElementById('narration');
+    const proposal = document.getElementById('proposal');
+    const yesBtn = document.getElementById('yes-btn');
+
+    // 初始化游戏
+    function initGame() {
+        updatePositions();
+        setupEventListeners();
+        startStep1();
+    }
+
+    // 设置事件监听
+    function setupEventListeners() {
+        gameContainer.addEventListener('mousedown', startDrawing);
+        gameContainer.addEventListener('mousemove', drawLine);
+        gameContainer.addEventListener('mouseup', endDrawing);
+        gameContainer.addEventListener('touchstart', handleTouchStart);
+        gameContainer.addEventListener('touchmove', handleTouchMove);
+        gameContainer.addEventListener('touchend', handleTouchEnd);
+        yesBtn.addEventListener('click', showFireworks);
+    }
+
+    // 触摸事件处理
+    function handleTouchStart(e) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const rect = gameContainer.getBoundingClientRect();
+        gameState.startPoint = {
+            x: touch.clientX - rect.left,
+            y: touch.clientY - rect.top
+        };
+        gameState.isDrawing = true;
+    }
+
+    function handleTouchMove(e) {
+        if (!gameState.isDrawing) return;
+        e.preventDefault();
+        const touch = e.touches[0];
+        const rect = gameContainer.getBoundingClientRect();
+        drawLine({
+            clientX: touch.clientX,
+            clientY: touch.clientY,
+            target: gameContainer
+        });
+    }
+
+    function handleTouchEnd() {
+        gameState.isDrawing = false;
+    }
+
+    // 绘图功能
+    function startDrawing(e) {
+        const rect = gameContainer.getBoundingClientRect();
+        gameState.startPoint = {
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top
+        };
+        gameState.isDrawing = true;
+    }
+
+    function drawLine(e) {
+        if (!gameState.isDrawing) return;
+
+        const rect = gameContainer.getBoundingClientRect();
+        const endPoint = {
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top
+        };
+
+        // 创建线条元素
+        const line = document.createElement('div');
+        line.className = 'line';
+
+        // 计算线条长度和角度
+        const length = Math.sqrt(
+            Math.pow(endPoint.x - gameState.startPoint.x, 2) +
+            Math.pow(endPoint.y - gameState.startPoint.y, 2)
+        );
+
+        const angle = Math.atan2(
+            endPoint.y - gameState.startPoint.y,
+            endPoint.x - gameState.startPoint.x
+        ) * 180 / Math.PI;
+
+        // 设置线条样式
+        line.style.width = `${length}px`;
+        line.style.height = '3px';
+        line.style.left = `${gameState.startPoint.x}px`;
+        line.style.top = `${gameState.startPoint.y}px`;
+        line.style.transform = `rotate(${angle}deg)`;
+
+        // 添加到游戏容器
+        gameContainer.appendChild(line);
+        gameState.lines.push(line);
+
+        // 更新起点
+        gameState.startPoint = endPoint;
+
+        // 检查步骤完成条件
+        checkStepCompletion();
+    }
+
+    function endDrawing() {
+        gameState.isDrawing = false;
+    }
+
+    // 更新位置
+    function updatePositions() {
+        stickMan.style.left = `${gameState.stickManPos.x}px`;
+        stickMan.style.top = `${gameState.stickManPos.y}px`;
+        heart.style.left = `${gameState.heartPos.x}px`;
+        heart.style.top = `${gameState.heartPos.y}px`;
+    }
+
+    // 游戏步骤
+    function startStep1() {
+        narration.textContent = "那天，我空白的世界里，突然出现了你。";
+        gameState.stickManPos = { x: 50, y: 450 };
+        gameState.heartPos = { x: 700, y: 450 };
+        updatePositions();
+    }
+
+    function startStep2() {
+        narration.textContent = "我想靠近你，哪怕一路跌跌撞撞。";
+        gameState.heartSpeed = 2;
+        createObstacles();
+        animateStep2();
+    }
+
+    function startStep3() {
+        narration.textContent = "你是我愿意跨越所有距离的理由。";
+        gameState.heartSpeed = 0;
+        gameState.heartPos = { x: 700, y: 250 };
+        gameState.stickManPos = { x: 50, y: 450 };
+
+        // 创建悬崖
+        const cliff = document.createElement('div');
+        cliff.className = 'obstacle';
+        cliff.style.width = '650px';
+        cliff.style.height = '20px';
+        cliff.style.left = '50px';
+        cliff.style.top = '470px';
+        gameContainer.appendChild(cliff);
+        gameState.obstacles.push(cliff);
+
+        updatePositions();
+    }
+
+    function startStep4() {
+        narration.textContent = "现在，我想把这条路的终点，变成我们的起点。";
+        proposal.style.display = 'block';
+    }
+
+    // 创建障碍物
+    function createObstacles() {
+        // 清除旧障碍物
+        gameState.obstacles.forEach(obs => obs.remove());
+        gameState.obstacles = [];
+
+        // 坑
+        const pit = document.createElement('div');
+        pit.className = 'obstacle';
+        pit.style.width = '100px';
+        pit.style.height = '50px';
+        pit.style.left = '300px';
+        pit.style.top = '470px';
+        pit.style.backgroundColor = '#f9f9f9';
+        pit.style.borderTop = '2px dashed #333';
+        gameContainer.appendChild(pit);
+        gameState.obstacles.push(pit);
+
+        // 云
+        for (let i = 0; i < 3; i++) {
+            const cloud = document.createElement('div');
+            cloud.className = 'cloud';
+            const size = 40 + Math.random() * 40;
+            cloud.style.width = `${size}px`;
+            cloud.style.height = `${size}px`;
+            cloud.style.left = `${200 + i * 200}px`;
+            cloud.style.top = `${100 + Math.random() * 100}px`;
+            gameContainer.appendChild(cloud);
+            gameState.obstacles.push(cloud);
+        }
+    }
+
+    // 第二步动画
+    function animateStep2() {
+        if (gameState.currentStep !== 2) return;
+
+        // 移动爱心
+        gameState.heartPos.x -= gameState.heartSpeed;
+
+        // 检查是否碰到障碍物
+        const stickManRect = stickMan.getBoundingClientRect();
+        const containerRect = gameContainer.getBoundingClientRect();
+
+        // 检查是否掉入坑中
+        if (stickManRect.bottom > containerRect.bottom - 30) {
+            // 重置位置
+            gameState.stickManPos = { x: 50, y: 450 };
+        }
+
+        // 检查是否到达爱心
+        const heartRect = heart.getBoundingClientRect();
+        if (
+            stickManRect.right > heartRect.left &&
+            stickManRect.left < heartRect.right &&
+            stickManRect.bottom > heartRect.top &&
+            stickManRect.top < heartRect.bottom
+        ) {
+            gameState.currentStep = 3;
+            startStep3();
+            return;
+        }
+
+        // 检查是否超出屏幕
+        if (gameState.heartPos.x < -50) {
+            gameState.heartPos.x = 800;
+            gameState.heartPos.y = 300 + Math.random() * 200;
+        }
+
+        updatePositions();
+        requestAnimationFrame(animateStep2);
+    }
+
+    // 检查步骤完成条件
+    function checkStepCompletion() {
+        const stickManRect = stickMan.getBoundingClientRect();
+        const heartRect = heart.getBoundingClientRect();
+
+        switch (gameState.currentStep) {
+            case 1:
+                // 检查小人是否接触到爱心
+                if (
+                    stickManRect.right > heartRect.left &&
+                    stickManRect.left < heartRect.right &&
+                    stickManRect.bottom > heartRect.top &&
+                    stickManRect.top < heartRect.bottom
+                ) {
+                    gameState.currentStep = 2;
+                    startStep2();
+                }
+                break;
+
+            case 3:
+                // 检查是否画线连接了悬崖
+                const bridge = gameState.lines.some(line => {
+                    const lineRect = line.getBoundingClientRect();
+                    return lineRect.top < 400 && lineRect.bottom > 400 &&
+                        lineRect.left < 700 && lineRect.right > 100;
+                });
+
+                if (bridge) {
+                    // 移动小人到爱心位置
+                    const moveInterval = setInterval(() => {
+                        gameState.stickManPos.x += 5;
+                        if (gameState.stickManPos.x >= 700) {
+                            clearInterval(moveInterval);
+                            gameState.currentStep = 4;
+                            startStep4();
+                        }
+                        updatePositions();
+                    }, 50);
+                }
+                break;
+        }
+    }
+
+    // 烟花效果
+    function showFireworks() {
+        proposal.style.display = 'none';
+        narration.textContent = "恭喜你！她答应了你的求婚！";
+
+        // 创建烟花
+        for (let i = 0; i < 50; i++) {
+            setTimeout(() => {
+                const firework = document.createElement('div');
+                firework.className = 'firework';
+                firework.style.left = `${100 + Math.random() * 600}px`;
+                firework.style.top = `${100 + Math.random() * 300}px`;
+                firework.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+
+                // 设置随机动画终点
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 50 + Math.random() * 100;
+                firework.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
+                firework.style.setProperty('--ty', `${Math.sin(angle) * distance}px`);
+
+                gameContainer.appendChild(firework);
+
+                // 移除烟花元素
+                setTimeout(() => {
+                    firework.remove();
+                }, 1000);
+            }, i * 100);
+        }
+    }
+
+    // 小人跟随鼠标/触摸移动
+    gameContainer.addEventListener('mousemove', (e) => {
+        if (gameState.currentStep !== 2) return;
+
+        const rect = gameContainer.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // 限制移动范围
+        gameState.stickManPos.x = Math.max(0, Math.min(x, rect.width - 30));
+        gameState.stickManPos.y = Math.max(0, Math.min(y, rect.height - 50));
+
+        updatePositions();
+    });
+
+    // 初始化游戏
+    initGame();
+</script>
+</body>
+</html>
