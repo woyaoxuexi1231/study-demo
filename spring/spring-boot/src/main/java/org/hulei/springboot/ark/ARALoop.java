@@ -76,6 +76,9 @@ public class ARALoop {
     List<String> LootItemSet_CaveDrop_Underwater_T3_Armor_ASA = new ArrayList<>();
     List<String> LootItemSet_CaveDrop_Underwater_T3_Saddles_ASA = new ArrayList<>();
     List<String> LootItemSet_SupplyDrop_Ocean_ASA = new ArrayList<>();
+    List<String> LootItemSet_CaveDrop_T3_Saddles_ASA_TheCenter = new ArrayList<>();
+    List<String> LootItemSet_CaveDrop_T3_Saddles_ASA_Rag = new ArrayList<>();
+    List<String> LootItemSet_CaveDrop_T4_Saddles_ASA_Ragnarok = new ArrayList<>();
 
 
     SupplyCrate SupplyCrate_Cave_QualityTier1;
@@ -321,6 +324,8 @@ public class ARALoop {
         all.put("PrimalItemAmmo_Flamethrower", "火焰喷射器弹药");
         all.put("PrimalItemAmmo_RocketHomingMissile", "制导火箭弹");
         all.put("PrimalItem_WeapFlamethrower", "火焰喷射器");
+        all.put("PrimalItemArmor_ShastaSaddle_Submarine", "萨斯特鱼龙潜艇鞍");
+        all.put("PrimalItemArmor_BisonSaddle", "野牛鞍");
 
 
         LootItemSet_CaveDrop_T1_Armor_ASA.add("PrimalItemArmor_ClothBoots");
@@ -1094,10 +1099,128 @@ public class ARALoop {
                 "PrimalItem_WeaponStoneClub",
                 "PrimalItem_WeaponSword",
                 "PrimalItem_WeaponTorch"
+        ));
 
+
+        LootItemSet_CaveDrop_T3_Saddles_ASA_TheCenter.addAll(CollectionUtil.newArrayList(
+                "PrimalItemArmor_ShastaSaddle_Submarine",
+                "PrimalItemArmor_AlloSaddle",
+                "PrimalItemArmor_ChalicoSaddle",
+                "PrimalItemArmor_KaprosuchusSaddle",
+                "PrimalItemArmor_MegalaniaSaddle",
+                "PrimalItemArmor_Paracer_Saddle",
+                "PrimalItemArmor_PelaSaddle",
+                "PrimalItemArmor_PlesiaSaddle",
+                "PrimalItemArmor_PteroSaddle",
+                "PrimalItemArmor_SauroSaddle",
+                "PrimalItemArmor_ToadSaddle",
+                "PrimalItemConsumable_HealSoup",
+                "PrimalItemConsumable_Soup_CalienSoup",
+                "PrimalItemConsumable_Soup_FocalChili",
+                "PrimalItemConsumable_Soup_FriaCurry",
+                "PrimalItemConsumable_StaminaSoup",
+                "PrimalItemArmor_AlloSaddle",
+                "PrimalItemArmor_ChalicoSaddle",
+                "PrimalItemArmor_KaprosuchusSaddle",
+                "PrimalItemArmor_MegalaniaSaddle",
+                "PrimalItemArmor_Paracer_Saddle",
+                "PrimalItemArmor_PelaSaddle",
+                "PrimalItemArmor_PlesiaSaddle",
+                "PrimalItemArmor_PteroSaddle",
+                "PrimalItemArmor_SauroSaddle",
+                "PrimalItemArmor_ToadSaddle",
+                "PrimalItemConsumable_HealSoup",
+                "PrimalItemConsumable_Soup_CalienSoup",
+                "PrimalItemConsumable_Soup_FocalChili",
+                "PrimalItemConsumable_Soup_FriaCurry",
+                "PrimalItemConsumable_StaminaSoup"
 
         ));
 
+        LootItemSet_CaveDrop_T3_Saddles_ASA_Rag.addAll(CollectionUtil.newArrayList(
+                "PrimalItemArmor_AlloSaddle",
+                "PrimalItemArmor_ChalicoSaddle",
+                "PrimalItemArmor_KaprosuchusSaddle",
+                "PrimalItemArmor_MegalaniaSaddle",
+                "PrimalItemArmor_Paracer_Saddle",
+                "PrimalItemArmor_PelaSaddle",
+                "PrimalItemArmor_PlesiaSaddle",
+                "PrimalItemArmor_PteroSaddle",
+                "PrimalItemArmor_SauroSaddle",
+                "PrimalItemArmor_ToadSaddle",
+                "PrimalItemConsumable_HealSoup",
+                "PrimalItemConsumable_Soup_CalienSoup",
+                "PrimalItemConsumable_Soup_FocalChili",
+                "PrimalItemConsumable_Soup_FriaCurry",
+                "PrimalItemConsumable_StaminaSoup",
+                "PrimalItemArmor_BisonSaddle",
+                "PrimalItemArmor_AlloSaddle",
+                "PrimalItemArmor_ChalicoSaddle",
+                "PrimalItemArmor_KaprosuchusSaddle",
+                "PrimalItemArmor_MegalaniaSaddle",
+                "PrimalItemArmor_Paracer_Saddle",
+                "PrimalItemArmor_PelaSaddle",
+                "PrimalItemArmor_PlesiaSaddle",
+                "PrimalItemArmor_PteroSaddle",
+                "PrimalItemArmor_SauroSaddle",
+                "PrimalItemArmor_ToadSaddle",
+                "PrimalItemConsumable_HealSoup",
+                "PrimalItemConsumable_Soup_CalienSoup",
+                "PrimalItemConsumable_Soup_FocalChili",
+                "PrimalItemConsumable_Soup_FriaCurry",
+                "PrimalItemConsumable_StaminaSoup"
+
+        ));
+
+
+
+
+        LootItemSet_CaveDrop_T4_Saddles_ASA_Ragnarok.addAll(CollectionUtil.newArrayList(
+                "PrimalItem_Armor_Archelon_Saddle_ASA",
+                "PrimalItemArmor_CeratosaurusSaddle_ASA",
+                "PrimalItemArmor_DeinotheriumSaddle_ASA",
+                "PrimalItemArmor_XiphSaddle_ASA",
+                "PrimalItemArmor_ArgentavisSaddle",
+                "PrimalItemArmor_BaryonyxSaddle",
+                "PrimalItemArmor_BasiloSaddle",
+                "PrimalItemArmor_BeaverSaddle",
+                "PrimalItemArmor_DaeodonSaddle",
+                "PrimalItemArmor_MegalodonSaddle",
+                "PrimalItemArmor_MegalosaurusSaddle",
+                "PrimalItemArmor_ParacerSaddle_Platform",
+                "PrimalItemArmor_RhinoSaddle",
+                "PrimalItemArmor_TapejaraSaddle",
+                "PrimalItemArmor_ThylacoSaddle",
+                "PrimalItemConsumable_CookedMeat_Jerky",
+                "PrimalItemConsumable_CookedPrimeMeat_Fish",
+                "PrimalItemConsumable_CookedPrimeMeat_Jerky",
+                "PrimalItemConsumable_Soup_EnduroStew",
+                "PrimalItemConsumable_Soup_LazarusChowder",
+                "PrimalItemConsumable_Soup_ShadowSteak",
+               "PrimalItem_Armor_Archelon_Saddle_ASA",
+                "PrimalItemArmor_BisonSaddle",
+                "PrimalItemArmor_CeratosaurusSaddle_ASA",
+                "PrimalItemArmor_DeinotheriumSaddle_ASA",
+                "PrimalItemArmor_XiphSaddle_ASA",
+                "PrimalItemArmor_ArgentavisSaddle",
+                "PrimalItemArmor_BaryonyxSaddle",
+                "PrimalItemArmor_BasiloSaddle",
+                "PrimalItemArmor_BeaverSaddle",
+                "PrimalItemArmor_DaeodonSaddle",
+                "PrimalItemArmor_MegalodonSaddle",
+                "PrimalItemArmor_MegalosaurusSaddle",
+                "PrimalItemArmor_ParacerSaddle_Platform",
+                "PrimalItemArmor_RhinoSaddle",
+                "PrimalItemArmor_TapejaraSaddle",
+                "PrimalItemArmor_ThylacoSaddle",
+                "PrimalItemConsumable_CookedMeat_Jerky",
+                "PrimalItemConsumable_CookedPrimeMeat_Fish",
+                "PrimalItemConsumable_CookedPrimeMeat_Jerky",
+                "PrimalItemConsumable_Soup_EnduroStew",
+                "PrimalItemConsumable_Soup_LazarusChowder",
+                "PrimalItemConsumable_Soup_ShadowSteak"
+
+        ));
 
         SupplyCrate_Cave_QualityTier1 = new SupplyCrate(
                 CollectionUtil.newArrayList(
@@ -1318,24 +1441,49 @@ public class ARALoop {
                 )
         );
 
-
         SupplyCrate_Cave_QualityTier3_TheCenter = new SupplyCrate(
                 CollectionUtil.newArrayList(
-                        new Loop(LootItemSet_SupplyDrop_Ocean_ASA, 1)
+                        new Loop(LootItemSet_CaveDrop_T1_Armor_ASA, 0.6),
+                        new Loop(LootItemSet_CaveDrop_T1_Saddles_ASA, 0.6),
+                        new Loop(LootItemSet_CaveDrop_T1_Weapons_ASA, 0.6),
+                        new Loop(LootItemSet_CaveDrop_T2_Armor_ASA, 0.8),
+                        new Loop(LootItemSet_CaveDrop_T2_Saddles_ASA, 0.8),
+                        new Loop(LootItemSet_CaveDrop_T2_Weapons_ASA, 0.8),
+                        new Loop(LootItemSet_CaveDrop_T3_Armor_ASA, 1),
+                        new Loop(LootItemSet_CaveDrop_T3_Weapons_ASA, 1),
+                        new Loop(LootItemSet_CaveDrop_T3_Saddles_ASA_TheCenter, 1)
                 )
         );
 
-
         SupplyCrate_Cave_QualityTier3_Ragnarok = new SupplyCrate(
                 CollectionUtil.newArrayList(
-                        new Loop(LootItemSet_SupplyDrop_Ocean_ASA, 1)
+                        new Loop(LootItemSet_CaveDrop_T1_Armor_ASA, 0.6),
+                        new Loop(LootItemSet_CaveDrop_T1_Saddles_ASA, 0.6),
+                        new Loop(LootItemSet_CaveDrop_T1_Weapons_ASA, 0.6),
+                        new Loop(LootItemSet_CaveDrop_T2_Armor_ASA, 0.8),
+                        new Loop(LootItemSet_CaveDrop_T2_Saddles_ASA, 0.8),
+                        new Loop(LootItemSet_CaveDrop_T2_Weapons_ASA, 0.8),
+                        new Loop(LootItemSet_CaveDrop_T3_Armor_ASA, 1),
+                        new Loop(LootItemSet_CaveDrop_T3_Weapons_ASA, 1),
+                        new Loop(LootItemSet_CaveDrop_T3_Saddles_ASA_Rag, 1)
                 )
         );
 
 
         SupplyCrate_Cave_QualityTier4_Ragnarok = new SupplyCrate(
                 CollectionUtil.newArrayList(
-                        new Loop(LootItemSet_SupplyDrop_Ocean_ASA, 1)
+                        new Loop(LootItemSet_CaveDrop_T1_Armor_ASA, 0.4),
+                        new Loop(LootItemSet_CaveDrop_T1_Saddles_ASA, 0.4),
+                        new Loop(LootItemSet_CaveDrop_T1_Weapons_ASA, 0.4),
+                        new Loop(LootItemSet_CaveDrop_T2_Armor_ASA, 0.6),
+                        new Loop(LootItemSet_CaveDrop_T2_Saddles_ASA, 0.6),
+                        new Loop(LootItemSet_CaveDrop_T2_Weapons_ASA, 0.6),
+                        new Loop(LootItemSet_CaveDrop_T3_Armor_ASA, 0.8),
+                        new Loop(LootItemSet_CaveDrop_T3_Weapons_ASA, 0.8),
+                        new Loop(LootItemSet_CaveDrop_T3_Saddles_ASA_Rag, 0.8),
+                        new Loop(LootItemSet_CaveDrop_T4_Armor_ASA, 1),
+                        new Loop(LootItemSet_CaveDrop_T4_Weapons_ASA, 1),
+                        new Loop(LootItemSet_CaveDrop_T4_Saddles_ASA_Ragnarok, 1)
                 )
         );
 
@@ -1348,8 +1496,8 @@ public class ARALoop {
 
         allSupplyCrate.put(SupplyCrate_Cave_QualityTier1, "SupplyCrate_Cave_QualityTier1");
         allSupplyCrate.put(SupplyCrate_Cave_QualityTier2, "SupplyCrate_Cave_QualityTier2");
-        allSupplyCrate.put(SupplyCrate_Cave_QualityTier3, "SupplyCrate_Cave_QualityTier3");
-        allSupplyCrate.put(SupplyCrate_Cave_QualityTier4, "SupplyCrate_Cave_QualityTier4");
+        allSupplyCrate.put(SupplyCrate_Cave_QualityTier3, "SupplyCrate_Cave_QualityTier3(1.5-2.0)");
+        allSupplyCrate.put(SupplyCrate_Cave_QualityTier4, "SupplyCrate_Cave_QualityTier4(1.5-2.0)");
         allSupplyCrate.put(SupplyCrate_IceCaveTier1, "SupplyCrate_IceCaveTier1");
         allSupplyCrate.put(SupplyCrate_IceCaveTier2, "SupplyCrate_IceCaveTier2");
         allSupplyCrate.put(SupplyCrate_IceCaveTier3, "SupplyCrate_IceCaveTier3");
@@ -1364,11 +1512,19 @@ public class ARALoop {
         allSupplyCrate.put(SupplyCrate_Cave_QualityTier1_ScorchedEarth, "SupplyCrate_Cave_QualityTier1_ScorchedEarth(1.5-2.5)");
         allSupplyCrate.put(SupplyCrate_Cave_QualityTier2_ScorchedEarth, "SupplyCrate_Cave_QualityTier2_ScorchedEarth(2.4-3.5)");
         allSupplyCrate.put(SupplyCrate_Cave_QualityTier3_ScorchedEarth, "SupplyCrate_Cave_QualityTier3_ScorchedEarth(3.5-4.7)");
+        allSupplyCrate.put(SupplyCrate_Cave_QualityTier3_TheCenter, "SupplyCrate_Cave_QualityTier3_TheCenter(1.5-2.0)");
+        allSupplyCrate.put(SupplyCrate_Cave_QualityTier3_Ragnarok, "SupplyCrate_Cave_QualityTier3_Ragnarok(1.5-2.0)");
+        allSupplyCrate.put(SupplyCrate_Cave_QualityTier4_Ragnarok, "SupplyCrate_Cave_QualityTier4_Ragnarok(1.5-2.0)");
 
     }
 
 
     public static void main(String[] args) {
+
+
+        // 找到概率最高的宝箱
+        String key = "鲨齿龙";
+
 
         ARALoop araLoop = new ARALoop();
         araLoop.init();
@@ -1412,9 +1568,6 @@ public class ARALoop {
         });
 
         List<ThreeNode> threeNodes = new ArrayList<>();
-
-        // 找到概率最高的宝箱
-        String key = "大地";
         //  Map<String, Map<String, Double>> mapList = new HashMap<>();
         mapList.forEach((k, v) -> v.forEach((k1, v1) -> {
             if (Objects.nonNull(araLoop.all.get(k1)) && araLoop.all.get(k1).contains(key)) {
