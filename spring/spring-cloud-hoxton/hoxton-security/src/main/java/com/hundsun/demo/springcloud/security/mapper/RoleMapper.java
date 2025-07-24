@@ -1,8 +1,8 @@
 package com.hundsun.demo.springcloud.security.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hundsun.demo.springcloud.security.pojo.Role;
 import org.apache.ibatis.annotations.Param;
-import tk.mybatis.mapper.common.BaseMapper;
 
 import java.util.List;
 

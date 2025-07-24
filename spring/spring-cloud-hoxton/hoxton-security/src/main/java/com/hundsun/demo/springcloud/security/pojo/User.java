@@ -1,41 +1,29 @@
 package com.hundsun.demo.springcloud.security.pojo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
 /**
- * @projectName: study-demo
- * @package: com.hundsun.demo.springcloud.security.pojo
- * @className: User
- * @description:
- * @author: h1123
- * @createDate: 2023/5/9 20:42
+ * @author hulei
+ * @since 2023/5/9 20:42
  */
 
-@Entity
 @Data
 public class User implements UserDetails, Serializable {
 
-    @Id
     private Long id;
 
-    @Column(nullable = false, unique = true)
     private String username;
 
-    @Column
     private String password;
 
-    // @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    // @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-    //         inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    @TableField(exist = false)
     private List<Role> authorities;
 
     @Override

@@ -120,14 +120,15 @@ public class ProjectUrlAutoConfiguration {
     public static String getLocalHost() {
         try {
             if (Objects.isNull(localhost)) {
-                if (InetAddress.getLocalHost().getHostName().equals("MS-7E13")) {
-                    localhost = ProjectUrlAutoConfiguration.getIPByInterface("eth13");
-                } else {
-                    localhost = ProjectUrlAutoConfiguration.getPhysicalIP();
-                }
+                // if (InetAddress.getLocalHost().getHostName().equals("MS-7E13")) {
+                //     localhost = ProjectUrlAutoConfiguration.getIPByInterface("wlan3");
+                // } else {
+                //     localhost = ProjectUrlAutoConfiguration.getPhysicalIP();
+                // }
+                localhost = ProjectUrlAutoConfiguration.getPhysicalIP();
             }
             return localhost;
-        } catch (UnknownHostException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

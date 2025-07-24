@@ -1,43 +1,26 @@
 package com.hundsun.demo.springcloud.security;
 
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import tk.mybatis.spring.annotation.MapperScan;
-
-import java.awt.*;
-import java.net.URI;
 
 /**
- * @projectName: study-demo
- * @package: com.hundsun.demo.springcloud.eureka.server
- * @className: EurekaServerApplication
- * @description:
- * @author: h1123
- * @createDate: 2023/5/5 20:44
+ * @author hulei
+ * @since 2023/5/5 20:44
  */
 
-@MapperScan("com.hundsun.demo.springcloud.security.mapper")
+@MapperScan(basePackages = "com.hundsun.demo.springcloud.security.mapper")
 @SpringBootApplication
-public class SecurityApplication implements ApplicationRunner {
+public class SecurityApplication {
 
     public static void main(String[] args) {
+        /*
+        在没有任何额外的配置和依赖的情况下，Spring Security 有一套默认的运行状态。
+        默认用户为 user，密码在控制台以日志形式输出（Using generated security password）。
+
+        在 Cookie 中可以找到一个 JSESSIONID 的变量，这个变量就是保存登录状态的关键。
+        如果删掉，那么登录状态将会立马失效。因为前台无法再传递有效的会话ID。
+         */
         SpringApplication.run(SecurityApplication.class, args);
-    }
-
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
-
-        //
-
-        // Open the homepage URL in default browser
-        String homepageURL = "http://localhost:9170"; // Update with your homepage URL
-        System.out.println("Unable to open browser automatically. Please navigate to: " + homepageURL);
-        // if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-        //     Desktop.getDesktop().browse(URI.create(homepageURL));
-        // } else {
-        //     System.out.println("Unable to open browser automatically. Please navigate to: " + homepageURL);
-        // }
     }
 }

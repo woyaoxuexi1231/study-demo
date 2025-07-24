@@ -42,11 +42,11 @@ Spring 框架是一个模块化的框架，拥有多个模块，每个模块都�
             System.out.println("Before method execution");
         }
     }
-    ```
+   ```
     **@Aspect** 注解标记了这个类为一个切面。  
-    
+   
     **@Before** 注解标记了一个前置通知，指定了切入点表达式 "execution(* com.example.service.UserService.*(..))"，表示所有 UserService 类中的方法调用作为连接点。  
-    
+   
    **beforeAdvice()** 方法中，我们定义了在方法执行之前输出日志的逻辑。
    
 3. **Spring DAO（数据访问）**：
@@ -66,7 +66,7 @@ Spring 框架是一个模块化的框架，拥有多个模块，每个模块都�
    总的来说，Spring DAO 模块通过提供一系列的抽象、工具和技术，使得在 Spring 应用中进行数据访问变得更加简单、灵活和高效。无论是直接使用 JDBC 进行操作，还是通过集成的 ORM 框架进行持久化操作，都可以得到很好的支持和便利。
    
 4. **Spring MVC（模型-视图-控制器）**：
-    
+   
     - **DispatcherServlet（调度器 Servlet）**：Spring MVC 的核心组件，负责接收 HTTP 请求并将其分派到相应的处理器（Controller）上进行处理。
     - **HandlerMapping（处理器映射器）**：负责将请求映射到相应的处理器上。
     - **Controller（控制器）**：处理 HTTP 请求，执行业务逻辑，并返回相应的视图。
@@ -1088,25 +1088,33 @@ Spring Boot 读取配置文件的顺序如下：
 
 # Spring Boot MVC 静态资源结构
 
+## resources
+
+`src/main/resources/` 是 Spring Boot（也是 Maven/Gradle Java 项目）的**资源目录**，它在编译后会被复制到最终的 `classpath`（通常是打包到 `classes` 里）。
+
+在这里放的文件主要有：
+
+- 配置文件（`application.properties`、`application.yml`）
+- 消息文件（如国际化 `messages.properties`）
+- 模板文件（如果用的是非嵌入式模板引擎，也可以放这里）
+- 静态文件（某些情况）
+- 证书、密钥、映射表、字典文件等需要打包到 JAR 的其他资源
+
+
+
+Spring Boot 推荐把不同用途的文件放在不同的**子目录**下，而不是都堆在 `resources` 根目录里：
+
+| 路径                                          | 用途                                                         |
+| --------------------------------------------- | ------------------------------------------------------------ |
+| `static/`                                     | 用于存放静态资源（HTML、CSS、JS、图片），对外直接可访问。    |
+| `public/`                                     | 和 `static/` 一样，静态资源根目录。                          |
+| `templates/`                                  | 模板引擎文件（如 Thymeleaf、Freemarker），需要后端渲染的页面。 |
+| `META-INF/`                                   | 比如 SpringFactories，或者自定义注解的处理器等元信息。       |
+| `application.properties` 或 `application.yml` | 配置文件，一般直接放在 `resources` 根目录。                  |
+
+
+
 ## Spring Thymeleaf 项目
-
-### Spring Boot 静态资源目录
-
-原生静态文件存放目录:
-
-- Spring Boot 默认会从以下位置加载静态资源（按优先级从高到低排序）：
-  1. **`/META-INF/resources/`**
-     - 优先级最高，通常用于存放需要覆盖依赖中默认资源的文件。
-     - 示例：自定义的 `favicon.ico` 或覆盖第三方库的静态文件。
-  2. **`/resources/`**
-     - 项目标准资源目录（`src/main/resources/` 下的内容）。
-     - 推荐存放项目的静态资源（如 `index.html`、CSS/JS 文件）。
-  3. **`/static/`**
-     - 与 `/resources/` 同级，但更常用于纯静态文件。
-     - 典型用途：存放前端打包后的文件（如 Vue/React 的 `dist` 内容）。
-  4. **`/public/`**
-     - 适用于需要公开访问的文件（如用户上传的图片）。
-     - 示例：`/public/images/logo.png` 可通过 `/images/logo.png` 直接访问。
 
 模板框架静态文件:
 
@@ -1122,7 +1130,9 @@ public static final String DEFAULT_SUFFIX = ".html";
 ```
 
 只要引入了thymeleaf之后, view 的转发最后都会转到 thymeleaf   
+
 所以尽管在 static 和 templates 下都有 home.html, 但是 static 下面的永远不会被使用  
+
 如果更改 templates 为 templates2, 而 thymeleaf 的默认目录不变, 那么尽管在 static 下面有 home.html, 依旧会报错
 
 ```
@@ -1131,27 +1141,7 @@ Error resolving template [home], template might not exist or might not be access
 
 ## Spring JS 项目
 
-### Spring Boot 静态文件目录
-
-原生静态文件存放目录(在/resources目录下)：
-
-- **`/META-INF`**
-  - 通常用于存放需要覆盖依赖中默认资源的文件。
-  - 示例：spring自动配置的配置类会存放于此
-- **`/static/`**
-  - 最常用，优先级最高
-  - 典型用途：存放前端打包后的文件（如 Vue/React 的 `dist` 内容）。放置静态文件：JS、CSS、图片、字体等
-- **`/public/`**
-  - 适用于需要公开访问的文件（如用户上传的图片）。功能同 `static`，可用于区分用途
-  - 示例：`/public/images/logo.png` 可通过 `/images/logo.png` 直接访问。s
-
-模板框架静态文件：
-
-使用 `Thymeleaf` 模板引擎时，都是属于动态模板文件，这些模板文件不是静态资源，所以约定放在 /templates 中(在/resources目录下)
-
-- src/main/resources/templates/
-
-### 静态文件处理方式
+静态文件处理方式
 
 Spring Boot中的默认配置规定了静态资源的处理方式。
 

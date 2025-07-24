@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>org.hulei</groupId>
-            <artifactId>utils</artifactId>
+            <artifactId>common-starter</artifactId>
             <version>1.0.0.4-SNAPSHOT</version>
         </dependency>
         <!--
@@ -59,8 +59,8 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
         <dependency>
-            <groupId>tk.mybatis</groupId>
-            <artifactId>mapper-spring-boot-starter</artifactId>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
 
         <!-- eureka客户端起步依赖 -->

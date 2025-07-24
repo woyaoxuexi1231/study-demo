@@ -35,7 +35,7 @@ CREATE TABLE `user_role`
   COLLATE = utf8_bin;
 
 INSERT INTO user (id, username, password)
-VALUES (1, 'forezp', '123456');
+VALUES (1, 'user', '123456');
 INSERT INTO user (id, username, password)
 VALUES (2, 'admin', '123456');
 

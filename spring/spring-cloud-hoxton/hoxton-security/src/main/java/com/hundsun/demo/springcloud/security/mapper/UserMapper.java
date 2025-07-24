@@ -1,7 +1,7 @@
 package com.hundsun.demo.springcloud.security.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hundsun.demo.springcloud.security.pojo.User;
-import tk.mybatis.mapper.common.BaseMapper;
 
 /**
  * @projectName: study-demo

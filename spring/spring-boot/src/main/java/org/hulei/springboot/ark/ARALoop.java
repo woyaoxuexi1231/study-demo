@@ -326,6 +326,8 @@ public class ARALoop {
         all.put("PrimalItem_WeapFlamethrower", "火焰喷射器");
         all.put("PrimalItemArmor_ShastaSaddle_Submarine", "萨斯特鱼龙潜艇鞍");
         all.put("PrimalItemArmor_BisonSaddle", "野牛鞍");
+        all.put("PrimalItemArmor_FasolaSaddle", "法索拉鳄鞍");
+        all.put("PrimalItemArmor_RockGolemSaddle", "岩石巨人鞍");
 
 
         LootItemSet_CaveDrop_T1_Armor_ASA.add("PrimalItemArmor_ClothBoots");
@@ -1436,7 +1438,7 @@ public class ARALoop {
                         new Loop(LootItemSet_CaveDrop_T1_Weapons_ScorchedEarth, 1),
                         new Loop(LootItemSet_CaveDrop_T2_Saddles_ScorchedEarth, 1),
                         new Loop(LootItemSet_CaveDrop_T2_Weapons_ScorchedEarth, 1),
-                        new Loop(LootItemSet_CaveDrop_T3_Weapons_ScorchedEarth, 1),
+                        new Loop(LootItemSet_CaveDrop_T3_Saddles_ScorchedEarth, 1),
                         new Loop(LootItemSet_CaveDrop_T3_Weapons_ScorchedEarth, 1)
                 )
         );
@@ -1523,7 +1525,7 @@ public class ARALoop {
 
 
         // 找到概率最高的宝箱
-        String key = "鲨齿龙";
+        String key = "恐鳄";
 
 
         ARALoop araLoop = new ARALoop();
