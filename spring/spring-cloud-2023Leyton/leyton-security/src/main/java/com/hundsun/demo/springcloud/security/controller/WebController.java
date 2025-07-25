@@ -23,9 +23,8 @@ public class WebController {
      * @return 简单的一串字符串
      */
     @RequestMapping("/")
-    @ResponseBody
     public String hello() {
-        return "Hello World";
+        return "redirect:/home";
     }
 
     // @PostMapping("/logout")

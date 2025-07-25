@@ -50,3 +50,12 @@ INSERT INTO user_role (user_id, role_id)
 VALUES (2, 1);
 INSERT INTO user_role (user_id, role_id)
 VALUES (2, 2);
+
+create table `persistent_logins`
+(
+    username  varchar(64) not null,
+    series    varchar(64) primary key,
+    token     varchar(64) not null,
+    last_used timestamp   not null
+);
+
