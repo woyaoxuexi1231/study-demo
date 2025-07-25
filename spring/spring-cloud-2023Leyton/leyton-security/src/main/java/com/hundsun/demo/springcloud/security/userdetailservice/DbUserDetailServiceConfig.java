@@ -1,4 +1,4 @@
-package com.hundsun.demo.springcloud.security.config;
+package com.hundsun.demo.springcloud.security.userdetailservice;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.hundsun.demo.springcloud.security.mapper.RoleMapper;
@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
@@ -17,7 +16,7 @@ import javax.annotation.Resource;
  * @since 2023/5/9 21:06
  */
 
-// @Component(value = "userDetailsService")
+@Component(value = "userDetailsService")
 public class DbUserDetailServiceConfig implements UserDetailsService {
 
     @Resource

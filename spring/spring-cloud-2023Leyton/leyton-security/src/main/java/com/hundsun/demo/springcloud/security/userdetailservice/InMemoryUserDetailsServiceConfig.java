@@ -1,4 +1,4 @@
-package com.hundsun.demo.springcloud.security.config;
+package com.hundsun.demo.springcloud.security.userdetailservice;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +24,7 @@ public class InMemoryUserDetailsServiceConfig {
         return NoOpPasswordEncoder.getInstance();
     }
 
-    @Bean
+    // @Bean
     public UserDetailsService userDetailsService() {
         /*
         UserDetailsService 是 Spring Security 框架中的一个核心接口
@@ -40,6 +40,7 @@ public class InMemoryUserDetailsServiceConfig {
                 .username("user")
                 .password(passwordEncoder().encode("1"))
                 .roles("USER")
+                .accountLocked(true)
                 .build();
 
         UserDetails admin = User.builder()
