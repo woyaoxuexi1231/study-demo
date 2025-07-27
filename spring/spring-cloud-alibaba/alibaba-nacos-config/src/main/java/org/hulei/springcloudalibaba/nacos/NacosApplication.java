@@ -31,7 +31,7 @@ public class NacosApplication {
     }
 
     @RequestMapping(value = "/getRemoteConfig", method = RequestMethod.GET)
-    public void getRemoteConfig() {
-        log.info("remoteConfig: {}", remoteConfig);
+    public String getRemoteConfig() {
+        return String.format("remoteConfig: %s", remoteConfig);
     }
 }
