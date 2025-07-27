@@ -39,10 +39,8 @@ public class RPCClient implements AutoCloseable {
                 .replyTo(replyQueueName)
                 .build();
 
-        // 发送消息
-        String requestQueueName = "rpc_queue";
         // 交换机在这里设置为空字符串，表示消息直接发送到指定的队列，而不经过交换机。
-        channel.basicPublish("", requestQueueName, props, message.getBytes(StandardCharsets.UTF_8));
+        channel.basicPublish("", MQConfig.RPC_QUEUE_NAME, props, message.getBytes(StandardCharsets.UTF_8));
 
         // 阻塞队列来等待回调
         final BlockingQueue<String> response = new ArrayBlockingQueue<>(1);

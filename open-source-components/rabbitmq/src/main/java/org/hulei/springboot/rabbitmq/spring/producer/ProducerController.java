@@ -11,11 +11,14 @@ import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.swing.text.html.Option;
+import javax.websocket.server.PathParam;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Optional;
@@ -39,11 +42,9 @@ public class ProducerController {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    @Autowired
-    RabbitAdmin rabbitAdmin;
-
-    @PostMapping(value = "/convertAndSend")
-    public void convertAndSend() {
+    @PostMapping(value = "/convertAndSend/{exchange}/{routingKey}")
+    public void convertAndSend(@PathVariable(value = "exchange") String exchange
+            , @PathVariable(value = "routingKey") String routingKey) {
 
         // 创建一个消息实体
         Message message = new Message();
@@ -75,8 +76,8 @@ public class ProducerController {
         rabbitTemplate.sendAndReceive convertSendAndReceive底层调用这个方法，和上面send类似
          */
         rabbitTemplate.convertAndSend(
-                MQConfig.DIRECT_EXCHANGE_NAME, // 配置交换机
-                MQConfig.DIRECT_MASTER_ROUTE_KEY, // 路由键
+                exchange, // 配置交换机
+                routingKey, // 路由键
                 JSON.toJSONString(message), // 这里消息可以发送不同类型，我这里选择json只是为了统一序列化操作
                 msg -> msg, // 配置 MessagePostProcessor
                 correlationData // correlation data (can be null).
@@ -85,8 +86,6 @@ public class ProducerController {
 
     @PostMapping(value = "/convertSendAndReceive")
     public void convertSendAndReceive() {
-
-
         // 创建一个消息实体
         Message message = new Message();
         long currentTimeMillis = System.currentTimeMillis();
@@ -156,8 +155,8 @@ public class ProducerController {
         };
         // convertAndSend方法本身是同步的,但是他仅仅只是把消息刷入连接的发送缓冲区,后续就直接返回了,所以并不提供发布确认机制
         rabbitTemplate.convertAndSend(
-                MQConfig.TOPIC_EXCHANGE_NAME,
-                MQConfig.TOPIC_FOR_DEAD_QUEUE_ROUTE_KEY,
+                MQConfig.NORMAL_TOPIC_EXCHANGE,
+                MQConfig.NORMAL_TOPIC_ROUTING_KEY,
                 "hello world",
                 messagePostProcessor
         );

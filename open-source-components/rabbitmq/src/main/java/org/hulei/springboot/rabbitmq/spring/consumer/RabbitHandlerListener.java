@@ -15,7 +15,10 @@ import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.LockSupport;
 
 /**
  * RabbitListener 和 RabbitHandler 配合使用
@@ -67,7 +70,7 @@ import java.util.Arrays;
                                 }
                         ),
                         exchange = @Exchange(
-                                value = MQConfig.TOPIC_EXCHANGE_NAME,
+                                value = MQConfig.NORMAL_TOPIC_EXCHANGE,
                                 type = ExchangeTypes.TOPIC,
                                 durable = "true", // 持久化
                                 autoDelete = "false", // 是否自动删除
@@ -111,6 +114,7 @@ public class RabbitHandlerListener {
     @RabbitHandler
     public void receiveString(String msgStr, Message msg, Channel channel) {
         log.info("string入参监听方法收到消息, messageStr: {}, msgBytes: {}", msgStr, msg);
+        LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(5));
         try {
             channel.basicAck(msg.getMessageProperties().getDeliveryTag(), false);
         } catch (Exception e) {

@@ -74,23 +74,6 @@ public class ConnectFactory {
         channel.queueBind(MQConfig.TOPIC_PULL_QUEUE, MQConfig.TOPIC_EXCHANGE_NAME, MQConfig.TOPIC_PULL_ROUTE_KEY);
         channel.queueBind(MQConfig.DIRECT_MASTER_QUEUE, MQConfig.DIRECT_EXCHANGE_NAME, MQConfig.DIRECT_MASTER_ROUTE_KEY);
 
-
-        // 配置当前队列的消息如果出现 1.被拒绝 2.过期 3.达到队列的最大消息数量 时应该投往死信队列的配置
-        Map<String, Object> arguments = new HashMap<>();
-        // 设置死信交换机, 这里设置的是, 如果这个队列内的消息出现问题, 消息应该往哪个死信队列发
-        arguments.put("x-dead-letter-exchange", MQConfig.DEAD_EXCHANGE_NAME);
-        // 设置死信 RoutingKey, 配置这个的作用时,当消息出现问题时,发往私信队列时应该以什么路由key去发送
-        arguments.put("x-dead-letter-routing-key", MQConfig.TOPIC_FOR_DEAD_ROUTE_KEY);
-        // 设置队列长度,这里作为测试死信队列,队列长度设置一个较短的值,当消息生产者发送的消息大于队列的最大能够容纳的消息数量时,超过的消息将会发往指定的死信队列
-        arguments.put("x-max-length", 6);
-        channel.queueDeclare(MQConfig.TOPIC_FOR_DEAD_QUEUE, true, false, false, arguments);
-        channel.queueBind(MQConfig.TOPIC_FOR_DEAD_QUEUE, MQConfig.TOPIC_EXCHANGE_NAME, MQConfig.TOPIC_FOR_DEAD_QUEUE_ROUTE_KEY);
-        // 上述的队列配置完成后,再配置一个消费死信交换机的队列,用于我们来消费发往死信交换机的消息
-        channel.queueDeclare(MQConfig.DEAD_QUEUE_NAME, true, false, false, null);
-        // 配置一个死信队列,绑定到上述的死信交换机,配置为刚才配置的死信路由来接收这个路由发过来的死信消息
-        channel.queueBind(MQConfig.DEAD_QUEUE_NAME, MQConfig.DEAD_EXCHANGE_NAME, MQConfig.TOPIC_FOR_DEAD_ROUTE_KEY);
-
-
         // 初始化工作完成, 关闭连接
         channel.close();
         connection.close();
@@ -117,7 +100,7 @@ public class ConnectFactory {
          * Map<String,Object> arguments，交换机其他属性，如x-message-ttl，x-max-length
          */
         channel.exchangeDeclare(MQConfig.TOPIC_EXCHANGE_NAME, BuiltinExchangeType.TOPIC, true, false, null);
-        channel.exchangeDeclare(MQConfig.DEAD_EXCHANGE_NAME, BuiltinExchangeType.DIRECT, true, false, null);
+
         channel.close();
         connection.close();
     }

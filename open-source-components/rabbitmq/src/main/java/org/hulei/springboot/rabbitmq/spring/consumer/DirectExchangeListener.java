@@ -3,6 +3,7 @@ package org.hulei.springboot.rabbitmq.spring.consumer;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.hulei.springboot.rabbitmq.basic.config.MQConfig;
+import org.hulei.springboot.rabbitmq.spring.utils.LogUtil;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
@@ -26,23 +27,20 @@ public class DirectExchangeListener {
      * @param msg     msg
      * @param channel channel
      */
-    @RabbitListener(
-            bindings = @QueueBinding(
-                    value = @Queue(
-                            name = "direct-test",
-                            durable = "true",
-                            autoDelete = "false",
-                            exclusive = "false"
-                    ),
-                    exchange = @Exchange(
-                            value = MQConfig.DIRECT_EXCHANGE_NAME
-                    ),
-                    key = MQConfig.TOPIC_TO_DIRECT_ROUTE_KEY
-            )
-    )
-    public void directQueue(Message msg, Channel channel) {
-        log.info("direct-test 收到消息: {}", msg);
+    @RabbitListener(queues = MQConfig.DIRECT_MASTER_QUEUE)
+    public void directMasterQueue(Message msg, Channel channel) {
         try {
+            LogUtil.log(msg);
+            channel.basicAck(msg.getMessageProperties().getDeliveryTag(), false);
+        } catch (Exception e) {
+            log.error("ack异常", e);
+        }
+    }
+
+    @RabbitListener(queues = MQConfig.DIRECT_SLAVE_QUEUE)
+    public void directSlaveQueue(Message msg, Channel channel) {
+        try {
+            LogUtil.log(msg);
             channel.basicAck(msg.getMessageProperties().getDeliveryTag(), false);
         } catch (Exception e) {
             log.error("ack异常", e);

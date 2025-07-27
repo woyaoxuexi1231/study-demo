@@ -44,15 +44,6 @@ public class MQConfig {
     // topic主题交换机以这种主题声明的队列,意味着消息只要以topic.route.key.开头,都会被路由到这个队列
     public static final String TOPIC_MASTER_ROUTE_KEY = "topic.route.key.*";
     public static final String TOPIC_MASTER_QUEUE = "topic-queue-master";
-    public static final String TOPIC_PULL_ROUTE_KEY = "topic.route.key.pull";
-    public static final String TOPIC_PULL_QUEUE = "topic-queue-slave";
-    public static final String TOPIC_FOR_DEAD_QUEUE = "topic-for-dead-queue";
-    public static final String TOPIC_FOR_DEAD_ROUTE_KEY = "topic.dead.routing.*";
-    public static final String TOPIC_FOR_DEAD_QUEUE_ROUTE_KEY = "topic.dead.queue.key.*";
-
-    public static final String HANDLER_AND_LISTENER_QUEUE = "handler-and-listener-queue";
-    public static final String HANDLER_AND_LISTENER_ROUTE_KEY = "handler.and.listener.route.key";
-    public static final String HANDLER_AND_LISTENER_DEAD_ROUTE_KEY = "handler.and.listener.dead.route.key";
 
     public static final String HEADER_EXCHANGE_NAME = "header-exchange";
     public static final String HEADER_MASTER_ROUTE_KEY = "header.route.key.master";
@@ -60,14 +51,41 @@ public class MQConfig {
     public static final String HEADER_SLAVE_ROUTE_KEY = "header.route.key.slave";
     public static final String HEADER_SLAVE_QUEUE = "header-queue-slave";
 
+    /**
+     * 拉模式队列
+     */
+    public static final String TOPIC_PULL_ROUTE_KEY = "topic.route.key.pull";
+    public static final String TOPIC_PULL_QUEUE = "topic-queue-pull";
+
+    /**
+     * 死信队列配置
+     */
+    public static final String NORMAL_TOPIC_EXCHANGE = "normal-topic-exchange";
+    public static final String NORMAL_TOPIC_QUEUE = "normal-queue";
+    public static final String NORMAL_TOPIC_ROUTING_KEY = "normal-topic.routing.*";
+
+
+    public static final String NORMAL_TOPIC_QUEUE_DEAD_LETTER_ROUTING_KEY = "dead.topic.routing.normal";
+
+    /**
+     * spring ampq handler和listener配置
+     */
+    public static final String HANDLER_AND_LISTENER_QUEUE = "handler-and-listener-queue";
+    public static final String HANDLER_AND_LISTENER_ROUTE_KEY = "handler.and.listener.route.key";
+    public static final String HANDLER_AND_LISTENER_DEAD_ROUTE_KEY = "dead.topic.routing.handler";
+
+
+    public static final String RPC_QUEUE_NAME = "rpc_queue";
+
     /*
     死信队列
     1. 消息过期
     2. 达到队列最大长度
     3. 消息被拒
      */
-    public static final String DEAD_EXCHANGE_NAME = "dead_exchange";
-    public static final String DEAD_QUEUE_NAME = "dead-queue";
+    public static final String DEAD_EXCHANGE_NAME = "dead-topic-exchange";
+    public static final String DEAD_QUEUE_NAME = "dead-topic-queue";
+    public static final String DEAD_QUEUE_ROUTING_KEY = "dead.topic.routing.*";
 
     public static final String KEY_FOR_CUSTOM_CONTAINER = "key.for.custom.container";
 
@@ -85,9 +103,5 @@ public class MQConfig {
             default:
                 return DIRECT_EXCHANGE_NAME;
         }
-    }
-
-    public static void main(String[] args) {
-        log.info("123");
     }
 }

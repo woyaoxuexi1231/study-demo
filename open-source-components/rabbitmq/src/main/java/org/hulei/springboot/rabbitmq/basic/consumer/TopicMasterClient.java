@@ -10,6 +10,7 @@ import com.rabbitmq.client.Delivery;
 import com.rabbitmq.client.Envelope;
 import lombok.extern.slf4j.Slf4j;
 import org.hulei.springboot.rabbitmq.basic.config.MQConfig;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -83,12 +84,14 @@ public class TopicMasterClient implements Runnable {
                             System.out.printf("correlationId: %s%n", properties.getCorrelationId());
                             System.out.println("=======================================================解析结束====================================================");
 
-                            // 回复一个消息到指定的队列中去, rpc服务端的实现
-                            channel.basicPublish(
-                                    "",
-                                    properties.getReplyTo(),
-                                    new AMQP.BasicProperties().builder().correlationId(properties.getCorrelationId()).build(),
-                                    ("消息标识符: " + properties.getCorrelationId() + ", " + envelope.getRoutingKey() + ", " + MQConfig.TOPIC_MASTER_QUEUE + ", " + new String(body, StandardCharsets.UTF_8)).getBytes(StandardCharsets.UTF_8));
+                            if (StringUtils.hasLength(properties.getReplyTo())) {
+                                // 回复一个消息到指定的队列中去, rpc服务端的实现
+                                channel.basicPublish(
+                                        "",
+                                        properties.getReplyTo(),
+                                        new AMQP.BasicProperties().builder().correlationId(properties.getCorrelationId()).build(),
+                                        ("消息标识符: " + properties.getCorrelationId() + ", " + envelope.getRoutingKey() + ", " + MQConfig.TOPIC_MASTER_QUEUE + ", " + new String(body, StandardCharsets.UTF_8)).getBytes(StandardCharsets.UTF_8));
+                            }
                             // deliveryTag 是用来唯一标识每条投递的消息的整数值。根据官方文档的描述，deliveryTag 是在每个 channel 上保持唯一性的，并且会在 channel 打开时从 1 开始递增。
                             // ack的时候乱写deliveryTag会导致ack失败的，而ack失败又没有进行处理那么就会导致这个消费者接受不到消息了。
                             channel.basicAck(envelope.getDeliveryTag(), false);

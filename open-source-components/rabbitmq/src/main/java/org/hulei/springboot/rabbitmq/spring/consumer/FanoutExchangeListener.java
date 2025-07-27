@@ -2,6 +2,8 @@ package org.hulei.springboot.rabbitmq.spring.consumer;
 
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
+import org.hulei.springboot.rabbitmq.basic.config.MQConfig;
+import org.hulei.springboot.rabbitmq.spring.utils.LogUtil;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Exchange;
@@ -21,32 +23,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class FanoutExchangeListener {
 
-    /**
-     * 测试 direct 类型的交换机
-     *
-     * @param msg     msg
-     * @param channel channel
-     */
-    @RabbitListener(bindings = @QueueBinding(value = @Queue(name = "fanout-test"), exchange = @Exchange(value = "amq.fanout", type = ExchangeTypes.FANOUT), key = "direct.key.test"))
-    public void fanoutQueue(Message msg, Channel channel) {
-        log.info("fanout-test 收到消息: {}", msg);
+    @RabbitListener(queues = MQConfig.FANOUT_MASTER_QUEUE)
+    public void masterQueue(Message msg, Channel channel) {
         try {
+            LogUtil.log(msg);
             channel.basicAck(msg.getMessageProperties().getDeliveryTag(), false);
         } catch (Exception e) {
             log.error("ack异常", e);
         }
     }
 
-    /**
-     * 测试 direct 类型的交换机
-     *
-     * @param msg     msg
-     * @param channel channel
-     */
-    @RabbitListener(bindings = @QueueBinding(value = @Queue(name = "fanout-test2"), exchange = @Exchange(value = "amq.fanout", type = ExchangeTypes.FANOUT), key = "direct.key.test2"))
-    public void fanoutQueue2(Message msg, Channel channel) {
-        log.info("fanout-test2 收到消息: {}", msg);
+    @RabbitListener(queues = MQConfig.FANOUT_SLAVE_QUEUE)
+    public void salveQueue(Message msg, Channel channel) {
         try {
+            LogUtil.log(msg);
             channel.basicAck(msg.getMessageProperties().getDeliveryTag(), false);
         } catch (Exception e) {
             log.error("ack异常", e);

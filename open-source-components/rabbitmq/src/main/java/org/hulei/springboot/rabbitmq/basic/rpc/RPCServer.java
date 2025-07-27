@@ -11,8 +11,6 @@ import java.nio.charset.StandardCharsets;
 
 public class RPCServer {
 
-    private static final String RPC_QUEUE_NAME = "rpc_queue";
-
     public static void main(String[] argv) throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setUsername(MQConfig.RABBITMQ_USERNAME);
@@ -26,7 +24,7 @@ public class RPCServer {
         try (Connection connection = factory.newConnection(); Channel channel = connection.createChannel()) {
 
             // 只是声明队列,但是没有绑定交换机,那么发送端就只能直接发送到指定队列
-            channel.queueDeclare(RPC_QUEUE_NAME, false, false, false, null);
+            channel.queueDeclare(MQConfig.RPC_QUEUE_NAME, false, false, true, null);
             channel.basicQos(1);
 
             System.out.println(" [x] Awaiting RPC requests");
@@ -64,7 +62,7 @@ public class RPCServer {
                 }
             };
 
-            channel.basicConsume(RPC_QUEUE_NAME, false, deliverCallback, (consumerTag -> {
+            channel.basicConsume(MQConfig.RPC_QUEUE_NAME, false, deliverCallback, (consumerTag -> {
             }));
             // Wait and be prepared to consume the message from RPC client.
             while (true) {
