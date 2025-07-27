@@ -2,26 +2,21 @@ package org.hulei.springboot.rabbitmq.spring.producer;
 
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.entity.mybatisplus.domain.Message;
+import org.hulei.entity.mybatisplus.domain.MyMessage;
 import org.hulei.springboot.rabbitmq.basic.config.MQConfig;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.swing.text.html.Option;
-import javax.websocket.server.PathParam;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -42,15 +37,21 @@ public class ProducerController {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
+    /**
+     * 通用的发消息api，使用 convertAndSend 发送一条简单的消息
+     *
+     * @param exchange   交换机名称
+     * @param routingKey 路由键
+     */
     @PostMapping(value = "/convertAndSend/{exchange}/{routingKey}")
     public void convertAndSend(@PathVariable(value = "exchange") String exchange
             , @PathVariable(value = "routingKey") String routingKey) {
 
         // 创建一个消息实体
-        Message message = new Message();
+        MyMessage myMessage = new MyMessage();
         long currentTimeMillis = System.currentTimeMillis();
-        message.setUuid(String.valueOf(currentTimeMillis)); // 设置消息的uuid
-        message.setMsg("hello rabbitmq!"); // 设置消息内容
+        myMessage.setUuid(String.valueOf(currentTimeMillis)); // 设置消息的uuid
+        myMessage.setMsg("hello rabbitmq!"); // 设置消息内容
 
         /*
         是 Spring AMQP 里用来给消息 标记一个唯一 ID 的，主要用于：
@@ -63,6 +64,18 @@ public class ProducerController {
          */
         CorrelationData correlationData = new CorrelationData();
         correlationData.setId(String.valueOf(currentTimeMillis));
+
+
+        MessagePostProcessor nullProcessor = msg -> {
+            msg.getMessageProperties().setMessageId(UUID.randomUUID().toString());
+            return msg;
+        };
+        // 这是一个配置单条消息过期时间的处理器，单条消息过期时间的问题如果队列顶端的消息还未出列，后续的消息即使过期了也会阻塞在队列内部，但是已过期的消息是不会传递给消费者的
+        MessagePostProcessor postProcessor = msg -> {
+            msg.getMessageProperties().setMessageId(UUID.randomUUID().toString());
+            msg.getMessageProperties().setExpiration(String.valueOf(TimeUnit.SECONDS.toMillis(5)));
+            return msg;
+        };
 
         /*
         rabbitTemplate 提供了好几种发送消息的方式
@@ -78,26 +91,29 @@ public class ProducerController {
         rabbitTemplate.convertAndSend(
                 exchange, // 配置交换机
                 routingKey, // 路由键
-                JSON.toJSONString(message), // 这里消息可以发送不同类型，我这里选择json只是为了统一序列化操作
-                msg -> msg, // 配置 MessagePostProcessor
+                JSON.toJSONString(myMessage), // 这里消息可以发送不同类型，我这里选择json只是为了统一序列化操作
+                nullProcessor, // 配置 MessagePostProcessor
                 correlationData // correlation data (can be null).
         );
     }
 
+    /**
+     *
+     */
     @PostMapping(value = "/convertSendAndReceive")
     public void convertSendAndReceive() {
         // 创建一个消息实体
-        Message message = new Message();
+        MyMessage myMessage = new MyMessage();
         long currentTimeMillis = System.currentTimeMillis();
-        message.setUuid(String.valueOf(currentTimeMillis)); // 设置消息的uuid
-        message.setMsg("hello rabbitmq!"); // 设置消息内容
+        myMessage.setUuid(String.valueOf(currentTimeMillis)); // 设置消息的uuid
+        myMessage.setMsg("hello rabbitmq!"); // 设置消息内容
 
         CorrelationData correlationData = new CorrelationData(String.valueOf(currentTimeMillis));
 
         Object receive = rabbitTemplate.convertSendAndReceive(
                 MQConfig.TOPIC_EXCHANGE_NAME, // 配置交换机
                 MQConfig.TOPIC_MASTER_ROUTE_KEY, // 路由键
-                JSON.toJSONString(message), // 这里消息可以发送不同类型，我这里选择json只是为了统一序列化操作
+                JSON.toJSONString(myMessage), // 这里消息可以发送不同类型，我这里选择json只是为了统一序列化操作
                 msg -> msg, // 配置 MessagePostProcessor
                 correlationData // correlation data (can be null).
         );
@@ -107,10 +123,10 @@ public class ProducerController {
     @PostMapping(value = "/invoke")
     public void invoke() {
         // 创建一个消息实体
-        Message message = new Message();
+        MyMessage myMessage = new MyMessage();
         long currentTimeMillis = System.currentTimeMillis();
-        message.setUuid(String.valueOf(currentTimeMillis)); // 设置消息的uuid
-        message.setMsg("hello rabbitmq!"); // 设置消息内容
+        myMessage.setUuid(String.valueOf(currentTimeMillis)); // 设置消息的uuid
+        myMessage.setMsg("hello rabbitmq!"); // 设置消息内容
 
         CorrelationData correlationData = new CorrelationData();
         correlationData.setId(String.valueOf(currentTimeMillis));
@@ -124,17 +140,17 @@ public class ProducerController {
            - 常用于组合多个操作，或者做一些需要在同一 Channel 内执行的事情（因为 invoke 会把操作放到同一个 RabbitMQ Channel 中）。
          */
         rabbitTemplate.invoke(operations -> {
-            rabbitTemplate.convertAndSend(
+            operations.convertAndSend(
                     MQConfig.DIRECT_EXCHANGE_NAME, // the exchange. 如果交换机不存在,reply-code=404, reply-text=NOT_FOUND - no exchange 'exchange-test-topic2' in vhost '/', class-id=60, method-id=40
                     MQConfig.DIRECT_MASTER_ROUTE_KEY, // the routing key.
-                    JSON.toJSONString(message), // the data to send.
+                    JSON.toJSONString(myMessage), // the data to send.
                     msg -> msg, // a message post processor (can be null).
                     correlationData // correlation data (can be null).
             );
             try {
                 // 阻塞式发布确认, 如果配置了 confirm 回调, 依旧会触发 confirm 回调
                 // 如果没有开启发布确认，那么这个方法会调用失败
-                boolean confirms = rabbitTemplate.waitForConfirms(1000); // 等待1秒
+                boolean confirms = operations.waitForConfirms(1000); // 等待1秒
                 log.info("等待rabbitMQ确认完成,结果: {}", confirms);
                 return confirms;
             } catch (AmqpException e) {
@@ -162,26 +178,8 @@ public class ProducerController {
         );
     }
 
-    @GetMapping("/sendMsgToCustomContainerQueue")
-    public void sendMsgToCustomContainerQueue() {
-        // 每次产生500条消息
-        for (int i = 0; i < 500; i++) {
-            rabbitTemplate.convertAndSend(
-                    MQConfig.TOPIC_EXCHANGE_NAME,
-                    MQConfig.KEY_FOR_CUSTOM_CONTAINER,
-                    "hello custom container"
-            );
-        }
-    }
+    public void transaction() {
 
-    @GetMapping("/topicExchangeToDirectExchange")
-    public void topicExchangeToDirectExchange() {
-        rabbitTemplate.convertAndSend(
-                MQConfig.TOPIC_EXCHANGE_NAME,
-                MQConfig.TOPIC_TO_DIRECT_ROUTE_KEY,
-                "hello direct"
-        );
     }
-
 
 }

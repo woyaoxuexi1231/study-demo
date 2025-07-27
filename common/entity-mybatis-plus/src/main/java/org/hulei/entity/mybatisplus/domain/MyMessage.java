@@ -14,7 +14,7 @@ import lombok.Data;
 
 @Data
 @TableName(value = "rabbitmq_test")
-public class Message {
+public class MyMessage {
 
     /**
      * uuid

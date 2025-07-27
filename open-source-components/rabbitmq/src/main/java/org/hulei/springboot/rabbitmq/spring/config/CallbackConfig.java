@@ -1,7 +1,6 @@
-package org.hulei.springboot.rabbitmq.spring.producer;
+package org.hulei.springboot.rabbitmq.spring.config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.ReturnedMessage;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
@@ -20,7 +19,7 @@ import javax.annotation.PostConstruct;
 
 @Slf4j
 @Component
-public class Callback implements RabbitTemplate.ConfirmCallback, RabbitTemplate.ReturnsCallback {
+public class CallbackConfig implements RabbitTemplate.ConfirmCallback, RabbitTemplate.ReturnsCallback {
 
     /**
      * 注入容器里的rabbitTemplate, 以便对容器里的rabbitTemplate进行改造
@@ -82,11 +81,19 @@ public class Callback implements RabbitTemplate.ConfirmCallback, RabbitTemplate.
      */
     @Override
     public void confirm(CorrelationData correlationData, boolean ack, String cause) {
-        // ack = true 交换机收到了消息, ack = false 交换机没收到消息
-        // 我这里在项目启动之后直接把交换机删掉了,来模拟消息到不了交换机的场景
         if (ack) {
-            log.info("confirm 函数收到通知, 交换机成功收到了消息, correlationData: {}", correlationData);
+            /*
+            1. 交换机收到了消息，也正常路由到某个队列了
+            2. 交换机收到了消息，并没有正常路由到某个队列
+             */
+            log.info("交换机成功收到了消息, correlationData: {}", correlationData);
         } else {
+            /*
+            1. Broker 内存或磁盘资源不足
+            2. 交换机不存在
+
+            这里如果需要做补偿，那么应该在 correlationData 配置唯一标识，然后消息应该需要在某个地方做持久化，通过唯一标识找到消息再进行后续操作
+             */
             log.error("confirm 函数收到通知, 交换机没能收到消息, correlationData: {}, 失败的原因是: {}", correlationData, cause);
         }
     }

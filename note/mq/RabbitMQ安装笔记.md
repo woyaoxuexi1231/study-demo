@@ -91,8 +91,122 @@ rabbitmqctl set_policy mirror_queue "^topic-" '{"ha-mode":"exactly","ha-params":
 
 
 
-docker run --restart=always -d  --name=rabbitmq -v /usr/local/docker/rabbitmq:/var/lib/rabbitmq -p 15672:15672 -p 5672:5672 -p 25672:25672 -e RABBITMQ_DEFAULT_USER=admin -e RABBITMQ_DEFAULT_PASS=admin rabbitmq
+```shell
+docker run -d \
+--restart=always \
+--name=rabbitmq-1 \
+-v /usr/local/docker/rabbitmq:/var/lib/rabbitmq \
+-p 15672:15672 -p 5672:5672 -p 25672:25672 \
+--network rabbitmq \
+-e RABBITMQ_DEFAULT_USER=admin \
+-e RABBITMQ_DEFAULT_PASS=admin \
+-e TZ=Asia/Shanghai \
+rabbitmq
+
+docker run -d \
+--restart=always \
+--name=rabbitmq-2 \
+-v /usr/local/docker/rabbitmq2:/var/lib/rabbitmq \
+-p 15673:15672 -p 5673:5672 -p 25673:25672 \
+--network rabbitmq \
+-e RABBITMQ_DEFAULT_USER=admin \
+-e RABBITMQ_DEFAULT_PASS=admin \
+-e TZ=Asia/Shanghai \
+rabbitmq
 
 
 
+# 加入集群
+rabbitmqctl join_cluster rabbit@a3fdc1df2f19
+```
+
+
+
+
+
+使用 docker-compose 部署两个rabbitmq 
+
+```yml
+version: '3.8'
+
+services:
+  rabbitmq-node1:
+    image: rabbitmq
+    container_name: rabbitmq-node1
+    hostname: rabbitmq-node1
+    networks:
+      - rabbitmq
+    ports:
+      - "5672:5672"    # AMQP 端口（客户端连接）
+      - "15672:15672"  # 管理界面端口
+      - "25672:25672"  # 集群通信端口
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=/root/rabbitmq/cookie/.erlang.cookie  # 挂载 Cookie 路径
+      - RABBITMQ_DEFAULT_USER=admin  # 默认管理员账号（可选）
+      - RABBITMQ_DEFAULT_PASS=admin  # 默认密码（可选）
+    volumes:
+      - ./root/rabbitmq/node1:/var/lib/rabbitmq  # 持久化数据目录（宿主机路径）
+      - /root/rabbitmq/cookie:/root/rabbitmq/cookie  # 挂载共享 Cookie
+    healthcheck:  # 健康检查（确保节点启动完成后再加入集群）
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  rabbitmq-node2:
+    image: rabbitmq
+    container_name: rabbitmq-node2
+    hostname: rabbitmq-node2
+    networks:
+      - rabbitmq
+    ports:
+      - "5673:5672"    # 避免端口冲突（宿主机映射不同端口）
+      - "15673:15672"
+      - "25673:25672"
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=/root/rabbitmq/cookie/.erlang.cookie
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+      - RABBITMQ_CLUSTER_DISCOVERY_SERVICE=rabbitmq-node1  # 自动发现第一个节点（可选）
+    volumes:
+      - ./root/rabbitmq/node2:/var/lib/rabbitmq
+      - /root/rabbitmq/cookie:/data/rabbitmq/cookie
+    depends_on:
+      rabbitmq-node1:
+        condition: service_healthy  # 等待 node1 健康后再启动
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+networks:
+  rabbitmq:
+    external: true  # 使用已创建的自定义网络
+```
+
+
+
+```shell
+# 进入 node2 容器
+docker exec -it rabbitmq-node2 bash
+
+# 进入容器后
 rabbitmq-plugins enable rabbitmq_management
+
+rabbitmqctl stop_app
+
+# 加入集群（node1 的主机名或 IP:端口）
+rabbitmqctl join_cluster rabbit@rabbitmq-node1  # 若跨宿主机，需用 IP:25672（如 192.168.1.100:25672）
+
+rabbitmqctl start_app
+
+# 查询集群状态
+rabbitmqctl cluster_status
+
+
+
+```
+
+
+

@@ -38,6 +38,28 @@ public class DeclareConfig {
         bindingDeclare();
 
         deadLetterDeclare();
+
+        otherDeclare();
+    }
+
+    private void otherDeclare() {
+
+        Map<String, Object> args = new HashMap<>();
+        args.put("x-max-length", 5);
+        rabbitAdmin.declareQueue(new Queue(
+                "max-5-queue",
+                true,
+                false,
+                false,
+                args
+        ));
+        rabbitAdmin.declareBinding(new Binding(
+                "max-5-queue",
+                Binding.DestinationType.QUEUE,
+                MQConfig.NORMAL_TOPIC_EXCHANGE,
+                "max.5.key",
+                null
+        ));
     }
 
 
@@ -95,6 +117,7 @@ public class DeclareConfig {
                 null // arguments 队列的其他参数
         ));
 
+        queues.add(new Queue(MQConfig.DIRECT_MASTER_QUEUE, true, false, false, null));
         queues.add(new Queue(MQConfig.DIRECT_SLAVE_QUEUE, true, false, false, null));
 
         queues.add(new Queue(MQConfig.FANOUT_MASTER_QUEUE, true, false, false, null));
@@ -196,6 +219,5 @@ public class DeclareConfig {
         rabbitAdmin.declareExchange(new TopicExchange(MQConfig.DEAD_EXCHANGE_NAME, true, false));
         rabbitAdmin.declareQueue(new Queue(MQConfig.DEAD_QUEUE_NAME, true, false, false, null));
         rabbitAdmin.declareBinding(new Binding(MQConfig.DEAD_QUEUE_NAME, Binding.DestinationType.QUEUE, MQConfig.DEAD_EXCHANGE_NAME, MQConfig.DEAD_QUEUE_ROUTING_KEY, null));
-
     }
 }
