@@ -1,21 +1,25 @@
 package org.hulei.springboot.mybatisplus.controller;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.javafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.entity.mybatisplus.domain.User;
+import org.hulei.entity.mybatisplus.domain.BigDataUsers;
 import org.hulei.entity.mybatisplus.util.BatchExecutor;
-import org.hulei.springboot.mybatisplus.mapper.UserMapperPlus;
+import org.hulei.springboot.mybatisplus.mapper.BigDataUsersMapperPlus;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * @author woaixuexi
@@ -24,13 +28,17 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class BatchCommitController extends ServiceImpl<UserMapperPlus, User> {
+@RestController
+@RequestMapping
+public class BatchCommitController extends ServiceImpl<BigDataUsersMapperPlus, BigDataUsers> {
 
     @Resource
-    private UserMapperPlus userMapperPlus;
+    private BigDataUsersMapperPlus bigDataUsersMapperPlus;
 
     @Autowired
     SqlSessionTemplate sqlSessionTemplate;
+
+    private static final Faker faker = new Faker();
 
     /**
      * 批量提交测试
@@ -41,41 +49,44 @@ public class BatchCommitController extends ServiceImpl<UserMapperPlus, User> {
     @Transactional
     public void batchCommit() {
         StopWatch stopWatch = new StopWatch();
-        List<User> objects = new ArrayList<>();
+        List<BigDataUsers> objects = new ArrayList<>();
         for (int i = 1; i <= 1000; i++) {
-            User build = User.builder().id((long) i).name(System.currentTimeMillis() + "").build();
-            objects.add(build);
+            BigDataUsers bigDataUser = new BigDataUsers();
+            bigDataUser.setName(faker.name().fullName());
+            bigDataUser.setEmail(faker.internet().emailAddress());
+            objects.add(bigDataUser);
         }
 
-
-        stopWatch.start("single");
-        objects = objects.stream().peek(i -> i.setName("single")).collect(Collectors.toList());
-        objects.forEach(i -> userMapperPlus.updateById(i));
+        stopWatch.start("单条循环插入");
+        objects.forEach(i -> bigDataUsersMapperPlus.insertOne(i));
         stopWatch.stop();
 
 
-        stopWatch.start("updateBatchById");
-        objects = objects.stream().peek(i -> i.setName("updateBatchById")).collect(Collectors.toList());
-        this.updateBatchById(objects);
+        /*
+        saveBatch 和 exeBatch 这两种方式要开启 rewriteBatchedStatements=true 参数性能才会有显著提升
+         */
+        stopWatch.start("mybatisPlus提供的批量插入");
+        this.saveBatch(objects);
         stopWatch.stop();
 
-
-        stopWatch.start("exeBatch");
-        objects = objects.stream().peek(i -> i.setName("exeBatch")).collect(Collectors.toList());
+        stopWatch.start("手写的mybatis batch形式批量提交");
         BatchExecutor.exeBatch(
                 sqlSessionTemplate,
                 objects,
                 (sqlSession, user) -> {
-                    UserMapperPlus mapper = sqlSession.getMapper(UserMapperPlus.class);
-                    mapper.updateById(user);
+                    BigDataUsersMapperPlus mapper = sqlSession.getMapper(BigDataUsersMapperPlus.class);
+                    mapper.insertOne(user);
                 }
         );
         stopWatch.stop();
 
 
-        stopWatch.start("updateBatch");
-        objects = objects.stream().peek(i -> i.setName("updateBatch")).collect(Collectors.toList());
-        userMapperPlus.updateBatch(objects);
+        /*
+        这种方式必须要开启 allowMultiQueries=true 这个参数，否则是不能执行的
+        而且这种方式要注意 sql 超长的问题，最好是分割执行
+         */
+        stopWatch.start("批量更新(需要打开多语句执行参数)");
+        splitList(objects, 100).forEach((list) -> bigDataUsersMapperPlus.insertBatch(list));
         stopWatch.stop();
 
         log.info("耗时分析: {}", stopWatch.prettyPrint());
@@ -126,5 +137,25 @@ public class BatchCommitController extends ServiceImpl<UserMapperPlus, User> {
                         这里exeBatch虽然开启了新的SqlSession,但是由于在同一个线程内,连接是同一个,在提交时spring会校验是否回滚/提交
                         *注意 这种情况可能会因为mybatis的一级缓存导致某些情况下的数据问题,在com.hundsun.demo.springboot.mybatisplus.TransactionTest.sqlSessionTransaction方法有个小实验
          */
+    }
+
+    public static <T> List<List<T>> splitListStream(List<T> list, int batchSize) {
+        return IntStream.range(0, (list.size() + batchSize - 1) / batchSize)
+                .mapToObj(i -> list.subList(i * batchSize, Math.min((i + 1) * batchSize, list.size())))
+                .collect(Collectors.toList());
+    }
+
+    public static <T> List<List<T>> splitList(List<T> list, int batchSize) {
+        List<List<T>> result = new ArrayList<>();
+        if (list == null || list.isEmpty() || batchSize <= 0) {
+            return result;
+        }
+        int size = list.size();
+        for (int i = 0; i < size; i += batchSize) {
+            int end = Math.min(i + batchSize, size); // 避免越界
+            List<T> sub = list.subList(i, end);
+            result.add(new ArrayList<>(sub)); // 转换为独立列表（可选）
+        }
+        return result;
     }
 }

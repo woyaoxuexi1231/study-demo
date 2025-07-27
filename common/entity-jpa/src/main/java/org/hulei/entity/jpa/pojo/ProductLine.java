@@ -19,7 +19,7 @@ public class ProductLine {
     @Id
     @Size(max = 50)
     @Column(name = "product_line", nullable = false, length = 50)
-    private String productLine;
+    private String productLineName;
 
     @Size(max = 4000)
     @Column(name = "text_description", length = 4000)

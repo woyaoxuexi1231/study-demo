@@ -22,7 +22,6 @@ import java.util.List;
  * @createDate: 2023/10/15 19:14
  */
 
-@Slf4j
 public class MybatisTest {
 
     public static void main(String[] args) throws IOException {
@@ -44,7 +43,7 @@ public class MybatisTest {
 
         加载 mybatis-config.xml 配置文件, 并创建 SqlSessionFactory 对象
          */
-        SqlSessionFactory sessionFactory =  new SqlSessionFactoryBuilder().build(in);
+        SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(in);
 
         // ============================================== 3. SQL执行阶段 ============================================
         /*
@@ -58,7 +57,7 @@ public class MybatisTest {
             // 这里使用 pageHelper 插件来分页, 由于没有使用 mybatis-spring 需要在 mybatis 的配置文件配置该插件
             PageHelper.startPage(1, 10);
             // 1. 使用 sqlSession.selectList + 全限定方法名来进行查询, 这种形式灵活性强, 使真正要查询的方法可以动态的传递进来
-            sqlSession.selectList(CustomerMapper.class.getName() + ".selectAll").forEach(i -> log.info("{}", i));
+            sqlSession.selectList(CustomerMapper.class.getName() + ".selectAll").forEach(System.out::println);
         }
 
         try (SqlSession sqlSession = sessionFactory.openSession()) {
@@ -66,7 +65,7 @@ public class MybatisTest {
             // 2. 使用更加符合面向对象的思想, 通过 sqlSession 获取 mapper 接口的代理实例, 然后像调用 Java 方法一样调用映射器方法, 安全性更强, 可读性更强
             CustomerMapper customerMapper = sqlSession.getMapper(CustomerMapper.class);
             // 调用 mapper 接口的方法
-            customerMapper.selectAll().forEach(i -> log.info("{}", i));
+            customerMapper.selectAll().forEach(System.out::println);
         }
 
         /*
@@ -80,10 +79,10 @@ public class MybatisTest {
                 customer.setPhone("40.32.251");
                 CustomerMapper customerMapper = sqlSession.getMapper(CustomerMapper.class);
                 int i = customerMapper.updateOne(customer);
-                log.info("成功更新 {} 条数据", i);
+                System.out.printf("成功更新 %s 条数据%n", i);
             } catch (Exception e) {
                 isRollback = true;
-                log.error("更新出现异常! 正在尝试回滚...", e);
+                System.out.printf("更新出现异常! 正在尝试回滚... %s%n", e.getMessage());
             }
             if (isRollback) {
                 sqlSession.rollback();

@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hulei.mybatis.mapper.XmlTagMapper">
+    <!-- 缓存设置,开启此标签后配合开启二级缓存的配置,此mapper将开启二级缓存 -->
+    <!-- <cache/> -->
+    <!-- 引用其他命名空间的缓存 -->
+    <!-- <cache-ref namespace="xxx"/> -->
+
+
+    <!-- ======================================================================================================== -->
+    <!-- =============================================== Result Map ============================================== -->
+    <!-- ======================================================================================================== -->
+
+    <!-- 描述如何从数据库的结果集中加载对象-->
+    <!-- id:当前的映射关系的命名空间 type:映射到的类的全限定类名 autoMapping: 自动将查询结果集映射到Java对象的属性值,这个值默认是开启的 -->
+    <resultMap id="EmployeeBaseResultMap" type="org.hulei.entity.jpa.pojo.Employee" autoMapping="false">
+        <!-- id列被标识为对象的主键 -->
+        <!-- column:数据库中的列名, jdbcType: jdbc的类型, property: 映射到列结果的字段或者属性名,也就是Pojo中的属性名 javaType:属性的类型,通常mybatis可以自己推断-->
+        <id column="employee_number" jdbcType="BIGINT" property="id"/>
+        <result column="last_name" jdbcType="VARCHAR" property="lastName"/>
+        <result column="first_name" jdbcType="VARCHAR" property="firstName"/>
+        <result column="extension" jdbcType="VARCHAR" property="extension"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="office_code" jdbcType="VARCHAR" property="officeCode"/>
+        <result column="reports_to" jdbcType="INTEGER" property="reportsTo"/>
+        <result column="job_title" jdbcType="VARCHAR" property="jobTitle"/>
+        <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime"/>
+    </resultMap>
+
+    <!-- 对于使用id和result来说必须要对象有属性对应的set方法,对于一些不可变类来说,可能只有构造方法而没有set方法 -->
+    <!-- 使用 constructor 就可以直接调用构造方法来构造对象-->
+    <!-- 我这里始终不行 -->
+    <!--     <resultMap id="consturctMap" type="model.org.hulei.commom.core.EmployeeDO">
+            <constructor>
+                &lt;!&ndash; column:数据库中的列名, jdbcType: jdbc的类型, name: 映射到列结果的字段或者属性名,也就是Pojo中的属性名 javaType:属性的类型,通常mybatis可以自己推断&ndash;&gt;
+                &lt;!&ndash; select:用于加载复杂类型属性的映射语句ID,他会从column属性中指定的列检索数据,作为参数传递给此 select 语句&ndash;&gt;
+                <idArg column="employeeNumber" jdbcType="BIGINT" name="employeeNumber" javaType="long"/>
+                <arg column="lastName" jdbcType="VARCHAR" name="lastName" javaType="string"/>
+                <arg column="firstName" jdbcType="VARCHAR" name="firstName" javaType="string"/>
+                <arg column="extension" jdbcType="VARCHAR" name="extension" javaType="string"/>
+                <arg column="email" jdbcType="VARCHAR" name="email" javaType="string"/>
+                <arg column="officeCode" jdbcType="VARCHAR" name="officeCode" javaType="string"/>
+                <arg column="reportsTo" jdbcType="INTEGER" name="reportsTo" javaType="string"/>
+                <arg column="jobTitle" jdbcType="VARCHAR" name="jobTitle" javaType="string"/>
+                <arg column="last_update_time" jdbcType="TIMESTAMP" name="lastUpdateTime" javaType="date"/>
+            </constructor>
+        </resultMap> -->
+
+    <!--
+    result map 不仅仅可以配置单个对象的映射关系，还可以像 Java 继承和聚合一样
+    使用 extends 可以继承自某个 result Map
+    使用 collection 可以用于处理一对多关系 1 - 多
+     -->
+    <resultMap id="employeeWithCustomCollection" type="org.hulei.mybatis.spring.model.EmployeeWithCustomersRsp"
+               extends="EmployeeBaseResultMap">
+        <!--
+        collection标签包含大量的子标签
+            property:标明当前的collection对应类中的属性名
+            column:指定传递给嵌套查询或者作为条件的一部分的列名,不适用嵌套查询的方式这个参数没用
+            javaType:指定集合的类型, List, Set
+            ofType:指定集合中的元素的类型
+            select:指定一个子查询
+            notNullColumn:指定一个列名,只有当该列不为空时,才执行嵌套 . 我这里使用嵌套查询,这个参数没有作用;使用嵌套结果的形式进行查询,这个参数是起作用的
+            coloumPrefix:指定一个前缀,用于在嵌套查询中引用列明的时候添加前缀
+            resultSet:指定结果集的名字,当使用多个结果集的时候,可以通过这个来区分不同的结果集
+
+        不常用:
+            jdbcType:指定jdbc类型,对于这里这种复杂类型似乎没有用处
+            typeHander:指定一个自定义的类型转换器,类型转换器可以用于定制我们想要的类型转换,一般默认提供的已经够用了
+            foreignColumn:指定外键列明,用于关联主表和子表,通常用于多表联查,如果两张表有明确的外键关联关系,那么这个参数会起作用,这个就不考虑了
+            autoMapping:控制是否启动自动映射,默认开启,mybatis会尝试自动映射所有未明确指定的字段
+            fetchType:控制是否进行延迟加载,延迟加载可以在需要时才加载相关数据
+         -->
+        <collection property="customers"
+                    javaType="java.util.List"
+                    ofType="org.hulei.entity.jpa.pojo.Customer"
+                    autoMapping="true"
+        >
+        </collection>
+    </resultMap>
+
+    <!-- 从 collection 的 一对多 的关系中，可以引申出 树形结构的映射，其实就是自己包含自己，且自己对应自己是 1对多 的关系 -->
+    <resultMap id="employessTreeMap" type="org.hulei.mybatis.spring.model.EmployeeTreeRsp"
+               extends="EmployeeBaseResultMap">
+        <collection
+                property="children"
+                javaType="java.util.List"
+                ofType="org.hulei.mybatis.spring.model.EmployeeTreeRsp"
+                column="employee_number"
+                select="getEmployeeByReportNumber">
+        </collection>
+    </resultMap>
+
+    <resultMap id="ProductBaseResultMap" type="org.hulei.entity.jpa.pojo.Product">
+        <!--@mbg.generated-->
+        <!--@Table products-->
+        <id column="product_code" jdbcType="VARCHAR" property="productCode"/>
+        <result column="product_name" jdbcType="VARCHAR" property="productName"/>
+        <result column="product_line" jdbcType="VARCHAR" property="productLineName"/>
+        <result column="product_scale" jdbcType="VARCHAR" property="productScale"/>
+        <result column="product_vendor" jdbcType="VARCHAR" property="productVendor"/>
+        <result column="product_description" jdbcType="LONGVARCHAR" property="productDescription"/>
+        <result column="quantity_in_stock" jdbcType="SMALLINT" property="quantityInStock"/>
+        <result column="buy_price" jdbcType="DECIMAL" property="buyPrice"/>
+        <result column="msrp" jdbcType="DECIMAL" property="msrp"/>
+    </resultMap>
+
+    <resultMap id="productFullInfoMap" type="org.hulei.mybatis.spring.model.ProductFullInfo"
+               extends="ProductBaseResultMap">
+        <!-- 对于 association 和 collection 标签,都可以不用写 select 子查询,只要一次查询的sql的字段没有重复,并且可以唯一映射上就行-->
+        <!-- association主要用于处理一对一关系的关联查询,这种映射关系主要因为关联的对象在我们查询的对象的内部,他做为一个单独的属性出现,通过此标签,把对应的结果都给映射到这个属性内部 -->
+        <!-- mybatis如何加载这种关联关系呢?
+         1. 嵌套查询,也就是此标签中的select,此标签需要指定一个子查询,通过配置column和select子句来达到目的
+            这种方式存在一个非常大的问题就是,对于大型数据集非常不友好,对于每一条关联关系都要进行一次查询,这将非常浪费IO性能
+         2. 关联的嵌套结果,也就是这里采用的方式,所有的结果(包括关联对象的结果)都在一个查询语句中返回,通过属性名来映射到不同的地方
+         -->
+        <association
+                property="productLine"
+                javaType="org.hulei.entity.jpa.pojo.ProductLine"
+                columnPrefix="pl_"
+                resultMap="org.hulei.springboot.mybatisplus.mapper.ProductLinesMapper.BaseResultMap"
+        />
+    </resultMap>
+
+
+    <!-- ======================================================================================================== -->
+    <!-- =============================================== sql 代码片 ============================================== -->
+    <!-- ======================================================================================================== -->
+
+    <!-- sql可以定义宠用的sql代码段 -->
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        employee_number,
+        last_name,
+        first_name,
+        extension,
+        email,
+        office_code,
+        reports_to,
+        job_title,
+        last_update_time
+    </sql>
+
+
+    <!-- ======================================================================================================== -->
+    <!-- =============================================== 查询、更新标签 ============================================== -->
+    <!-- ======================================================================================================== -->
+
+    <select id="getEmployeeWithResultMap"
+            resultMap="EmployeeBaseResultMap"
+            useCache="true">
+        select e.employee_number,
+               e.last_name,
+               e.first_name,
+               e.extension,
+               e.email,
+               e.office_code,
+               e.reports_to,
+               e.job_title,
+               e.last_update_time
+        from employees e
+    </select>
+
+    <select id="getDataFromResultMapWithCollection" resultMap="employeeWithCustomCollection">
+        select e.employee_number,
+               e.last_name,
+               e.first_name,
+               e.extension,
+               e.email,
+               e.office_code,
+               e.reports_to,
+               e.job_title,
+               e.last_update_time,
+               c.customer_number,
+               c.customer_name,
+               c.contact_last_name,
+               c.contact_first_name,
+               c.phone,
+               c.address_line1,
+               c.address_line2,
+               c.city,
+               c.state,
+               c.postal_code,
+               c.country,
+               c.sales_rep_employee_number,
+               c.credit_limit
+        from employees e
+                 left join customers c on e.employee_number = c.sales_rep_employee_number
+        <!--Where标签的好处就是会帮我们移除语句开头的and或者or关键字,避免sql出错,也能避免在没有条件的情况下不输出where-->
+        <where>
+            <if test="employeeNumber != null">
+                employee_number = #{employeeNumber}
+            </if>
+        </where>
+    </select>
+
+    <select id="getDataTree" resultMap="employessTreeMap">
+        select e.employee_number,
+               e.last_name,
+               e.first_name,
+               e.extension,
+               e.email,
+               e.office_code,
+               e.reports_to,
+               e.job_title,
+               e.last_update_time
+        from employees e
+        where e.employee_number = #{employeeNumber}
+    </select>
+
+    <select id="getDataFromResultMapWithAssociation" resultMap="productFullInfoMap">
+        select p.product_code,
+               p.product_name,
+               p.product_line,
+               p.product_scale,
+               p.product_vendor,
+               p.product_description,
+               p.quantity_in_stock,
+               p.buy_price,
+               p.msrp,
+               pl.product_line     as pl_productLine,
+               pl.text_description as pl_textDescription,
+               pl.html_description as pl_htmlDescription,
+               pl.image            as pl_image
+        from products p
+                 inner join product_lines pl on p.product_line = pl.product_line
+    </select>
+
+    <select id="getEmployeeByReportNumber" resultMap="employessTreeMap">
+        select e.employee_number,
+               e.last_name,
+               e.first_name,
+               e.extension,
+               e.email,
+               e.office_code,
+               e.reports_to,
+               e.job_title,
+               e.last_update_time
+        from employees e
+        where e.reports_to = #{reportsTo}
+    </select>
+
+    <!-- 以select为例子, 内部标签也是非常多的
+
+     id,命名空间中唯一的标识符
+     parameterType,指定传入这条语句的参数的全限定类名,这是一个非必填参数,mybatis会根据类型处理器自动推断传入的类型,而且多个入参也不好指定
+     resultType,指定返回结果集的类型, 注意:如果返回结果是集合,那么应该填写集合包含的类型,而不是集合本身的类型
+     resultMap,引用的映射结果集的唯一标识符,这个参数与resultType只会同时使用一个,resultMap存在的情况下不会使用resultType,
+
+     fetchSize,给驱动一个建议值,尝试让驱动每次批量返回的结果行数等于这个设置值,默认依赖于数据库驱动, 主要作用于游标查询和流式查询
+     resultSetType:指定结果集类型,jdbc相同的配置, FORWARD_ONLY，SCROLL_SENSITIVE, SCROLL_INSENSITIVE
+
+
+     未找到怎么使用:
+     databaseId:配置数据库厂商标识
+     resultOrdered:仅针对嵌套结果的select语句,如果为true,将会假设包含了嵌套结果集或者是分组,当返回一个主结果行时就不会产生对前面结果集的引用
+     resultSets:这个设置仅适用于多结果集的情况,他将列出语句执行后返回的结果集并赋予每个结果集一个名称,多个名称之间用逗号分隔
+
+
+     一般不管:
+     useCache,如果为true:会导致这条语句的结果被二级缓存缓存起来,默认是false 所有二级缓存有关的开关,最终都必须在总开关打开的情况下才会有效
+     flashCache,如果为true:只要语句被调用都会本地缓存和二级缓存失效,这个参数默认是false
+     timeout,在抛出异常之前,等待数据库返回请求结果的秒数,默认依赖于数据库驱动
+     statementType,标记使用什么对象操作sql语句,可选 STATEMENT，PREPARED 或 CALLABLE. statement:直接操作sql,没有任何预编译;prepared:预处理(preparedStatement),这是默认值;Callable:执行存储过程
+     -->
+    <!-- select标签的内部子标签测试 -->
+    <select id="selectTagsTest"
+            resultMap="EmployeeBaseResultMap">
+        select
+        <include refid="Base_Column_List">
+        </include>
+        from employees
+    </select>
+
+    <select id="mybatisStreamQuery" resultType="org.hulei.entity.jpa.pojo.Employee" fetchSize="-2147483648">
+        select *
+        from employees
+    </select>
+
+    <select id="resultSetOpe" resultType="org.hulei.entity.jpa.pojo.Employee" resultSetType="FORWARD_ONLY">
+        select *
+        from employees
+    </select>
+
+    <select id="getData" resultType="java.util.Map">
+        ${sql}
+    </select>
+
+    <select id="dollarSign" resultMap="EmployeeBaseResultMap">
+        select *
+        from employees
+        where last_name = ${lastName}
+    </select>
+
+    <select id="poundSign" resultMap="EmployeeBaseResultMap">
+        select *
+        from employees
+        where last_name = #{lastName}
+    </select>
+
+    <insert id="insertGenerateKey" useGeneratedKeys="true" keyProperty="id">
+        insert into big_data_users(name, email) value (#{name}, #{email})
+    </insert>
+</mapper>

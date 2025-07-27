@@ -14,4 +14,5 @@ public interface ProductInfoMapper {
     int insert(ProductInfo record);
     void batchInsert(@Param(value = "records") List<ProductInfo> records);
     ProductInfo selectById(Integer id);
+    List<ProductInfo> selectAll();
 }

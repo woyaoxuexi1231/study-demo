@@ -30,6 +30,25 @@ public class Polymorphism {
     }
 
     public static void main(String[] args) {
+        /*
+        Java 多态主要分为两种：编译时多态 和 运行时多态
+        编译时多态可以直接认为是方法的重载
+        运行时多态可以认为是方法的重写(这主要体现在继承)
+
+        Java多态(Polymorphism)的底层实现主要依靠以下两个核心机制：
+            1. 方法表(Method Table/VTable)
+             - 每个类在JVM中都有一个方法表，存储该类及其父类的所有可访问方法的实际入口地址
+             - 子类的方法表会继承父类的方法表，并覆盖重写的方法
+             - 方法调用时，JVM通过对象实际类型的方法表来查找正确的方法实现
+            2. 动态绑定(Dynamic Binding)
+             - 在运行时根据对象的实际类型(而非引用类型)决定调用哪个方法
+             - 与静态绑定(如private/final/static方法和字段访问)相对
+             - 通过invokevirtual字节码指令实现
+
+         非private、非static、非final的方法都是虚方法，支持多态
+         这也意味着 private、static、final 方法都是不可继承的
+
+         */
         PolymorphismParentClass parent = new PolymorphismParentClass();
         PolymorphismSubClass child = new PolymorphismSubClass();
         print(parent);
@@ -42,7 +61,7 @@ public class Polymorphism {
      */
     class interClass {
         public void print() {
-            // 对于一个内部类,它可以随意的方法他的外部类的变量
+            // 对于一个内部类,它可以随意的访问他的外部类的变量
             System.out.println(value);
         }
 

@@ -47,8 +47,9 @@ public class MybatisCacheController {
         try (SqlSession session = sqlSessionFactory.openSession()) {
 
             CustomerMapper mapper = session.getMapper(CustomerMapper.class);
-            log.info("第一次查询结果: {}", mapper.selectAll());
-            log.info("第二次查询结果: {}", mapper.selectAll());
+            PageHelper.startPage(0,1);
+            log.info("第一次查询结果: {}", mapper.selectById(103));
+            // log.info("第一次查询结果: {}", mapper.selectById(103));
             session.commit();
 
             /*

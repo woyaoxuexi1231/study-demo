@@ -46,7 +46,7 @@ public class ConnectFactory {
             useCursorFetch=true
              */
             @SuppressWarnings("StringBufferReplaceableByString")
-            StringBuilder url = new StringBuilder("jdbc:mysql://192.168.3.101:3306/test?useUnicode=true&characterEncoding=UTF-8");
+            StringBuilder url = new StringBuilder("jdbc:mysql://192.168.3.102:3306/test?useUnicode=true&characterEncoding=UTF-8");
             // 指定如何处理 0000-00-00 00:00:00 这样的零日期时间值。convertToNull 表示将这些零日期时间值转换为 null。这是因为在某些 SQL 模式下，0000-00-00 00:00:00 不是有效的时间。
             url.append("&zeroDateTimeBehavior=convertToNull");
             // 指定数据库服务器的时区。Asia/Shanghai 表示上海时区。设置正确的时区可以避免时区差异导致的时间错误。

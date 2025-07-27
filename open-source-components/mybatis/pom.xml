@@ -20,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>org.hulei</groupId>
-            <artifactId>utils</artifactId>
+            <artifactId>common-starter</artifactId>
             <version>1.0.0.4-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -73,6 +73,13 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
         </dependency>
+
+
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

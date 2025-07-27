@@ -1,6 +1,7 @@
 package org.hulei.basic.jdk.java8.stream;
 
 import lombok.Data;
+import org.hulei.basic.jdk.io.NIOUtil;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -34,11 +35,14 @@ public class StreamTest {
          */
         List<String> filtered = strings.stream()
                 .filter(String::isEmpty)
+                .peek(System.out::println)
                 .map(String::toLowerCase)
                 .collect(Collectors.toList());
         System.out.println(strings.stream().filter(string -> !string.isEmpty()).count());
 
-        System.out.println(Stream.of(null).count());
+        // System.out.println(Stream.of(null).count());
+
+        strings.parallelStream().forEach(NIOUtil::info);
 
     }
 

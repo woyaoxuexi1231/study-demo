@@ -19,4 +19,9 @@
         from product_info
         where product_id = #{id}
     </select>
+
+    <select id="selectAll" resultType="org.hulei.entity.jpa.pojo.ProductInfo">
+        select *
+        from product_info
+    </select>
 </mapper>

@@ -1,8 +1,6 @@
 package org.hulei.entity.jpa.pojo;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
@@ -32,7 +30,7 @@ public class Product {
     @Size(max = 50)
     @NotNull
     @Column(name = "product_line", nullable = false, length = 50)
-    private String productLine;
+    private String productLineName;
 
     @Size(max = 10)
     @NotNull
