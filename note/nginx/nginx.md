@@ -69,7 +69,6 @@ stream 可以配置 TCP/UDP 流量转发
 ```nginx
 # 定义 stream 模块的配置
 stream {
-
     upstream mysql_backend {
         server 192.168.3.101:3306;
     }
@@ -85,7 +84,7 @@ stream {
 
 
 
-在http内部也可以通过路径配置端口转发
+在http标签下的server标签内部也可以通过路径配置端口转发
 
 ```nginx
 
