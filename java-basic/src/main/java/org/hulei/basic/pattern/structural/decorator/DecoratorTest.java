@@ -1,10 +1,9 @@
-package org.hulei.basic.pattern.structural;
+package org.hulei.basic.pattern.structural.decorator;
 
 
+import org.hulei.basic.pattern.structural.Equipment;
 import org.hulei.basic.pattern.structural.adapter.Phone;
 import org.hulei.basic.pattern.structural.adapter.PhoneAdapter;
-import org.hulei.basic.pattern.structural.decorator.AdapterCutter;
-import org.hulei.basic.pattern.structural.decorator.AdapterEnhancer;
 
 /**
  * @projectName: study-demo

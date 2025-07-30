@@ -85,6 +85,38 @@ public class SpringbootApplication implements ApplicationRunner {
         3. 创建 WebServer: 在刷新Spring上下文的过程中, Spring Boot会创建 WebServer。具体来说, 当 Spring Boot 应用启动时, 它会创建一个 ServletWebServerApplicationContext, 这个上下文会创建一个内嵌的 Servlet 容器
         4. 启动 Tomcat: 在创建WebServer的过程中, Spring Boot 会根据你的 classpath 和你定义的配置来决定使用哪种 Servlet 容器(默认是Tomcat), 然后实例化这个容器, 并将其封装在一个 WebServer 接口的实现类中。
            总的来说, Spring Boot内嵌 Tomcat 的过程实际上并不复杂, 就是在刷新 Spring 上下文的过程中将 Tomcat容器启动起来, 并且将当前应用绑定到一个 Context, 然后添加了 Host。
+
+
+
+        spring 中的设计模式
+        1. 工厂模式 (Factory Pattern)
+            BeanFactory：基础Bean工厂
+            特点：统一管理Bean的创建过程
+        2. 单例模式 (Singleton Pattern)
+            实现方式：Bean默认作用域
+        3. 原型模式 (Prototype Pattern)
+            实现方式：@Scope("prototype")
+            特点：每次请求都创建新实例
+        4. 代理模式 (Proxy Pattern)
+            AOP实现（JDK动态代理和CGLIB）
+            @Transactional事务管理
+        5. 模板方法模式 (Template Method)
+            JdbcTemplate、RestTemplate
+            特点：固定流程，可变步骤
+        6. 观察者模式 (Observer Pattern)
+            实现方式：应用事件机制，ApplicationEvent、ApplicationListener
+        7. 适配器模式 (Adapter Pattern)
+            Spring MVC的HandlerAdapter
+            各种*Adapter类（如MessageListenerAdapter）
+        8. 装饰者模式 (Decorator Pattern)
+            HttpServletRequest的包装类
+        9. 策略模式 (Strategy Pattern)
+        10. 责任链模式 (Chain of Responsibility)
+            Spring Security的过滤器链
+            MVC拦截器链（HandlerInterceptor）
+        11. 建造者模式 (Builder Pattern)
+        12. 组合模式 (Composite Pattern)
+        13. 门面模式 (Facade Pattern)
          */
         applicationContext = SpringApplication.run(SpringbootApplication.class);
         log.info("启动完成");

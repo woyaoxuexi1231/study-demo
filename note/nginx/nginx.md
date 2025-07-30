@@ -17,7 +17,10 @@ make
 # 安装
 make install 
 
-nginx -c /etc/nginx/nginx.conf -s reload
+
+cd /usr/local/nginx/sbin
+
+./nginx
 ```
 
 
@@ -51,7 +54,7 @@ docker rm nginx
 docker rm -f nginx
 
 docker run \
--p 80:80 --restart=unless-stopped \
+-p 2080:80 --restart=unless-stopped \
 --name nginx \
 -v /root/nginx/conf/nginx.conf:/etc/nginx/nginx.conf \
 -v /root/nginx/conf/conf.d:/etc/nginx/conf.d \

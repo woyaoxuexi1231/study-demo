@@ -83,6 +83,12 @@ public class XmlTagController {
 
         // 通过Collection来快速构建树状结果
         xmlTagMapper.getDataTree(1002L);
+
+        /*
+        树形结构的查询，mysql其实本身提供了一种巧妙的方式来实现
+        mysql 可以通过使用 with recursive ... as 来实现树形结构
+        这是 mysql 提供的递归查询
+         */
     }
 
     /**

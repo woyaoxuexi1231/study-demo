@@ -3,6 +3,7 @@ package org.hulei.springboot.spring.restful;
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.hulei.util.dto.SimpleReqDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -17,6 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
@@ -106,6 +110,54 @@ public class RestfulController {
     @GetMapping("/sleepForever")
     public void sleepForever() {
         Thread.sleep(Integer.MAX_VALUE);
+    }
+
+
+    @GetMapping("/hi")
+    public String hi() {
+
+        log.info("hi");
+
+        String url = "http://192.168.3.102:10002/client/";
+        StringBuilder sb = new StringBuilder();
+
+        // 无参格式
+        sb.append(restTemplate.getForObject(url + "hi", String.class)).append("\n");
+
+        // 构建带查询参数的 URI
+        URI paramUri = UriComponentsBuilder.fromHttpUrl(url + "hi-request-param")
+                .queryParam("param", "hello")
+                .build()
+                .encode()  // 编码（可选，默认已编码）
+                .toUri();
+        sb.append(restTemplate.getForObject(paramUri, String.class)).append("\n");
+
+        Map<String, String> pathParam = new HashMap<>();
+        pathParam.put("param", "hello");
+        sb.append(restTemplate.getForObject(url + "hi-path-param/{param}", String.class, pathParam)).append("\n");
+
+        URI uri = UriComponentsBuilder.fromUriString(url + "hi-databinding")
+                .queryParam("reqString", "hello")
+                .build()
+                .toUri();
+        sb.append(restTemplate.getForObject(uri, String.class)).append("\n");
+
+        // POST 请求
+        // 1. 构造请求体对象
+        SimpleReqDTO user = new SimpleReqDTO();
+        user.setReqString("hello");
+
+        // 2. 设置请求头（指定 Content-Type 为 JSON）
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // 3. 封装 HttpEntity（请求体 + 请求头）
+        HttpEntity<SimpleReqDTO> requestEntity = new HttpEntity<>(user, headers);
+
+        // 4. 发送 POST 请求（返回响应体字符串）
+        sb.append(restTemplate.postForObject(url + "hi-body", requestEntity, String.class)).append("\n");
+
+        return sb.toString();
     }
 
 }

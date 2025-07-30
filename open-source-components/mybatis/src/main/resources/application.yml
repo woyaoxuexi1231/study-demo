@@ -21,7 +21,9 @@ mybatis:
     local-cache-scope: statement
     # mybatis提供的二级缓存，决定一个 mapper 文件在整个程序的声明周期内的缓存行为, 这是一个总开关，这里关闭之后，是不会启动二级缓存的
     cache-enabled: true
+    # 关联对象不会立即查询，避免一次性加载所有关联数据。只有在真正访问关联属性时才会执行SQL查询
     lazy-loading-enabled: true
+    # 访问懒加载对象的任何方法（包括toString()、hashCode()等）都会立即触发所有延迟属性的加载
     aggressive-lazy-loading: false
   mapper-locations: classpath:mapper/*.xml
 

@@ -1,7 +1,6 @@
-package org.hulei.basic.pattern.structural;
+package org.hulei.basic.pattern.structural.bridge;
 
-import org.hulei.basic.pattern.structural.bridge.LapTop;
-import org.hulei.basic.pattern.structural.bridge.LaptopAdapter;
+import org.hulei.basic.pattern.structural.Equipment;
 
 /**
  * @projectName: study-demo

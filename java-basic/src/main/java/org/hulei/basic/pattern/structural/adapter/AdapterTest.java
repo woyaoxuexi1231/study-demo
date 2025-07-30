@@ -1,7 +1,6 @@
-package org.hulei.basic.pattern.structural;
+package org.hulei.basic.pattern.structural.adapter;
 
-import org.hulei.basic.pattern.structural.adapter.Phone;
-import org.hulei.basic.pattern.structural.adapter.PhoneAdapter;
+import org.hulei.basic.pattern.structural.Equipment;
 import org.hulei.basic.pattern.structural.bridge.LaptopAdapter;
 
 /**
