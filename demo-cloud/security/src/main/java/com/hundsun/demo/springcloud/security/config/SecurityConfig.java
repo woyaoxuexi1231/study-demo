@@ -15,10 +15,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.sql.DataSource;
+import java.util.UUID;
 
 /**
  * @author hulei
@@ -37,6 +40,24 @@ public class SecurityConfig {
 
     @Autowired
     MyPersistentTokenRepository myPersistentTokenRepository;
+
+    @Autowired
+    private DataSource dataSource;
+
+    public CustomJdbcTokenRepositoryImpl tokenRepository() {
+        CustomJdbcTokenRepositoryImpl repo = new CustomJdbcTokenRepositoryImpl();
+        repo.setDataSource(dataSource);
+        repo.setPersistentTokenRepository(myPersistentTokenRepository);
+        return repo;
+    }
+
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Bean
+    public RememberMeServices rememberMeServices() {
+        return new CustomRememberMeServices("your-key", userDetailsService, tokenRepository());
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, UserDetailsService userDetailsService) throws Exception {
@@ -82,34 +103,78 @@ public class SecurityConfig {
 
                 .and()
 
+                /*
+                security 默认会注册一个 /logout 路由，访问该路径可以安全的注销登录状态
+                包括清理 HttpSession失效、清空已配置的Remember-me验证，以及清空SecurityContextHolder，并在注销成功之后重定向到/login?logout页面。
+                和登录接口一样，也是可以自定义一些相关的配置
+                 */
                 .logout()
                 .permitAll()
 
                 .and()
 
                 /*
-                增加自动登录功能，默认为简单散列加密
-                这是一种极其简单的 remember me 功能
-                对用户名+密码+过期时间+随机散列值(应用启动之后确定) 来生成 token，这意味着应用重启后，记住功能失效
+                使用 .rememberMe() + .userDetailsService
+                增加自动登录功能，默认为简单散列加密，这是一种极其简单的 remember me 功能
 
+                启动后，登陆成功可以在 cookie 中看到一个 remember-me 的新的 key
+                对用户名+密码+过期时间+随机散列值(应用启动之后确定) 来生成 token，使用token用户的信息来生成，所以需要配置 userDetailsService
+
+                整个流程是：
+                  - 首先会注册一个 RememberMeAuthenticationFilter 的过滤器，在请求到达之后进行一系列的操作
+                  - 登录请求进来后会通过 UsernamePasswordAuthenticationFilter 进行权限校验
+                  - 校验成功后会在 UsernamePasswordAuthenticationFilter 进行登录成功后的操作，这里就包括生成 remember-me token
+                  - 在没有使用 .tokenRepository 的情况下，token是在内存中的，每次新的会话时，cookie会带上 remember-me token ，每次校验这个 token 就可以知道登录状态有没有了
+
+                问题：
+                  1. token在内存中，这意味着应用重启后，记住功能失效
+                  2. 分布式部署时（多台服务器），令牌无法同步，导致用户在不同服务器上登录状态不一致。
+                 */
+                .rememberMe()
+                .rememberMeServices(rememberMeServices())
+                .userDetailsService(userDetailsService)
+                /*
                 .tokenRepository(myPersistentTokenRepository) 持久化形式的自动登录
-                这种方式采用 series 和 token 两个值，它们都是用MD5散列过的随机字符串。
-                series仅在用户使用密码重新登录时更新，而token会在每一个新的session中都重新生成。
-                 - 首先，解决了散列加密方案中一个令牌可以同时在多端登录的问题。每个会话都会引发token的更新，即每个token仅支持单实例登录。
-                 - 其次，自动登录不会导致series变更，而每次自动登录都需要同时验证series和token两个值
-                   ，当该令牌还未使用过自动登录就被盗取时，系统会在非法用户验证通过后刷新 token 值，此时在合法用户的浏览器中，该token值已经失效。
-                   当合法用户使用自动登录时，由于该series对应的 token 不同，系统可以推断该令牌可能已被盗用，从而做一些处理。
-                   例如，清理该用户的所有自动登录令牌，并通知该用户可能已被盗号等。
-                 - 服务重启也不会影响现有的自动登录
+                这里 PersistentTokenRepository 不一定要使用 jdbc，redis都是可以的
+
+                使用 series 和 token
+                    series：使用安全的随机数生成器（如 SecureRandom）生成一个唯一字符串（如 64 位十六进制数），确保全局唯一。
+                    token：同样使用随机数生成器生成另一个唯一字符串（与 series 长度相同）。
+
+                验证令牌有效性：
+                    若 series 不存在：令牌无效，拒绝访问。
+                    若 series 存在但 token 不匹配：说明令牌已被刷新或伪造，删除旧 series 记录并拒绝访问。(这里其实就可以推断已经被盗用了)
+                    若 token 匹配：更新 last_used 为当前时间（实现滑动过期），并生成新的 token（可选，增强安全性）：
+                        生成新的 token 并更新数据库中的 token 字段（旧 token 失效）。
+                        客户端下次请求时携带新的 series:new_token，重复验证流程。
 
                  TODO 这里关于单点登录的问题
                  */
-                .rememberMe()
-                .userDetailsService(userDetailsService)
                 .tokenRepository(myPersistentTokenRepository)
         ;
 
         http.csrf().disable();
+
+        /*
+        sessionManagement 是一个会话管理的配置器，其中有关于防御会话固定攻击的四种策略
+          - none：不做任何变动，登录之后沿用旧的session。
+          - newSession：登录之后创建一个新的session。
+          - migrateSession：登录之后创建一个新的session，并将旧的session中的数据复制过来。 默认启动
+          - changeSessionId：不创建新的会话，而是使用由Servlet容器提供的会话固定保护。
+
+        TODO 会话攻击
+        在 Spring Security 中，即便没有配置，也大可不必担心会话固定攻击。
+        Spring Security 的 HTTP 防火墙会帮助我们拦截不合法的URL
+        当我们试图访问带session的URL时，实际上会被重定向到类似如图6-1所示的错误页。(默认行为)
+
+        开启 remember-me 功能时，其实这个自定义失效策略就不会再使用了，因为有记住我的功能，即使会话失效了，也会续约
+         */
+        http.sessionManagement().sessionFixation().none()
+                // 配置 session 失效策略，这里是一个自定义的失效策略，返回一串提示
+                .invalidSessionStrategy(new MyInvalidSessionStrategy())
+                // 最大会话数量，新登录的会话会把之前的会话给剔除
+                // .maximumSessions(1)
+        ;
 
         // 验证码校验的过滤器 先于 账户验证过滤器执行
         http.addFilterBefore(new CaptchaFilter(), UsernamePasswordAuthenticationFilter.class);

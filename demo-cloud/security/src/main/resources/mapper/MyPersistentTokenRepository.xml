@@ -27,4 +27,10 @@
         from persistent_logins
         where username = #{username}
     </delete>
+
+    <delete id="removeTokenBySeries">
+        DELETE
+        FROM persistent_logins
+        WHERE series = #{series}
+    </delete>
 </mapper>
