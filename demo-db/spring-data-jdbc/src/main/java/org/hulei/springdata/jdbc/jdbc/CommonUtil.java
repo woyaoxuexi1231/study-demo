@@ -1,4 +1,4 @@
-package org.hulei.basic.jdk.jdbc;
+package org.hulei.springdata.jdbc.jdbc;
 
 import lombok.extern.slf4j.Slf4j;
 

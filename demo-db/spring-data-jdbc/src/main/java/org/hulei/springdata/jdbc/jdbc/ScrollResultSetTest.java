@@ -1,4 +1,4 @@
-package org.hulei.basic.jdk.jdbc;
+package org.hulei.springdata.jdbc.jdbc;
 
 import com.github.jsonzou.jmockdata.JMockData;
 import lombok.SneakyThrows;

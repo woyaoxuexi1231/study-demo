@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class ZooKeeperClinet {
 
-    private static final String CONNECTION_STRING = "192.168.80.128:2181";
+    private static final String CONNECTION_STRING = "192.168.3.102:2181";
     private static final int SESSION_TIMEOUT = 3000;
     private static ZooKeeper zooKeeper;
 

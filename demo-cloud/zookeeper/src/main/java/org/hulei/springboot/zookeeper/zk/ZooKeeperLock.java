@@ -25,7 +25,7 @@ import java.util.concurrent.CountDownLatch;
 @Slf4j
 public class ZooKeeperLock {
 
-    private static final String ZK_CONNECTION_STRING = "192.168.80.128:2181";
+    private static final String ZK_CONNECTION_STRING = "192.168.3.102:2181";
     private static final int SESSION_TIMEOUT_MS = 5000;
     private static final String LOCK_PATH = "/lock";
 

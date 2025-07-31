@@ -16,7 +16,7 @@ import java.util.concurrent.CountDownLatch;
 public class PubSubClient {
 
     private static ZooKeeper zooKeeper;
-    private static final String HOST = "192.168.80.128:2181";
+    private static final String HOST = "192.168.3.102:2181";
     private static final String PUBLISH_NODE = "/publisher";
     private static final CountDownLatch CONNECTED_LATCH = new CountDownLatch(1);
 

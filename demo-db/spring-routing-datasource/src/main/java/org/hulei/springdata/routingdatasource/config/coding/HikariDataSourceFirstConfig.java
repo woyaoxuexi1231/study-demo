@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "spring.datasource.first")
 @Component
 @Data
-public class FirstHikariDataSourceConfig {
+public class HikariDataSourceFirstConfig {
 
     private String url;
 
