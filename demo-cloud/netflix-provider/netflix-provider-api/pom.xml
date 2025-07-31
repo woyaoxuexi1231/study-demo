@@ -2,24 +2,32 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.hulei</groupId>
-        <artifactId>dependencies-parent</artifactId>
+        <artifactId>netflix-provider</artifactId>
         <version>1.0.0.4-SNAPSHOT</version>
     </parent>
-    <packaging>pom</packaging>
-    <modules>
-        <module>netflix-provider-api</module>
-        <module>netflix-provider-service</module>
-    </modules>
-    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>netflix-provider</artifactId>
+    <artifactId>netflix-provider-api</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <dependencies>
+        <!-- 内部 -->
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>common-starter</artifactId>
+            <version>1.0.0.4-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

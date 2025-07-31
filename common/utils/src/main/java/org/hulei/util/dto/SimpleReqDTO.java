@@ -1,6 +1,8 @@
 package org.hulei.util.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -13,6 +15,8 @@ import java.io.Serializable;
  * @createDate: 2023/5/15 20:05
  */
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class SimpleReqDTO implements Serializable {
 

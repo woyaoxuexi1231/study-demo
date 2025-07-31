@@ -3,9 +3,9 @@ server:
 
 spring:
   elasticsearch:
-    uris: http://localhost:9200
-    username: elastic
-    password: KJ3iDzthT_YDzRQfzjOv
+    uris: http://192.168.3.102:9200
+#    username: elastic
+#    password: KJ3iDzthT_YDzRQfzjOv
 
   main:
     allow-bean-definition-overriding: true
