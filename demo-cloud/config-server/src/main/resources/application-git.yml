@@ -1,0 +1,47 @@
+spring:
+  cloud:
+    config:
+      server:
+        #        native:
+        # 用于指定本地配置文件搜索位置的属性。当 Config Server 启动时，它需要知道在哪些位置搜索配置文件以提供给客户端请求的配置信息。
+        # 可以通过设置一个或多个路径来指定搜索位置，多个路径之间使用逗号分隔。Config Server 将会按照指定的路径顺序搜索配置文件，一旦找到符合条件的配置文件，就会返回给客户端。
+        # spring.cloud.config.server.native.search-locations=file:/path/to/config1,file:/path/to/config2
+        #          search-locations: classpath:/shared
+        git:
+          # 这个属性用于指定存储配置文件的远程 Git 仓库的 URI。
+          uri: https://gitee.com/woyaoxuexi777/springcloud-config
+          #  这个属性用于指定在 Git 仓库中搜索配置文件的路径
+          # 账户名
+          username: 13364002713
+          # 密码
+          password: qooi1231
+          # 这个属性用于控制在启动过程中是否强制从远程 Git 仓库拉取最新的配置文件。
+          force-pull: true
+          # 0表示禁止自动刷新配置
+          # 如果你设置了 refreshRate，那么当客户端（其他应用）调用 Config Server 获取配置时，它们获取的将是 Config Server 在 refreshRate 秒前获取的配置2。
+          # 需要注意的是，spring.cloud.config.server.git.refreshRate 并不会影响 Config Server 和它的客户端之间的通信2。也就是说，即使你设置了 refreshRate，客户端应用也不会在 Git 仓库发生变化时收到通知2。如果你希望在配置变化时更新客户端的配置，你需要在客户端应用中调用 /actuator/refresh 端点
+          # 单位是秒，一定注意
+          refresh-rate: 0
+          timeout: 10
+          # 用于指定Git仓库中的特定分支、标签或提交哈希值。
+          default-label: master
+          search-paths: config
+    #  profiles:
+    # 在spring-cloud-config-server中代表将使用本地文件系统作为配置存储后端
+    # 并且根据客户端请求的配置文件和激活的 profile 来返回相应的配置信息。
+  #    active: native
+  application:
+    name: config-server
+server:
+  port: 10014
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: false
+    serviceUrl:
+      defaultZone: http://192.168.3.102:10001/eureka/
+logging:
+  level:
+    root: info
+
+

@@ -9,7 +9,7 @@
         <version>1.0.0.4-SNAPSHOT</version>
     </parent>
 
-    <artifactId>idgenerator</artifactId>
+    <artifactId>spring-routing-datasource</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -18,56 +18,37 @@
     </properties>
 
     <dependencies>
+
         <dependency>
             <groupId>org.hulei</groupId>
             <artifactId>utils</artifactId>
             <version>1.0.0.4-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.hulei</groupId>
-            <artifactId>entity-mybatis-plus</artifactId>
-            <version>1.0.0.4-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hulei</groupId>
-            <artifactId>spring-routing-datasource</artifactId>
-            <version>1.0.0.4-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hulei</groupId>
-            <artifactId>common-starter</artifactId>
-            <version>1.0.0.4-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hulei</groupId>
-            <artifactId>curator-starter</artifactId>
-            <version>1.0.0.4-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
+        <!-- 引入aspectj规范 -->
         <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
         </dependency>
+        <!-- 引入mysql驱动,作为可选依赖 -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+            <optional>true</optional>
         </dependency>
-        <!-- mock数据生成包 -->
         <dependency>
-            <groupId>com.github.jsonzou</groupId>
-            <artifactId>jmockdata</artifactId>
-            <version>4.2.0</version>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
         </dependency>
-        <!-- 三方的UUID生成工具 -->
         <dependency>
-            <groupId>com.github.f4b6a3</groupId>
-            <artifactId>uuid-creator</artifactId>
-            <version>5.2.0</version>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
         </dependency>
+
     </dependencies>
 
 </project>

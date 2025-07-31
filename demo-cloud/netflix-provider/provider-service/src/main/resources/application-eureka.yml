@@ -1,0 +1,17 @@
+eureka:
+  client:
+    service-url:
+      # Eureka Server 地址（集群需配置多个）
+      defaultZone: http://192.168.3.102:10001/eureka/
+    # 是否注册到 Eureka（默认 true）
+    register-with-eureka: true
+    # 是否从 Eureka 获取服务列表（消费者需要，提供者可选）
+    fetch-registry: false
+  instance:
+    # 实例 ID（唯一标识，格式可自定义）
+    # spring.cloud.client.ip-address - Spring Cloud 会自动检测应用的 本地非回环IP地址（通过 InetAddress.getLocalHost() 或网络接口枚举）。
+    instance-id: ${eureka.instance.ip-address}:${spring.application.name}:${server.port}
+    prefer-ip-address: true   # 注册时使用 IP 而非主机名（默认 false）
+    lease-renewal-interval-in-seconds: 30  # 心跳间隔（默认 30 秒，告知 Eureka 自己存活）
+    lease-expiration-duration-in-seconds: 90  # 心跳超时时间（默认 90 秒，未收到心跳则剔除服务）
+    ip-address: 192.168.3.2

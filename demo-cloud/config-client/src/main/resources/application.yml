@@ -1,0 +1,83 @@
+# ================================================ 服务基础配置 ==================================================
+server:
+  port: 20013
+
+
+# ================================================ spring cloud 配置 ==================================================
+spring:
+  application:
+    name: config-client
+  cloud:
+    # 存在多张网卡的时候，注册到注册中心的时候可能会出现 ip 地址混乱的情况，这可能导致请求并不通，这里忽略一下虚拟机的额外网卡
+    inetutils:
+      ignored-interfaces: [ 'VMware.*' ]
+    config:
+      # 配置 Spring Cloud Config 客户端在启动时是否快速失败。当设置为 true 时，如果配置服务器不可用，应用将快速失败启动。默认为 false。
+      fail-fast: true
+      # 指定 Spring Cloud Config 服务器的 URI 地址，用于从配置服务器获取配置信息。
+      #uri: http://localhost:9160
+      # 开启服务发现并指定服务ID后，Spring Cloud Config 客户端将能够自动地定位配置服务实例的真实网络位置，即使这些实例的地址或端口发生变化。
+      discovery:
+        # 这个配置项用于启用或禁用配置客户端的服务发现功能。当您设置此属性为 true，Spring Cloud Config 客户端将不再使用静态定义的 URI 访问配置服务器。相反，他会使用集成的服务发现机制（通常是 Eureka, Consul 或其他服务发现工具）来动态查找配置服务的位置。
+        enabled: true
+        # 此配置项与 spring.cloud.config.discovery.enabled=true 一起使用时，指定了配置服务器在服务注册中心登记时使用的服务ID。这意味着配置客户端知道要查找哪个具体的服务名称来获取配置信息。
+        service-id: config-server
+    bus:
+      # 这个配置项用于启用或禁用 Spring Cloud Bus 功能。如果您希望通过消息总线发送和接收消息，比如自动刷新配置或广播自定义事件，您需要启用这项功能。
+      # 当设置为 true 时，启用 Spring Cloud Bus，允许应用通过消息代理与其他服务实例通信。
+      # 禁用Spring Cloud Bus后，服务将无法使用Spring Cloud Bus提供的功能，比如配置更新的广播和接收将不会发生。
+      enabled: true
+      trace:
+        # 这个配置项用于启用或禁用消息跟踪。开启后，可以记录通过 Spring Cloud Bus 发送和接收的消息的轨迹，有助于调试和监控。
+        # 禁用事件跟踪后，/trace端点将不再提供通过Spring Cloud Bus传递的消息的详细信息。这可能会让调试消息传递相关的问题变得更加困难，因为您将无法从/trace端点获取到帮助理解问题的信息。
+        enabled: true
+  config:
+    # 指定应用是否应该导入配置服务器的配置。这里使用了 optional 前缀，表示如果配置服务器不可用，应用也可以正常启动。
+    import: "optional:configserver:"
+  profiles:
+    # 指定当前应用的活动配置文件为 dev，这意味着应用将会加载名为 application-dev.yml 或 application-dev.properties 的配置文件。
+    active: dev
+  rabbitmq:
+    username: admin
+    password: admin
+    virtual-host: /
+    addresses: 192.168.3.102
+    port: 5672
+eureka:
+  instance:
+    prefer-ip-address: true
+  #    ip-address: 192.168.3.2
+  # 这是 Eureka 客户端(服务实例)的唯一标识符
+  # 同一个 application-name 下使用相同的 instance-id 会导致注册中心无法区分，而仅识别一个服务
+  # 不同 application-name 使用相同 instance-id 问题不大
+  # 默认格式通常是 ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${server.port}}
+  #    instance-id: config
+  client:
+    service-url:
+      defaultZone: http://192.168.3.102:10001/eureka/
+
+# ================================================ 端点暴露 ==================================================
+management:
+  #  这是用于配置 Spring Boot Actuator 端点的管理端口属性。
+  #  默认情况下，Actuator 端点使用与主服务相同的端口（即 server.port）。但是，如果你想要为 Actuator 端点配置一个不同的端口，你可以使用 management.server.port 属性来指定。
+  #  server:
+  #    port: 9161
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+#  endpoint:
+#    refresh:
+#      # management.endpoint.refresh.enabled 是 Spring Boot Actuator 的配置选项之一，用于启用或禁用刷新配置的端点。当这个配置项被设置为 true 时，Actuator 将会暴露一个 /actuator/refresh 的端点，允许通过发送 POST 请求来刷新应用程序的配置。
+#      enabled: true
+
+
+refresh: "124"
+# curl -X POST http://localhost:9161/actuator/refresh
+# /refresh 端点 更适用于单个实例的配置动态更新，通常用于在开发过程中或者少数需要快速响应配置变化的场景。这是一种更为简单直接的方式来触发配置更新。
+# /refresh 端点 (管理端口) 和 management.endpoint.refresh.enabled 配置: 这是Spring Boot Actuator提供的一个特定端点，主要用于重新加载单个应用实例的配置。它不依赖于消息中间件，而是通常在接收到HTTP POST请求时，从配置源（如Git仓库或本地配置文件）直接刷新配置。
+
+# curl -X POST http://localhost:9161/actuator/busrefresh
+# Spring Cloud Bus: Spring Cloud Bus 使用消息中间件（如RabbitMQ, Kafka）来连接和管理分散在不同节点的微服务应用。它主要用于广播配置更改或其他管理命令到多个服务实例。通过Spring Cloud Bus，当一个服务的配置被更新时，这个更新可以自动广播到所有订阅了这个更新的服务。
+# Spring Cloud Bus 更适用于需要跨多个服务实例广播设置时的场景，例如在微服务架构中，多个服务可能需要同时更新它们的配置以保持一致性。它支持更复杂的分布式系统管理操作。
+

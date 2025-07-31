@@ -1,0 +1,23 @@
+spring:
+  cloud:
+    gateway:
+#      routes:
+#        - id: rate_limit_route
+#          uri: http://example.org
+#          predicates:
+#            - Path=/limited/**
+#          filters:
+#            - name: RequestRateLimiter
+#              args:
+#                rate-limiter: '#{@customRateLimiter}'
+#                key-resolver: '#{@customKeyResolver}'
+      default-filters:
+        - name: Retry
+          args:
+            retries: 3
+        - name: RequestRateLimiter
+          args:
+            rate-limiter: '#{@customLocalRateLimiter}'
+            key-resolver: '#{@customLocalKeyResolver}'
+            status: 429
+            response-body: '{"message": "Too many requests"}'

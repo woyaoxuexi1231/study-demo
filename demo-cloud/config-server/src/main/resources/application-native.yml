@@ -1,0 +1,38 @@
+spring:
+  cloud:
+    config:
+      server:
+        native:
+          # 用于指定本地配置文件搜索位置的属性。当 Config Server 启动时，它需要知道在哪些位置搜索配置文件以提供给客户端请求的配置信息。
+          # 可以通过设置一个或多个路径来指定搜索位置，多个路径之间使用逗号分隔。Config Server 将会按照指定的路径顺序搜索配置文件，一旦找到符合条件的配置文件，就会返回给客户端。
+          # spring.cloud.config.server.native.search-locations=file:/path/to/config1,file:/path/to/config2
+          search-locations: classpath:/shared
+        # 主要用于控制 Config Server 是否在自身启动时也从配置中心拉取配置。
+        bootstrap: true
+    # 在spring-cloud-config-server中代表将使用本地文件系统作为配置存储后端
+    # 并且根据客户端请求的配置文件和激活的 profile 来返回相应的配置信息。
+#  profiles:
+
+    # # 存在多张网卡的时候，注册到注册中心的时候可能会出现 ip 地址混乱的情况，这可能导致请求并不通，这里忽略一下虚拟机的额外网卡
+    inetutils:
+      ignored-interfaces: ['VMware.*']
+  #    active: native
+  application:
+    name: config-server
+server:
+  port: 10014
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: false
+    serviceUrl:
+      defaultZone: http://192.168.3.102:10001/eureka/
+  instance:
+    prefer-ip-address: true
+#    ip-address: 192.168.3.2
+#    instance-id: ${eureka.instance.ip-address}:${spring.application.name}:${server.port}
+logging:
+  level:
+    root: info
+
+

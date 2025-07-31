@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+</head>
+<body>
+<h1>Login Form</h1>
+<form th:action="@{/doLogin}" method="post">
+    <label>Username:</label>
+    <input type="text" name="username"/><br/>
+
+    <label>Password:</label>
+    <input type="password" name="password"/><br/>
+
+    <label>Captcha:</label>
+    <input type="text" name="captcha"/><br/>
+    <img src="/captcha.jpg" alt="captcha"/><br/>
+
+    <p>
+        <input type="checkbox" name="remember-me">
+        Remember me on this computer.
+        </input>
+    </p>
+    <button type="submit">Login</button>
+</form>
+
+<p th:if="${error_message}" th:text="${error_message}"></p>
+
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+server:
+  port: 10011
+
+spring:
+  application:
+    name: admin-client
+  boot:
+    admin:
+      client:
+        # 该参数用于指定Spring Boot Admin Server的地址。
+        # 它是Spring Boot Admin客户端配置中的关键项，确保了客户端能够正确地连接到Admin Server进行通信和注册。
+        url: http://192.168.3.102:10012
+        instance:
+          # 指定应用程序的服务基础 URL，通常是应用程序的主 URL。
+          service-base-url: http://192.168.3.102:10011
+          # 用途：指定应用程序管理接口的基础 URL。
+          # 默认值：如果没有指定，默认情况下会使用应用程序的主 URL（即 spring.boot.admin.client.url）。
+          # 当你的 Spring Boot 应用程序注册到 Spring Boot Admin 服务器时，Admin 服务器需要知道如何访问该应用程序的管理端点（如健康检查、指标等）。这些管理端点通常位于 /actuator 路径下。
+          # 如果你的应用程序运行在一个代理服务器后面，或者使用了不同的端口来暴露管理接口，那么你需要明确指定管理接口的基础 URL，以便 Admin 服务器能够正确地访问这些端点。
+          # management-base-url:
+
+#配置可监控信息
+management:
+  #对外开放某个监控点
+  endpoint:
+    #health必须开
+    health:
+      show-details: always
+      enabled: true
+    #其他
+    beans:
+      enabled: true
+  endpoints:
+    #对web开启的监控点
+    web:
+      exposure:
+        include: "*"
+    #对外开放所有监控点
+    enabled-by-default: true
+
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 10
+    health-check-url-path: /actuator/health
+  client:
+    registryFetchIntervalSeconds: 5
+    service-url:
+      defaultZone: ${EUREKA_SERVICE_URL:http://192.168.3.102:10001}/eureka/
+

@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    active: eureka
+  application:
+    name: netflix-provider
+
+server:
+  port: 10002
+
