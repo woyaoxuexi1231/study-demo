@@ -1,10 +1,11 @@
 package com.hundsun.demo.springcloud.security.config;
 
-import com.hundsun.demo.springcloud.security.authenticationprovider.DeviceAuthenticationDetails;
 import com.hundsun.demo.springcloud.security.filter.CaptchaFilter;
 import com.hundsun.demo.springcloud.security.handler.CustomAuthenticationFailureHandler;
 import com.hundsun.demo.springcloud.security.mapper.MyPersistentTokenRepository;
-import com.hundsun.demo.springcloud.security.userdetailservice.DbUserDetailServiceConfig;
+import com.hundsun.demo.springcloud.security.remeberme.CustomJdbcTokenRepositoryImpl;
+import com.hundsun.demo.springcloud.security.remeberme.CustomRememberMeServices;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,12 +13,12 @@ import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import org.springframework.session.security.SpringSessionBackedSessionRegistry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
@@ -28,36 +29,16 @@ import java.util.UUID;
  * @since 2025/7/25 13:35
  */
 
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails> deviceAuthenticationDetailsSource;
-
-    @Autowired
-    private AuthenticationProvider authenticationProvider;
-
-    @Autowired
-    MyPersistentTokenRepository myPersistentTokenRepository;
-
-    @Autowired
-    private DataSource dataSource;
-
-    public CustomJdbcTokenRepositoryImpl tokenRepository() {
-        CustomJdbcTokenRepositoryImpl repo = new CustomJdbcTokenRepositoryImpl();
-        repo.setDataSource(dataSource);
-        repo.setPersistentTokenRepository(myPersistentTokenRepository);
-        return repo;
-    }
-
-    @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Bean
-    public RememberMeServices rememberMeServices() {
-        return new CustomRememberMeServices("your-key", userDetailsService, tokenRepository());
-    }
+    private final AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails> deviceAuthenticationDetailsSource;
+    private final AuthenticationProvider authenticationProvider;
+    private final MyPersistentTokenRepository myPersistentTokenRepository;
+    private final UserDetailsService userDetailsService;
+    private final SpringSessionBackedSessionRegistry registry;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, UserDetailsService userDetailsService) throws Exception {
@@ -130,9 +111,9 @@ public class SecurityConfig {
                   1. token在内存中，这意味着应用重启后，记住功能失效
                   2. 分布式部署时（多台服务器），令牌无法同步，导致用户在不同服务器上登录状态不一致。
                  */
-                .rememberMe()
-                .rememberMeServices(rememberMeServices())
-                .userDetailsService(userDetailsService)
+                // .rememberMe()
+                // .rememberMeServices(rememberMeServices())
+                // .userDetailsService(userDetailsService)
                 /*
                 .tokenRepository(myPersistentTokenRepository) 持久化形式的自动登录
                 这里 PersistentTokenRepository 不一定要使用 jdbc，redis都是可以的
@@ -150,7 +131,7 @@ public class SecurityConfig {
 
                  TODO 这里关于单点登录的问题
                  */
-                .tokenRepository(myPersistentTokenRepository)
+                // .tokenRepository(myPersistentTokenRepository)
         ;
 
         http.csrf().disable();
@@ -169,11 +150,34 @@ public class SecurityConfig {
 
         开启 remember-me 功能时，其实这个自定义失效策略就不会再使用了，因为有记住我的功能，即使会话失效了，也会续约
          */
-        http.sessionManagement().sessionFixation().none()
+        http.sessionManagement()
+                // .sessionFixation().none()
                 // 配置 session 失效策略，这里是一个自定义的失效策略，返回一串提示
-                .invalidSessionStrategy(new MyInvalidSessionStrategy())
+                // .invalidSessionStrategy(new MyInvalidSessionStrategy())
                 // 最大会话数量，新登录的会话会把之前的会话给剔除
-                // .maximumSessions(1)
+                .maximumSessions(1)
+                /*
+                阻止新会话建立，而不是踢掉旧的会话
+                ❗问题1：当前已登录的会话在注销登陆后，将无法再登录。
+                ⚠️原因：
+                    当用户主动注销（logout()）后，SessionRegistry 默认不会自动移除会话信息，除非你手动配置它。
+                    因此，即便用户退出登录，看似没有活跃会话了，但 SessionRegistry 仍认为这个用户在“占用会话”，于是后续任何新的用户都无法登录。
+                ❓为什么 Spring Security 不默认处理这个问题？
+                    1. 注销不一定等于 Session 销毁，在某些场景中用户可能只是“退出身份验证”，但希望保留 Session（比如购物车等功能）。
+                    2. 可扩展性考虑，Spring 认为这是开发者应该根据业务场景做出的选择。
+                    3. 默认行为更通用、安全，不贸然清除 session 信息。
+                💡解决方案：
+                    方案一：配置 HttpSessionEventPublisher 监听注销事件
+                    方案二：logout 中添加监听器或手动清理 SessionRegistry 中的会话信息（如果你使用了自定义的 LogoutHandler）。
+
+
+                ❗问题2：在使用持久化 UserDetailsService 的时候要注意 User 必须要重写 hashcode 和 equals
+                ⚠️原因：
+                    spring 使用 SessionRegistryImpl 保存用户的session信息
+                    在不重写 hashcode 和 equals 的情况下，只要 user 用户对象不同，即使是同一个用户也会跳过登录限制
+                 */
+                .maxSessionsPreventsLogin(true)
+                .sessionRegistry(registry)
         ;
 
         // 验证码校验的过滤器 先于 账户验证过滤器执行

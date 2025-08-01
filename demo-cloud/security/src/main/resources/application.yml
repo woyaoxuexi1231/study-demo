@@ -1,25 +1,31 @@
 server:
   port: 10022
-  servlet:
-    session:
-      # 最低默认是1分钟，即使小于1分钟也会配置为1分钟
-      timeout: 10
+#  servlet:
+#    session:
+#      # 最低默认是1分钟，即使小于1分钟也会配置为1分钟
+#      timeout: 10
 
 
 spring:
   application:
     name: security
-#  thymeleaf:
-#    # 这一行配置了Thymeleaf模板引擎的模式为HTML5。
-#    mode: HTML5
-#    # 这一行配置了Thymeleaf模板引擎的字符编码为UTF-8。
-#    encoding: UTF-8
-#    # 这一行配置了Thymeleaf模板引擎的缓存为关闭状态。
-#    cache: false
+  #  thymeleaf:
+  #    # 这一行配置了Thymeleaf模板引擎的模式为HTML5。
+  #    mode: HTML5
+  #    # 这一行配置了Thymeleaf模板引擎的字符编码为UTF-8。
+  #    encoding: UTF-8
+  #    # 这一行配置了Thymeleaf模板引擎的缓存为关闭状态。
+  #    cache: false
   datasource:
     url: jdbc:mysql://192.168.3.102:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
+
+  redis:
+    host: 192.168.3.102
+    port: 6379
+    password: 123456
+
   # 这是一种非常简单的配置账户的方法
 #  security:
 #    user:

@@ -1,4 +1,4 @@
-package com.hundsun.demo.springcloud.security.config;
+package com.hundsun.demo.springcloud.security.remeberme;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;

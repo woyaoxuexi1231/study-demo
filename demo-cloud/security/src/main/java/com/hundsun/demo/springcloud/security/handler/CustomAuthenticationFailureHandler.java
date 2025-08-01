@@ -1,6 +1,7 @@
 package com.hundsun.demo.springcloud.security.handler;
 
 import org.springframework.security.authentication.AccountExpiredException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
@@ -33,7 +34,7 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {
 
-        String errorMsg = "账户名或密码错误";
+        String errorMsg;
 
         if (exception instanceof LockedException) {
             errorMsg = "你的账户已被锁定！";
@@ -43,6 +44,10 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
             errorMsg = "你的账户已过期！";
         } else if (exception instanceof CredentialsExpiredException) {
             errorMsg = "您的凭据已过期！";
+        } else if (exception instanceof BadCredentialsException) {
+            errorMsg = "账户名或密码错误！";
+        } else {
+            errorMsg = exception.getMessage();
         }
 
         // 把具体消息放到 session

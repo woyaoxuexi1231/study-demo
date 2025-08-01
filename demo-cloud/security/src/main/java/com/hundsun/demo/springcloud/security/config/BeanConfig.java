@@ -5,6 +5,7 @@ import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.google.code.kaptcha.util.Config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import java.util.Properties;
 
@@ -17,7 +18,7 @@ import java.util.Properties;
 public class BeanConfig {
 
     @Bean
-    public Producer captcha(){
+    public Producer captcha() {
 
         Properties properties = new Properties();
         properties.setProperty("kaptcha.image.width", "150");

@@ -1,9 +1,8 @@
-package com.hundsun.demo.springcloud.security.config;
+package com.hundsun.demo.springcloud.security.remeberme;
 
 import com.hundsun.demo.springcloud.security.mapper.MyPersistentTokenRepository;
 import lombok.Setter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 @Setter
 public class CustomJdbcTokenRepositoryImpl extends JdbcTokenRepositoryImpl {
