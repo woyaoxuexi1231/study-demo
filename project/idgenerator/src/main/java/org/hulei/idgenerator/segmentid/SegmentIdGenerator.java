@@ -89,7 +89,6 @@ public class SegmentIdGenerator implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
-        // 初始化 service todo 参数待修改
         this.service = new ThreadPoolExecutor(
                 5,
                 Integer.MAX_VALUE,

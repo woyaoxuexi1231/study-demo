@@ -1,5 +1,6 @@
 package com.hundsun.demo.springcloud.security.userdetailservice;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.User;
@@ -14,15 +15,11 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
  * @since 2025/7/24 20:49
  */
 
+@RequiredArgsConstructor
 @Configuration
 public class InMemoryUserDetailsServiceConfig {
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        // 配置密码编码器（PasswordEncoder）
-        // 密码编码器没有进行实际的加密操作，它只是将密码以明文形式存储
-        return NoOpPasswordEncoder.getInstance();
-    }
+    private final PasswordEncoder passwordEncoder;
 
     // @Bean
     public UserDetailsService userDetailsService() {
@@ -38,14 +35,14 @@ public class InMemoryUserDetailsServiceConfig {
 
         UserDetails user = User.builder()
                 .username("user")
-                .password(passwordEncoder().encode("1"))
+                .password(passwordEncoder.encode("1"))
                 .roles("USER")
                 .accountLocked(true)
                 .build();
 
         UserDetails admin = User.builder()
                 .username("admin")
-                .password(passwordEncoder().encode("1"))
+                .password(passwordEncoder.encode("1"))
                 .roles("USER", "ADMIN")
                 .build();
         return new InMemoryUserDetailsManager(user, admin);

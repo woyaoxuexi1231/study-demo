@@ -3,10 +3,7 @@ package com.hundsun.demo.springcloud.security.config;
 import com.hundsun.demo.springcloud.security.filter.CaptchaFilter;
 import com.hundsun.demo.springcloud.security.handler.CustomAuthenticationFailureHandler;
 import com.hundsun.demo.springcloud.security.mapper.MyPersistentTokenRepository;
-import com.hundsun.demo.springcloud.security.remeberme.CustomJdbcTokenRepositoryImpl;
-import com.hundsun.demo.springcloud.security.remeberme.CustomRememberMeServices;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
@@ -15,14 +12,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.session.security.SpringSessionBackedSessionRegistry;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.sql.DataSource;
-import java.util.UUID;
 
 /**
  * @author hulei
@@ -31,7 +25,32 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @Configuration
-@EnableWebSecurity
+/*
+@EnableWebSecurity 是开启 spring security 的默认行为，导入了 WebSecurityConfiguration
+Spring Security 的核心注解，用于启用和配置 Web 安全功能
+
+1. 启用 Spring Security 的 Web 安全支持
+    - 它会自动加载 Spring Security 的默认配置
+    - 激活 Web 安全相关的组件和过滤器链
+2. 标记配置类
+    - 标识这个类是一个 Spring Security 的配置类
+    - 通常与 @Configuration 注解一起使用
+3. 替代旧版 XML 配置
+    - 在基于 Java 的配置中替代了 <http> 等 XML 配置元素
+
+当使用 @EnableWebSecurity 时，它会：
+- 导入 WebSecurityConfiguration 类
+- 注册 SpringSecurityFilterChain 过滤器
+- 设置默认的安全过滤器链
+
+TODO 源码比较复杂，还要再看
+WebSecurityConfiguration 用于初始化 webSecurity 配置
+  ⭐ springSecurityFilterChain 这个方法是 Spring Security 运行时注入的 核心过滤器链 Bean。
+      - 如果用户没有自定义 WebSecurityConfigurer，就默认使用一个空实现（也就是WebSecurityConfigurerAdapter的匿名子类）。
+      - webSecurity.build() 会构建出最终的 FilterChainProxy，这是 Spring Security 最终挂到 Servlet 容器中的过滤器。
+        而 SecurityFilterChain 在当前类被注册成 bean，注入到 WebSecurityConfiguration 后，由它注入到 Servlet 容器中
+ */
+@EnableWebSecurity(debug = true)
 public class SecurityConfig {
 
     private final AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails> deviceAuthenticationDetailsSource;
@@ -134,8 +153,6 @@ public class SecurityConfig {
                 // .tokenRepository(myPersistentTokenRepository)
         ;
 
-        http.csrf().disable();
-
         /*
         sessionManagement 是一个会话管理的配置器，其中有关于防御会话固定攻击的四种策略
           - none：不做任何变动，登录之后沿用旧的session。
@@ -182,6 +199,36 @@ public class SecurityConfig {
 
         // 验证码校验的过滤器 先于 账户验证过滤器执行
         http.addFilterBefore(new CaptchaFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        /*
+        跨域是一种浏览器同源安全策略，即浏览器单方面限制脚本的跨域访问。
+        实际上，不仅不同站点间的访问存在跨域问题，同站点间的访问可能也会遇到跨域问题，只要请求的URL与所在页面的URL首部不同即产生跨域，例如：
+          ◎ 在http://a.baidu.com下访问https://a.baidu.com资源会形成协议跨域。
+          ◎ 在a.baidu.com下访问b.baidu.com资源会形成主机跨域。
+          ◎ 在a.baidu.com:80下访问a.baidu.com:8080资源会形成端口跨域。
+        从协议部分开始到端口部分结束，只要与请求URL不同即被认为跨域，域名与域名对应的IP也不能幸免。
+
+        CORS（Cross-Origin Resource Sharing）的规范中有一组新增的HTTP首部字段，允许服务器声明其提供的资源允许哪些站点跨域使用。
+        浏览器首先会发起一个请求方法为OPTIONS 的预检请求，用于确认服务器是否允许跨域，只有在得到许可后才会发出实际请求。
+
+        spring security 对于 cors 提供了非常好的支持
+          1. 在此配置中添加 http.cors(); 开启cors支持
+          2. 编写一个 cors 配置源
+         */
+        http.cors();
+
+        /*
+        CSRF（Cross-Site Request Forgery，跨站请求伪造）是一种攻击方式：
+          1. 攻击者诱骗用户（已登录状态）访问恶意网站
+          2. 该网站自动向目标网站（如银行网站）发送伪造请求
+          3. 利用用户的登录凭证完成非法操作（如转账）
+
+        常见禁用场景：
+          1. 纯 API 服务（无浏览器会话，使用 JWT 等无状态认证）
+          2. 测试环境简化配置
+          3. 与某些传统前端框架集成困难时
+         */
+        http.csrf().disable();
 
         return http.build();
     }

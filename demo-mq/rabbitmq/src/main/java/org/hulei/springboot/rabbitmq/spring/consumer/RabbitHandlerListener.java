@@ -44,8 +44,8 @@ import java.util.concurrent.locks.LockSupport;
         autoStartup = "true", // 指定是否在启动的时候自动启动监听容器
         concurrency = "1", // 指定并发消费者的数量, spring提供的能力
         exclusive = false, // 指定是否为独占模式,即只允许一个消费者监听队列,这是一个spring提供的能力,rabbitmq本身不提供这种能力
-        priority = "0", // 指定消费者的优先级 todo
-        admin = "", // 指定RabbitAdmin, 用于需要创建队列时自动声明队列 todo
+        priority = "0", // 指定消费者的优先级
+        admin = "", // 指定RabbitAdmin, 用于需要创建队列时自动声明队列
         bindings = { // 指定队列和交换机之间的绑定关系,通过这个参数配置后,启动时会创建这种绑定关系,如果和现存的不一致,会报错
                 @QueueBinding(
                         value = @Queue(

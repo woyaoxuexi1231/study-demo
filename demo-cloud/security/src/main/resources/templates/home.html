@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Home</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <h2>Welcome!</h2>
@@ -9,5 +10,32 @@
 <form th:action="@{/logout}" method="post">
     <button type="submit">Logout</button>
 </form>
+
+<!-- 添加访问百度的按钮 -->
+<button id="fetchBaiduBtn">Fetch Baidu</button>
+<div id="baiduResult"></div>
+
+<script>
+    $(document).ready(function() {
+        $("#fetchBaiduBtn").click(function() {
+            // 显示加载信息
+            $("#baiduResult").html("Loading...");
+
+            // 发送请求到后端代理端点
+            $.ajax({
+                url: 'https://www.baidu.com',  // 这个端点需要在你的后端实现
+                method: 'GET',
+                success: function(response) {
+                    // 将获取到的内容显示在页面上
+                    $("#baiduResult").html(response);
+                },
+                error: function(xhr, status, error) {
+                    // 如果请求失败，显示错误信息
+                    $("#baiduResult").html("Error fetching Baidu: " + error);
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

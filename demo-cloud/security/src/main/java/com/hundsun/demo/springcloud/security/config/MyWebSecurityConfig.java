@@ -42,29 +42,12 @@ import java.util.Properties;
 例如，你可以在方法上使用 @PreAuthorize 注解来指定需要的权限或角色。
  */
 // @EnableGlobalMethodSecurity(prePostEnabled = true)
+// @EnableWebSecurity
 /*
-Spring Security 的核心注解，用于启用和配置 Web 安全功能
-
-1. 启用 Spring Security 的 Web 安全支持
-    - 它会自动加载 Spring Security 的默认配置
-    - 激活 Web 安全相关的组件和过滤器链
-2. 标记配置类
-    - 标识这个类是一个 Spring Security 的配置类
-    - 通常与 @Configuration 注解一起使用
-3. 替代旧版 XML 配置
-    - 在基于 Java 的配置中替代了 <http> 等 XML 配置元素
-
-当使用 @EnableWebSecurity 时，它会：
-- 导入 WebSecurityConfiguration 类
-- 注册 SpringSecurityFilterChain 过滤器
-- 设置默认的安全过滤器链
-
 在 springboot2.3.12 这个版本中，其实已经有自动注入的适配器
 配置类 SpringBootWebSecurityConfiguration 会自动一个 DefaultConfigurerAdapter
 所以即使不自定义配置，在启动后也能看到 spring security 提供的默认表单登录
- */
-// @EnableWebSecurity
-/*
+
 WebSecurityConfigurerAdapter 在 2.7.+ 中已经被标记弃用
 新的配置风格通过 SecurityFilterChain Bean 和 @Bean 注入 PasswordEncoder、AuthenticationManager 等，配置点更清晰。
  */
