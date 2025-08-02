@@ -1,10 +1,11 @@
 server:
   # 0 表示随机端口
   port: 9999
-  # ssl:
-  #   key-store: classpath:mykeys.jks
-  #   key-store-password: 123456
-  #   key-password: 123456
+  ssl:
+    key-store: classpath:myclientkeystore.jks
+    key-store-password: 123456
+    key-password: 123456
+    enabled: true
 
 spring:
   application:

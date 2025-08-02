@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -30,7 +31,8 @@ public class DataBaseSecurityAutoConfig {
     public PasswordEncoder passwordEncoder() {
         // 配置密码编码器（PasswordEncoder）
         // 密码编码器没有进行实际的加密操作，它只是将密码以明文形式存储
-        return NoOpPasswordEncoder.getInstance();
+        // return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder(12);
     }
 
     @Bean(name = "myUserService")

@@ -25,18 +25,18 @@ public class CustomWebSecurityFilterAutoConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(new RegexRequestMatcher("/admin/**", null)).hasRole("ADMIN")
-                        .requestMatchers(new RegexRequestMatcher("/user/**", null)).hasRole("USER")
-                        .anyRequest().authenticated()
-                )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .permitAll()
-                )
-                .logout(LogoutConfigurer::permitAll
-                );
+        // http
+        //         .authorizeHttpRequests(authorize -> authorize
+        //                 .requestMatchers(new RegexRequestMatcher("/admin/**", null)).hasRole("ADMIN")
+        //                 .requestMatchers(new RegexRequestMatcher("/user/**", null)).hasRole("USER")
+        //                 .anyRequest().authenticated()
+        //         )
+        //         .formLogin(form -> form
+        //                 .loginPage("/login")
+        //                 .permitAll()
+        //         )
+        //         .logout(LogoutConfigurer::permitAll
+        //         );
         return http.build();
     }
 }

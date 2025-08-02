@@ -17,14 +17,14 @@ import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
 public class ITextExample {
+
     public static void main(String[] args) {
+
         String outputPath = "example.pdf";
 
         try {
@@ -41,8 +41,8 @@ public class ITextExample {
 
             // Step 4: 设置字体支持中文
             BaseFont baseFont = BaseFont.createFont("STSongStd-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
-            BaseFont msYaHeiBaseFont = BaseFont.createFont("经典宋体简.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-            BaseFont harmonyOSBaseFont = BaseFont.createFont("HarmonyOS_Sans_Regular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            BaseFont msYaHeiBaseFont = BaseFont.createFont("/itext-pdf/经典宋体简.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            BaseFont harmonyOSBaseFont = BaseFont.createFont("/itext-pdf/HarmonyOS_Sans_Regular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             Font chineseFont = new Font(harmonyOSBaseFont, 12, Font.NORMAL);
 
             // 添加标题
@@ -92,6 +92,7 @@ public class ITextExample {
             document.close();
 
             System.out.println("PDF生成成功: " + outputPath);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -104,7 +105,7 @@ public class ITextExample {
             try {
                 // 从 resources 文件夹加载图片
                 ClassLoader classLoader = getClass().getClassLoader();
-                String logoPath = Objects.requireNonNull(classLoader.getResource("b556401a0c52035180ff5a24c24eb26a.jpg")).getPath(); // 图片文件名为 logo.png
+                String logoPath = Objects.requireNonNull(classLoader.getResource("itext-pdf/itextPdf.jpg")).getPath(); // 图片文件名为 logo.png
                 Image logo = Image.getInstance(logoPath);
                 logo.scaleToFit(50, 50); // 设置图片大小
                 logo.setAbsolutePosition(20, document.top() + 10); // 位置

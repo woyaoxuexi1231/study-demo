@@ -152,7 +152,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-
+	restart: unless-stopped
+	
   rabbitmq-node2:
     image: rabbitmq
     container_name: rabbitmq-node2
@@ -179,7 +180,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-
+	restart: unless-stopped
+	
 networks:
   rabbitmq:
     external: true  # 使用已创建的自定义网络
@@ -188,6 +190,9 @@ networks:
 
 
 ```shell
+# 启动 docker compose 
+docker compose up -d
+
 # 进入 node2 容器
 docker exec -it rabbitmq-node2 bash
 

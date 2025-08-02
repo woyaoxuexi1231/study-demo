@@ -1035,27 +1035,6 @@ Spring Boot 的启动流程是一个复杂的过程，它通过自动配置、�
 
 Spring Boot 的启动流程是一个高度自动化的过程，它通过创建 `SpringApplication` 实例来启动应用程序，准备环境和上下文，加载自动配置，启动 Web 服务器，最终完成应用的启动。这个过程包含了丰富的扩展点和配置选项，使开发者能够轻松构建和运行 Spring 应用程序。
 
-
-
-## Spring Boot 启用 Https 
-
-```shell
-# 通过这个生成一个密钥
-keytool -keystore mykeys.jks -genkey -alias tomcat -keyalg RSA
-# 我这里密码设置了 123456
-# 完成后得到一个 mykeys.jks 文件
-```
-
-放入资源目录下，在配置文件中开启如下配置之后就开启了 Https
-
-```properties
-server.ssl.key-store=classpath:mykeys.jks
-server.ssl.key-store-password=123456
-server.ssl.key-password=123456
-```
-
-
-
 # Spring Boot 配置文件加载顺序
 
 Spring Boot 读取配置文件的顺序如下：
