@@ -28,7 +28,7 @@ public class NamedParameterJdbcTemplateController {
     @GetMapping("/selectEmployees")
     public void selectEmployees() {
 
-        String sql = "SELECT * FROM employees WHERE last_name = :name";  // 使用命名参数 :name
+        String sql = "SELECT * FROM test_employees WHERE last_name = :name";  // 使用命名参数 :name
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("name", "Patterson");  // 设置参数的值

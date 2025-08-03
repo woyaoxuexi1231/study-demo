@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @Accessors(chain = true)
 @Data
 @Entity
-@Table(name = "products", schema = "test")
+@Table(name = "test_products", schema = "test")
 public class Product {
 
     @Id

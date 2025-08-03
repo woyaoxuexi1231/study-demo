@@ -1,10 +1,7 @@
 package org.hulei.common.security;
 
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.common.security.config.MemorySecurityAutoConfig;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Bean;
 
 /**
  * @author hulei

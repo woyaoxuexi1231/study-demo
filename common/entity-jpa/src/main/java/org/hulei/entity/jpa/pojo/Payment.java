@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Accessors(chain = true)
 @Data
 @Entity
-@Table(name = "payments", schema = "test")
+@Table(name = "test_payments", schema = "test")
 public class Payment {
 
     @EmbeddedId

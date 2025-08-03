@@ -1,0 +1,37 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: oauth-client
+  security:
+    oauth2:
+      client:
+        registration:
+          client-app:
+            client-id: client-app
+            client-secret: secret
+            scope: read
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            authorization-grant-type: authorization_code
+            client-name: Demo Client
+        provider:
+          client-app:
+            authorization-uri: http://localhost:9000/oauth2/authorize
+            token-uri: http://localhost:9000/oauth2/token
+            user-info-uri: http://localhost:9000/userinfo
+            user-name-attribute: sub
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.3.102:3306/test?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&serverTimezone=GMT%2B8
+    username: root
+    password: 123456
+
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.3.102:10001/eureka/

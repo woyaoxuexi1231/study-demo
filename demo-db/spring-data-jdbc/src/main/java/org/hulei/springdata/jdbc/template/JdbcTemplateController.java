@@ -2,9 +2,7 @@ package org.hulei.springdata.jdbc.template;
 
 import com.github.jsonzou.jmockdata.JMockData;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.formula.functions.T;
 import org.hulei.entity.mybatisplus.domain.Employees;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
@@ -13,7 +11,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -83,13 +80,13 @@ public class JdbcTemplateController {
         如果使用了正确的参数化查询方法，通配符是安全的，不会有 SQL 注入风险。
          */
         jdbcTemplate.query(
-                        "select e.email from employees e where e.employee_number = ?",
+                        "select e.email from test_employees e where e.employee_number = ?",
                         SingleColumnRowMapper.newInstance(String.class),
                         new Object[]{1002})
                 .forEach(entity -> log.info("{}", entity));
 
         jdbcTemplate.query(
-                "select * from employees e where e.first_name like ? and e.last_name like ?",
+                "select * from test_employees e where e.first_name like ? and e.last_name like ?",
                 BeanPropertyRowMapper.newInstance(Employees.class),
                 "%a%", "%t%"
         ).forEach(entity -> log.info("{}", entity));
@@ -112,17 +109,17 @@ public class JdbcTemplateController {
          */
 
         jdbcTemplate.query(
-                        "select * from employees e where e.employee_number = 1002",
+                        "select * from test_employees e where e.employee_number = 1002",
                         BeanPropertyRowMapper.newInstance(Employees.class))
                 .forEach(entity -> log.info("BeanPropertyRowMapper : {}", entity));
 
         jdbcTemplate.query(
-                        "select e.email from employees e where e.employee_number = 1002",
+                        "select e.email from test_employees e where e.employee_number = 1002",
                         SingleColumnRowMapper.newInstance(String.class))
                 .forEach(entity -> log.info("SingleColumnRowMapper : {}", entity));
 
         jdbcTemplate.query(
-                        "select * from employees e where e.employee_number = 1002",
+                        "select * from test_employees e where e.employee_number = 1002",
                         (RowMapper<Object>) (rs, rowNum) -> rs.getString("last_name"))
                 .forEach(entity -> log.info("custom lambda : {}", entity));
     }
@@ -132,7 +129,7 @@ public class JdbcTemplateController {
 
         // execute 用于执行任意的 SQL 语句，通常用于复杂的操作或 DDL（数据定义语言）语句。
         Object execute = jdbcTemplate.execute(
-                "select * from employees e where e.employee_number = ?",
+                "select * from test_employees e where e.employee_number = ?",
                 /*
                 PreparedStatementCallback 是 Spring 框架中的一个接口，用于执行 SQL 语句并处理 PreparedStatement 的回调
                 可以定义如何使用 PreparedStatement 执行 SQL 语句，这包括设置参数、执行查询或更新操作，以及处理结果。

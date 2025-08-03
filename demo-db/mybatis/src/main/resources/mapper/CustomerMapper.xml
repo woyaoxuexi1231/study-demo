@@ -5,7 +5,7 @@
 
     <resultMap id="customBaseMapper" type="org.hulei.entity.jpa.pojo.Customer">
         <!--@mbg.generated-->
-        <!--@Table customers-->
+        <!--@Table test_customers-->
         <id column="customer_number" jdbcType="INTEGER" property="id"/>
         <result column="customer_name" jdbcType="VARCHAR" property="customerName"/>
         <result column="contact_last_name" jdbcType="VARCHAR" property="contactLastName"/>
@@ -23,7 +23,7 @@
 
     <select id="selectById" resultMap="customBaseMapper">
         select *
-        from customers
+        from test_customers
         where customer_number = #{id}
     </select>
 </mapper>

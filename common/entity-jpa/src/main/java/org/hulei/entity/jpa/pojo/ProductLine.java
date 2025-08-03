@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 @Accessors(chain = true)
 @Data
 @Entity
-@Table(name = "product_lines", schema = "test")
+@Table(name = "test_product_lines", schema = "test")
 public class ProductLine {
 
     @Id

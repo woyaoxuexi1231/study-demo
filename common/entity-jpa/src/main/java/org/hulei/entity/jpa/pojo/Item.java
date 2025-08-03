@@ -1,8 +1,6 @@
 package org.hulei.entity.jpa.pojo;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
@@ -17,7 +15,7 @@ import javax.validation.constraints.Size;
 @Accessors(chain = true)
 @Data
 @Entity
-@Table(name = "items", schema = "test")
+@Table(name = "test_items", schema = "test")
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

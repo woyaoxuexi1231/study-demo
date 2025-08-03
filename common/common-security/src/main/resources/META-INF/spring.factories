@@ -1,6 +1,6 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 org.hulei.common.security.SecurityAutoConfig,\
-org.hulei.common.security.config.MemorySecurityAutoConfig,\
-org.hulei.common.security.config.DataBaseSecurityAutoConfig,\
+org.hulei.common.security.config.MemoryUserServiceAutoConfig,\
+org.hulei.common.security.config.DataBaseUserServiceAutoConfig,\
 org.hulei.common.security.config.EnableGlobalMethodSecurityAutoConfig,\
 org.hulei.common.security.config.CustomWebSecurityFilterAutoConfig

@@ -18,25 +18,19 @@ import org.springframework.security.web.util.matcher.RegexRequestMatcher;
  * @since 2024/10/15 13:40
  */
 
-@ConditionalOnProperty(name = "common.security.custom.websecurity", havingValue = "true")
+@ConditionalOnProperty(name = "common.security.default.websecurity", havingValue = "true", matchIfMissing = true)
 @Configuration
 @EnableWebSecurity
 public class CustomWebSecurityFilterAutoConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // http
-        //         .authorizeHttpRequests(authorize -> authorize
-        //                 .requestMatchers(new RegexRequestMatcher("/admin/**", null)).hasRole("ADMIN")
-        //                 .requestMatchers(new RegexRequestMatcher("/user/**", null)).hasRole("USER")
-        //                 .anyRequest().authenticated()
-        //         )
-        //         .formLogin(form -> form
-        //                 .loginPage("/login")
-        //                 .permitAll()
-        //         )
-        //         .logout(LogoutConfigurer::permitAll
-        //         );
+        http
+                .authorizeHttpRequests().anyRequest().authenticated()
+                .and()
+                .formLogin().permitAll()
+                .and()
+                .logout().permitAll();
         return http.build();
     }
 }

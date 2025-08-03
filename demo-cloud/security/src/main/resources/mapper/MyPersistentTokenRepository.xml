@@ -3,11 +3,11 @@
 <mapper namespace="com.hundsun.demo.springcloud.security.mapper.MyPersistentTokenRepository">
     <insert id="createNewToken"
             parameterType="org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken">
-        insert into persistent_logins(username, series, token, last_used) value (#{username}, #{series}, #{tokenValue}, #{date})
+        insert into security_persistent_logins(username, series, token, last_used) value (#{username}, #{series}, #{tokenValue}, #{date})
     </insert>
 
     <update id="updateToken">
-        update persistent_logins
+        update security_persistent_logins
         set token     = #{param2},
             last_used =#{param3}
         where series = #{param1}
@@ -18,19 +18,19 @@
                pl.series    as series,
                pl.token     as tokenValue,
                pl.last_used as date
-        from persistent_logins pl
+        from security_persistent_logins pl
         where pl.series = #{seriesId}
     </select>
 
     <delete id="removeUserTokens">
         delete
-        from persistent_logins
+        from security_persistent_logins
         where username = #{username}
     </delete>
 
     <delete id="removeTokenBySeries">
         DELETE
-        FROM persistent_logins
+        FROM security_persistent_logins
         WHERE series = #{series}
     </delete>
 </mapper>

@@ -15,7 +15,7 @@ import java.util.List;
  * @createDate: 2023/5/9 21:22
  */
 
-public interface RoleMapper extends BaseMapper<Role> {
+public interface SecurityRoleMapper extends BaseMapper<Role> {
     /**
      * 根据用户 ID 获取用户角色信息
      *

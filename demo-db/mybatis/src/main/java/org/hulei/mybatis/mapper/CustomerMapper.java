@@ -1,7 +1,6 @@
 package org.hulei.mybatis.mapper;
 
 import org.apache.ibatis.annotations.CacheNamespace;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
@@ -10,7 +9,6 @@ import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.cache.decorators.LruCache;
 import org.apache.ibatis.cache.impl.PerpetualCache;
 import org.hulei.entity.jpa.pojo.Customer;
-import org.hulei.entity.jpa.pojo.Employee;
 
 import java.util.List;
 
@@ -45,10 +43,10 @@ public interface CustomerMapper {
             @Result(property = "salesRepEmployeeNumber", column = "sales_rep_employee_number"),
             @Result(property = "creditLimit", column = "credit_limit")
     })
-    @Select("select * from customers")
+    @Select("select * from test_customers")
     List<Customer> selectAll();
 
-    @Update("update customers set phone = #{phone} where customer_number = #{id} ")
+    @Update("update test_customers set phone = #{phone} where customer_number = #{id} ")
     int updateOne(Customer customer);
 
     Customer selectById(@Param(value = "id") Integer id);
@@ -68,6 +66,6 @@ public interface CustomerMapper {
             @Result(property = "salesRepEmployeeNumber", column = "sales_rep_employee_number"),
             @Result(property = "creditLimit", column = "credit_limit")
     })
-    @Select(value = "select * from customers where customer_number = #{id} ")
+    @Select(value = "select * from test_customers where customer_number = #{id} ")
     Customer selectByIdWithAnnotation(@Param(value = "id") Integer id);
 }

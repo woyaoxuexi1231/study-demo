@@ -1,6 +1,7 @@
 package com.hundsun.demo.springcloud.security.pojo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +17,7 @@ import java.util.List;
  * @since 2023/5/9 20:42
  */
 
+@TableName(value = "security_user")
 @Data
 public class User implements UserDetails, Serializable {
 

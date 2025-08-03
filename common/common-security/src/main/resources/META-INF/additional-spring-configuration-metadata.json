@@ -1,10 +1,10 @@
 {
   "properties": [
     {
-      "name": "common.security.strategy",
+      "name": "common.security.userservice.strategy",
       "description": "安全策略的具体实现方式",
       "type": "java.lang.String",
-      "defaultValue": "memory"
+      "defaultValue": "database"
     },
     {
       "name": "common.security.global.method",
@@ -13,23 +13,19 @@
       "defaultValue": true
     },
     {
-      "name": "common.security.custom.websecurity",
+      "name": "common.security.default.websecurity",
       "type": "java.lang.Boolean",
       "description": "是否起用默认的自定义的安全规则",
-      "defaultValue": false
+      "defaultValue": true
     }
   ],
   "hints": [
     {
-      "name": "common.security.strategy",
+      "name": "common.security.userservice.strategy",
       "values": [
         {
           "value": "memory",
           "description": "纯内存方式"
-        },
-        {
-          "value": "configureradapter",
-          "description": "通过继承WebSecurityConfigurerAdapter重写configure的方式"
         },
         {
           "value": "database",

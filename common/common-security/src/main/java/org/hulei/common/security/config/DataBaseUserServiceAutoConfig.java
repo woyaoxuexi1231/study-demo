@@ -1,17 +1,10 @@
 package org.hulei.common.security.config;
 
 import org.hulei.common.security.service.impl.MyUserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Primary;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
@@ -23,9 +16,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * @since 2024/10/14 16:10
  */
 
-@ConditionalOnProperty(name = "common.security.strategy", havingValue = "database")
+@ConditionalOnProperty(name = "common.security.userservice.strategy", havingValue = "database", matchIfMissing = true)
 @Configuration
-public class DataBaseSecurityAutoConfig {
+public class DataBaseUserServiceAutoConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {

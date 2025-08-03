@@ -7,7 +7,7 @@ with recursive tree_cte as (
            e.reports_to parent_number,
            e.last_name,
            0 as         level
-    from employees e
+    from test_employees e
     where reports_to is null
 
     union all
@@ -17,7 +17,7 @@ with recursive tree_cte as (
            e.reports_to parent_number,
            e.last_name,
            cte.level + 1
-    from employees e
+    from test_employees e
              join tree_cte cte on e.reports_to = cte.employee_number)
 SELECT *
 FROM tree_cte;

@@ -1,8 +1,6 @@
 package org.hulei.entity.jpa.pojo;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
@@ -17,7 +15,7 @@ import java.math.BigDecimal;
 @Data
 @Accessors(chain = true)
 @Entity
-@Table(name = "customers")
+@Table(name = "test_customers")
 public class Customer implements Serializable {
 
     @Id

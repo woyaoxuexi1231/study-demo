@@ -16,8 +16,8 @@
 <div id="baiduResult"></div>
 
 <script>
-    $(document).ready(function() {
-        $("#fetchBaiduBtn").click(function() {
+    $(document).ready(function () {
+        $("#fetchBaiduBtn").click(function () {
             // 显示加载信息
             $("#baiduResult").html("Loading...");
 
@@ -25,13 +25,13 @@
             $.ajax({
                 url: 'https://www.baidu.com',  // 这个端点需要在你的后端实现
                 method: 'GET',
-                success: function(response) {
+                success: function (response) {
                     // 将获取到的内容显示在页面上
                     $("#baiduResult").html(response);
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     // 如果请求失败，显示错误信息
-                    $("#baiduResult").html("Error fetching Baidu: " + error);
+                    $("#baiduResult").html("status:" + status + "\nError fetching Baidu: " + error);
                 }
             });
         });

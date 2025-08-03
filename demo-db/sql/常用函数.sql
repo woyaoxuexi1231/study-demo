@@ -1,12 +1,11 @@
-```sql
 
 -- 字符串类
 
 -- concat拼接函数,用于拼接多个字符串
-select concat(employees.last_name, '-', employees.first_name) as fullname
-from employees;
+select concat(test_employees.last_name, '-', test_employees.first_name) as fullname
+from test_employees;
 select *
-from employees
+from test_employees
 where first_name like concat('%', 'a', '%');
 
 -- 字符串截取,下标从1开始
@@ -53,46 +52,43 @@ select datediff('1992-10-3 10:34', '1992-11-3 10:34');
 -- 聚合函数
 -- 求和
 select sum(amount)
-from payments;
+from test_payments;
 -- 求平均
 select avg(amount)
-from payments;
+from test_payments;
 -- 最大最小
-select max(payments.amount)
-from payments;
-select min(payments.amount)
-from payments;
+select max(test_payments.amount)
+from test_payments;
+select min(test_payments.amount)
+from test_payments;
 
 -- 条件函数的运行
 select *
-from employees;
+from test_employees;
 -- 这里把账户分级officeCode进行列转行
-select employees.employee_number,
-       employees.last_name,
-       employees.first_name,
+select test_employees.employee_number,
+       test_employees.last_name,
+       test_employees.first_name,
        case office_code when 1 then '√' else '×' end as '青铜',
        case office_code when 2 then '√' else '×' end as '白银',
        case office_code when 3 then '√' else '×' end as '黄金',
        case office_code when 4 then '√' else '×' end as '铂金',
        case office_code when 5 then '√' else '×' end as '钻石',
        case office_code when 6 then '√' else '×' end as '王者'
-from employees;
-select employees.employee_number,
-       employees.last_name,
-       employees.first_name,
+from test_employees;
+select test_employees.employee_number,
+       test_employees.last_name,
+       test_employees.first_name,
        IF(office_code = 1, '√', '×') as '青铜',
        IF(office_code = 2, '√', '×') as '白银',
        IF(office_code = 3, '√', '×') as '黄金',
        IF(office_code = 4, '√', '×') as '铂金',
        IF(office_code = 5, '√', '×') as '钻石',
        IF(office_code = 6, '√', '×') as '王者'
-from employees;
+from test_employees;
 
 -- 其他函数
 -- 返回一个非null的表达式
 select coalesce(null, null, '1223123');
 select ifnull('null', '前面是null');
 select cast('123' as UNSIGNED);
-
-
-```

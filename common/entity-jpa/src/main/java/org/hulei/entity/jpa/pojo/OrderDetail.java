@@ -1,8 +1,6 @@
 package org.hulei.entity.jpa.pojo;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
@@ -15,7 +13,7 @@ import java.math.BigDecimal;
 @Accessors(chain = true)
 @Data
 @Entity
-@Table(name = "order_details", schema = "test")
+@Table(name = "test_order_details", schema = "test")
 public class OrderDetail {
 
     @EmbeddedId

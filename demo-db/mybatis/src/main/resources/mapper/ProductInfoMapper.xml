@@ -2,12 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="org.hulei.mybatis.mapper.ProductInfoMapper">
     <insert id="insert" parameterType="org.hulei.entity.jpa.pojo.ProductInfo" useGeneratedKeys="true" keyProperty="id">
-        insert into product_info(product_name, category, price, description)
+        insert into demo_product_info(product_name, category, price, description)
             value (#{productName}, #{category}, #{price}, #{description})
     </insert>
 
     <insert id="batchInsert">
-        insert into product_info(product_name, category, price, description)
+        insert into demo_product_info(product_name, category, price, description)
         values
         <foreach collection="records" index="index" item="item" separator=",">
             (#{item.productName}, #{item.category}, #{item.price}, #{item.description})
@@ -16,12 +16,12 @@
 
     <select id="selectById" resultType="org.hulei.entity.jpa.pojo.ProductInfo">
         select product_id as id, product_name, category, price, description
-        from product_info
+        from demo_product_info
         where product_id = #{id}
     </select>
 
     <select id="selectAll" resultType="org.hulei.entity.jpa.pojo.ProductInfo">
         select *
-        from product_info
+        from demo_product_info
     </select>
 </mapper>

@@ -1,19 +1,16 @@
 package org.hulei.mybatis.mapper;
 
-import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.session.ResultHandler;
 import org.hulei.entity.jpa.pojo.BigDataUser;
-import org.hulei.entity.jpa.pojo.BigUser;
 import org.hulei.entity.jpa.pojo.Employee;
 import org.hulei.mybatis.spring.model.EmployeeTreeRsp;
 import org.hulei.mybatis.spring.model.EmployeeWithCustomersRsp;
 import org.hulei.mybatis.spring.model.ProductFullInfo;
 
 import java.util.List;
-import java.util.Map;
 
 public interface XmlTagMapper {
 

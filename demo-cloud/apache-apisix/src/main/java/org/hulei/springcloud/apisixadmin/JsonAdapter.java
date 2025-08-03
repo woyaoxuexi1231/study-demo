@@ -18,7 +18,8 @@ public class JsonAdapter {
         // 检查 "nodes" 属性是数组还是对象
         Object nodesObject = jsonObject.get("nodes");
 
-        if (nodesObject instanceof JSONArray nodeArray) {
+        if (nodesObject instanceof JSONArray) {
+            JSONArray nodeArray = (JSONArray) nodesObject;
             // 情况 1: "nodes" 是一个数组
             for (int i = 0; i < nodeArray.size(); i++) {
                 JSONObject nodeJson = nodeArray.getJSONObject(i);
@@ -27,7 +28,8 @@ public class JsonAdapter {
                 int weight = nodeJson.getIntValue("weight");
                 nodes.add(new Node(host, port, weight));
             }
-        } else if (nodesObject instanceof JSONObject nodeMap) {
+        } else if (nodesObject instanceof JSONObject) {
+            JSONObject nodeMap = (JSONObject) nodesObject;
             // 情况 2: "nodes" 是一个对象
             for (Map.Entry<String, Object> entry : nodeMap.entrySet()) {
                 String hostPort = entry.getKey();

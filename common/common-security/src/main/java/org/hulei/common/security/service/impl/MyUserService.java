@@ -1,6 +1,6 @@
 package org.hulei.common.security.service.impl;
 
-import org.hulei.common.security.mapper.UserMapper;
+import org.hulei.common.security.mapper.SecurityUserMapper;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,10 +20,10 @@ import javax.annotation.Resource;
 public class MyUserService implements UserDetailsService {
 
     @Resource
-    UserMapper userMapper;
+    SecurityUserMapper securityUserMapper;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userMapper.selectFullInfo(username);
+        return securityUserMapper.selectFullInfo(username);
     }
 }

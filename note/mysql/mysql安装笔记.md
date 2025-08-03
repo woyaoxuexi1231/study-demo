@@ -326,6 +326,7 @@ chmod 644 /root/mysql/conf/my.cnf
 ```bash
 docker run -p 3306:3306 --restart=always --name mysql \
 -e MYSQL_ROOT_PASSWORD=123456 \
+-e TZ=Asia/Shanghai \
 --privileged=true \
 -v /root/mysql/log:/var/log/mysql \
 -v /root/mysql/data:/var/lib/mysql \

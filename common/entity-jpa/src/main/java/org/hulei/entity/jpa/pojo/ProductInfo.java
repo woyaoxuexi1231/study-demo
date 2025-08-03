@@ -13,10 +13,11 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
+
 @Accessors(chain = true)
 @Data
 @Entity
-@Table(name = "product_info", schema = "test")
+@Table(name = "demo_product_info", schema = "test")
 public class ProductInfo {
 
     @Id

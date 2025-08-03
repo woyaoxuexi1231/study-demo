@@ -3,10 +3,10 @@
 <mapper namespace="com.hundsun.demo.springcloud.security.mapper.RoleMapper">
     <select id="getRoleByUserId" resultType="com.hundsun.demo.springcloud.security.pojo.Role">
         select *
-        from role
+        from security_role
         <where>
             <if test="userId != null">
-                id in ( select role_id from user_role where user_id = #{userId} )
+                id in ( select role_id from security_user_role where user_id = #{userId} )
             </if>
         </where>
     </select>

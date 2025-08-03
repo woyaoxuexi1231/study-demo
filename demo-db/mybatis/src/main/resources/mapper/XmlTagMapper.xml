@@ -93,7 +93,7 @@
 
     <resultMap id="ProductBaseResultMap" type="org.hulei.entity.jpa.pojo.Product">
         <!--@mbg.generated-->
-        <!--@Table products-->
+        <!--@Table test_products-->
         <id column="product_code" jdbcType="VARCHAR" property="productCode"/>
         <result column="product_name" jdbcType="VARCHAR" property="productName"/>
         <result column="product_line" jdbcType="VARCHAR" property="productLineName"/>
@@ -158,7 +158,7 @@
                e.reports_to,
                e.job_title,
                e.last_update_time
-        from employees e
+        from test_employees e
     </select>
 
     <select id="getDataFromResultMapWithCollection" resultMap="employeeWithCustomCollection">
@@ -184,8 +184,8 @@
                c.country,
                c.sales_rep_employee_number,
                c.credit_limit
-        from employees e
-                 left join customers c on e.employee_number = c.sales_rep_employee_number
+        from test_employees e
+                 left join test_customers c on e.employee_number = c.sales_rep_employee_number
         <!--Where标签的好处就是会帮我们移除语句开头的and或者or关键字,避免sql出错,也能避免在没有条件的情况下不输出where-->
         <where>
             <if test="employeeNumber != null">
@@ -204,7 +204,7 @@
                e.reports_to,
                e.job_title,
                e.last_update_time
-        from employees e
+        from test_employees e
         where e.employee_number = #{employeeNumber}
     </select>
 
@@ -222,8 +222,8 @@
                pl.text_description as pl_textDescription,
                pl.html_description as pl_htmlDescription,
                pl.image            as pl_image
-        from products p
-                 inner join product_lines pl on p.product_line = pl.product_line
+        from test_products p
+                 inner join test_product_lines pl on p.product_line = pl.product_line
     </select>
 
     <select id="getEmployeeByReportNumber" resultMap="employessTreeMap">
@@ -236,7 +236,7 @@
                e.reports_to,
                e.job_title,
                e.last_update_time
-        from employees e
+        from test_employees e
         where e.reports_to = #{reportsTo}
     </select>
 
@@ -269,17 +269,17 @@
         select
         <include refid="Base_Column_List">
         </include>
-        from employees
+        from test_employees
     </select>
 
     <select id="mybatisStreamQuery" resultType="org.hulei.entity.jpa.pojo.Employee" fetchSize="-2147483648">
         select *
-        from employees
+        from test_employees
     </select>
 
     <select id="resultSetOpe" resultType="org.hulei.entity.jpa.pojo.Employee" resultSetType="FORWARD_ONLY">
         select *
-        from employees
+        from test_employees
     </select>
 
     <select id="getData" resultType="java.util.Map">
@@ -288,13 +288,13 @@
 
     <select id="dollarSign" resultMap="EmployeeBaseResultMap">
         select *
-        from employees
+        from test_employees
         where last_name = ${lastName}
     </select>
 
     <select id="poundSign" resultMap="EmployeeBaseResultMap">
         select *
-        from employees
+        from test_employees
         where last_name = #{lastName}
     </select>
 

@@ -1,5 +1,6 @@
 package com.hundsun.demo.springcloud.security.pojo;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -13,7 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
  * @createDate: 2023/5/9 20:48
  */
 
-
+@TableName(value = "security_role")
 @Data
 public class Role implements GrantedAuthority {
 

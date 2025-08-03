@@ -3,19 +3,19 @@
 <mapper namespace="org.hulei.springboot.tkmybatis.mapper.EmployeeMapper">
     <!-- <cache/> -->
     <insert id="saveOne" parameterType="org.hulei.entity.jpa.pojo.Employee">
-        insert into employees(employee_number, last_name, first_name, extension, email, office_code, reports_to,
+        insert into test_employees(employee_number, last_name, first_name, extension, email, office_code, reports_to,
                               job_title)
         values (#{id}, #{lastName}, #{firstName}, #{extension}, #{email}, #{officeCode}, #{reportsTo},
                 #{jobTitle})
     </insert>
     <select id="selectAllData" resultType="org.hulei.entity.jpa.pojo.Employee">
         select *
-        from employees
+        from test_employees
     </select>
 
     <select id="selectLastNameById" resultType="java.lang.String">
         select t.last_name
-        from employees t
+        from test_employees t
         where t.employee_number = #{id}
     </select>
 </mapper>

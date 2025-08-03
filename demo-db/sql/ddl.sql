@@ -1,8 +1,8 @@
 -- ----------------------------
 -- Table structure for `customers`
 -- ----------------------------
-DROP TABLE IF EXISTS `customers`;
-CREATE TABLE `customers`
+DROP TABLE IF EXISTS test_customers;
+CREATE TABLE test_customers
 (
     `customer_number`           int(11)     NOT NULL,
     `customer_name`             varchar(50) NOT NULL,
@@ -26,8 +26,8 @@ CREATE TABLE `customers`
 -- ----------------------------
 -- Table structure for `employees`
 -- ----------------------------
-DROP TABLE IF EXISTS `employees`;
-CREATE TABLE `employees`
+DROP TABLE IF EXISTS test_employees;
+CREATE TABLE test_employees
 (
     `employee_number`  bigint       NOT NULL,
     `last_name`        varchar(50)  NOT NULL,
@@ -48,8 +48,8 @@ CREATE TABLE `employees`
 -- ----------------------------
 -- Table structure for `items`
 -- ----------------------------
-DROP TABLE IF EXISTS `items`;
-CREATE TABLE `items`
+DROP TABLE IF EXISTS test_items;
+CREATE TABLE test_items
 (
     `id`      bigint       NOT NULL AUTO_INCREMENT,
     `item_no` varchar(255) NOT NULL,
@@ -62,8 +62,8 @@ CREATE TABLE `items`
 -- ----------------------------
 -- Table structure for `offices`
 -- ----------------------------
-DROP TABLE IF EXISTS `offices`;
-CREATE TABLE `offices`
+DROP TABLE IF EXISTS test_offices;
+CREATE TABLE test_offices
 (
     `office_code`   varchar(10) NOT NULL,
     `city`          varchar(50) NOT NULL,
@@ -82,8 +82,8 @@ CREATE TABLE `offices`
 -- ----------------------------
 -- Table structure for `orderdetails`
 -- ----------------------------
-DROP TABLE IF EXISTS `order_details`;
-CREATE TABLE `order_details`
+DROP TABLE IF EXISTS test_order_details;
+CREATE TABLE test_order_details
 (
     `order_number`      int(11)        NOT NULL,
     `product_code`      varchar(15)    NOT NULL,
@@ -99,8 +99,8 @@ CREATE TABLE `order_details`
 -- ----------------------------
 -- Table structure for `orders`
 -- ----------------------------
-DROP TABLE IF EXISTS `orders`;
-CREATE TABLE `orders`
+DROP TABLE IF EXISTS test_orders;
+CREATE TABLE test_orders
 (
     `order_number`    int(11)     NOT NULL,
     `order_date`      date        NOT NULL,
@@ -118,8 +118,8 @@ CREATE TABLE `orders`
 -- ----------------------------
 -- Table structure for `payments`
 -- ----------------------------
-DROP TABLE IF EXISTS `payments`;
-CREATE TABLE `payments`
+DROP TABLE IF EXISTS test_payments;
+CREATE TABLE test_payments
 (
     `customer_number` int(11)        NOT NULL,
     `check_number`    varchar(50)    NOT NULL,
@@ -133,8 +133,8 @@ CREATE TABLE `payments`
 -- ----------------------------
 -- Table structure for `productlines`
 -- ----------------------------
-DROP TABLE IF EXISTS `product_lines`;
-CREATE TABLE `product_lines`
+DROP TABLE IF EXISTS test_product_lines;
+CREATE TABLE test_product_lines
 (
     `product_line`     varchar(50) NOT NULL,
     `text_description` varchar(4000) DEFAULT NULL,
@@ -148,8 +148,8 @@ CREATE TABLE `product_lines`
 -- ----------------------------
 -- Table structure for `products`
 -- ----------------------------
-DROP TABLE IF EXISTS `products`;
-CREATE TABLE `products`
+DROP TABLE IF EXISTS test_products;
+CREATE TABLE test_products
 (
     `product_code`        varchar(15)    NOT NULL DEFAULT '' COMMENT '产品代码',
     `product_name`        varchar(70)    NOT NULL COMMENT '产品名称',
@@ -223,15 +223,8 @@ create table sequence
         unique (`key`)
 );
 
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE users
-(
-    id   bigint AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100)
-);
-
-DROP TABLE IF EXISTS `product_info`;
-CREATE TABLE product_info
+DROP TABLE IF EXISTS demo_product_info;
+CREATE TABLE demo_product_info
 (
     product_id   INT AUTO_INCREMENT PRIMARY KEY,
     product_name VARCHAR(100) NOT NULL,
@@ -240,41 +233,3 @@ CREATE TABLE product_info
     description  TEXT
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 0;
-
--- auto-generated definition
-DROP TABLE IF EXISTS `sequence`;
-create table sequence
-(
-    `key` varchar(32) not null,
-    value int         not null,
-    constraint sequence_uindex
-        unique (`key`)
-);
-
-DROP TABLE IF EXISTS `big_user`;
-CREATE TABLE big_user
-(
-    `id`              bigint(20)   NOT NULL AUTO_INCREMENT COMMENT '主键',
-    `user_name`       varchar(255) NOT NULL COMMENT '账号',
-    `ssn`             varchar(255) NOT NULL COMMENT '身份证',
-    `name`            varchar(255) NOT NULL COMMENT '名字',
-    `phone_number`    varchar(32)  NOT NULL COMMENT '手机号',
-    `plate`           varchar(255) NOT NULL COMMENT '车牌',
-    `address`         varchar(255) NOT NULL COMMENT '地址',
-    `building_number` varchar(255) NOT NULL COMMENT '楼名',
-    `country`         varchar(255) NOT NULL COMMENT '国家',
-    `birth`           varchar(255) NOT NULL COMMENT '生日',
-    `company`         varchar(255) NOT NULL COMMENT '公司',
-    `job`             varchar(255) NOT NULL COMMENT '职位',
-    `card_number`     varchar(255) NOT NULL COMMENT '信用卡号',
-    `city`            varchar(255) NOT NULL COMMENT '城市',
-    `week`            varchar(255) NOT NULL COMMENT '星期',
-    `email`           varchar(255) NOT NULL COMMENT '邮件',
-    `title`           varchar(255) NOT NULL COMMENT '标题',
-    `paragraphs`      longtext     NOT NULL COMMENT '内容',
-    `create_time`     timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`     timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (`id`)
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 0
-  DEFAULT CHARSET = utf8mb4;

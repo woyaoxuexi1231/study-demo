@@ -1,8 +1,6 @@
 package org.hulei.entity.jpa.pojo;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
@@ -17,7 +15,7 @@ import java.time.LocalDate;
 @Accessors(chain = true)
 @Data
 @Entity
-@Table(name = "orders", schema = "test")
+@Table(name = "test_orders", schema = "test")
 public class Order {
     @Id
     @Column(name = "order_number", nullable = false)

@@ -60,6 +60,6 @@ public interface EmployeeMapper extends BaseMapper<Employee>, ConditionMapper<Em
      *
      * @return all data
      */
-    @Select(value = "select * from employees")
+    @Select(value = "select * from test_employees")
     List<Employee> selectAllDataButInterface();
 }
