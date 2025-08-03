@@ -8,30 +8,48 @@ spring:
     oauth2:
       client:
         registration:
-          client-app:
-            client-id: client-app
+          # 配置一个名为 github 的 OAuth2 客户端（用于 GitHub 登录）。
+          github:
+            # 设置 GitHub OAuth2 客户端的 client_id（从 GitHub 开发者设置中获取）。
+            client-id: Ov23lihtJgCYGrKyXhZR
+            # 设置 GitHub OAuth2 客户端的 client_secret（密钥）。
+            client-secret: e05eaaba8daa2a2115b72606d2d1255d13d78841
+
+          # 配置另一个名为 oauth-server 的 OAuth2 客户端（自定义的授权服务器）。
+          oauth-server:
+            # 设置自定义 OAuth2 客户端的 client_id（与授权服务器中注册的一致）。
+            client-id: oauth-client
+            # 设置自定义 OAuth2 客户端的 client_secret（密钥）。
             client-secret: secret
+            # 设置客户端申请的权限范围（Scope）。
             scope: read
+            # 设置 OAuth2 授权成功后的回调地址。
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            # 设置授权类型为 授权码模式（OAuth2 最安全的模式）。
             authorization-grant-type: authorization_code
-            client-name: Demo Client
+            # 设置客户端的显示名称（可选）。在登录页面或管理界面中显示。
+            client-name: oauth-server
+
+        # 配置 OAuth2 授权服务器的元数据（Provider 信息）。
         provider:
-          client-app:
+          # 定义一个名为 oauth-client 的授权服务器配置（与前面的 registration 对应）。
+          oauth-server:
+            # 设置授权服务器的授权端点（获取授权码的地址）。
             authorization-uri: http://localhost:9000/oauth2/authorize
+            # 设置授权服务器的令牌端点（用授权码换取令牌的地址）。
             token-uri: http://localhost:9000/oauth2/token
-            user-info-uri: http://localhost:9000/userinfo
+            # 设置用户信息端点（获取用户详细信息的地址）。
+#            user-info-uri: http://localhost:9000/userinfo
+            # 设置从用户信息响应中提取用户名（Principal Name）的属性。
             user-name-attribute: sub
   main:
     allow-bean-definition-overriding: true
     allow-circular-references: true
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.3.102:3306/test?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&serverTimezone=GMT%2B8
-    username: root
-    password: 123456
-
 
 eureka:
   client:
     serviceUrl:
       defaultZone: http://192.168.3.102:10001/eureka/
+logging:
+  level:
+    org.springframework.security: trace

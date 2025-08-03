@@ -36,4 +36,6 @@ public class OAuth2ServiceApplication {
          */
         SpringApplication.run(OAuth2ServiceApplication.class);
     }
+
+    // ccbb9179-6568-41a4-9139-56c184235995
 }
