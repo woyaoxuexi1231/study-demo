@@ -1,15 +1,19 @@
-package com.hundsun.demo.auth.service;
+package org.hulei.demo.oauth2.server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author woaixuexi
  * @since 2024/4/23 0:36
  */
 
+@RestController
 @SpringBootApplication
-public class OAuth2ServiceApplication {
+public class OAuth2ServerApplication {
 
     public static void main(String[] args) {
         /*
@@ -33,9 +37,24 @@ public class OAuth2ServiceApplication {
 
         但是 spring-boot-starter-oauth2-authorization-server 最低也需要 springboot 3.x 才支持了
         所以 springboot 2.7.x 只能用 spring-security-oauth2-authorization-server 这个了
+
+        spring-security-oauth2-autoconfigure 最后一个版本是 2.6.8
+        支持到 spring boot 版本 2.6.8，使用 2.7.18 版本的 spring boot，包括 spring security时，也已经不被推荐使用了
+        此版本的 spring boot 对应的 security 的版本是 5.7.11
+        spring boot dependency https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies/2.7.18
+
+        文档介绍 https://docs.spring.io/spring-security-oauth2-boot/docs/current/reference/html5/
+
+        http://localhost:9000/oauth2/authorize
+        http://localhost:9000/oauth2/token
          */
-        SpringApplication.run(OAuth2ServiceApplication.class);
+        SpringApplication.run(OAuth2ServerApplication.class);
     }
 
     // ccbb9179-6568-41a4-9139-56c184235995
+
+    @GetMapping("/")
+    public String home(){
+        return "Hello World";
+    }
 }

@@ -16,32 +16,35 @@ spring:
             client-secret: e05eaaba8daa2a2115b72606d2d1255d13d78841
 
           # 配置另一个名为 oauth-server 的 OAuth2 客户端（自定义的授权服务器）。
-          oauth-server:
+          oauth2-server:
             # 设置自定义 OAuth2 客户端的 client_id（与授权服务器中注册的一致）。
-            client-id: oauth-client
+            client-id: dcb722a8-bc12-4fbc-82f5-a86cfa1be57c
             # 设置自定义 OAuth2 客户端的 client_secret（密钥）。
-            client-secret: secret
+            client-secret: 6f7b7f80-ff7d-487f-aa73-57d1621a4d6d
             # 设置客户端申请的权限范围（Scope）。
-            scope: read
+            scope:
+              - "read"
+              - "write"
             # 设置 OAuth2 授权成功后的回调地址。
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
             # 设置授权类型为 授权码模式（OAuth2 最安全的模式）。
             authorization-grant-type: authorization_code
             # 设置客户端的显示名称（可选）。在登录页面或管理界面中显示。
-            client-name: oauth-server
+            client-name: oauth2-server
 
         # 配置 OAuth2 授权服务器的元数据（Provider 信息）。
         provider:
           # 定义一个名为 oauth-client 的授权服务器配置（与前面的 registration 对应）。
-          oauth-server:
+          oauth2-server:
             # 设置授权服务器的授权端点（获取授权码的地址）。
-            authorization-uri: http://localhost:9000/oauth2/authorize
+            authorization-uri: http://127.0.0.1:9000/oauth/authorize
             # 设置授权服务器的令牌端点（用授权码换取令牌的地址）。
-            token-uri: http://localhost:9000/oauth2/token
+            token-uri: http://127.0.0.1:9000/oauth/token
             # 设置用户信息端点（获取用户详细信息的地址）。
-#            user-info-uri: http://localhost:9000/userinfo
+            user-info-uri: http://127.0.0.1:8081/api/userinfo
             # 设置从用户信息响应中提取用户名（Principal Name）的属性。
             user-name-attribute: sub
+
   main:
     allow-bean-definition-overriding: true
     allow-circular-references: true
@@ -52,4 +55,5 @@ eureka:
       defaultZone: http://192.168.3.102:10001/eureka/
 logging:
   level:
-    org.springframework.security: trace
+    root: trace
+#    org.springframework.security: trace

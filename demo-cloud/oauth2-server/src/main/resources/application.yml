@@ -1,0 +1,22 @@
+logging:
+  level:
+    org.springframework.security: trace
+
+spring:
+  application:
+    name: oauth-service
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+  datasource:
+    url: jdbc:mysql://192.168.3.102:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+
+server:
+  port: 9000
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.3.102:10001/eureka/

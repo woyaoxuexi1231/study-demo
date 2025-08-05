@@ -59,6 +59,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- https://spring.io/projects/spring-cloud 可以查看 spring boot 和 spring cloud 的版本对应 -->
+        <!-- jdk11最高就只能使用到这里了，3.0最低要求也要17了 -->
         <spring.boot.dependencies.version>2.7.18</spring.boot.dependencies.version>
         <spring-cloud-dependencies.version>2021.0.9</spring-cloud-dependencies.version>
         <spring-cloud-alibaba-dependencies.version>2021.0.6.2</spring-cloud-alibaba-dependencies.version>
@@ -589,6 +590,13 @@
                 <artifactId>commons-exec</artifactId>
                 <version>1.4.0</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.springframework.security.oauth.boot</groupId>
+                <artifactId>spring-security-oauth2-autoconfigure</artifactId>
+                <version>2.6.8</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
