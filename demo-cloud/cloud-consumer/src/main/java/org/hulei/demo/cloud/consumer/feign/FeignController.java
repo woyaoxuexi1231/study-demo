@@ -1,5 +1,6 @@
 package org.hulei.demo.cloud.consumer.feign;
 
+import org.hulei.springcloud.client.api.HiControllerFeign;
 import org.hulei.util.dto.SimpleReqDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

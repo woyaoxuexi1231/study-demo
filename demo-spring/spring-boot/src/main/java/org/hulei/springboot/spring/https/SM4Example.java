@@ -15,6 +15,12 @@ public class SM4Example {
     }
 
     public static void main(String[] args) throws Exception {
+
+        /*
+        国密加密
+        SM4是一种分组加密算法，采用128位分组长度和128位密钥长度，属于对称加密（加密和解密使用相同密钥）。
+         */
+
         // 1. 生成 SM4 密钥
         KeyGenerator keyGen = KeyGenerator.getInstance("SM4", "BC");
         keyGen.init(128); // SM4 密钥长度固定为128位
