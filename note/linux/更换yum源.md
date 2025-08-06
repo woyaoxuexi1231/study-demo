@@ -125,3 +125,43 @@ yum makecache
 
 
 
+# 还原默认
+
+### **重新生成默认仓库**
+
+#### **CentOS 7**
+
+```bash
+sudo yum install -y centos-release
+```
+
+或手动下载官方源：
+
+```bash
+sudo curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo  # 阿里云镜像
+# 或使用官方源
+sudo curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrorlist.centos.org/?release=7&arch=x86_64&repo=os
+```
+
+#### **CentOS 8（或 Rocky Linux/AlmaLinux）**
+
+```bash
+sudo dnf install -y centos-release
+# 或手动下载（如阿里云镜像）
+sudo curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-8.repo
+```
+
+#### **RHEL 8/9**
+
+```bash
+bash
+
+sudo subscription-manager repos --enable=rhel-8-for-x86_64-baseos-rpms  # 根据版本调整
+```
+
+### **清理缓存并重建**
+
+```bash
+sudo yum clean all    # 清理旧缓存
+sudo yum makecache    # 生成新缓存
+```
