@@ -1,7 +1,9 @@
-package org.hulei.springdata.jdbc.jdbc;
+package org.hulei.springdata.jdbc.jdbc.statement;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.hulei.springdata.jdbc.jdbc.CommonUtil;
+import org.hulei.springdata.jdbc.jdbc.ConnectFactory;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

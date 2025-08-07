@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.util.Date;
+
+import com.github.javafaker.Faker;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,4 +27,12 @@ public class BigDataUsers {
 
     @TableField(value = "created_at")
     private Date createdAt;
+
+    public static BigDataUsers gen(){
+        Faker faker = new Faker();
+        BigDataUsers bigDataUsers = new BigDataUsers();
+        bigDataUsers.setName(faker.name().fullName());
+        bigDataUsers.setEmail(faker.internet().emailAddress());
+        return bigDataUsers;
+    }
 }

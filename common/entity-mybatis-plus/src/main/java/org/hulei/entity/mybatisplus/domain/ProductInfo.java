@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "product_info")
+@TableName(value = "test_product_info")
 public class ProductInfo {
 
     @TableId(value = "product_id", type = IdType.AUTO)

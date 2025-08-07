@@ -1,21 +1,19 @@
-package org.hulei.springboot.redis.redis.spring;
+package org.hulei.springboot.redis.redis.spring.advanced;
 
 import cn.hutool.extra.spring.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.listener.KeyExpirationEventMessageListener;
-import org.springframework.data.redis.listener.KeyspaceEventMessageListener;
-import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -54,18 +52,19 @@ public class MyKeyEventMessageListener {
      */
 
 
+
+
     /**
      * 使用 spring-data-redis 提供的 KeyExpirationEventMessageListener 来订阅过期键的通知信息
-     *
-     * @param listenerContainer
-     * @return
      */
     @Bean
-    public KeyExpirationEventMessageListener keyExpirationEventMessageListener(RedisMessageListenerContainer listenerContainer) {
+    public KeyExpirationEventMessageListener keyExpirationEventMessageListener(RedisConnectionFactory connectionFactory) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
         /*
         其实使用这个监听类 可以理解为使用 __keyevent@0__:expire
          */
-        return new KeyExpirationEventMessageListener(listenerContainer) {
+        KeyExpirationEventMessageListener keyExpirationEventMessageListener = new KeyExpirationEventMessageListener(container) {
             @Override
             public void onMessage(Message message, byte[] pattern) {
                 log.info("KeyExpirationEventMessageListener 收到键过期的通知信息 message body: {}, message channel: {}, pattern: {}",
@@ -74,13 +73,13 @@ public class MyKeyEventMessageListener {
                         new String(pattern, StandardCharsets.UTF_8));
                 StringRedisTemplate stringRedisTemplate = SpringUtil.getBean(StringRedisTemplate.class);
 
-                log.info("KeyExpirationEventMessageListener 将进行过期键的续约...");
-                stringRedisTemplate.opsForValue().set(
-                        new String(message.getBody(), StandardCharsets.UTF_8),
-                        "true",
-                        10,
-                        TimeUnit.SECONDS
-                );
+                // log.info("KeyExpirationEventMessageListener 将进行过期键的续约...");
+                // stringRedisTemplate.opsForValue().set(
+                //         new String(message.getBody(), StandardCharsets.UTF_8),
+                //         "true",
+                //         10,
+                //         TimeUnit.SECONDS
+                // );
 
                 // redisTemplate 也提供了更底层的执行方法，可以用但没必要
                 // stringRedisTemplate.execute((RedisCallback<Object>) connection ->
@@ -90,9 +89,12 @@ public class MyKeyEventMessageListener {
                 //                 "true".getBytes(StandardCharsets.UTF_8)));
             }
         };
+        container.afterPropertiesSet();
+        container.start();
+        return keyExpirationEventMessageListener;
     }
 
-    @Autowired
+    // @Autowired
     public void registry(RedisMessageListenerContainer listenerContainer) {
 
         /*

@@ -5,6 +5,7 @@ import org.redisson.api.RedissonClient;
 
 public class QueueExample {
     public static void main(String[] args) {
+
         RedissonClient redisson = RedissonConnectionFactory.getRedissonClient();
 
         RQueue<String> queue = redisson.getQueue("myDistributedQueue");

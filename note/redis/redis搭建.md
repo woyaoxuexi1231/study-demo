@@ -209,7 +209,7 @@ do \
    docker run -it -d -p ${port}:${port} -p 1${port}:1${port} \
   --privileged=true -v /root/redis/server/node-${port}/conf/redis.conf:/usr/local/etc/redis/redis.conf \
   --privileged=true -v /root/redis/server/node-${port}/data:/data \
-  --restart=unless-stopped --name redis-${port} --net myredis \
+  --restart=unless-stopped --name redis-${port} --net host \
   --sysctl net.core.somaxconn=1024 redis redis-server /usr/local/etc/redis/redis.conf
 done
 ```
@@ -281,7 +281,7 @@ do \
    docker run -it -d -p 2${port}:2${port}  \
   --privileged=true -v /root/redis/sentinel/node-{port}/sentinel.conf:/usr/local/etc/redis/redis-sentinel.conf \
   --privileged=true -v /root/redis/sentinel/node-${port}/data:/data \
-  --restart=unless-stopped --name redis-sentinel-${port} --net myredis \
+  --restart=unless-stopped --name redis-sentinel-${port} --net host \
   --sysctl net.core.somaxconn=1024 redis redis-sentinel /usr/local/etc/redis/redis-sentinel.conf
 done
 ```
@@ -497,12 +497,20 @@ requirepass 123456
 bind 0.0.0.0
 protected-mode no
 daemonize no
+# 开启aof持久化
 appendonly yes
+
+# 启用 Redis 集群模式（Cluster Mode）。设为 yes后，Redis 会以集群模式启动，支持自动分片、故障转移等功能。
 cluster-enabled yes
+# 指定集群节点元数据的存储文件（自动生成和维护）。文件中记录各节点的 ID、IP、端口、状态、槽分配等信息。
 cluster-config-file nodes.conf
+# 设置集群节点的超时时间（单位：毫秒）。若某个节点超过此时间未响应（如心跳包丢失），会被标记为 FAIL，触发故障转移（主节点降级，从节点晋升）。
 cluster-node-timeout 5000
+# 显式声明当前节点的对外可访问 IP。集群节点间通信时，会使用此 IP 而非 Redis 内部监听的 IP（如容器或内网 IP）。
 cluster-announce-ip 192.168.3.102
+# 声明当前节点对外暴露的服务端口（与 port一致）。集群节点间通过此端口进行 Gossip 协议通信（交换状态信息）。
 cluster-announce-port ${port}
+# 声明集群总线的端口（用于节点间实时通信）。Redis 集群通过 port + 10000的端口（如 6380 → 16380）进行 Gossip 协议的高效通信（二进制协议，低延迟）。
 cluster-announce-bus-port 1${port}
 
 # 设定连接主节点所使用的密码

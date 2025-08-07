@@ -172,8 +172,8 @@ public class SpringbootApplication implements ApplicationRunner {
     @Bean
     public ThreadPoolExecutor commonPool() {
         return new ThreadPoolExecutor(
-                200,
-                200,
+                10,
+                10,
                 60,
                 TimeUnit.SECONDS,
                 new LinkedBlockingQueue<>(),

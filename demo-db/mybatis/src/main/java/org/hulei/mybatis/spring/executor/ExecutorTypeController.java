@@ -1,4 +1,4 @@
-package org.hulei.mybatis.spring;
+package org.hulei.mybatis.spring.executor;
 
 import com.github.javafaker.Faker;
 import lombok.extern.slf4j.Slf4j;

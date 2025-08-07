@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.hulei.entity.mybatisplus.domain.Employees;
-import org.hulei.springdata.jdbc.transactional.mapper.EmployeesMapper;
+import org.hulei.springdata.jdbc.mapper.EmployeesMapper;
 import org.hulei.springdata.routingdatasource.annotation.TargetDataSource;
 import org.hulei.util.dto.ResultDTO;
 import org.hulei.util.utils.ResultDTOBuild;
@@ -37,28 +37,28 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 @Slf4j
 @RestController
 @RequestMapping("/db")
-public class DbController {
+public class TwoDSTransactionController {
 
     private final EmployeesMapper employeeMapper;
     private final ThreadPoolExecutor singlePool;
     private final ThreadPoolExecutor commonPool;
     private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
-    public DbController(EmployeesMapper employeeMapper,
-                        @Qualifier(value = "singlePool")
+    public TwoDSTransactionController(EmployeesMapper employeeMapper,
+                                      @Qualifier(value = "singlePool")
                         ThreadPoolExecutor singlePool,
-                        @Qualifier(value = "commonPool")
+                                      @Qualifier(value = "commonPool")
                         ThreadPoolExecutor commonPool) {
         this.employeeMapper = employeeMapper;
         this.singlePool = singlePool;
         this.commonPool = commonPool;
     }
 
-    private DbController dbController;
+    private TwoDSTransactionController twoDSTransactionController;
 
     @Autowired
-    public void setDbController(DbController dbController) {
-        this.dbController = dbController;
+    public void setDbController(TwoDSTransactionController twoDSTransactionController) {
+        this.twoDSTransactionController = twoDSTransactionController;
     }
 
     /**
@@ -100,7 +100,7 @@ public class DbController {
                     // 从数据源操作
                     commonPool.execute(() -> {
                         try {
-                            dbController.selectFromDB(employeeDOS, insertSemaphore, selectSemaphore, isFinished);
+                            twoDSTransactionController.selectFromDB(employeeDOS, insertSemaphore, selectSemaphore, isFinished);
                         } finally {
                             count.countDown();
                         }
@@ -108,7 +108,7 @@ public class DbController {
                     // 主数据源操作
                     commonPool.execute(() -> {
                         try {
-                            dbController.insertToDB(employeeDOS, insertSemaphore, selectSemaphore, isFinished);
+                            twoDSTransactionController.insertToDB(employeeDOS, insertSemaphore, selectSemaphore, isFinished);
                         } finally {
                             count.countDown();
                         }

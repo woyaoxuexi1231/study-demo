@@ -1,6 +1,8 @@
-package org.hulei.springdata.jdbc.controller;
+package org.hulei.springdata.jdbc;
 
-import org.hulei.springdata.jdbc.dao.EmployeeRepository;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import org.hulei.entity.mybatisplus.domain.Employees;
+import org.hulei.springdata.jdbc.mapper.EmployeesMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SimpleController {
 
     @Autowired
-    EmployeeRepository employeeRepository;
+    EmployeesMapper employeesMapper;
 
     @GetMapping("/getEmployeeByName")
     public void getEmployeeByName(@RequestParam(value = "lastName") String lastName) {
@@ -24,6 +26,6 @@ public class SimpleController {
         这里使用 spring-boot-starter-data-jdbc 这个依赖并不依赖于 jpa 的规范, 而是 spring 自己抽了一套规范出来
         org.springframework.data.relational.core.mapping
          */
-        employeeRepository.findByLastName(lastName).forEach(System.out::println);
+        employeesMapper.selectOne(Wrappers.<Employees>lambdaQuery().eq(Employees::getLastName, lastName));
     }
 }

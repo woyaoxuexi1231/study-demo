@@ -1,28 +1,27 @@
 package org.hulei.mybatis.spring;
 
-import cn.hutool.core.date.StopWatch;
 import com.github.javafaker.Faker;
 import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.session.ResultContext;
-import org.apache.ibatis.session.ResultHandler;
-import org.apache.ibatis.session.SqlSessionFactory;
 import org.hulei.common.autoconfigure.annotation.DoneTime;
 import org.hulei.entity.jpa.pojo.BigDataUser;
 import org.hulei.entity.jpa.pojo.Employee;
-import org.hulei.mybatis.mapper.ProductInfoMapper;
 import org.hulei.mybatis.mapper.XmlTagMapper;
-import org.hulei.mybatis.spring.typeadapter.LocalDateTimeTypeAdapter;
 import org.hulei.util.utils.MyStopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -38,14 +37,6 @@ public class XmlTagController {
 
     @Autowired
     ThreadPoolExecutor threadPoolExecutor;
-    /**
-     * Mybatis sqlSession
-     */
-    @Autowired
-    SqlSessionFactory sqlSessionFactory;
-
-    @Autowired
-    ProductInfoMapper productInfoMapper;
 
     @Autowired
     XmlTagMapper xmlTagMapper;
@@ -55,17 +46,34 @@ public class XmlTagController {
      */
     Gson gson = new GsonBuilder()
             .setPrettyPrinting()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())
+            .registerTypeAdapter(LocalDateTime.class, new TypeAdapter<LocalDateTime>() {
+                private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+                @Override
+                public void write(JsonWriter out, LocalDateTime value) throws IOException {
+                    if (value == null) {
+                        out.nullValue();
+                    } else {
+                        out.value(value.format(formatter));
+                    }
+                }
+
+                @Override
+                public LocalDateTime read(JsonReader in) throws IOException {
+                    String dateTimeString = in.nextString();
+                    return LocalDateTime.parse(dateTimeString, formatter);
+                }
+            })
             .create();
 
     /**
      * mybatis的ResultMap的简单使用
      */
     @GetMapping("/select-list-with-result-map")
-    public void selectListWithResultMap() {
+    public String selectListWithResultMap() {
         // employeeMapper.getEmployeeTree();
         // 创建一个Gson实例并启用漂亮打印
-        gson.toJson(xmlTagMapper.getEmployeeWithResultMap());
+        return gson.toJson(xmlTagMapper.getEmployeeWithResultMap());
     }
 
     /**

@@ -1,7 +1,10 @@
-package org.hulei.springboot.redis.redis.spring;
+package org.hulei.springboot.redis.redis.spring.datatype;
 
 import com.alibaba.fastjson.JSON;
+import org.hulei.entity.jpa.pojo.BigDataUser;
 import org.hulei.entity.jpa.pojo.Employee;
+import org.hulei.springboot.redis.redis.spring.BigDataUserRepository;
+import org.hulei.springboot.redis.redis.spring.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -9,9 +12,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 /**
  * @author hulei
@@ -109,42 +117,92 @@ public class RedisStringController {
 
     }
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
 
-    String employeeCacheStrPrefix = "employeeCache:";
+    /*
+    Redis 的 String 类型是最基础的数据结构（本质是二进制安全的字符串），看似简单却覆盖了80%以上的缓存场景。
+    💡 string 类型默认长度最大是 512mb，但是其实使用过程中不用太注意这个，使用不到这么大
 
-    String employeeCacheUseCount = "employeeCache:useCount";
+    使用场景：
+      1. 缓存热点数据（最常用）
+         场景：高频访问的数据库查询结果（如用户信息、商品详情），通过 String 缓存减少 DB 压力。
+         实现：
+           - Key 设计：业务模块:唯一标识（如 user:1001表示用户ID为1001的信息）。
+           - Value 存储：序列化后的对象（JSON/Protobuf/MessagePack）。
+           - 过期策略：通过 SETEX key seconds value或 EXPIRE设置合理过期时间（如30分钟），避免脏数据长期占用内存。
+      2. 计数器/限速器（利用原子性）
+         场景：点赞数、评论数、接口调用次数统计，或限制接口频率（如每分钟最多请求10次）。
+         实现：
+           - 计数器：用 INCR key原子递增（无需加锁），GET key获取当前值。
+           - 限速器：结合 EXPIRE实现滑动窗口（如记录每次请求时间戳，用 LLEN限制最近N次的请求数）。
 
-    /**
-     * redis的字符串作为一个缓存的简单使用
-     *
-     * @param id 用户id
-     * @return 结果
+    🚨 String 类型虽灵活，但单个Key过大（如超过1MB）会导致：网络传输耗时增加（单次GET需传输大文件）、主从复制/持久化（RDB/AOF）变慢、集群模式下可能触发「大Key迁移」阻塞。
+    🚨 序列化选择：空间与性能平衡
+    🚨 过期策略：避免内存泄漏
+    🚨 原子性边界：多命令需Lua脚本
      */
-    @GetMapping("/getEmployeeById")
-    public Employee getEmployeeById(Long id) {
-        // 先查询缓存中存在不存在
-        Employee redisRsp = JSON.parseObject(stringRedisTemplate.opsForValue().get(employeeCacheStrPrefix + id), Employee.class);
 
-        Optional<Employee> optional = Optional.ofNullable(redisRsp);
-        // 如果值存在,那么就命中缓存一次,计数一下,这里也算是redis的计数功能的简单使用
-        optional.ifPresent((r) -> strObjRedisTemplate.opsForValue().increment(employeeCacheUseCount));
-        Employee rsp = employeeRepository.findById(id).orElse(null);
 
-        if (Objects.isNull(rsp)) {
-            // 缓存和数据库都没有,这里先不做过滤器,直接返回
-            return null;
+
+    /* =================================================  缓存热点数据  ================================================= */
+
+    @Autowired
+    BigDataUserRepository bigDataUserRepository;
+    // 业务模块:唯一标识
+    public static final String cachePrefix = "springdataredis:string:";
+
+    /*
+    初始化预热，可以在程序启动时进行一个缓存预热，把已知的需要大量访问的数据进行预先的插入数据库
+     */
+    @PostConstruct
+    public void initCachePreheating() {
+        // 这里假设前一百条就是最热门的数据
+        List<BigDataUser> bigDataUsers = bigDataUserRepository.fetchTop100();
+        bigDataUsers.forEach(v -> stringRedisTemplate.opsForValue()
+                .set(cachePrefix + "cache:user:" + v.getId(),
+                        JSON.toJSONString(v),
+                        60,
+                        TimeUnit.MINUTES
+                ));
+    }
+
+    /*
+    实际使用缓存的场景，在使用过程中缓存在合理的过期策略下会越来越趋近于全是热点数据
+    查询数据 -> 查询缓存 -> 缓存没有继续查询数据库 -> 数据插入缓存
+     */
+    @GetMapping("/get-user-by-id")
+    public BigDataUser getUserById(Long id) {
+
+        // 查询缓存数据
+        Optional<String> optional = Optional.ofNullable(stringRedisTemplate.opsForValue().get(cachePrefix + "cache:user:" + id));
+        // 在根据缓存结果，决定下一步
+        if (optional.isPresent()) {
+            return JSON.parseObject(optional.get(), BigDataUser.class);
         } else {
-            // 设置缓存,60秒作为过期时间
-            stringRedisTemplate.opsForValue().set(employeeCacheStrPrefix + id, JSON.toJSONString(rsp), 60, TimeUnit.SECONDS);
-            return rsp;
+            BigDataUser dbData = bigDataUserRepository.findById(id).orElse(null);
+            if (Objects.nonNull(dbData)) {
+                // 如果数据存在插入缓存
+                stringRedisTemplate.opsForValue()
+                        .set(
+                                cachePrefix + "cache:user:" + id,
+                                JSON.toJSONString(dbData),
+                                60,
+                                TimeUnit.SECONDS
+                        );
+            }
+            return dbData;
         }
     }
 
-    @GetMapping("/getCacheHitCount")
-    public Integer getCacheHitCount() {
-        return (Integer) Optional.ofNullable(strObjRedisTemplate.opsForValue().get(employeeCacheUseCount)).orElse(0);
-    }
+    /* =================================================  计数器/限速器（利用原子性）  ================================================= */
 
+    /*
+    点击此接口将增加一次接口的点击数量
+    其实这种需求可以放到aop中去做
+     */
+    @GetMapping("/hit")
+    public void hit() {
+        if (Boolean.FALSE.equals(strObjRedisTemplate.opsForValue().setIfAbsent(cachePrefix + "count:hit", 0))) {
+            strObjRedisTemplate.opsForValue().increment(cachePrefix + "count:hit", 1);
+        }
+    }
 }

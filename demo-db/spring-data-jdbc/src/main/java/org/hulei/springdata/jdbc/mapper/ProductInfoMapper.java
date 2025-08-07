@@ -1,4 +1,4 @@
-package org.hulei.springdata.jdbc.transactional.mapper;
+package org.hulei.springdata.jdbc.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.hulei.entity.mybatisplus.domain.ProductInfo;

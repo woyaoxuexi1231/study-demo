@@ -1,15 +1,21 @@
 package org.hulei.springboot.redis.redisson.spring;
 
+import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author hulei
  * @since 2025/1/8 14:29
  */
 
+@Slf4j
 @RequestMapping("/redisson")
 @RestController
 public class RedissonSpringController {
@@ -33,8 +39,54 @@ public class RedissonSpringController {
     @Autowired
     RedissonClient redisson;
 
-    @RequestMapping("/test")
-    public void test() {
+    @Autowired
+    ThreadPoolExecutor commonPool;
 
+    @RequestMapping("/lock")
+    public void test() {
+        /*
+        使用 SETNX 实现分布式锁的常见问题及解决方案
+        🚨1. 锁未设置过期时间导致的死锁 如果线程 A 获取锁后，因异常或网络问题未主动释放锁，锁会永久存在，其他线程无法获取。
+        🚨2. 锁过期时间不合理导致的并发问题 若业务执行时间超过锁的过期时间，锁会被自动释放，其他线程可能获取锁并操作共享资源，导致并发冲突。
+        🚨3. 原子性操作缺失 SETNX 和 EXPIRE 分两步执行，若服务器宕机，可能导致锁无过期时间。
+        🚨4. 误删锁 线程 A 删除锁时，可能误删线程 B 的锁（如锁过期后被其他线程获取，但 A 仍执行删除）。
+        🚨5. 主从同步导致的锁丢失 Redis 主从复制异步，若主库宕机，从库未同步锁数据，可能导致锁丢失。
+
+        Redisson如何解决的呢？
+        💡Redisson 所有锁操作（加锁、释放锁、续期）均通过 Lua 脚本在 Redis 服务端原子执行，避免多条命令的竞态条件。
+        💡Redisson 内置“看门狗”（Watchdog）机制，默认开启（可通过配置关闭）。解决了手动设置 TTL 不合理的问题，无需开发者干预锁的续期。
+
+        redisson实现分布式锁的原理:
+        1. 主线程尝试通过lua脚本创建map类型的数据结构,key是锁的名称,内容是锁的持有者和重入的次数
+            - 获得锁的线程将正常执行业务逻辑
+            - 没有获得锁的线程将通过redis的subscribe订阅一个频道,频道的名称是 redisson_lock__channel:{lockName}, 这是为了在 unlock 的第一时间就可以进行抢锁 而不必再等待 ttl 了
+            - 没有获得锁的线程会一直轮询的去检查锁这个键的剩余时间,然后等待到足够时间后尝试去获取锁
+        2. 子线程通过一个Map保存当前线程的信息,然后子线程默认每10秒进行续约
+        3. 主线程正常解锁时会删除子线程Map内保存的线程信息,以及发送一条解锁的消息到频道内
+
+        watchdog如何感知到主线程已经挂了呢？
+          ① finally在一定执行的情况下，unlock会删除 EXPIRATION_RENEWAL_MAP 中保存的线程id信息，这样watch下次续约的时候就可以知道了
+          ② 如果说jvm挂了，那么watchdog线程肯定也没了，这种情况下只能等ttl结束了
+         */
+
+        commonPool.execute(() -> {
+            RLock lock = redisson.getLock("myLock");
+            try {
+                // 尝试获取锁 waiting - 等待获取锁的时间 leaseTime - 持有锁的时间 unit - 时间单位
+                if (lock.tryLock(1, -1, TimeUnit.SECONDS)) {
+                    log.info("已经通过redisson获得锁!");
+                    Thread.sleep(50 * 1000); // 模拟业务逻辑执行时间
+                } else {
+                    log.info("当前已有其他线程在执行任务，跳过");
+                }
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            } finally {
+                if (lock.isLocked() && lock.isHeldByCurrentThread()) {
+                    lock.unlock();
+                    log.info("已经成功释放锁");
+                }
+            }
+        });
     }
 }
