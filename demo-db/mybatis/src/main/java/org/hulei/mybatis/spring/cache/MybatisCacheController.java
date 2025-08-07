@@ -1,6 +1,5 @@
 package org.hulei.mybatis.spring.cache;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,9 +7,7 @@ import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.hulei.entity.jpa.pojo.BigDataUser;
-import org.hulei.entity.jpa.pojo.Employee;
 import org.hulei.mybatis.mapper.BigDataUserMapper;
-import org.hulei.mybatis.mapper.CustomerMapper;
 import org.hulei.util.dto.PageQryReqDTO;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +31,7 @@ import javax.validation.Valid;
 @RestController
 public class MybatisCacheController {
 
-    private final CustomerMapper customerMapper;
+    private final BigDataUserMapper bigDataUserMapper;
 
     private final SqlSessionFactory sqlSessionFactory;
 
@@ -50,9 +47,9 @@ public class MybatisCacheController {
 
         try (SqlSession session = sqlSessionFactory.openSession()) {
 
-            CustomerMapper mapper = session.getMapper(CustomerMapper.class);
-            PageHelper.startPage(0,1);
-            log.info("第一次查询结果: {}", mapper.selectById(103));
+            BigDataUserMapper mapper = session.getMapper(BigDataUserMapper.class);
+            PageHelper.startPage(0, 1);
+            log.info("第一次查询结果: {}", mapper.getUserByName("Angelika Durgan"));
             // log.info("第一次查询结果: {}", mapper.selectById(103));
             session.commit();
 
@@ -93,13 +90,11 @@ public class MybatisCacheController {
         - 二级缓存和一级缓存的优先级问题，在二级缓存没有生成的时候，第一次的 session 内一级缓存会根据自己的配置进行查询，后续二级缓存生成后，就会优先使用二级缓存
          */
 
-        log.info("selectById: {}", customerMapper.selectById(103));
+        log.info("getUserByName: {}", bigDataUserMapper.getUserByName("Angelika Durgan"));
 
         // 同样的, 虽然这个不是通用 mapper 的 api, 但是他使用 @Select 查询数据, 也只有 @CacheNamespace 才会生效
-        log.info("selectByIdWithAnnotation: {}", customerMapper.selectByIdWithAnnotation(103));
+        log.info("selectByIdWithAnnotation: {}", bigDataUserMapper.selectByIdWithAnnotation("Angelika Durgan"));
     }
-
-    private final BigDataUserMapper bigDataUserMapper;
 
     @GetMapping("/trans-failed-cause-cache")
     @Transactional

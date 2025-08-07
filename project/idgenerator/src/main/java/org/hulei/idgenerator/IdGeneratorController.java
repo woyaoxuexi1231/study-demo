@@ -1,10 +1,9 @@
 package org.hulei.idgenerator;
 
-import cn.hutool.core.date.StopWatch;
-import com.github.jsonzou.jmockdata.JMockData;
+import org.hulei.util.utils.MyStopWatch;
 import lombok.SneakyThrows;
-import org.hulei.entity.mybatisplus.domain.Items;
-import org.hulei.idgenerator.mapper.ItemsMapper;
+import org.hulei.entity.mybatisplus.domain.BigDataUsers;
+import org.hulei.entity.mybatisplus.starter.mapper.BigDataUserMapper;
 import org.hulei.idgenerator.segmentid.SegmentIdGenerator;
 import org.hulei.idgenerator.snowflake.SnowflakeConfig;
 import org.hulei.springdata.routingdatasource.core.DataSourceToggleUtil;
@@ -52,7 +51,7 @@ public class IdGeneratorController implements ApplicationContextAware {
     ThreadPoolExecutor commonPool;
 
     @Autowired
-    ItemsMapper itemsMapper;
+    BigDataUserMapper bigDataUserMapper;
 
     @Autowired
     public IdGeneratorController(ThreadPoolExecutor commonPool, SegmentIdGenerator segmentIdGenerator) {
@@ -71,18 +70,18 @@ public class IdGeneratorController implements ApplicationContextAware {
      * 方法的对比结果就是对于单列插入和批量插入来说使用自增和其他两个对比,好像性能差不了多少
      */
     @SneakyThrows
-    @GetMapping("/generateIds")
-    public void generateIds() {
+    @GetMapping("/insert-with-gen-ids")
+    public void insertWithGenIds() {
 
-        StopWatch stopWatch = new StopWatch();
+        MyStopWatch stopWatch = new MyStopWatch();
 
         stopWatch.start("多线程一条一条使用自增id插入数据");
         CountDownLatch count = new CountDownLatch(20000);
         for (int i = 0; i < 20000; i++) {
             commonPool.execute(() -> {
                 try {
-                    DataSourceToggleUtil.set("first");
-                    itemsMapper.insertItemsAutoKey(Items.builder().itemNo(JMockData.mock(String.class)).build());
+                    DataSourceToggleUtil.set("second");
+                    bigDataUserMapper.insert(BigDataUsers.gen());
                 } finally {
                     count.countDown();
                 }
@@ -91,36 +90,17 @@ public class IdGeneratorController implements ApplicationContextAware {
         count.await();
         stopWatch.stop();
 
-        CountDownLatch count2 = new CountDownLatch(20000);
-        stopWatch.start("多线程一条一条使用分布式id算法插入数据");
-        for (int i = 0; i < 20000; i++) {
-            commonPool.execute(() -> {
-                try {
-                    DataSourceToggleUtil.set("first");
-                    long snowflakeId = segmentIdGenerator.getId("test").getId();
-                    // long snowflakeId = snowflakeConfig.getSnowflake().nextId();
-                    // log.info("申请的 id 为: {}", snowflakeId);
-                    DataSourceToggleUtil.set("third");
-                    itemsMapper.insertItemsCustomKey(Items.builder().id(snowflakeId).itemNo(JMockData.mock(String.class)).build());
-                } finally {
-                    count2.countDown();
-                }
-            });
-        }
-        count2.await();
-        stopWatch.stop();
-
         stopWatch.start("多线程使用自增id批量插入数据");
         CountDownLatch count3 = new CountDownLatch(100);
         for (int i = 0; i < 100; i++) {
             commonPool.execute(() -> {
                 try {
-                    List<Items> itemDOS = new ArrayList<>();
+                    List<BigDataUsers> users = new ArrayList<>();
                     for (int j = 0; j < 200; j++) {
-                        itemDOS.add(Items.builder().itemNo(JMockData.mock(String.class)).build());
+                        users.add(BigDataUsers.gen());
                     }
-                    DataSourceToggleUtil.set("first");
-                    itemsMapper.insertItemsAutoKeyList(itemDOS);
+                    DataSourceToggleUtil.set("second");
+                    bigDataUserMapper.insert(users);
                 } finally {
                     count3.countDown();
                 }
@@ -128,28 +108,7 @@ public class IdGeneratorController implements ApplicationContextAware {
         }
         count3.await();
         stopWatch.stop();
-
-        stopWatch.start("多线程使用分布式id批量插入数据");
-        CountDownLatch count4 = new CountDownLatch(100);
-        for (int i = 0; i < 100; i++) {
-            try {
-                List<Items> itemDOS = new ArrayList<>();
-                DataSourceToggleUtil.set("first");
-                for (int j = 0; j < 200; j++) {
-                    long snowflakeId = segmentIdGenerator.getId("test").getId();
-                    // long snowflakeId = snowflakeConfig.getSnowflake().nextId();
-                    itemDOS.add(Items.builder().id(snowflakeId).itemNo(JMockData.mock(String.class)).build());
-                }
-                DataSourceToggleUtil.set("third");
-                itemsMapper.insertItemsCustomKeyList(itemDOS);
-            } finally {
-                count4.countDown();
-            }
-        }
-        count4.await();
-        stopWatch.stop();
         System.out.println(stopWatch.prettyPrint());
-
         /*
         对于mysql数据的插入类型分为四种:
         1.insert-like 指所有的插入语句
@@ -166,5 +125,56 @@ public class IdGeneratorController implements ApplicationContextAware {
         2. 1 连续模式,对于simple inserts,采用互斥量去对内存中的计数器进行累加,这个相当于是在第一种方式上进行了批量优化,批量插入时,直接获取一批可以用的id
         3  2 交错模式,对于所有的插入操作,都采用互斥量,这导致这种自增长模式在主从复制的情况下,对于statement-based方式的replication并不能很好的支持,所以一定要使用基于行的复制方式row-base
          */
+    }
+
+    @SneakyThrows
+    @GetMapping("/insert-with-segment-ids")
+    public void insertWithSegmentIds(){
+
+        MyStopWatch stopWatch = new MyStopWatch();
+
+        CountDownLatch count2 = new CountDownLatch(20000);
+        stopWatch.start("多线程一条一条使用分布式id算法插入数据");
+        for (int i = 0; i < 20000; i++) {
+            commonPool.execute(() -> {
+                try {
+                    DataSourceToggleUtil.set("first");
+                    long snowflakeId = segmentIdGenerator.getId("test").getId();
+                    // long snowflakeId = snowflakeConfig.getSnowflake().nextId();
+                    // log.info("申请的 id 为: {}", snowflakeId);
+                    DataSourceToggleUtil.set("second");
+                    BigDataUsers gen = BigDataUsers.gen();
+                    gen.setId(snowflakeId);
+                    bigDataUserMapper.insert(gen);
+                } finally {
+                    count2.countDown();
+                }
+            });
+        }
+        count2.await();
+        stopWatch.stop();
+
+        stopWatch.start("多线程使用分布式id批量插入数据");
+        CountDownLatch count4 = new CountDownLatch(100);
+        for (int i = 0; i < 100; i++) {
+            try {
+                List<BigDataUsers> users = new ArrayList<>();
+                DataSourceToggleUtil.set("first");
+                for (int j = 0; j < 200; j++) {
+                    long snowflakeId = segmentIdGenerator.getId("test").getId();
+                    // long snowflakeId = snowflakeConfig.getSnowflake().nextId();
+                    BigDataUsers gen = BigDataUsers.gen();
+                    gen.setId(snowflakeId);
+                    users.add(BigDataUsers.gen());
+                }
+                DataSourceToggleUtil.set("second");
+                bigDataUserMapper.insert(users);
+            } finally {
+                count4.countDown();
+            }
+        }
+        count4.await();
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
     }
 }

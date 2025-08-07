@@ -2,7 +2,7 @@ package org.hulei.idgenerator;
 
 import cn.hutool.core.thread.ThreadFactoryBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.springdata.routingdatasource.config.parsing.EnableDynamicDataSource;
+import org.hulei.springdata.routingdatasource.config.parsing.EnableParsingRoutingDataSource;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,8 +17,7 @@ import java.util.concurrent.TimeUnit;
  * @since 2024/10/13 21:27
  */
 
-@MapperScan(basePackages = {"org.hulei.common.mapper.mapper"})
-@EnableDynamicDataSource
+@EnableParsingRoutingDataSource
 @Slf4j
 @SpringBootApplication
 public class IdGeneratorApplication {

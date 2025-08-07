@@ -11,7 +11,6 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -27,7 +26,7 @@ public class DataGenerator {
     private static final Random random = new Random();
 
     @Autowired
-    DataSource ds;
+    DataSource dataSource;
 
     public void generateUsers(DataSource ds, long total) throws SQLException {
         try (Connection conn = ds.getConnection()) {
@@ -36,6 +35,7 @@ public class DataGenerator {
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 long inserted = 0;
                 while (inserted < total) {
+                    long start = System.currentTimeMillis();
                     for (int i = 0; i < BATCH_SIZE && inserted < total; i++) {
                         ps.setString(1, faker.name().fullName());
                         ps.setString(2, faker.internet().emailAddress());
@@ -44,7 +44,8 @@ public class DataGenerator {
                     }
                     ps.executeBatch();
                     conn.commit();
-                    System.out.printf("Users: 已插入 %d 条\n", inserted);
+                    long end = System.currentTimeMillis();
+                    DataGenerator.formatElapsedTime("big_data_users表", start, end);
                 }
             }
         }
@@ -57,6 +58,7 @@ public class DataGenerator {
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 long inserted = 0;
                 while (inserted < total) {
+                    long start = System.currentTimeMillis();
                     for (int i = 0; i < BATCH_SIZE && inserted < total; i++) {
                         ps.setString(1, faker.commerce().productName());
                         ps.setString(2, faker.commerce().department());
@@ -66,7 +68,8 @@ public class DataGenerator {
                     }
                     ps.executeBatch();
                     conn.commit();
-                    System.out.printf("Products: 已插入 %d 条\n", inserted);
+                    long end = System.currentTimeMillis();
+                    DataGenerator.formatElapsedTime("big_data_products表", start, end);
                 }
             }
         }
@@ -80,6 +83,7 @@ public class DataGenerator {
                 long inserted = 0;
                 String[] statusArr = {"pending", "paid", "shipped", "completed"};
                 while (inserted < total) {
+                    long start = System.currentTimeMillis();
                     for (int i = 0; i < BATCH_SIZE && inserted < total; i++) {
                         ps.setLong(1, Math.abs(random.nextLong()) % maxUserId + 1);
                         ps.setDouble(2, random.nextDouble());
@@ -89,7 +93,8 @@ public class DataGenerator {
                     }
                     ps.executeBatch();
                     conn.commit();
-                    System.out.printf("Orders: 已插入 %d 条\n", inserted);
+                    long end = System.currentTimeMillis();
+                    DataGenerator.formatElapsedTime("big_data_orders表", start, end);
                 }
             }
         }
@@ -102,6 +107,7 @@ public class DataGenerator {
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 long inserted = 0;
                 while (inserted < total) {
+                    long start = System.currentTimeMillis();
                     for (int i = 0; i < BATCH_SIZE && inserted < total; i++) {
                         ps.setLong(1, Math.abs(random.nextLong()) % maxOrderId + 1);
                         ps.setLong(2, Math.abs(random.nextLong()) % maxProductId + 1);
@@ -112,7 +118,8 @@ public class DataGenerator {
                     }
                     ps.executeBatch();
                     conn.commit();
-                    System.out.printf("OrderItems: 已插入 %d 条\n", inserted);
+                    long end = System.currentTimeMillis();
+                    DataGenerator.formatElapsedTime("big_data_order_items表", start, end);
                 }
             }
         }
@@ -125,6 +132,7 @@ public class DataGenerator {
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 long inserted = 0;
                 while (inserted < total) {
+                    long start = System.currentTimeMillis();
                     for (int i = 0; i < BATCH_SIZE && inserted < total; i++) {
                         ps.setLong(1, Math.abs(random.nextLong()) % maxUserId + 1);
                         ps.setLong(2, Math.abs(random.nextLong()) % maxProductId + 1);
@@ -135,7 +143,8 @@ public class DataGenerator {
                     }
                     ps.executeBatch();
                     conn.commit();
-                    System.out.printf("Reviews: 已插入 %d 条\n", inserted);
+                    long end = System.currentTimeMillis();
+                    DataGenerator.formatElapsedTime("big_data_reviews表", start, end);
                 }
             }
         }
@@ -151,39 +160,55 @@ public class DataGenerator {
         // 按需注释或放开，按顺序生成
         tpe.execute(() -> {
             try {
-                generateUsers(ds, 10_000_000);                // 用户表
+                generateUsers(dataSource, 10_000_000);                // 用户表
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         });
         tpe.execute(() -> {
             try {
-                generateProducts(ds, 500_000);                // 商品表
+                generateProducts(dataSource, 500_000);                // 商品表
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         });
         tpe.execute(() -> {
             try {
-                generateOrders(ds, 100_000_000, 10_000_000);  // 订单表
+                generateOrders(dataSource, 100_000_000, 10_000_000);  // 订单表
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         });
         tpe.execute(() -> {
             try {
-                generateOrderItems(ds, 300_000_000, 100_000_000, 500_000); // 订单明细
+                generateOrderItems(dataSource, 300_000_000, 100_000_000, 500_000); // 订单明细
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         });
         tpe.execute(() -> {
             try {
-                generateReviews(ds, 20_000_000, 10_000_000, 500_000);      // 评论表
+                generateReviews(dataSource, 20_000_000, 10_000_000, 500_000);      // 评论表
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         });
 
+    }
+
+    public static void formatElapsedTime(String data, long startTime, long endTime) {
+        long elapsedTime = endTime - startTime;
+
+        String time;
+        if (elapsedTime < 1000) {
+            time = elapsedTime + " 毫秒";
+        } else if (elapsedTime < 60 * 1000) {
+            time = String.format("%.2f 秒", elapsedTime / 1000.0);
+        } else if (elapsedTime < 3600 * 1000) {
+            time = String.format("%.2f 分钟", elapsedTime / (60 * 1000.0));
+        } else {
+            time = String.format("%.2f 小时", elapsedTime / (3600 * 1000.0));
+        }
+        System.out.println("本次插入 " + data + " 花费 " + time);
     }
 }

@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.hulei.entity.mybatisplus.domain.BigDataUsers;
-import org.hulei.entity.mybatisplus.domain.User;
 import org.hulei.springboot.mybatisplus.mapper.BigDataUsersMapperPlus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,11 +46,14 @@ public class MybatisPlusController extends ServiceImpl<BigDataUsersMapperPlus, B
         this.bigDataUsersMapperPlus.deleteById(id);
     }
 
-    /**
-     * mybatisPlus插件提供的分页工具 IPage
-     */
+
     @GetMapping("/mybatisPlusIPage")
     public void mybatisPlusIPage() {
+        /*
+        mybatisPlus插件提供的分页工具 IPage
+
+        要使用这个分页插件需要配置 mybatis 的插件功能才行
+         */
         IPage<BigDataUsers> pageFinder = new Page<>(1, 2);
         bigDataUsersMapperPlus.pageList(pageFinder);
     }

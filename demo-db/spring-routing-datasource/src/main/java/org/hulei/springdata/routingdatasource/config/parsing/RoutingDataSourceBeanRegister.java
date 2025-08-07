@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 // 用于根据特定的条件动态地注册 bean
-@Conditional(value = {EnableParsingRoutingCondition.class})
+// @Conditional(value = {EnableParsingRoutingCondition.class})
 public class RoutingDataSourceBeanRegister implements ImportBeanDefinitionRegistrar, BeanFactoryAware, EnvironmentAware {
 
     /*
@@ -81,9 +81,6 @@ public class RoutingDataSourceBeanRegister implements ImportBeanDefinitionRegist
                 for (String key : source.keySet()) {
                     if (key.startsWith("spring.datasource.routing.parsing")) {
                         String[] split = key.split("\\.");
-                        if("spring.datasource.routing.parsing.enable".equals(key)) {
-                            continue;
-                        }
                         if (dataSourceProperties.containsKey(split[4])) {
                             dataSourceProperties.get(split[4]).put(split[5], environment.getProperty(key));
                         } else {

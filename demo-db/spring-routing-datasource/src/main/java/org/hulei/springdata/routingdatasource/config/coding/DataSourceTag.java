@@ -11,7 +11,7 @@ package org.hulei.springdata.routingdatasource.config.coding;
 
 public enum DataSourceTag {
 
-    MASTER("master"),
+    FIRST("first"),
     SECOND("second"),
     THIRD("third");
 

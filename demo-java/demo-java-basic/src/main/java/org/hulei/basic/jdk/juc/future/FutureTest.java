@@ -3,11 +3,8 @@ package org.hulei.basic.jdk.juc.future;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.hulei.basic.jdk.juc.ExecutorServiceTest;
-import org.hulei.entity.jpa.pojo.Employee;
-import org.hulei.entity.jpa.utils.MemoryDbUtil;
+import org.hulei.entity.jpa.pojo.BigDataUser;
 
-import java.util.Random;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
@@ -51,12 +48,10 @@ public class FutureTest {
         /*
         这里 ThreadPoolExecutor 内部返回的也是 futureTask
          */
-        Future<Employee> submitted = ExecutorServiceTest.threadPoolExecutor.submit(() -> {
-            // LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(3000));
-            return MemoryDbUtil.getEmployeeById(id);
-        });
+        // LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(3000));
+        Future<BigDataUser> submitted = ExecutorServiceTest.threadPoolExecutor.submit(BigDataUser::gen);
 
-        Employee employee = submitted.get(); // 阻塞线程
+        BigDataUser employee = submitted.get(); // 阻塞线程
         log.info("根据ID获取到的雇员信息为：{}", employee);
 
         /*
@@ -77,14 +72,15 @@ public class FutureTest {
                 // 链式依赖 串行执行，后续的结果转换和结果消费以及包括这个方法在内都包含另一个 async 方法，async 方法将完全异步并且可以自定义线程池。thenCompose方法将由supplyAsync产生的线程继续执行
                 .thenCompose(userId -> {
                     log.info("获取到的用户ID: {}", userId);
-                    return CompletableFuture.supplyAsync(() -> MemoryDbUtil.getEmployeeById(userId));
+                    // 假设这里用到了 id
+                    return CompletableFuture.supplyAsync(BigDataUser::gen);
                 })
                 // 结果转换 可以不进行结果转换
                 // 当你的转换函数返回 CompletableFuture 时，总是使用 thenCompose
                 // 当你的转换函数返回普通值时，总是使用 thenApply
                 .thenApply(e -> {
                     log.info("开始结果转换...");
-                    return new StringBuilder().append(e.getFirstName()).append(e.getLastName()).append(", 邮箱为: ").append(e.getEmail());
+                    return new StringBuilder().append(e.getName()).append(", 邮箱为: ").append(e.getEmail());
                 })
                 // 结果消费 thenRun作为无参数结果消费
                 .thenAccept(s -> {

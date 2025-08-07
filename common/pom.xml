@@ -19,6 +19,8 @@
         <module>common-starter</module>
         <module>curator-starter</module>
         <module>common-security</module>
+        <module>entity-jpa-starter</module>
+        <module>entity-mybatis-plus-starter</module>
     </modules>
 
     <properties>

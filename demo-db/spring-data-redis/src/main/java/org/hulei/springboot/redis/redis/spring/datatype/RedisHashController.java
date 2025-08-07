@@ -1,7 +1,7 @@
 package org.hulei.springboot.redis.redis.spring.datatype;
 
 import org.hulei.entity.jpa.pojo.BigDataUser;
-import org.hulei.springboot.redis.redis.spring.BigDataUserRepository;
+import org.hulei.entity.jpa.starter.dao.BigDataUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;

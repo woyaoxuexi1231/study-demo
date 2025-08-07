@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.hulei.entity.jpa.pojo.ProductInfo;
-import org.hulei.mybatis.mapper.ProductInfoMapper;
+import org.hulei.entity.jpa.pojo.BigDataUser;
+import org.hulei.mybatis.mapper.BigDataUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +27,7 @@ import java.util.List;
 public class PageController {
 
     @Autowired
-    ProductInfoMapper productInfoMapper;
+    BigDataUserMapper bigDataUserMapper;
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
 
@@ -41,7 +41,7 @@ public class PageController {
          */
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             RowBounds rowBounds = new RowBounds(0, 10);
-            List<ProductInfo> productInfos = sqlSession.selectList("org.hulei.mybatis.mapper.ProductInfoMapper.selectAll", null, rowBounds);
+            List<BigDataUser> productInfos = sqlSession.selectList("org.hulei.mybatis.mapper.BigDataUserMapper.selectAll", null, rowBounds);
             System.out.println(productInfos.size());
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -50,7 +50,7 @@ public class PageController {
 
         // 使用 PageHelper 插件后，紧接着的第一条查询语句生效，实现原理就是使用 ThreadLocal，查询完之后清楚当前线程的这个值
         PageHelper.startPage(1, 10);
-        List<ProductInfo> productInfos = productInfoMapper.selectAll();
+        List<BigDataUser> productInfos = bigDataUserMapper.selectAll();
         System.out.println(productInfos.size());
 
     }
@@ -72,9 +72,9 @@ public class PageController {
          */
         log.info("pageNum: {}, pageSize: {}", pageNum, pageSize);
         PageHelper.startPage(pageNum, pageSize);
-        System.out.println(Arrays.toString(productInfoMapper.selectAll().toArray(new ProductInfo[0])));
+        System.out.println(Arrays.toString(bigDataUserMapper.selectAll().toArray(new BigDataUser[0])));
         PageHelper.startPage(pageNum, pageSize);
-        System.out.println(Arrays.toString(productInfoMapper.selectAll().toArray(new ProductInfo[0])));
+        System.out.println(Arrays.toString(bigDataUserMapper.selectAll().toArray(new BigDataUser[0])));
     }
 
 

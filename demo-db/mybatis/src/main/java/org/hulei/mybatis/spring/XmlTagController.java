@@ -11,12 +11,12 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.hulei.common.autoconfigure.annotation.DoneTime;
 import org.hulei.entity.jpa.pojo.BigDataUser;
-import org.hulei.entity.jpa.pojo.Employee;
 import org.hulei.mybatis.mapper.XmlTagMapper;
 import org.hulei.util.utils.MyStopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -82,15 +82,15 @@ public class XmlTagController {
      * 其核心作用是将数据库查询结果中的多行关联数据映射到 Java 对象的集合属性中
      */
     @GetMapping("/select-list-with-collection")
-    public void selectListWithCollection(Long employeeId) {
+    public void selectListWithCollection(@RequestParam("userId") Long userId) {
 
         // 由于 collection 使用的是笛卡尔积查询后的结果再来拼接，如果分页查询会导致结果不正确！！ 所以这种方式不能进行分页
         // PageHelper.startPage(1, 50);
         // 通过Collection 来通过 Mybatis 构建列表对象
-        xmlTagMapper.getDataFromResultMapWithCollection(employeeId);
+        xmlTagMapper.getDataFromResultMapWithCollection(userId);
 
-        // 通过Collection来快速构建树状结果
-        xmlTagMapper.getDataTree(1002L);
+        // 通过 Collection 可以来快速构建树状结果，通过自身配置自身的数据就可以实现
+        // xmlTagMapper.getDataTree(1002L);
 
         /*
         树形结构的查询，mysql其实本身提供了一种巧妙的方式来实现
@@ -105,8 +105,8 @@ public class XmlTagController {
      * 将单条关联数据映射到目标对象的单个属性中。
      */
     @GetMapping("/select-list-with-association")
-    public void selectListWithAssociation() {
-        xmlTagMapper.getDataFromResultMapWithAssociation();
+    public void selectListWithAssociation(@RequestParam("orderId") Long orderId) {
+        xmlTagMapper.getDataFromResultMapWithAssociation(orderId);
     }
 
     /**
@@ -176,14 +176,14 @@ public class XmlTagController {
 
         // mybatis适配流式查询
         threadPoolExecutor.execute(() -> {
-            List<Employee> employeeDOS = xmlTagMapper.mybatisStreamQuery();
+            List<BigDataUser> employeeDOS = xmlTagMapper.mybatisStreamQuery();
             employeeDOS.forEach((r) -> log.info("mybatisStreamQuery: employee: {}", r));
         });
 
 
         // mybatis使用ResultHandler适配流式查询
         threadPoolExecutor.execute(() -> xmlTagMapper.resultSetOpe(resultContext -> {
-            Employee object = resultContext.getResultObject();
+            BigDataUser object = resultContext.getResultObject();
             log.info("resultSetOpe: employee: {}", object);
         }));
 

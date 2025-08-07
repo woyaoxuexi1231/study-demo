@@ -1,22 +1,19 @@
 package org.hulei.mybatis.spring.executor;
 
-import com.github.javafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.hulei.entity.jpa.pojo.ProductInfo;
-import org.hulei.mybatis.mapper.ProductInfoMapper;
+import org.hulei.entity.jpa.pojo.BigDataUser;
+import org.hulei.mybatis.mapper.BigDataUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * @author hulei
@@ -32,21 +29,12 @@ public class ExecutorTypeController {
     SqlSessionFactory sqlSessionFactory;
 
     @Autowired
-    ProductInfoMapper productInfoMapper;
-
-    private static final Faker faker = new Faker(Locale.CHINA);
-
-    public static ProductInfo buildProductInfo() {
-        ProductInfo record = new ProductInfo();
-        record.setProductName(faker.commerce().productName());
-        record.setCategory(faker.commerce().department());
-        record.setPrice(BigDecimal.valueOf(Double.parseDouble(faker.commerce().price())));
-        record.setDescription(faker.lorem().sentence());
-        return record;
-    }
+    BigDataUserMapper bigDataUserMapper;
 
     @GetMapping("/executor-type-test")
     public void executorTypeTest() {
+        int count = 10000;
+
         /*
         Mybatis 提供了三种不同的执行器类型
          - SIMPLE，默认执行器，每次执行都会创建一个新的预处理语句（PreparedStatement），不进行特殊处理。
@@ -56,18 +44,18 @@ public class ExecutorTypeController {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start("SIMPLE 执行器耗时");
         try (SqlSession session = sqlSessionFactory.openSession(ExecutorType.SIMPLE)) {
-            ProductInfoMapper mapper = session.getMapper(ProductInfoMapper.class);
-            for (int i = 0; i < 10000; i++) {
-                mapper.insert(buildProductInfo());
+            BigDataUserMapper mapper = session.getMapper(BigDataUserMapper.class);
+            for (int i = 0; i < count; i++) {
+                mapper.savaOne(BigDataUser.gen());
             }
         }
         stopWatch.stop();
 
         stopWatch.start("REUSE 执行器耗时");
         try (SqlSession session = sqlSessionFactory.openSession(ExecutorType.REUSE)) {
-            ProductInfoMapper mapper = session.getMapper(ProductInfoMapper.class);
-            for (int i = 0; i < 10000; i++) {
-                mapper.insert(buildProductInfo());
+            BigDataUserMapper mapper = session.getMapper(BigDataUserMapper.class);
+            for (int i = 0; i < count; i++) {
+                mapper.savaOne(BigDataUser.gen());
             }
         }
         stopWatch.stop();
@@ -80,20 +68,20 @@ public class ExecutorTypeController {
          */
         stopWatch.start("BATCH 执行器耗时");
         try (SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
-            ProductInfoMapper mapper = session.getMapper(ProductInfoMapper.class);
-            for (int i = 0; i < 10000; i++) {
-                mapper.insert(buildProductInfo());
+            BigDataUserMapper mapper = session.getMapper(BigDataUserMapper.class);
+            for (int i = 0; i < count; i++) {
+                mapper.savaOne(BigDataUser.gen());
             }
             session.commit();
         }
         stopWatch.stop();
 
         stopWatch.start("xml 拼接执行耗时");
-        List<ProductInfo> list = new ArrayList<>();
-        for (int i = 0; i < 10000; i++) {
-            list.add(buildProductInfo());
+        List<BigDataUser> list = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            list.add(BigDataUser.gen());
         }
-        productInfoMapper.batchInsert(list);
+        bigDataUserMapper.batchInsert(list);
         stopWatch.stop();
 
         System.out.println(stopWatch.prettyPrint());

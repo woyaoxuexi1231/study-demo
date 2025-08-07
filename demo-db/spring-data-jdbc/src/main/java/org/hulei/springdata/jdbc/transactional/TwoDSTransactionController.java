@@ -3,14 +3,15 @@ package org.hulei.springdata.jdbc.transactional;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageHelper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.entity.mybatisplus.domain.Employees;
-import org.hulei.springdata.jdbc.mapper.EmployeesMapper;
+import org.hulei.entity.mybatisplus.domain.BigDataUsers;
+import org.hulei.springdata.jdbc.mapper.BigDataUserMapper;
 import org.hulei.springdata.routingdatasource.annotation.TargetDataSource;
+import org.hulei.springdata.routingdatasource.core.DataSourceToggleUtil;
 import org.hulei.util.dto.ResultDTO;
 import org.hulei.util.utils.ResultDTOBuild;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,25 +35,16 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @createDate: 2023/11/4 14:47
  */
 
+@RequiredArgsConstructor
 @Slf4j
 @RestController
 @RequestMapping("/db")
 public class TwoDSTransactionController {
 
-    private final EmployeesMapper employeeMapper;
+    private final BigDataUserMapper bigDataUserMapper;
     private final ThreadPoolExecutor singlePool;
     private final ThreadPoolExecutor commonPool;
     private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-
-    public TwoDSTransactionController(EmployeesMapper employeeMapper,
-                                      @Qualifier(value = "singlePool")
-                        ThreadPoolExecutor singlePool,
-                                      @Qualifier(value = "commonPool")
-                        ThreadPoolExecutor commonPool) {
-        this.employeeMapper = employeeMapper;
-        this.singlePool = singlePool;
-        this.commonPool = commonPool;
-    }
 
     private TwoDSTransactionController twoDSTransactionController;
 
@@ -81,14 +73,15 @@ public class TwoDSTransactionController {
             // 2. 确保多个服务同时只有一个能获取锁
             if (readWriteLock.writeLock().tryLock()) {
                 try {
-                    // 先删除数据,以备插入数据
-                    employeeMapper.delete(new LambdaQueryWrapper<>());
+                    // 先删除数据,以备插入数据'
+                    DataSourceToggleUtil.set("second");
+                    bigDataUserMapper.delete(new LambdaQueryWrapper<>());
 
                     // 锁释放的计时器,只有当两个任务都完成之后,整个任务才停止
                     CountDownLatch count = new CountDownLatch(2);
                     // 这是两个操作共享的一个数据列表, 操作A查数据插入这个list, 操作B从这个list取数据插入数据库
                     // 这个列表不用考虑并发,同时只会有一个线程操作他
-                    List<Employees> employeeDOS = new ArrayList<>();
+                    List<BigDataUsers> employeeDOS = new ArrayList<>();
                     // 控制主数据源流程的信号量(插入数据), 先不执行, 等待从流程触发这个信号量让主流程获得执行权限
                     Semaphore insertSemaphore = new Semaphore(0);
                     // 控制从数据源流程, 先执行这个流程
@@ -128,8 +121,8 @@ public class TwoDSTransactionController {
     }
 
     @Transactional
-    @TargetDataSource(value = "first")
-    public void insertToDB(List<Employees> employeeDOS, Semaphore insertSemaphore, Semaphore selectSemaphore, AtomicBoolean isFinished) {
+    @TargetDataSource(value = "second")
+    public void insertToDB(List<BigDataUsers> employeeDOS, Semaphore insertSemaphore, Semaphore selectSemaphore, AtomicBoolean isFinished) {
         while (true) {
             try {
                 // 尝试获取写信号
@@ -141,7 +134,7 @@ public class TwoDSTransactionController {
                 // 正常插入数据
                 log.info("开始插入数据");
                 if (!employeeDOS.isEmpty()) {
-                    employeeDOS.forEach(employeeMapper::insert);
+                    employeeDOS.forEach(bigDataUserMapper::insert);
                 }
                 // 插入完成后清空数组
                 employeeDOS.clear();
@@ -160,8 +153,8 @@ public class TwoDSTransactionController {
     }
 
     @Transactional
-    @TargetDataSource(value = "second")
-    public void selectFromDB(List<Employees> employeeDOS, Semaphore insertSemaphore, Semaphore selectSemaphore, AtomicBoolean isFinished) {
+    @TargetDataSource(value = "first")
+    public void selectFromDB(List<BigDataUsers> employeeDOS, Semaphore insertSemaphore, Semaphore selectSemaphore, AtomicBoolean isFinished) {
         // 分页查询
         int pageNum = 1;
         int pageSize = 10;
@@ -175,7 +168,7 @@ public class TwoDSTransactionController {
                 }
                 log.info("开始查询数据");
                 PageHelper.startPage(pageNum, pageSize);
-                employeeDOS.addAll(employeeMapper.selectList(Wrappers.lambdaQuery()));
+                employeeDOS.addAll(bigDataUserMapper.selectList(Wrappers.lambdaQuery()));
                 log.info("本次一共查询 {} 条数据", employeeDOS.size());
                 // 已经查询所有的数据
                 if (employeeDOS.isEmpty()) {

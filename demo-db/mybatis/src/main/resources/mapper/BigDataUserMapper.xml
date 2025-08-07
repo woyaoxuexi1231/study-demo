@@ -10,4 +10,17 @@
     <insert id="savaOne">
         insert into big_data_users(name, email) value (#{name}, #{email})
     </insert>
+
+    <insert id="batchInsert">
+        insert into big_data_users(name, email)
+        values
+        <foreach collection="records" index="index" item="item" separator=",">
+            (#{item.name}, #{item.email})
+        </foreach>
+    </insert>
+
+    <select id="selectAll" resultType="org.hulei.entity.jpa.pojo.BigDataUser">
+        select *
+        from big_data_users
+    </select>
 </mapper>

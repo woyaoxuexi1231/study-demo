@@ -28,8 +28,8 @@ public class RoutingCodingDataSource extends AbstractRoutingDataSource {
 
         // 设置标志与多数据源的关系
         Map<Object, Object> targetDataSource = new HashMap<>();
-        targetDataSource.put(DataSourceTag.MASTER, dataSourceFirst);
-        targetDataSource.put(DataSourceTag.SECOND, dataSourceSecond);
+        targetDataSource.put(DataSourceTag.FIRST.tag, dataSourceFirst);
+        targetDataSource.put(DataSourceTag.SECOND.tag, dataSourceSecond);
         super.setTargetDataSources(targetDataSource);
 
         // 执行 AbstractRoutingDataSource 的赋值操作

@@ -1,5 +1,6 @@
 package org.hulei.springdata.jdbc;
 
+import org.hulei.springdata.routingdatasource.config.coding.EnableCodingRoutingDataSource;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 2024/10/10 16:00
  */
 
-// @EnableDynamicDataSource
+@EnableCodingRoutingDataSource
 @MapperScan(basePackages = "org.hulei.springdata.jdbc.mapper")
 @SpringBootApplication
 public class SpringDataJdbcApplication {

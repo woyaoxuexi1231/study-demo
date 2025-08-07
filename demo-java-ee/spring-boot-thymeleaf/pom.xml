@@ -46,6 +46,12 @@
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.hulei</groupId>
+            <artifactId>entity-mybatis-plus-starter</artifactId>
+            <version>1.0.0.4-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
    <build>

@@ -3,3 +3,6 @@ server:
 spring:
   profiles:
     active: db
+logging:
+  level:
+    org.springframework.jdbc.core.JdbcTemplate: debug

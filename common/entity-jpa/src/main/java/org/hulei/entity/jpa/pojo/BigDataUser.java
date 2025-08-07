@@ -1,6 +1,7 @@
 package org.hulei.entity.jpa.pojo;
 
 import com.github.javafaker.Faker;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +15,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+@Data
 @Getter
 @Setter
 @Entity

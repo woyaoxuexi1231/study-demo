@@ -57,7 +57,7 @@ public class MyKeyEventMessageListener {
     /**
      * 使用 spring-data-redis 提供的 KeyExpirationEventMessageListener 来订阅过期键的通知信息
      */
-    @Bean
+    // @Bean
     public KeyExpirationEventMessageListener keyExpirationEventMessageListener(RedisConnectionFactory connectionFactory) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);

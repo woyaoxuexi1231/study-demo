@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 @RestController
-@EntityScan(basePackages = {"org.hulei.entity.jpa.pojo"})
 @SpringBootApplication
 public class RedisApplication {
 

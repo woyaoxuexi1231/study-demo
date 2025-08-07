@@ -13,18 +13,13 @@
 
     <!-- 描述如何从数据库的结果集中加载对象-->
     <!-- id:当前的映射关系的命名空间 type:映射到的类的全限定类名 autoMapping: 自动将查询结果集映射到Java对象的属性值,这个值默认是开启的 -->
-    <resultMap id="EmployeeBaseResultMap" type="org.hulei.entity.jpa.pojo.Employee" autoMapping="false">
+    <resultMap id="UserBaseResultMap" type="org.hulei.entity.jpa.pojo.BigDataUser" autoMapping="false">
         <!-- id列被标识为对象的主键 -->
         <!-- column:数据库中的列名, jdbcType: jdbc的类型, property: 映射到列结果的字段或者属性名,也就是Pojo中的属性名 javaType:属性的类型,通常mybatis可以自己推断-->
-        <id column="employee_number" jdbcType="BIGINT" property="id"/>
-        <result column="last_name" jdbcType="VARCHAR" property="lastName"/>
-        <result column="first_name" jdbcType="VARCHAR" property="firstName"/>
-        <result column="extension" jdbcType="VARCHAR" property="extension"/>
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="email" jdbcType="VARCHAR" property="email"/>
-        <result column="office_code" jdbcType="VARCHAR" property="officeCode"/>
-        <result column="reports_to" jdbcType="INTEGER" property="reportsTo"/>
-        <result column="job_title" jdbcType="VARCHAR" property="jobTitle"/>
-        <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime"/>
+        <result column="created_at" jdbcType="VARCHAR" property="createdAt"/>
     </resultMap>
 
     <!-- 对于使用id和result来说必须要对象有属性对应的set方法,对于一些不可变类来说,可能只有构造方法而没有set方法 -->
@@ -51,8 +46,8 @@
     使用 extends 可以继承自某个 result Map
     使用 collection 可以用于处理一对多关系 1 - 多
      -->
-    <resultMap id="employeeWithCustomCollection" type="org.hulei.mybatis.spring.model.EmployeeWithCustomersRsp"
-               extends="EmployeeBaseResultMap">
+    <resultMap id="userWithOrderMap" type="org.hulei.mybatis.spring.model.UserWithOrder"
+               extends="UserBaseResultMap">
         <!--
         collection标签包含大量的子标签
             property:标明当前的collection对应类中的属性名
@@ -73,40 +68,22 @@
          -->
         <collection property="customers"
                     javaType="java.util.List"
-                    ofType="org.hulei.entity.jpa.pojo.Customer"
+                    ofType="org.hulei.entity.jpa.pojo.BigDataOrder"
                     autoMapping="true"
         >
         </collection>
     </resultMap>
 
-    <!-- 从 collection 的 一对多 的关系中，可以引申出 树形结构的映射，其实就是自己包含自己，且自己对应自己是 1对多 的关系 -->
-    <resultMap id="employessTreeMap" type="org.hulei.mybatis.spring.model.EmployeeTreeRsp"
-               extends="EmployeeBaseResultMap">
-        <collection
-                property="children"
-                javaType="java.util.List"
-                ofType="org.hulei.mybatis.spring.model.EmployeeTreeRsp"
-                column="employee_number"
-                select="getEmployeeByReportNumber">
-        </collection>
+    <resultMap id="OrderMap" type="org.hulei.entity.jpa.pojo.BigDataOrder">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="total_amount" jdbcType="VARCHAR" property="totalAmount"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="created_at" jdbcType="VARCHAR" property="createdAt"/>
     </resultMap>
 
-    <resultMap id="ProductBaseResultMap" type="org.hulei.entity.jpa.pojo.Product">
-        <!--@mbg.generated-->
-        <!--@Table test_products-->
-        <id column="product_code" jdbcType="VARCHAR" property="productCode"/>
-        <result column="product_name" jdbcType="VARCHAR" property="productName"/>
-        <result column="product_line" jdbcType="VARCHAR" property="productLineName"/>
-        <result column="product_scale" jdbcType="VARCHAR" property="productScale"/>
-        <result column="product_vendor" jdbcType="VARCHAR" property="productVendor"/>
-        <result column="product_description" jdbcType="LONGVARCHAR" property="productDescription"/>
-        <result column="quantity_in_stock" jdbcType="SMALLINT" property="quantityInStock"/>
-        <result column="buy_price" jdbcType="DECIMAL" property="buyPrice"/>
-        <result column="msrp" jdbcType="DECIMAL" property="msrp"/>
-    </resultMap>
-
-    <resultMap id="productFullInfoMap" type="org.hulei.mybatis.spring.model.ProductFullInfo"
-               extends="ProductBaseResultMap">
+    <resultMap id="OrderWithUserMap" type="org.hulei.mybatis.spring.model.OrderWithUser"
+               extends="OrderMap">
         <!-- 对于 association 和 collection 标签,都可以不用写 select 子查询,只要一次查询的sql的字段没有重复,并且可以唯一映射上就行-->
         <!-- association主要用于处理一对一关系的关联查询,这种映射关系主要因为关联的对象在我们查询的对象的内部,他做为一个单独的属性出现,通过此标签,把对应的结果都给映射到这个属性内部 -->
         <!-- mybatis如何加载这种关联关系呢?
@@ -115,10 +92,10 @@
          2. 关联的嵌套结果,也就是这里采用的方式,所有的结果(包括关联对象的结果)都在一个查询语句中返回,通过属性名来映射到不同的地方
          -->
         <association
-                property="productLine"
-                javaType="org.hulei.entity.jpa.pojo.ProductLine"
-                columnPrefix="pl_"
-                resultMap="org.hulei.springboot.mybatisplus.mapper.ProductLinesMapper.BaseResultMap"
+                property="user"
+                javaType="org.hulei.entity.jpa.pojo.BigDataUser"
+                columnPrefix="u_"
+                resultMap="UserBaseResultMap"
         />
     </resultMap>
 
@@ -130,15 +107,7 @@
     <!-- sql可以定义宠用的sql代码段 -->
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
-        employee_number,
-        last_name,
-        first_name,
-        extension,
-        email,
-        office_code,
-        reports_to,
-        job_title,
-        last_update_time
+        id, name, email, created_at
     </sql>
 
 
@@ -147,97 +116,46 @@
     <!-- ======================================================================================================== -->
 
     <select id="getEmployeeWithResultMap"
-            resultMap="EmployeeBaseResultMap"
+            resultMap="UserBaseResultMap"
             useCache="true">
-        select e.employee_number,
-               e.last_name,
-               e.first_name,
-               e.extension,
-               e.email,
-               e.office_code,
-               e.reports_to,
-               e.job_title,
-               e.last_update_time
-        from test_employees e
+        select *
+        from big_data_users
+        limit 10
     </select>
 
-    <select id="getDataFromResultMapWithCollection" resultMap="employeeWithCustomCollection">
-        select e.employee_number,
-               e.last_name,
-               e.first_name,
-               e.extension,
-               e.email,
-               e.office_code,
-               e.reports_to,
-               e.job_title,
-               e.last_update_time,
-               c.customer_number,
-               c.customer_name,
-               c.contact_last_name,
-               c.contact_first_name,
-               c.phone,
-               c.address_line1,
-               c.address_line2,
-               c.city,
-               c.state,
-               c.postal_code,
-               c.country,
-               c.sales_rep_employee_number,
-               c.credit_limit
-        from test_employees e
-                 left join test_customers c on e.employee_number = c.sales_rep_employee_number
+    <select id="getDataFromResultMapWithCollection" resultMap="userWithOrderMap">
+        select u.id,
+               u.name,
+               u.email,
+               u.created_at,
+               c.id,
+               c.user_id,
+               c.total_amount,
+               c.status,
+               c.created_at
+        from big_data_users u
+                 left join big_data_orders c on u.id = c.user_id
         <!--Where标签的好处就是会帮我们移除语句开头的and或者or关键字,避免sql出错,也能避免在没有条件的情况下不输出where-->
         <where>
-            <if test="employeeNumber != null">
-                employee_number = #{employeeNumber}
+            <if test="userId != null">
+                u.id = #{userId}
             </if>
         </where>
     </select>
 
-    <select id="getDataTree" resultMap="employessTreeMap">
-        select e.employee_number,
-               e.last_name,
-               e.first_name,
-               e.extension,
-               e.email,
-               e.office_code,
-               e.reports_to,
-               e.job_title,
-               e.last_update_time
-        from test_employees e
-        where e.employee_number = #{employeeNumber}
-    </select>
-
-    <select id="getDataFromResultMapWithAssociation" resultMap="productFullInfoMap">
-        select p.product_code,
-               p.product_name,
-               p.product_line,
-               p.product_scale,
-               p.product_vendor,
-               p.product_description,
-               p.quantity_in_stock,
-               p.buy_price,
-               p.msrp,
-               pl.product_line     as pl_productLine,
-               pl.text_description as pl_textDescription,
-               pl.html_description as pl_htmlDescription,
-               pl.image            as pl_image
-        from test_products p
-                 inner join test_product_lines pl on p.product_line = pl.product_line
-    </select>
-
-    <select id="getEmployeeByReportNumber" resultMap="employessTreeMap">
-        select e.employee_number,
-               e.last_name,
-               e.first_name,
-               e.extension,
-               e.email,
-               e.office_code,
-               e.reports_to,
-               e.job_title,
-               e.last_update_time
-        from test_employees e
-        where e.reports_to = #{reportsTo}
+    <select id="getDataFromResultMapWithAssociation" resultMap="OrderWithUserMap">
+        select o.id,
+               o.user_id,
+               o.total_amount,
+               o.status,
+               o.created_at,
+               u.id         as u_id,
+               u.name       as u_name,
+               u.email      as u_email,
+               u.created_at as u_createdAt
+        from big_data_orders o
+                 inner join big_data_users u on o.user_id = u.id
+        where o.id = #{orderId}
     </select>
 
     <!-- 以select为例子, 内部标签也是非常多的
@@ -265,37 +183,37 @@
      -->
     <!-- select标签的内部子标签测试 -->
     <select id="selectTagsTest"
-            resultMap="EmployeeBaseResultMap">
+            resultMap="UserBaseResultMap">
         select
         <include refid="Base_Column_List">
         </include>
-        from test_employees
+        from big_data_users
     </select>
 
-    <select id="mybatisStreamQuery" resultType="org.hulei.entity.jpa.pojo.Employee" fetchSize="-2147483648">
+    <select id="mybatisStreamQuery" resultType="org.hulei.entity.jpa.pojo.BigDataUser" fetchSize="-2147483648">
         select *
-        from test_employees
+        from big_data_users
     </select>
 
-    <select id="resultSetOpe" resultType="org.hulei.entity.jpa.pojo.Employee" resultSetType="FORWARD_ONLY">
+    <select id="resultSetOpe" resultType="org.hulei.entity.jpa.pojo.BigDataUser" resultSetType="FORWARD_ONLY">
         select *
-        from test_employees
+        from big_data_users
     </select>
 
     <select id="getData" resultType="java.util.Map">
         ${sql}
     </select>
 
-    <select id="dollarSign" resultMap="EmployeeBaseResultMap">
+    <select id="dollarSign" resultMap="UserBaseResultMap">
         select *
-        from test_employees
-        where last_name = ${lastName}
+        from big_data_users
+        where name = ${name}
     </select>
 
-    <select id="poundSign" resultMap="EmployeeBaseResultMap">
+    <select id="poundSign" resultMap="UserBaseResultMap">
         select *
-        from test_employees
-        where last_name = #{lastName}
+        from big_data_users
+        where name = #{name}
     </select>
 
     <insert id="insertGenerateKey" useGeneratedKeys="true" keyProperty="id">

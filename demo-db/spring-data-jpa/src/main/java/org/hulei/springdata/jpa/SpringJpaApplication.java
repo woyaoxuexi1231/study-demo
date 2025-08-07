@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
  * @since 2024/9/19 23:40
  */
 
-@EntityScan(basePackages = {"org.hulei.entity.jpa.pojo"})
 @SpringBootApplication
 public class SpringJpaApplication {
 

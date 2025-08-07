@@ -1,6 +1,6 @@
 package org.hulei.springdata.jdbc.template;
 
-import org.hulei.entity.mybatisplus.domain.Employees;
+import org.hulei.entity.mybatisplus.domain.BigDataUsers;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -28,15 +28,15 @@ public class NamedParameterJdbcTemplateController {
     @GetMapping("/selectEmployees")
     public void selectEmployees() {
 
-        String sql = "SELECT * FROM test_employees WHERE last_name = :name";  // 使用命名参数 :name
+        String sql = "SELECT * FROM big_data_users WHERE name = :name";  // 使用命名参数 :name
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue("name", "Patterson");  // 设置参数的值
+        parameters.addValue("name", "Chase Ratke");  // 设置参数的值
 
         namedParameterJdbcTemplate
                 .query(sql,
                         parameters,
-                        BeanPropertyRowMapper.newInstance(Employees.class))
+                        BeanPropertyRowMapper.newInstance(BigDataUsers.class))
                 .forEach(System.out::println);
     }
 }

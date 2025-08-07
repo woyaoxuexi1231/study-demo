@@ -2,26 +2,18 @@ package org.hulei.springboot.redis.redis.spring;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.support.spring.FastJsonRedisSerializer;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.RequiredArgsConstructor;
 import org.hulei.entity.jpa.pojo.BigDataUser;
-import org.hulei.entity.jpa.pojo.Employee;
+import org.hulei.entity.jpa.starter.dao.BigDataUserRepository;
 import org.hulei.springboot.redis.redis.spring.datatype.RedisStringController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.cache.RedisCacheWriter;
-import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStringCommands;
 import org.springframework.data.redis.core.RedisCallback;
@@ -31,8 +23,6 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,9 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -187,12 +175,12 @@ public class SpringCacheRedisController {
         if (user == null) {
             // 🚨缓存穿透在这里发生，如果不缓存空值，那么查询不存在的数据时，请求将全部打到db，造成数据库的压力
             // 💡通过缓存空值来达到防止缓存穿透的发生
-            redisTemplate.opsForValue().set(key, "null", 5, TimeUnit.MINUTES); // 5分钟过期
+            // redisTemplate.opsForValue().set(key, "null", 5, TimeUnit.MINUTES); // 5分钟过期
             return new BigDataUser();
         }
 
         // 3. 数据库有数据，缓存到 Redis
-        redisTemplate.opsForValue().set(key, user, 30, TimeUnit.MINUTES); // 30分钟过期
+        redisTemplate.opsForValue().set(key, JSON.toJSON(user), 30, TimeUnit.MINUTES); // 30分钟过期
         return user;
     }
 

@@ -5,10 +5,8 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.session.ResultHandler;
 import org.hulei.entity.jpa.pojo.BigDataUser;
-import org.hulei.entity.jpa.pojo.Employee;
-import org.hulei.mybatis.spring.model.EmployeeTreeRsp;
-import org.hulei.mybatis.spring.model.EmployeeWithCustomersRsp;
-import org.hulei.mybatis.spring.model.ProductFullInfo;
+import org.hulei.mybatis.spring.model.OrderWithUser;
+import org.hulei.mybatis.spring.model.UserWithOrder;
 
 import java.util.List;
 
@@ -19,53 +17,38 @@ public interface XmlTagMapper {
      *
      * @return 雇员列表
      */
-    List<Employee> getEmployeeWithResultMap();
+    List<BigDataUser> getEmployeeWithResultMap();
 
     /**
      * 使用 ResultMap + collection 标签来处理 一对多 的数据关系
      * 但是这里并不适用嵌套查询，而是直接使用笛卡尔积结果，然后进行去重统计，这种方式性能上有一定弊病
-     *
-     * @param employeeId 雇员 id
-     * @return 雇员和消费者的一对多的数据
      */
-    List<EmployeeWithCustomersRsp> getDataFromResultMapWithCollection(@Param("employeeNumber") Long employeeId);
+    List<UserWithOrder> getDataFromResultMapWithCollection(@Param("userId") Long userId);
 
     /**
      * 使用 ResultMap + association 标签来处理 一对一 的数据关系
-     *
-     * @return 产品和产品线的一对一关系
      */
-    List<ProductFullInfo> getDataFromResultMapWithAssociation();
+    List<OrderWithUser> getDataFromResultMapWithAssociation(@Param("orderId") Long orderId);
 
-    /**
-     * 获取employee树状结构
-     *
-     * @return 雇员自身生成的树形结构
-     */
-    List<EmployeeTreeRsp> getDataTree(@Param(value = "employeeNumber") Long employeeNumber);
+    BigDataUser poundSign(@Param("name") String name);
 
-    Employee poundSign(@Param("lastName") String lastName);
+    BigDataUser dollarSign(@Param("name") String name);
 
-    Employee dollarSign(@Param("lastName") String lastName);
-
-
-    List<EmployeeTreeRsp> getEmployeeByReportNumber(@Param("reportsTo") Long employeeNumber);
-
-    List<Employee> selectTagsTest();
+    List<BigDataUser> selectTagsTest();
 
     /**
      * mybatis使用流式查询/游标查询
      *
      * @return 雇员数据
      */
-    List<Employee> mybatisStreamQuery();
+    List<BigDataUser> mybatisStreamQuery();
 
     /**
      * 使用ResultHandler来进行流式查询操作结果集的结果
      *
      * @param handler
      */
-    void resultSetOpe(ResultHandler<Employee> handler);
+    void resultSetOpe(ResultHandler<BigDataUser> handler);
 
     @Select("SELECT * FROM big_data_users")
     @Options(fetchSize = 1)

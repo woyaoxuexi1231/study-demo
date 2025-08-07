@@ -6,30 +6,13 @@ spring:
     active: db,redis,zk,mvc
   main:
     allow-circular-references: true
-  devtools:
-    restart:
-      enabled: true
-      additional-paths: src/main/java
-      #exclude: **/static/**,**/*.js,**/*.html
-    livereload:
-      enabled: true
-      port: 35729
 
-mybatis:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  mapper-locations: classpath:mapper/*.xml
+  datasource:
+    url: jdbc:mysql://192.168.3.102:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&connectionCollation=utf8mb4&rewriteBatchedStatements=true
+    username: root
+    password: 123456
 
-mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  mapper-locations: classpath:mapper/*.xml
-
-pagehelper:
-  auto-runtime-dialect: true
-
-# log config
-#logging:
-#  level:
-#    root: DEBUG
-#    com.hundsun.demo.springboot.mapper: debug
+logging:
+  level:
+    org:
+      springframework.jdbc.core.JdbcTemplate: debug

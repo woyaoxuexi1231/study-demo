@@ -1,12 +1,11 @@
 package org.hulei.springdata.jdbc.template;
 
-import com.github.jsonzou.jmockdata.JMockData;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.entity.mybatisplus.domain.Employees;
+import org.hulei.entity.mybatisplus.domain.BigDataUsers;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -14,10 +13,8 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Optional;
 
@@ -51,16 +48,15 @@ public class JdbcTemplateController {
         在执行完插入操作后，GeneratedKeyHolder将包含新增记录的主键值。
          */
         KeyHolder holder = new GeneratedKeyHolder();
-        String sql = "insert users (name) values (?)";
+        BigDataUsers gen = BigDataUsers.gen();
+        String sql = "insert big_data_users (name, email) values (?,?)";
         jdbcTemplate.update(
-                new PreparedStatementCreator() {
-                    @Override
-                    public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                        // 这里配置 preparedStatement 返回自增键，随后 spring 会把自增键塞到 KeyHolder 中去
-                        PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-                        preparedStatement.setString(1, JMockData.mock(String.class));
-                        return preparedStatement;
-                    }
+                connection -> { // PreparedStatementCreator
+                    // 这里配置 preparedStatement 返回自增键，随后 spring 会把自增键塞到 KeyHolder 中去
+                    PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                    preparedStatement.setString(1, gen.getName());
+                    preparedStatement.setString(2, gen.getEmail());
+                    return preparedStatement;
                 },
                 holder
         );
@@ -80,15 +76,15 @@ public class JdbcTemplateController {
         如果使用了正确的参数化查询方法，通配符是安全的，不会有 SQL 注入风险。
          */
         jdbcTemplate.query(
-                        "select e.email from test_employees e where e.employee_number = ?",
+                        "select u.name from big_data_users u where u.id = ?",
                         SingleColumnRowMapper.newInstance(String.class),
-                        new Object[]{1002})
+                        new Object[]{53422})
                 .forEach(entity -> log.info("{}", entity));
 
         jdbcTemplate.query(
-                "select * from test_employees e where e.first_name like ? and e.last_name like ?",
-                BeanPropertyRowMapper.newInstance(Employees.class),
-                "%a%", "%t%"
+                "select * from big_data_users e where e.name like ?",
+                BeanPropertyRowMapper.newInstance(BigDataUsers.class),
+                "%abc%"
         ).forEach(entity -> log.info("{}", entity));
     }
 
@@ -100,27 +96,32 @@ public class JdbcTemplateController {
         Spring 在这方面做了简化，使用 RowMapper 接口提供了一种列到字段的关系映射
 
         Spring RowMapper 用于将结果集映射到 Java 对象，spring默认提供了一些实现。
-        1. BeanPropertyRowMapper<T> 这个 RowMapper 将每一行数据映射到指定类的实例上，基于反射机制将列名与类的属性名进行匹配。
-           默认情况下，它认为数据库列名是下划线形式（例如 first_name），而 JavaBean 的属性名是驼峰形式（例如 firstName）。这两者之间可以自动进行映射。
-        2. ColumnMapRowMapper 这个 RowMapper 将每一行数据映射到一个 Map<String, Object> 对象，其中键是列名，值是列的值。
-        3. SingleColumnRowMapper 这个 RowMapper 将结果集中的单列映射到一个指定类型的对象上，适用于查询单列数据的场景。
-
         也可以根据需求自定义不同的 RowMapper
          */
 
+        // 1. BeanPropertyRowMapper<T> 这个 RowMapper 将每一行数据映射到指定类的实例上，基于反射机制将列名与类的属性名进行匹配。
+        //    默认情况下，它认为数据库列名是下划线形式（例如 first_name），而 JavaBean 的属性名是驼峰形式（例如 firstName）。这两者之间可以自动进行映射。
         jdbcTemplate.query(
-                        "select * from test_employees e where e.employee_number = 1002",
-                        BeanPropertyRowMapper.newInstance(Employees.class))
+                        "select * from big_data_users e where e.id = 67437",
+                        BeanPropertyRowMapper.newInstance(BigDataUsers.class))
                 .forEach(entity -> log.info("BeanPropertyRowMapper : {}", entity));
 
+        // 2. ColumnMapRowMapper 这个 RowMapper 将每一行数据映射到一个 Map<String, Object> 对象，其中键是列名，值是列的值。
         jdbcTemplate.query(
-                        "select e.email from test_employees e where e.employee_number = 1002",
+                        "select * from big_data_users e where e.id = 67437",
+                        new ColumnMapRowMapper())
+                .forEach(entity -> log.info("custom lambda : {}", entity));
+
+        // 3. SingleColumnRowMapper 这个 RowMapper 将结果集中的单列映射到一个指定类型的对象上，适用于查询单列数据的场景。
+        jdbcTemplate.query(
+                        "select e.name from big_data_users e where e.id = 67437",
                         SingleColumnRowMapper.newInstance(String.class))
                 .forEach(entity -> log.info("SingleColumnRowMapper : {}", entity));
 
+        // 4. 也可以自定义 rowMapper
         jdbcTemplate.query(
-                        "select * from test_employees e where e.employee_number = 1002",
-                        (RowMapper<Object>) (rs, rowNum) -> rs.getString("last_name"))
+                        "select * from big_data_users e where e.id = 67437",
+                        (RowMapper<Object>) (rs, rowNum) -> rs.getString("name"))
                 .forEach(entity -> log.info("custom lambda : {}", entity));
     }
 
@@ -129,21 +130,21 @@ public class JdbcTemplateController {
 
         // execute 用于执行任意的 SQL 语句，通常用于复杂的操作或 DDL（数据定义语言）语句。
         Object execute = jdbcTemplate.execute(
-                "select * from test_employees e where e.employee_number = ?",
+                "select * from big_data_users e where e.id = ?",
                 /*
                 PreparedStatementCallback 是 Spring 框架中的一个接口，用于执行 SQL 语句并处理 PreparedStatement 的回调
                 可以定义如何使用 PreparedStatement 执行 SQL 语句，这包括设置参数、执行查询或更新操作，以及处理结果。
                  */
                 (PreparedStatementCallback<Object>) ps -> {
                     // 这里你可以设置 PreparedStatement 的参数
-                    ps.setInt(1, 1002);
+                    ps.setInt(1, 45345);
 
                     // 执行查询或更新，并处理结果
                     ResultSet rs = ps.executeQuery();
                     String name = null;
                     if (rs.next()) {
                         // 处理结果集，假设返回一个对象
-                        name = rs.getString("last_name") + "-" + rs.getString("first_name");
+                        name = rs.getString("name") + "-" + rs.getString("email");
                     }
                     return name;
                 }

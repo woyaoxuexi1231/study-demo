@@ -2,9 +2,7 @@ package org.hulei.springboot.redis.redis.spring.datatype;
 
 import com.alibaba.fastjson.JSON;
 import org.hulei.entity.jpa.pojo.BigDataUser;
-import org.hulei.entity.jpa.pojo.Employee;
-import org.hulei.springboot.redis.redis.spring.BigDataUserRepository;
-import org.hulei.springboot.redis.redis.spring.EmployeeRepository;
+import org.hulei.entity.jpa.starter.dao.BigDataUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -13,13 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 /**
  * @author hulei

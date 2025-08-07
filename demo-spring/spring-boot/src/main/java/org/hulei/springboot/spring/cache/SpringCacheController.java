@@ -1,14 +1,10 @@
 package org.hulei.springboot.spring.cache;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.github.jsonzou.jmockdata.JMockData;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.hulei.entity.jpa.pojo.Employee;
-import org.hulei.entity.jpa.utils.MemoryDbUtil;
+import org.hulei.entity.jpa.pojo.BigDataUser;
 import org.hulei.springboot.SpringbootApplication;
-import org.hulei.util.dto.PageInfo;
-import org.hulei.util.dto.PageQryReqDTO;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
@@ -20,10 +16,9 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.Field;
@@ -66,36 +61,32 @@ public class SpringCacheController {
 
     /*========================================== 缓存相关 =======================================*/
     public List<Object> clearQueue = new ArrayList<>();
+    public List<BigDataUser> users = CollectionUtil.newArrayList(
+            BigDataUser.gen(),
+            BigDataUser.gen()
+    );
 
-    /**
-     * Cacheable: value作为缓存的命名空间(即一个前缀), key作为完整实际的键值
-     * 举例: 在使用ConcurrentMapCache的时候,value作为ConcurrentMapCache的名字 key作为这个cache内部map的key
-     *
-     * @param req req
-     * @return object
+    /*
+    Cacheable: value作为缓存的命名空间(即一个前缀), key作为完整实际的键值
+    举例: 在使用ConcurrentMapCache的时候,value作为ConcurrentMapCache的名字 key作为这个cache内部map的key
+
+    value 指定缓存名称（可多个），实际对应缓存存储的 逻辑分区（如 Redis 中的 employee 命名空间）。
+    key
+      #root.method.getName()：获取当前方法名（如 getEmployeeById）。
+      #root.args[0]：获取方法的第一个参数（如 id）。
      */
     @Cacheable(value = {"employee"}, key = "#root.method.getName() +':'+ #root.args[0]", cacheManager = "cacheManager")
-    @PostMapping(value = "/getEmployees")
-    public PageInfo<Employee> getEmployees(@RequestBody PageQryReqDTO req) {
-        return MemoryDbUtil.getData(req.getPageNum(), req.getPageSize());
+    @PostMapping(value = "/getEmployees/{index}")
+    public BigDataUser getEmployees(@PathVariable("index") int index) {
+        return users.get(index);
     }
 
     @PostMapping("/addOneEmployee")
     public void addOneEmployee() {
-        Employee employeeDO = buildMockData();
-        MemoryDbUtil.insert(employeeDO);
+        BigDataUser gen = BigDataUser.gen();
+        users.add(gen);
         // 标记需要清理缓存
         clearQueue.add(new Object());
-    }
-
-    @PostMapping("/updateEmployee")
-    public Employee updateEmployee(@RequestBody Employee req) {
-        Employee employeeDO = buildMockData();
-        employeeDO.setId(req.getId());
-        MemoryDbUtil.update(employeeDO);
-        // 标记需要清理缓存
-        clearQueue.add(new Object());
-        return employeeDO;
     }
 
     /**
@@ -125,18 +116,5 @@ public class SpringCacheController {
                 log.info("k:{}, v:{}", k, v);
             });
         }
-    }
-
-    private Employee buildMockData() {
-        Employee employeeDO = new Employee();
-        employeeDO.setId(System.currentTimeMillis());
-        employeeDO.setLastName(JMockData.mock(String.class));
-        employeeDO.setFirstName(JMockData.mock(String.class));
-        employeeDO.setExtension(JMockData.mock(String.class));
-        employeeDO.setEmail(JMockData.mock(String.class));
-        employeeDO.setOfficeCode(JMockData.mock(String.class));
-        employeeDO.setReportsTo(JMockData.mock(Integer.class));
-        employeeDO.setJobTitle(JMockData.mock(String.class));
-        return employeeDO;
     }
 }

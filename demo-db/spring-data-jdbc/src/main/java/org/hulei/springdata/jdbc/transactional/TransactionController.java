@@ -1,21 +1,10 @@
 package org.hulei.springdata.jdbc.transactional;
 
-import cn.hutool.core.collection.CollectionUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.github.jsonzou.jmockdata.JMockData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hulei.entity.mybatisplus.domain.BigDataUsers;
-import org.hulei.entity.mybatisplus.domain.Employees;
-import org.hulei.entity.mybatisplus.domain.ProductInfo;
-import org.hulei.entity.mybatisplus.domain.User;
-import org.hulei.entity.mybatisplus.util.BatchExecutor;
 import org.hulei.springdata.jdbc.mapper.BigDataUserMapper;
-import org.hulei.springdata.jdbc.mapper.EmployeesMapper;
-import org.hulei.springdata.jdbc.mapper.ProductInfoMapper;
-import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -24,9 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
@@ -43,7 +29,7 @@ public class TransactionController {
 
     final SubUserService subUserService;
     final ThreadPoolExecutor commonPool;
-    final EmployeesMapper employeesMapper;
+    final BigDataUserMapper bigDataUserMapper;
 
 
     /**
@@ -65,10 +51,8 @@ public class TransactionController {
             @Transactional
             @Override
             public void run() {
-                Employees employeeDO = new Employees();
-                employeeDO.setEmployeeNumber(1002L);
-                employeeDO.setFirstName("innerClass");
-                employeesMapper.updateById(employeeDO);
+                BigDataUsers gen = BigDataUsers.gen();
+                bigDataUserMapper.insert(gen);
                 throw new RuntimeException("阻止提交");
             }
         });
@@ -77,10 +61,8 @@ public class TransactionController {
     @GetMapping("/unCatchException")
     @Transactional
     public void runWithException() throws CustomException {
-        Employees employeeDO = new Employees();
-        employeeDO.setEmployeeNumber(1002L);
-        employeeDO.setFirstName("unCatchException");
-        employeesMapper.updateById(employeeDO);
+        BigDataUsers gen = BigDataUsers.gen();
+        bigDataUserMapper.insert(gen);
         /*
         异常未被正确捕获, 默认捕获RuntimeException, 其他异常是不会触发回滚的. 所以需要配置rollbackFor参数
         事务失效, 默认捕获 RuntimeException, 但是方法抛出了一个非免检异常, 并且没有指定需要回滚这种异常, 所以这里会失效s

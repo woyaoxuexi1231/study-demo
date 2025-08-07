@@ -1,4 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.hulei.common.autoconfigure.commom.DoneTimeAutoConfiguration,\
-org.hulei.common.autoconfigure.curator.CuratorAutoConfiguration,\
-org.hulei.common.autoconfigure.commom.ProjectUrlAutoConfiguration

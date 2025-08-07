@@ -31,7 +31,7 @@
 
         <dependency>
             <groupId>org.hulei</groupId>
-            <artifactId>entity-jpa</artifactId>
+            <artifactId>entity-jpa-starter</artifactId>
             <version>1.0.0.4-SNAPSHOT</version>
         </dependency>
 

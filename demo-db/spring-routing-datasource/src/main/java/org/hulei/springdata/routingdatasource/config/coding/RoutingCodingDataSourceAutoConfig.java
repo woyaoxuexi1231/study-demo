@@ -16,7 +16,7 @@ import javax.sql.DataSource;
  * @since 2024/10/10 20:44
  */
 
-@ConditionalOnProperty(value = {"spring.datasource.routing.coding.enable"}, havingValue = "true")
+// @ConditionalOnProperty(name = "spring.datasource.routing.coding.enable", havingValue = "true")
 @Configuration
 @Import(value = {HikariDataSourceFirstConfig.class, HikariDataSourceSecondConfig.class})
 public class RoutingCodingDataSourceAutoConfig {
