@@ -31,6 +31,10 @@ public class CustomWebSecurityFilterAutoConfig {
                 .formLogin().permitAll()
                 .and()
                 .logout().permitAll();
+
+        http.cors();
+        http.csrf().disable();
+
         return http.build();
     }
 }
