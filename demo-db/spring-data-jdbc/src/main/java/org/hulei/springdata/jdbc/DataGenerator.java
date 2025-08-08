@@ -54,7 +54,7 @@ public class DataGenerator {
     public void generateProducts(DataSource ds, long total) throws SQLException {
         try (Connection conn = ds.getConnection()) {
             conn.setAutoCommit(false);
-            String sql = "INSERT INTO big_data_products (name, category, price) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO big_data_products (name, category, quantity, price) VALUES (?, ?, ?, ?)";
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 long inserted = 0;
                 while (inserted < total) {
@@ -62,7 +62,8 @@ public class DataGenerator {
                     for (int i = 0; i < BATCH_SIZE && inserted < total; i++) {
                         ps.setString(1, faker.commerce().productName());
                         ps.setString(2, faker.commerce().department());
-                        ps.setDouble(3, Double.parseDouble(faker.commerce().price()));
+                        ps.setInt(3, random.nextInt(100) + 1);
+                        ps.setDouble(4, Double.parseDouble(faker.commerce().price()));
                         ps.addBatch();
                         inserted++;
                     }

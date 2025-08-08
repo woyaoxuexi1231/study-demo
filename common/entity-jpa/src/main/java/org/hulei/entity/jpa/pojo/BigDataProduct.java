@@ -35,6 +35,9 @@ public class BigDataProduct {
     @Column(name = "price", precision = 10, scale = 2)
     private BigDecimal price;
 
+    @Column(name = "quantity")
+    private Integer quantity;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

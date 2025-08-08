@@ -186,6 +186,11 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- 普罗米修斯 -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
 
 
         <!--测试-->

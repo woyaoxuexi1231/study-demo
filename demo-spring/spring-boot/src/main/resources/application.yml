@@ -1,3 +1,5 @@
+##################################  web 服务器相关的配置  ##################################
+
 server:
   # 0 表示随机端口
   port: 9999
@@ -7,11 +9,14 @@ server:
     key-password: 123456
     enabled: true
 
+
+##################################  spring 相关  ##################################
 spring:
   application:
     name: keeping
   main:
     allow-circular-references: true
+  # spring mvc
   servlet:
     multipart:
       max-file-size: 10MB
@@ -24,6 +29,7 @@ spring:
     livereload:
       enabled: false
       port: 35729
+  # spring 邮件
   mail:
     host: smtp.qq.com
     port: 465
@@ -62,6 +68,8 @@ done:
 greeting:
   welcome: You are using ${spring.application.name}
 
+
+##################################  暴露端点  ##################################
 management:
   endpoints:
     web:
@@ -70,16 +78,29 @@ management:
   endpoint:
     shutdown:
       enabled: true
+    # 配置普罗米修斯的端点信息
+    prometheus:
+      enabled: true
+    health:
+      show-details: always
+  # 指标允许被导出
+  metrics:
+    export:
+      prometheus:
+        enabled: true
 
 # router prefix
 # server:
 #   servlet:
 #     context-path: /api
 
+# 配置测试
 app:
   config:
     name: Myapp
     max-requests: 100
+
+# jsch 配置，可用于 ssh
 jsch:
   ssh-host: 192.168.3.233
   ssh-port: 22

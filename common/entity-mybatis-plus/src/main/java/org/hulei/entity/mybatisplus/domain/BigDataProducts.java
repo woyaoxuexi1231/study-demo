@@ -27,6 +27,9 @@ public class BigDataProducts {
     @TableField(value = "price")
     private BigDecimal price;
 
+    @TableField(value = "quantity")
+    private Integer quantity;
+
     @TableField(value = "created_at")
     private Date createdAt;
 }

@@ -12,6 +12,7 @@ end
 
 -- 检查用户购买限制
 local userLimit = redis.call('hget', KEYS[2], ARGV[1])
+-- userLimit 如果不为空，那么把 userLimit 转换为数字，否则直接为 0
 userLimit = userLimit and tonumber(userLimit) or 0
 
 if userLimit + tonumber(ARGV[3]) > tonumber(ARGV[2]) then

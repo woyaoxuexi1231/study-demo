@@ -14,6 +14,7 @@ CREATE TABLE big_data_products
     name       VARCHAR(200),
     category   VARCHAR(100),
     price      DECIMAL(10, 2),
+    quantity   INT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 

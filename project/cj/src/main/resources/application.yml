@@ -1,0 +1,11 @@
+server:
+  # 0 表示随机端口
+  port: 19999
+
+spring:
+  profiles:
+    active: db,redis,mq
+  application:
+    name: cj
+  main:
+    allow-circular-references: true

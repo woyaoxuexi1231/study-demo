@@ -6,7 +6,7 @@ import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hulei.entity.mybatisplus.domain.BigDataUsers;
-import org.hulei.springdata.jdbc.mapper.BigDataUserMapper;
+import org.hulei.entity.mybatisplus.starter.mapper.BigDataUserMapper;
 import org.hulei.springdata.routingdatasource.annotation.TargetDataSource;
 import org.hulei.springdata.routingdatasource.core.DataSourceToggleUtil;
 import org.hulei.util.dto.ResultDTO;
