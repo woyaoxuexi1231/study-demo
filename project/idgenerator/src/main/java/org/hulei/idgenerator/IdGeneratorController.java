@@ -129,7 +129,7 @@ public class IdGeneratorController implements ApplicationContextAware {
 
     @SneakyThrows
     @GetMapping("/insert-with-segment-ids")
-    public void insertWithSegmentIds(){
+    public void insertWithSegmentIds() {
 
         MyStopWatch stopWatch = new MyStopWatch();
 
@@ -157,21 +157,23 @@ public class IdGeneratorController implements ApplicationContextAware {
         stopWatch.start("多线程使用分布式id批量插入数据");
         CountDownLatch count4 = new CountDownLatch(100);
         for (int i = 0; i < 100; i++) {
-            try {
-                List<BigDataUsers> users = new ArrayList<>();
-                DataSourceToggleUtil.set("first");
-                for (int j = 0; j < 200; j++) {
-                    long snowflakeId = segmentIdGenerator.getId("test").getId();
-                    // long snowflakeId = snowflakeConfig.getSnowflake().nextId();
-                    BigDataUsers gen = BigDataUsers.gen();
-                    gen.setId(snowflakeId);
-                    users.add(BigDataUsers.gen());
+            commonPool.execute(() -> {
+                try {
+                    List<BigDataUsers> users = new ArrayList<>();
+                    DataSourceToggleUtil.set("first");
+                    for (int j = 0; j < 200; j++) {
+                        long snowflakeId = segmentIdGenerator.getId("test").getId();
+                        // long snowflakeId = snowflakeConfig.getSnowflake().nextId();
+                        BigDataUsers gen = BigDataUsers.gen();
+                        gen.setId(snowflakeId);
+                        users.add(BigDataUsers.gen());
+                    }
+                    DataSourceToggleUtil.set("second");
+                    bigDataUserMapper.insert(users);
+                } finally {
+                    count4.countDown();
                 }
-                DataSourceToggleUtil.set("second");
-                bigDataUserMapper.insert(users);
-            } finally {
-                count4.countDown();
-            }
+            });
         }
         count4.await();
         stopWatch.stop();
