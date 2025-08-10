@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @TableName(value = "big_data_products")
 public class BigDataProducts {
+
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
@@ -29,6 +30,9 @@ public class BigDataProducts {
 
     @TableField(value = "quantity")
     private Integer quantity;
+
+    @TableField(value = "freeze_quantity")
+    private Integer freezeQuantity;
 
     @TableField(value = "created_at")
     private Date createdAt;

@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "big_data_products", schema = "test")
 public class BigDataProduct {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -37,6 +38,9 @@ public class BigDataProduct {
 
     @Column(name = "quantity")
     private Integer quantity;
+
+    @Column(name = "freeze_quantity")
+    private Integer freezeQuantity;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

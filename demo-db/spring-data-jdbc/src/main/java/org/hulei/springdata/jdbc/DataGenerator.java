@@ -54,7 +54,7 @@ public class DataGenerator {
     public void generateProducts(DataSource ds, long total) throws SQLException {
         try (Connection conn = ds.getConnection()) {
             conn.setAutoCommit(false);
-            String sql = "INSERT INTO big_data_products (name, category, quantity, price) VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO big_data_products (name, category, quantity, price, freeze_quantity) VALUES (?, ?, ?, ?, ?)";
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 long inserted = 0;
                 while (inserted < total) {
@@ -64,6 +64,7 @@ public class DataGenerator {
                         ps.setString(2, faker.commerce().department());
                         ps.setInt(3, random.nextInt(100) + 1);
                         ps.setDouble(4, Double.parseDouble(faker.commerce().price()));
+                        ps.setInt(5, 0);
                         ps.addBatch();
                         inserted++;
                     }
@@ -159,6 +160,8 @@ public class DataGenerator {
 
 
         // 按需注释或放开，按顺序生成
+
+        // 用户
         tpe.execute(() -> {
             try {
                 generateUsers(dataSource, 10_000_000);                // 用户表
@@ -166,6 +169,7 @@ public class DataGenerator {
                 throw new RuntimeException(e);
             }
         });
+        // 产品
         tpe.execute(() -> {
             try {
                 generateProducts(dataSource, 500_000);                // 商品表
@@ -173,6 +177,7 @@ public class DataGenerator {
                 throw new RuntimeException(e);
             }
         });
+        // 订单
         tpe.execute(() -> {
             try {
                 generateOrders(dataSource, 100_000_000, 10_000_000);  // 订单表
@@ -180,6 +185,7 @@ public class DataGenerator {
                 throw new RuntimeException(e);
             }
         });
+        // 订单详情
         tpe.execute(() -> {
             try {
                 generateOrderItems(dataSource, 300_000_000, 100_000_000, 500_000); // 订单明细
@@ -187,6 +193,7 @@ public class DataGenerator {
                 throw new RuntimeException(e);
             }
         });
+        // 评价
         tpe.execute(() -> {
             try {
                 generateReviews(dataSource, 20_000_000, 10_000_000, 500_000);      // 评论表

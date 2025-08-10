@@ -10,12 +10,13 @@ CREATE TABLE big_data_users
 -- 商品表
 CREATE TABLE big_data_products
 (
-    id         BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name       VARCHAR(200),
-    category   VARCHAR(100),
-    price      DECIMAL(10, 2),
-    quantity   INT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    id              BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name            VARCHAR(200),
+    category        VARCHAR(100),
+    price           DECIMAL(10, 2),
+    quantity        INT,
+    freeze_quantity INT,
+    created_at      DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 订单表

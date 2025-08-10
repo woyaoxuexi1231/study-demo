@@ -31,21 +31,24 @@ public class SeckillController {
     final SeckillService seckillService;
 
     @PostMapping("/init-stock/{productId}/{stock}")
-    public void initStock(@PathVariable Long productId,
-                          @PathVariable Integer stock) {
-        seckillStockService.initStock(productId, stock);
+    public String initStock(@PathVariable Long productId,
+                            @PathVariable Integer stock) {
+        return seckillStockService.initStock(productId, stock);
     }
 
-    @GetMapping("/init-stock/{productId}")
+    @GetMapping("/remain-stock/{productId}")
     public int getRemainStock(@PathVariable Long productId) {
         return seckillStockService.getRemainStock(productId);
     }
 
-    @GetMapping("/try-seckill/{productId}/{quantity}")
+    @PostMapping("/try-seckill/{productId}/{quantity}/{userId}")
     public SeckillService.SeckillResult trySeckill(@PathVariable long productId,
-                                                   @PathVariable int quantity) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User principal = (User) authentication.getPrincipal();
-        return seckillService.trySeckill(productId, principal.getId(), quantity);
+                                                   @PathVariable int quantity,
+                                                   @PathVariable Long userId
+    ) {
+        // Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // User principal = (User) authentication.getPrincipal();
+        return seckillService.trySeckill(productId, userId, quantity);
+        // return null;
     }
 }

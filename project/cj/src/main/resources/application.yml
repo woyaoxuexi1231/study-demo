@@ -9,3 +9,15 @@ spring:
     name: cj
   main:
     allow-circular-references: true
+
+
+common:
+  security:
+    default:
+      websecurity: false
+
+
+
+logging:
+  level:
+    root: info

@@ -1,7 +1,9 @@
 package org.hulei.common.security;
 
 import lombok.extern.slf4j.Slf4j;
+import org.hulei.common.security.controller.UserCheckController;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.context.annotation.Bean;
 
 /**
  * @author hulei
@@ -22,5 +24,10 @@ public class SecurityAutoConfig {
         return new MemorySecurityAutoConfig();
     }
      */
+
+    @Bean
+    public UserCheckController userCheckController(){
+        return new UserCheckController();
+    }
 
 }

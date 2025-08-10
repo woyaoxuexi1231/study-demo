@@ -1,0 +1,18 @@
+server:
+  port: 0
+spring:
+  profiles:
+    active: redis,db
+  main:
+    allow-circular-references: true
+  servlet:
+    multipart.max-file-size: 10MB
+    multipart.max-request-size: 10MB
+  application:
+    name: spring-redisson
+
+
+logging:
+  level:
+    root: info
+    org.redisson.client.handler.CommandDecoder: info

@@ -22,8 +22,12 @@ public class CompletableFutureTest {
 
     @SneakyThrows
     public static void main(String[] args) {
-        CompletableFuture<String> supplyAsync = supplyAsync();
-        System.out.println(supplyAsync.get());
+        // CompletableFuture<String> supplyAsync = supplyAsync();
+        // System.out.println(supplyAsync.get());
+
+        CompletableFuture<Void> listenFuture = new CompletableFuture<>();
+        Void unused = listenFuture.get();
+        log.info("结束");
     }
 
     @SneakyThrows

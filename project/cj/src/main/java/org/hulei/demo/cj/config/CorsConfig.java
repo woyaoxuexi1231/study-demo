@@ -11,7 +11,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:8081", "http://192.168.3.2:8081") // Vue 前端地址
+                .allowedOrigins("http://localhost:8080", "http://192.168.3.2:8080") // Vue 前端地址
                 .allowedMethods("*")
                 .allowedHeaders("*")
                 .allowCredentials(true);
