@@ -15,5 +15,9 @@ public class SeckillConsts {
      * hash 类型，完整的键最后是产品信息，field key 对应用户id，value 对应用户购买限制值
      */
     public static final String LIMIT_KEY_PREFIX = "seckill:user_limit:";
+    /**
+     * 归还库存并发控制
+     */
+    public static final String BACK_STOCK_PREFIX = "seckill:back:lock";
 
 }

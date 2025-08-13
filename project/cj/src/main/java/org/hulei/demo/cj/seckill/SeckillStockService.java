@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hulei.entity.mybatisplus.domain.BigDataProducts;
 import org.hulei.entity.mybatisplus.starter.mapper.BigDataProductMapper;
+import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import java.util.Objects;
 
+import static org.hulei.demo.cj.seckill.SeckillConsts.BACK_STOCK_PREFIX;
 import static org.hulei.demo.cj.seckill.SeckillConsts.LIMIT_KEY_PREFIX;
 import static org.hulei.demo.cj.seckill.SeckillConsts.STOCK_KEY_PREFIX;
 
@@ -30,6 +32,7 @@ public class SeckillStockService {
 
     private DefaultRedisScript<Long> seckillScript;
     private final RedissonClient redissonClient;
+    final StockCacheService stockCacheService;
 
     @PostConstruct
     public void init() {
@@ -67,32 +70,30 @@ public class SeckillStockService {
 
     // 获取剩余库存
     public int getRemainStock(long productId) {
-        String stock = redisTemplate.opsForValue().get(STOCK_KEY_PREFIX + productId);
-        return stock != null ? Integer.parseInt(stock) : 0;
+        // String stock = redisTemplate.opsForValue().get(STOCK_KEY_PREFIX + productId);
+        // return stock != null ? Integer.parseInt(stock) : 0;
+
+
+        // 两级缓存架构，减少对redis的访问压力，本地缓存 100ms 过期
+        return stockCacheService.getStock(productId);
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void decreaseFreezeStock(Integer productId) {
-        // 这里我想到两个方案 1.查询需要返回多少库存  2.直接减少冻结库存
-        // 我这里选择 2
-        // 这个redis操作应该拿出去更好一点
-        Long size = redisTemplate.opsForHash().size(LIMIT_KEY_PREFIX + productId);
-        // 减掉冻结库存
-        BigDataProducts products = bigDataProductMapper.selectById(productId);
-        products.setFreezeQuantity(products.getFreezeQuantity() - size.intValue());
-        bigDataProductMapper.updateById(products);
+    public void backStock(Long productId) {
+        // 并发控制一下
+        RLock lock = redissonClient.getLock(BACK_STOCK_PREFIX);
+        if (lock.tryLock()) {
+            try {
+                // 冻结库存在仅用作秒杀的前提下，这里就直接进行库存返回了
+                Long size = redisTemplate.opsForHash().size(LIMIT_KEY_PREFIX + productId);
+                // 减掉冻结库存
+                BigDataProducts products = bigDataProductMapper.selectById(productId);
+                products.setQuantity(products.getQuantity() + products.getFreezeQuantity() - size.intValue());
+                products.setFreezeQuantity(0);
+                bigDataProductMapper.updateById(products);
+            } finally {
+                lock.unlock();
+            }
+        }
     }
-
-    @Transactional(rollbackFor = Exception.class)
-    public void backStock(Long productId, Integer seckillNumber) {
-        BigDataProducts products = bigDataProductMapper.selectById(productId);
-
-        Integer backNumber = products.getFreezeQuantity() - seckillNumber;
-
-        products.setQuantity(products.getQuantity() + backNumber);
-        products.setFreezeQuantity(products.getFreezeQuantity() - backNumber);
-        bigDataProductMapper.updateById(products);
-    }
-
-    // todo 这里 backStock 和 decreaseFreezeStock 的功能看似都有用，其实重复了，两种方式取其一，只要完成归还库存就行(前提是冻结库存仅仅给秒杀用)
 }

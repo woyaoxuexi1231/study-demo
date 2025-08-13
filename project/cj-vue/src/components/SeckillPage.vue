@@ -43,9 +43,9 @@
         <h2>3. 尝试秒杀</h2>
       </template>
       <el-form :inline="true" class="input-group">
-        <el-form-item label="用户ID">
-          <el-input v-model="seckillUserId" placeholder="商品ID" type="number" />
-        </el-form-item>
+<!--        <el-form-item label="用户ID">-->
+<!--          <el-input v-model="seckillUserId" placeholder="商品ID" type="number" />-->
+<!--        </el-form-item>-->
         <el-form-item label="商品ID">
           <el-input v-model="seckillProductId" placeholder="商品ID" type="number" />
         </el-form-item>
@@ -79,7 +79,7 @@ const queryProductId = ref('');
 const stockResult = ref(null);
 
 // 秒杀相关
-const seckillUserId = ref('');
+// const seckillUserId = ref('');
 const seckillProductId = ref('');
 const seckillQuantity = ref(1);
 const seckillResult = ref(null);
@@ -119,8 +119,8 @@ const handleQueryStock = async () => {
 const handleSeckill = async () => {
   try {
     const response = await axios.post(
-        `${API_PREFIX}/try-seckill/${seckillProductId.value}/${seckillQuantity.value}/${seckillUserId.value}`,
-        { withCredentials: true } // 确保携带认证信息
+        // `${API_PREFIX}/try-seckill/${seckillProductId.value}/${seckillQuantity.value}/${seckillUserId.value}`,
+        `${API_PREFIX}/try-seckill/${seckillProductId.value}/${seckillQuantity.value}`,
     );
     seckillResult.value = response.data;
     console.log('秒杀结果:', response.data);

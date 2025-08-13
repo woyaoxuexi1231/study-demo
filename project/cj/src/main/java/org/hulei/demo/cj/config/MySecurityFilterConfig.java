@@ -18,24 +18,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
- * SecurityFilterChain是Spring Security 5.4引入的一种用于配置安全性过滤器链的机制，它通常结合Spring Security的HttpSecurity来使用，用于替代过去使用的WebSecurityConfigurerAdapter
- * 1. SecurityFilterChain 用于定义应用程序的顺序过滤器链，包括一些关键的安全功能，如身份验证、授权、CSRF保护等。
- * 2. 通过定义SecurityFilterChain bean来指定哪些安全策略（如URL保护、授权规则）应该应用到HTTP请求中。
- *
- * @author hulei
- * @since 2024/10/15 13:40
- */
-
 @Configuration
 @EnableWebSecurity
 public class MySecurityFilterConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        /*
+        使用 spring security 提供的默认的权限认证流程
+
+        1.
+         */
         http
                 .authorizeHttpRequests()
-                .regexMatchers(".*").permitAll()
+                // .regexMatchers(".*").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

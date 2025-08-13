@@ -63,7 +63,7 @@ public class SeckillRedisExpireConfig {
                         if ("expired".equals(eventType)) {
                             // 分解 key
                             String substring = key.substring(("__keyspace@0__:" + STOCK_KEY_PREFIX).length());
-                            seckillStockService.decreaseFreezeStock(Integer.parseInt(substring));
+                            seckillStockService.backStock(Long.parseLong(substring));
                         }
                     }
                 },
@@ -86,9 +86,8 @@ public class SeckillRedisExpireConfig {
             // 需要有一个东西来记录秒杀一共拿了多少库存
             // 然后这里应该也要用lua脚本来做，不然没有原子性
             if (Boolean.FALSE.equals(redisTemplate.hasKey(STOCK_KEY_PREFIX + product.getId()))) {
-                Long size = redisTemplate.opsForHash().size(LIMIT_KEY_PREFIX + product.getId());
                 // 归还没有秒杀完的商品
-                seckillStockService.backStock(product.getId(), size.intValue());
+                seckillStockService.backStock(product.getId());
             }
         });
     }
