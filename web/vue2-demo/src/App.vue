@@ -10,6 +10,7 @@ import HelloWorld from './components/HelloWorld.vue'
 
 export default {
   name: 'App',
+  // 手动注册组件
   components: {
     HelloWorld
   }

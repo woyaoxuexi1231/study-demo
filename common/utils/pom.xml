@@ -18,11 +18,6 @@
     </properties>
 
     <dependencies>
-        <!-- 操作excel -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-        </dependency>
         <!--commons-lang3是Apache的Jakarta commons工程下具有一系列公共基础类。-->
         <!--Lang组件主要是一些工具类，涉及到数组工具类，字符串工具类，字符工具类，数学方面，时间日期工具类，异常，事件等工具类。-->
         <!--例如StringUtils-->
@@ -38,10 +33,6 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>

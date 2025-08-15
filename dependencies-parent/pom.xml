@@ -121,7 +121,7 @@
         <javax.servlet.jsp.version>2.2.1</javax.servlet.jsp.version>
         <apache.poi.ooxml.version>5.2.5</apache.poi.ooxml.version>
         <apache.poi.version>5.2.5</apache.poi.version>
-        <commons.io.version>2.6</commons.io.version>
+        <commons.io.version>2.16.1</commons.io.version>
         <alibaba.fastjson.version>2.0.31</alibaba.fastjson.version>
         <!-- 这个依赖spring已经有了 -->
         <!-- <gson.version>2.10.1</gson.version>  -->
@@ -257,11 +257,11 @@
                 <artifactId>dubbo-spring-boot-starter</artifactId>
                 <version>${apache.dubbo.springboot.starter.version}</version>
             </dependency>
-<!--             <dependency> -->
-<!--                 <groupId>org.apache.dubbo.extensions</groupId> -->
-<!--                 <artifactId>dubbo-mock-admin</artifactId> -->
-<!--                 <version>3.0.0</version> -->
-<!--             </dependency> -->
+            <!--             <dependency> -->
+            <!--                 <groupId>org.apache.dubbo.extensions</groupId> -->
+            <!--                 <artifactId>dubbo-mock-admin</artifactId> -->
+            <!--                 <version>3.0.0</version> -->
+            <!--             </dependency> -->
             <!-- https://mvnrepository.com/artifact/org.apache.dubbo/dubbo-registry-nacos -->
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
