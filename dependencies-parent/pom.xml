@@ -13,9 +13,6 @@
     <!-- 打包方式, 如果没有指定那么默认以 jar 方式打包 -->
     <!-- 对于聚合和父模块, 必须是 pom 模式 -->
     <packaging>pom</packaging>
-    <modules>
-        <module>../demo-db/spring-redisson</module>
-    </modules>
 
 
     <!--

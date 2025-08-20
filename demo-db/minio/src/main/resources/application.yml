@@ -1,0 +1,17 @@
+server:
+  port: 0
+
+spring:
+  main:
+    allow-circular-references: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+minio:
+  endpoint: http://192.168.3.102:9000  # MinIO 服务地址，如果是 Docker 本地部署，通常是这个
+  access-key: minio-access-key           # 替换为你的 MinIO Access Key
+  secret-key: minio-secret-key        # 替换为你的 MinIO Secret Key
+  bucket-name: test-bucket         # 默认存储桶名称，你可以按需修改或动态创建
+  download-dir: C:\dataz\Project\study-demo\demo-db\minio
