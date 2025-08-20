@@ -3,8 +3,12 @@
 它是 Vue 3.2 引入的编译时语法糖，让组件逻辑更简洁、直观。
 -->
 <script setup>
-// 组件化开发
-import HelloWorld from './components/HelloWorld.vue'
+import MyComponent from "./components/MyComponent.vue";
+import {ref} from "vue";
+
+const callback = ref((s) => {
+  console.log(s);
+})
 </script>
 
 <template>
@@ -13,7 +17,16 @@ import HelloWorld from './components/HelloWorld.vue'
   Vue 实现了自己的组件模型，使我们可以在每个组件内封装自定义内容与逻辑。
   组件名用 PascalCase（大驼峰），HTML 中用 <Hello />。
   -->
-  <HelloWorld msg="..."/>
+  <!--  <HelloWorld msg="..."/>-->
+  <nav>
+    <router-link to="/">首页</router-link>
+    |
+    <router-link to="/about">关于</router-link>
+    |
+    <router-link to="/todo">实战小项目（Todo List）</router-link>
+  </nav>
+  <router-view/>
+  <MyComponent @some-event="callback"/>
 </template>
 
 <style scoped>
