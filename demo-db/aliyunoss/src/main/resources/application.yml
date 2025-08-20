@@ -1,0 +1,18 @@
+server:
+  port: 0
+
+spring:
+  main:
+    allow-circular-references: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+# application.yml
+aliyun:
+  oss:
+    endpoint: oss-cn-hangzhou.aliyuncs.com  # 根据实际情况修改
+    access-key-id: your-access-key-id       # 替换为您的AccessKey ID
+    access-key-secret: your-access-key-secret # 替换为您的AccessKey Secret
+    bucket-name: your-bucket-name           # 替换为您的Bucket名称
