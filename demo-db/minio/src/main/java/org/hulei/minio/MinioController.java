@@ -1,5 +1,6 @@
 package org.hulei.minio;
 
+import io.minio.MinioClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -64,6 +66,7 @@ public class MinioController {
 
     /**
      * 下载 MinIO 中的文件，并保存到本地服务器
+     *
      * @param objectName MinIO 中的文件 Key，比如 "images/avatar.jpg"
      * @return 返回保存到本地的文件路径
      */
@@ -116,6 +119,19 @@ public class MinioController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(null);
+        }
+    }
+
+    @Resource
+    private MinioClient minioClient;
+
+    @GetMapping("/file-exist")
+    public void fileExist(@RequestParam(value = "filePath") String filePath) {
+        boolean exists = minioService.doesObjectExist(filePath);
+        if (exists) {
+            System.out.println("文件存在！");
+        } else {
+            System.out.println("文件不存在！");
         }
     }
 }

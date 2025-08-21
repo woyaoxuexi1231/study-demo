@@ -1,124 +1,20 @@
-# 使用 wget
-
-wget可能不可用，还是推荐使用 curl
-
-```shell
-# yum源
-wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
-wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo
-
-# 其清空缓存
-yum clean all
-# 生成新的缓存
-yum makecache
-```
 
 
+# 更换
 
-# 使用 curl
+CentOS 7 已于 2024 年 6 月 30 日结束生命周期（EOL），官方已停止维护。许多镜像站可能已下架 CentOS 7 的仓库。
 
 ```shell
-# 备份一下原始的镜像文件
-mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.back
-# 配置阿里云的镜像
-curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
-# 重新生成缓存
-yum makecache
-```
+# 备份原文件
+sudo cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
 
-可能存在依旧不行的情况，显示镜像依旧没改。这里有解决方案：https://blog.csdn.net/2301_81522768/article/details/143132834
+# 使用阿里云镜像（示例）
+sudo sed -e 's|^mirrorlist=|#mirrorlist=|g' \
+         -e 's|^#baseurl=http://mirror.centos.org|baseurl=https://mirrors.aliyun.com|g' \
+         -i /etc/yum.repos.d/CentOS-Base.repo
 
-```
-cd /etc/yum.repos.d/
-# 备份以下两个文件
-cp CentOS-SCLo-scl.repo CentOS-SCLo-scl.repo.blk
-cp CentOS-SCLo-scl-rh.repo CentOS-SCLo-scl-rh.repo.blk
-```
-
-vim CentOS-SCLo-scl.repo 
-
-将此文件内容全部替换为以下内容
-
-```
-# CentOS-SCLo-sclo.repo
-#
-# Please see http://wiki.centos.org/SpecialInterestGroup/SCLo for more
-# information
- 
-[centos-sclo-sclo]
-name=CentOS-7 - SCLo sclo
-baseurl=https://mirrors.aliyun.com/centos/7/sclo/x86_64/sclo/
-gpgcheck=0
-enabled=1
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-SCLo
- 
-[centos-sclo-sclo-testing]
-name=CentOS-7 - SCLo sclo Testing
-baseurl=http://buildlogs.centos.org/centos/7/sclo/$basearch/sclo/
-gpgcheck=0
-enabled=0
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-SCLo
- 
-[centos-sclo-sclo-source]
-name=CentOS-7 - SCLo sclo Sources
-baseurl=http://vault.centos.org/centos/7/sclo/Source/sclo/
-gpgcheck=1
-enabled=0
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-SCLo
- 
-[centos-sclo-sclo-debuginfo]
-name=CentOS-7 - SCLo sclo Debuginfo
-baseurl=http://debuginfo.centos.org/centos/7/sclo/$basearch/
-gpgcheck=1
-enabled=0
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-SCLo
-```
-
-vim CentOS-SCLo-scl-rh.repo
-
-将此文件内容全部替换为以下内容
-
-```
-# CentOS-SCLo-rh.repo
-#
-# Please see http://wiki.centos.org/SpecialInterestGroup/SCLo for more
-# information
- 
-[centos-sclo-rh]
-name=CentOS-7 - SCLo rh
-baseurl=https://mirrors.aliyun.com/centos/7/sclo/x86_64/rh/
-gpgcheck=0
-enabled=1
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-SCLo
- 
-[centos-sclo-rh-testing]
-name=CentOS-7 - SCLo rh Testing
-baseurl=http://buildlogs.centos.org/centos/7/sclo/$basearch/rh/
-gpgcheck=0
-enabled=0
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-SCLo
- 
-[centos-sclo-rh-source]
-name=CentOS-7 - SCLo rh Sources
-baseurl=http://vault.centos.org/centos/7/sclo/Source/rh/
-gpgcheck=1
-enabled=0
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-SCLo
- 
-[centos-sclo-rh-debuginfo]
-name=CentOS-7 - SCLo rh Debuginfo
-baseurl=http://debuginfo.centos.org/centos/7/sclo/$basearch/
-gpgcheck=1
-enabled=0
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-SCLo
-```
-
-最后执行一下
-
-```shell
-yum clean all
-
-yum makecache 
+# 清理缓存并重建
+sudo yum clean all && sudo yum makecache
 ```
 
 
@@ -132,16 +28,13 @@ yum makecache
 #### **CentOS 7**
 
 ```bash
-sudo yum install -y centos-release
+cd /etc/yum.repos.d/
+rm -rf CentOS-*
+rpm -Uvh --force http://vault.centos.org/7.9.2009/os/x86_64/Packages/centos-release-7-9.2009.0.el7.centos.x86_64.rpm
+
 ```
 
-或手动下载官方源：
 
-```bash
-sudo curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo  # 阿里云镜像
-# 或使用官方源
-sudo curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrorlist.centos.org/?release=7&arch=x86_64&repo=os
-```
 
 #### **CentOS 8（或 Rocky Linux/AlmaLinux）**
 

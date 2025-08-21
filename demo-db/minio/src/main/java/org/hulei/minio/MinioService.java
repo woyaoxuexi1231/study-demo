@@ -1,6 +1,7 @@
 package org.hulei.minio;
 
 import io.minio.*;
+import io.minio.errors.ErrorResponseException;
 import io.minio.http.Method;
 import io.minio.messages.Bucket;
 import org.springframework.beans.factory.annotation.Value;
@@ -143,5 +144,37 @@ public class MinioService {
                         .object(objectName)
                         .build()
         );
+    }
+
+    /**
+     * 判断 MinIO 中指定 Bucket 下的某个文件（对象）是否存在
+     *
+     * @param objectName 文件的 Key，例如 "docs/report.pdf" 或 "avatar.jpg"
+     * @return true 表示文件存在，false 表示文件不存在 或 出现其他错误
+     */
+    public boolean doesObjectExist(String objectName) {
+        try {
+            // 调用 statObject 方法获取文件元数据（如果文件存在）
+            StatObjectResponse stat = minioClient.statObject(
+                    StatObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(objectName)
+                            .build()
+            );
+            // 如果能执行到这里，说明文件存在
+            return true;
+        } catch (ErrorResponseException e) {
+            // 捕获 404 Not Found 异常，说明文件不存在
+            if (e.errorResponse().code().equals("404")) {
+                return false;
+            }
+            // 其它类型的 ErrorResponseException，比如权限问题等，也可以根据需要处理
+            e.printStackTrace();
+            return false;
+        } catch (Exception e) {
+            // 捕获其它异常，比如网络问题、配置错误等
+            e.printStackTrace();
+            return false;
+        }
     }
 }

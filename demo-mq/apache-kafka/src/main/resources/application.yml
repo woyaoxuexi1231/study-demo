@@ -1,0 +1,44 @@
+
+
+spring:
+  kafka:
+    # Kafka 集群地址，多个用逗号分隔
+    bootstrap-servers: 192.168.3.102:9092
+
+    # 生产者配置
+    producer:
+      # 消息key和value的默认序列化器
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # 可选：更高级的确认模式 (all/-1 是最严格的，确保消息被leader和ISR中的follower确认)
+      acks: all
+      # 可选：启用幂等性，防止生产者重试导致消息重复
+      properties:
+        enable.idempotence: true
+
+    # 消费者配置
+    consumer:
+      # 消费者组ID，同一个组内的消费者共同消费同一个topic
+      group-id: my-springboot-group
+      # 消息key和value的默认反序列化器
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # 偏移量重置策略: earliest, latest, none
+      # 当没有初始偏移量或偏移量失效时（例如数据被删除），从最早的消息开始消费
+      auto-offset-reset: earliest
+      # 可选：是否自动提交偏移量（通常建议设置为false，手动提交以保障至少一次或精确一次语义）
+      enable-auto-commit: false
+
+    # 监听器容器配置（用于@KafkaListener）
+    listener:
+      # 监听器类型，single|batch
+      type: single
+      # 手动提交确认模式，推荐使用MANUAL_IMMEDIATE或MANUAL（批量时用BATCH）
+      ack-mode: manual_immediate
+
+# 自定义Topic名称，便于管理
+myapp:
+  kafka:
+    topic: spring-kafka-demo-topic
+server:
+  port: 11006

@@ -20,3 +20,20 @@ Maven拉取依赖出现报错：Since Maven 3.8.1 http repositories are blocked.
 
   
 
+
+
+## 配置代理
+
+在 maven 的配置文件的 proxies 标签下添加 
+
+```
+    <proxy>
+      <id>optional</id>
+      <active>true</active>
+      <protocol>http</protocol>
+      <host>192.168.3.2</host>
+      <port>21231</port>
+    </proxy>
+```
+
+通过 `mvn -version` 找到对应的位置
