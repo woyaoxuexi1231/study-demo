@@ -1,7 +1,9 @@
 rocketmq:
-  name-server: 192.168.3.102:9876  # 替换为你的 RocketMQ NameServer 地址
+  # 替换为你的 RocketMQ NameServer 地址
+  name-server: 192.168.3.102:9876
   producer:
-    group: my-producer-group       # 生产者组名（可自定义）
+    # 生产者组
+    group: my-producer-group
   consumer:
     group: my-consumer-group       # 消费者组名（可自定义）
 

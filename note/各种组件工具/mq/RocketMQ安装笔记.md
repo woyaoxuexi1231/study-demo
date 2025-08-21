@@ -5,6 +5,8 @@
 [RocketMQ 在Linux上的安装_linux安装rocketmq-CSDN博客](https://blog.csdn.net/xhmico/article/details/122938904)
 
 ```
+# 启动前修改启动脚本内的 jvm 内存参数，默认很大
+
 # 启动 nameserver
 ./mqnamesrv &
 
