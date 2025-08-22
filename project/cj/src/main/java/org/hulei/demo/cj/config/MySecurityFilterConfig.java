@@ -31,7 +31,7 @@ public class MySecurityFilterConfig {
          */
         http
                 .authorizeHttpRequests()
-                // .regexMatchers(".*").permitAll()
+                .regexMatchers(".*").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

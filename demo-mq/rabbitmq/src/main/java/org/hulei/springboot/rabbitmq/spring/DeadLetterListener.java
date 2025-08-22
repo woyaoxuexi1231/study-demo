@@ -1,4 +1,4 @@
-package org.hulei.springboot.rabbitmq.spring.consumer;
+package org.hulei.springboot.rabbitmq.spring;
 
 import com.rabbitmq.client.Channel;
 import org.hulei.springboot.rabbitmq.basic.config.MQConfig;

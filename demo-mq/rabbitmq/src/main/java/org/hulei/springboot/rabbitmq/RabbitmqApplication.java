@@ -9,18 +9,21 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 2024/9/19 19:13
  */
 
-@MapperScan(basePackages = {"org.hulei.springboot.rabbitmq.spring.consumer.mapper"})
 @SpringBootApplication
 public class RabbitmqApplication {
 
     public static void main(String[] args) {
         /*
-        消息队列(MQ)的出现主要就是为了解决三大问题：
-        1. 解耦：降低系统组件之间的依赖关系
-        2. 异步：发送方不用等待接收方立即响应就可以继续执行后续任务，接收方只需要在合适的时间处理请求即可
-        3. 削峰：通过缓冲机制平滑瞬时高并发请求，避免系统因流量突增而崩溃
+        RabbitMQ 使用 AMQP 协议（Advanced Message Queuing Protocol，高级消息队列协议）
+        AMQP工作过程：
+            1.发布者（Publisher）发布消息（Message），经由交换机（Exchange）。
+            2.交换机根据路由规则将收到的消息分发给与该交换机绑定的队列（Queue）。
+            3.最后 AMQP 代理会将消息投递给订阅了此队列的消费者，或者消费者按照需求自行获取。
+        rabbitmq 包含 生产者、消费者、代理(rabbitmq本身)
 
-        问题2：spring.rabbitmq.publisher-confirm-type 的 simple 和 correlated 到底有啥区别？
+        组件：ConnectionFactory, Channel, Exchange, Queue, Binding, Routing Key
+
+
          */
         SpringApplication.run(RabbitmqApplication.class, args);
     }

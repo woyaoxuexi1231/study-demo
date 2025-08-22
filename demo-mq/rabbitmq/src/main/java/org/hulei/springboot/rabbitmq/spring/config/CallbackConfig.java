@@ -39,40 +39,13 @@ public class CallbackConfig implements RabbitTemplate.ConfirmCallback, RabbitTem
      */
     @PostConstruct
     public void bind() {
-        /*
-        ConfirmCallback 是 RabbitMQ 在消息发送过程中的确认回调接口，用于确认消息是否成功发送到交换机。
-        当消息成功发送到交换机时，RabbitMQ 会触发 ConfirmCallback 回调方法来通知发送者。
-        通过实现 ConfirmCallback 接口，可以在回调方法中处理发送成功和失败的情况，以便根据需要进行相应的处理逻辑。
-
-        在实际使用中，可以通过设置 ConfirmCallback 回调来处理以下情况：
-            监测消息发送成功/失败：根据 ack 的值来判断消息是否成功发送到交换机，根据 correlationData 来判断是哪条消息发送成功或失败。
-            数据库操作的事务性：当消息发送成功后，再执行一些数据库操作，如记录消息的状态或更新相关数据，以保证消息的可靠性。
-            重发机制：当消息发送失败时，可以根据需要执行一些重发逻辑，如重新发送消息或进行异常处理。
-
-        需要使用这个参数使其生效
-        spring.rabbitmq.publisher-confirm-type=correlated
-         */
         rabbitTemplate.setConfirmCallback(this);
-        /*
-        ReturnCallback 是 RabbitMQ 在无法将消息路由到队列时的返回回调接口。当消息无法路由到队列时，RabbitMQ 会触发 ReturnCallback 回调方法，通知发送者该消息的返回情况。
-        通常情况下，消息无法路由到队列的原因可能是因为交换机没有匹配的队列，或者消息被标记为 “mandatory” 而没有被路由到任何队列。
-        通过实现 ReturnCallback 接口，可以在回调方法中处理这些返回的消息，以便根据需要进行相应的处理逻辑。
-
-        通过 ReturnCallback 可以在消息无法路由到队列时处理一些后续的操作，如记录日志、发送告警、重新发送消息等。可以根据 replyCode 和 replyText 处理特定的错误情况，以实现更高级的错误处理逻辑。
-        需要注意的是，为了触发 ReturnCallback，需要在消息发送时设置 mandatory 参数为 true，否则即使消息无法路由到队列，也不会触发该回调。
-        通过 ReturnCallback 可以对发送到交换机但无法路由到队列的消息进行处理，确保消息的可靠性和处理返回的错误情况。
-
-        使用这两个都可以开启
-        spring.rabbitmq.publisher-returns=true
-        rabbitTemplate.setMandatory(true);
-         */
-        // rabbitTemplate.setReturnCallback(this);
         rabbitTemplate.setReturnsCallback(this);
     }
 
 
     /**
-     * 1. 交换机成功收到了消息会触发这个回调(不管有没有队列收到消息, 都会触发)
+     * 1. 交换机成功收到了消息会触发这个回调(不管有没有队列收到消息, 都会触发, ack = true)
      * 2. 交换机接收失败了也会触发这个回调
      *
      * @param correlationData 消息相关数据，即使用 CorrelationData 关联的数据，可以用于标识消息或追踪消息的处理。
@@ -81,12 +54,13 @@ public class CallbackConfig implements RabbitTemplate.ConfirmCallback, RabbitTem
      */
     @Override
     public void confirm(CorrelationData correlationData, boolean ack, String cause) {
+        /*
+        实现 ConfirmCallback 时，需要实现这个方法
+         */
+
+
         if (ack) {
-            /*
-            1. 交换机收到了消息，也正常路由到某个队列了
-            2. 交换机收到了消息，并没有正常路由到某个队列
-             */
-            log.info("交换机成功收到了消息, correlationData: {}", correlationData);
+            log.info("交换机成功收到了消息(但是交换机并不保证消息被正常路由到某个队列), correlationData: {}", correlationData);
         } else {
             /*
             1. Broker 内存或磁盘资源不足
@@ -100,6 +74,20 @@ public class CallbackConfig implements RabbitTemplate.ConfirmCallback, RabbitTem
 
     @Override
     public void returnedMessage(ReturnedMessage returned) {
+        /*
+        实现 ReturnsCallback 接口时需要实现此接口
+        开启方式(2选1即可)：
+            spring.rabbitmq.publisher-returns=true
+            rabbitTemplate.setMandatory(true);
+
+        ReturnsCallback 用于处理无法路由到任何队列的消息（即消息被返回给生产者的情况）。
+        工作原理
+            1.当消息无法从交换器路由到任何队列时（没有匹配的绑定）
+            2.如果设置了 mandatory 标志为 true，RabbitMQ 会将消息返回给生产者
+            3.通过实现 ReturnsCallback 可以处理这些被返回的消息
+
+        💡对于延迟队列的消息，也会触发这个回调
+         */
         log.info("returned 函数收到通知, 消息并没有发送到任何有效的队列中, returned: {}", returned);
     }
 }

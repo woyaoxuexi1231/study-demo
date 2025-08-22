@@ -1,4 +1,4 @@
-package org.hulei.springboot.rabbitmq.spring.consumer;
+package org.hulei.springboot.rabbitmq.spring;
 
 import org.hulei.springboot.rabbitmq.basic.config.MQConfig;
 import com.rabbitmq.client.Channel;
@@ -15,7 +15,6 @@ import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;

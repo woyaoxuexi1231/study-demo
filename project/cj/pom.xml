@@ -61,11 +61,20 @@
             <version>1.0.0.4-SNAPSHOT</version>
         </dependency>
 
-
+        <!-- 一个高性能的 Java 本地缓存库 -->
+        <!-- 秒杀用到了 -->
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
         </dependency>
+
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+
+
     </dependencies>
 
 </project>

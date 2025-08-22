@@ -8,7 +8,7 @@
 
 **Minikube** 是一个轻量级的 **Kubernetes（K8s）本地开发工具**，用于在单机（如个人电脑）上快速搭建一个 **单节点的 Kubernetes 集群**，方便开发者进行本地测试和学习。
 
-### **核心功能**
+## **核心功能**
 
 - **本地运行 Kubernetes**：无需云端服务器，在笔记本或开发机上模拟 K8s 环境。
 - **支持多种驱动**：可以使用 Docker、Podman、VirtualBox、KVM 等作为底层虚拟化技术。
@@ -17,6 +17,12 @@
   - 部署 Pods、Services、Deployments。
   - 使用 `kubectl` 管理集群。
   - 测试 Helm Charts、Ingress、ConfigMap 等。
+
+
+
+## 安装
+
+🚨 前提要安装好 docker，minikube会以一个容器在docker内运行
 
 
 
@@ -29,7 +35,7 @@ newgrp docker
 
 
 
-安装kubectl
+**安装kubectl**
 运行以下命令，将kubectl二进制文件下载并设置为可执行：
 
 ```
@@ -40,7 +46,7 @@ sudo mv kubectl /usr/local/bin/
 
 
 
-安装Minikube
+**安装Minikube**
 运行以下命令，下载并安装Minikube：
 
 ```
@@ -50,7 +56,7 @@ sudo install minikube-linux-amd64 /usr/local/bin/minikube
 
 
 
-初始化Minikube集群
+**初始化Minikube集群**
 该步骤将创建一个名为“minikube”的虚拟集群，并启动一个单节点Kubernetes集群。运行以下命令：
 
 ```
@@ -64,11 +70,14 @@ minikube status
 kubectl get nodes
 ```
 
-
+## 报错
 
 🚨 kubectl get node 可能报错 
 
+```
+
 "Unhandled Error" err="couldn't get current server API group list: Get \"https://192.168.49.2:8443/api?timeout=32s\": net/http: TLS handshake timeout"
+```
 
 💡可能有代理，关闭代理 unset http_proxy https_proxy
 

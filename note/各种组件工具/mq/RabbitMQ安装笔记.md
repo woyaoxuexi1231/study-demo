@@ -215,3 +215,24 @@ rabbitmqctl cluster_status
 
 
 
+# 安装 rabbitmq_delayed_message_exchange 插件
+
+```
+# 下载好插件后 https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/tag/v3.8.0
+# 这里是 docker 安装的 rabbitmq，就多些步骤，如果不是docker安装的会简单一些
+
+# 复制插件到docker内
+docker cp rabbitmq_delayed_message_exchange-3.8.0.ez rabbitmq-node1:/plugins
+
+# 进入docker容器内，启动插件
+docker exec -it rabbitmq-node1 bash
+rabbitmq-plugins enable rabbitmq_delayed_message_exchange
+
+# 查看插件是否生效
+rabbitmq-plugins list | grep delayed
+```
+
+🚨 我这里有个想法就是，我node1配置这个插件，但是node2不配置这个插件会发生什么
+
+
+

@@ -5,6 +5,7 @@ spring:
     username: admin
     password: admin
     virtual-host: /
+    # TODO simple 和 correlated 到底有啥区别？
     # none	不开启发布确认（默认值）
     # correlated	开启 简单 Confirm，RabbitTemplate 会通过 CorrelationData 跟踪消息
     # simple	开启 基础 Confirm，内部基于 channel-level 的 ConfirmCallback，兼容性好但功能弱一些

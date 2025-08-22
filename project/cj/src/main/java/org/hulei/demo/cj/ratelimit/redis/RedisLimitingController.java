@@ -1,4 +1,4 @@
-package org.hulei.springboot.redis;
+package org.hulei.demo.cj.ratelimit.redis;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

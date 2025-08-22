@@ -9,7 +9,7 @@
         <version>1.0.0.4-SNAPSHOT</version>
     </parent>
 
-    <artifactId>alibaba-nacos-config</artifactId>
+    <artifactId>spring-cloud-alibaba</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>

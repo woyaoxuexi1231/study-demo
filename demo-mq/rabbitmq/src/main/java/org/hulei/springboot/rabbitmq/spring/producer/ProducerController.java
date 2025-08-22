@@ -5,7 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.hulei.springboot.rabbitmq.basic.config.MQConfig;
 import org.hulei.springboot.rabbitmq.model.MyMessage;
 import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.amqp.core.MessagePostProcessor;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,12 +71,29 @@ public class ProducerController {
 
         MessagePostProcessor nullProcessor = msg -> {
             msg.getMessageProperties().setMessageId(UUID.randomUUID().toString());
+            /*
+            避免消息丢失 1.队列必须持久化 2.消息必须持久化
+            RabbitMQ将消息写入一个持久化的日志文件，当发布一条持久化的消息时，rabbit会在消息提交到日志文件后再响应
+             */
+            msg.getMessageProperties().setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+
+            /*
+            设置消息的header，这主要是配合 header 类型的交换机，header类型的交换机通过 header 来判断消息是否可以投递到队列内
+             */
+            msg.getMessageProperties().setHeader("color", "red");
+
+            /*
+            配置单条消息过期时间
+            🚨单条消息过期时间的问题如果队列顶端的消息还未出列，后续的消息即使过期了也会阻塞在队列内部，但是已过期的消息是不会传递给消费者的
+             */
+            msg.getMessageProperties().setExpiration(String.valueOf(TimeUnit.SECONDS.toMillis(5)));
             return msg;
         };
-        // 这是一个配置单条消息过期时间的处理器，单条消息过期时间的问题如果队列顶端的消息还未出列，后续的消息即使过期了也会阻塞在队列内部，但是已过期的消息是不会传递给消费者的
+
+        //
         MessagePostProcessor postProcessor = msg -> {
             msg.getMessageProperties().setMessageId(UUID.randomUUID().toString());
-            msg.getMessageProperties().setExpiration(String.valueOf(TimeUnit.SECONDS.toMillis(5)));
+
             return msg;
         };
 
@@ -180,6 +200,15 @@ public class ProducerController {
 
     public void transaction() {
 
+    }
+
+
+    @GetMapping("/send-delay-message")
+    public void sendDelayMessage(String message, int delayMillis) {
+        MessageProperties props = new MessageProperties();
+        props.setDelay(delayMillis); // 设置延迟时间（毫秒）
+        Message msg = new Message(message.getBytes(StandardCharsets.UTF_8), props);
+        rabbitTemplate.send("delay_exchange", "delay.key", msg);
     }
 
 }

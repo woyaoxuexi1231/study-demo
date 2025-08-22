@@ -14,3 +14,4 @@ spring:
       simple:
         acknowledge-mode: manual    # 手动确认消息
         prefetch: 1                 # 每次从 RabbitMQ 服务器读取的未确认消息数（默认为 250）
+        concurrency: 1
