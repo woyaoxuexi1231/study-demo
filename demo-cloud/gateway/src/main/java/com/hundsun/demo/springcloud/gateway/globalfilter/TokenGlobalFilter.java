@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 /**
@@ -25,7 +26,7 @@ import java.util.Optional;
  * @since 2023/5/25 0:37
  */
 
-// @Component
+@Component
 @Slf4j
 public class TokenGlobalFilter implements org.springframework.cloud.gateway.filter.GlobalFilter, Ordered {
 
@@ -35,14 +36,6 @@ public class TokenGlobalFilter implements org.springframework.cloud.gateway.filt
         目前来看,请求一个不存在的接口也不会通过这个全局的过滤器,但是具体原因不太清楚
         猜测是因为gateway内部有异常处理机制,在请求还没到这个过滤器的时候就已经被返回了(我尝试把order设置为最高优先级也不行) 2024年4月12日
          */
-        // String token = exchange.getRequest().getQueryParams().getFirst("token");
-        // if (token == null || token.isEmpty()) {
-        //     log.info("token is empty...");
-        //     exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-        //     return exchange.getResponse().setComplete();
-        // }
-        // log.info("token is {}", token);
-        // return chain.filter(exchange);
         log.info("path: {}",exchange.getRequest().getPath().pathWithinApplication().value());
         log.info("path: {}",exchange.getRequest().getPath().contextPath().value());
 
@@ -53,8 +46,15 @@ public class TokenGlobalFilter implements org.springframework.cloud.gateway.filt
 
         if (!token.isPresent() || StringUtils.isBlank(token.get())) {
             log.info("token is empty...");
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
+            // 构造错误响应体（JSON 格式）
+            String errorJson = "{\"code\":401,\"message\":\"Unauthorized: Token is missing or empty\"}";
+
+            // 将错误信息写入响应体
+            return exchange.getResponse().writeWith(
+                    Mono.just(exchange.getResponse()
+                            .bufferFactory()
+                            .wrap(errorJson.getBytes(StandardCharsets.UTF_8)))
+            );
         }
         return chain.filter(exchange);
 

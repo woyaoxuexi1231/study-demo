@@ -1,5 +1,6 @@
 package org.hulei.springcloud.client.controller;
 
+import com.alibaba.fastjson.JSON;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.hulei.util.dto.SimpleReqDTO;
@@ -14,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.GET;
 import java.net.InetAddress;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -40,9 +41,12 @@ public class HiController {
     @SneakyThrows
     @GetMapping("/hi")
     public String hi(HttpServletRequest req, HttpServletResponse rsp) {
-        String format = String.format("本服务端口：%s，本服务ip：%s，调用者ip：%s", port, InetAddress.getLocalHost(), req.getRemoteAddr());
+        Map<String, Object> map = new HashMap<>();
+        String format = String.format("本服务端口：%s，本服务ip：%s，调用者ip：%s%n", port, InetAddress.getLocalHost(), req.getRemoteAddr());
         log.info(format);
-        return format;
+        map.put("format", format);
+        req.getHeaderNames().asIterator().forEachRemaining((name) -> map.put(name, req.getHeader(name)));
+        return JSON.toJSONString(map);
     }
 
     @GetMapping("/hi-request-param")

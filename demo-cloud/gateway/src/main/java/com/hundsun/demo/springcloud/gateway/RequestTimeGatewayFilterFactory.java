@@ -1,4 +1,4 @@
-package com.hundsun.demo.springcloud.gateway.gatewayfilter;
+package com.hundsun.demo.springcloud.gateway;
 
 import cn.hutool.core.collection.CollectionUtil;
 import lombok.AllArgsConstructor;
@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.core.Ordered;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -20,7 +21,7 @@ import java.util.List;
  */
 
 @Slf4j
-// @Component
+@Component
 public class RequestTimeGatewayFilterFactory extends AbstractGatewayFilterFactory<RequestTimeGatewayFilterFactory.Config> implements Ordered {
 
     /**
@@ -35,7 +36,7 @@ public class RequestTimeGatewayFilterFactory extends AbstractGatewayFilterFactor
      */
     @Override
     public List<String> shortcutFieldOrder() {
-        // 这个方法主要决定了配置类的参数顺序,然后决定注入到Config的哪个参数, application-requesttime-factory.yml 有配置
+        // 这个方法主要决定了配置类的参数顺序,然后决定注入到Config的哪个参数
         return CollectionUtil.newArrayList("withParams", "prefix", "suffix");
         // return CollectionUtil.newArrayList("withParams", "suffix", "prefix");
     }

@@ -1,0 +1,173 @@
+spring:
+  cloud:
+    gateway:
+      # 定义网关路由规则的核心配置项。它是一个列表，可以包含多个路由定义。
+      # 这个配置文件主要测试一下默认的一些断言和过滤器
+      routes:
+        - id: ip_path_route
+          uri: https://httpbin.org
+          predicates:
+            - Path=/ip
+          filters:
+            - name: RequestTime
+              args:
+                withParams: true
+                prefix: "Hello-"
+                suffix: "-World"
+        - id: rewritepath_route
+          uri: https://httpbin.org
+          predicates:
+            - Path=/genimages/jpeg,/genimages/png,/genimages/svg,/genimages/webp
+          filters:
+            # 接收一个路径 regexp 参数和一个 replacement 参数
+            - RewritePath=/genimages/?(?<segment>.*), /image/$\{segment}
+        - id: prefixpath_route
+          uri: https://httpbin.org
+          predicates:
+            - Path=/jpeg,/png,/svg,/webp
+          filters:
+            # /image 作为所有匹配请求的路径的前缀。
+            - PrefixPath=/image
+      # 要添加一个filter并将其应用于所有路由，可以使用 spring.cloud.gateway.default-filters。
+      default-filters:
+        - AddResponseHeader=X-Response-Default-Red, Default-Blue
+
+############################################# 默认的断言工厂 ###########################################
+
+#        - id: router_id # 路由标识符,要求唯一，这个id自定义的，但需要保证唯一
+#          uri: https://httpbin.org # 定义了当请求匹配该路由的所有断言（Predicates）后，最终要被转发到的目标地址。
+#          # 断言配置项。它也是一个列表，可以包含一个或多个断言工厂（Predicate Factory）定义的规则。
+#          # 断言是决定一个请求是否应该被该路由匹配的条件。只有所有断言都返回 true，路由才会被匹配。
+#          predicates:
+#            # 为了方便在配置文件中使用，Gateway 约定去掉开头的 RoutePredicateFactory 或 GatewayFilterFactory 后缀，只使用剩余的部分作为配置中的短名称。
+#            # AfterRoutePredicateFactory 则是 spring cloud gateway 内置的一个断言工厂
+#            - After=2023-12-31T23:59:59Z
+#          order: 0 # 配置路由优先级，默认0，越低优先级越高
+
+# ⚠️ 对于同一个请求，如果同时满足需求的路由有多个，同时又没有配置路由的顺序，那么就自求多福吧
+# https://httpbin.org
+
+# After 路由谓词工厂需要一个参数，即一个日期时间（这是一个java ZonedDateTime）。
+#        - id: after_route
+#          uri: https://httpbin.org
+#          predicates:
+#            - After=2017-01-20T17:42:47.789-07:00[America/Denver]
+
+
+# Before 路由谓词工厂只需要一个参数，即 datetime（这是一个java ZonedDateTime）。
+#        - id: before_route
+#          uri: https://httpbin.org
+#          predicates:
+#            - Before=2017-01-20T17:42:47.789-07:00[America/Denver]
+
+# Between 路由谓词工厂需要两个参数，datetime1 和 datetime2，它们是java ZonedDateTime 对象。这个谓词匹配发生在 datetime1 之后和 datetime2 之前的请求。datetime2 的参数必须在 datetime1 之后。
+#        - id: between_route
+#          uri: https://httpbin.org
+#          predicates:
+#            - Between=2017-01-20T17:42:47.789-07:00[America/Denver], 2017-01-21T17:42:47.789-07:00[America/Denver]
+
+# Cookie 路由谓词工厂接受两个参数，即 cookie name 和一个 regexp（这是一个Java正则表达式）。
+#        - id: cookie_route
+#          uri: https://httpbin.org
+#          predicates:
+#            - Cookie=chocolate, ch.p
+#            - Cookie=user, admin
+
+# Header 路由谓词工厂需要两个参数，header 和一个 regexp（这是一个Java正则表达式）。这个谓词与具有给定名称且其值与正则表达式相匹配的 header 匹配。
+#        - id: header_route
+#          uri: https://httpbin.org
+#          predicates:
+#            - Header=X-Request-Id, \d+
+
+# Host 路由谓语工厂接受一个参数：一个主机（Host）名称的 patterns 列表。该pattern是Ant风格的模式，以 . 为分隔符。这个谓词匹配符合该pattern的Host header。
+#        - id: host_route
+#          uri: https://httpbin.org
+#          predicates:
+#            - Host=**.somehost.org,**.anotherhost.org
+
+# Method 路由谓词工厂接受一个 methods 参数，它是一个或多个参数：要匹配的HTTP方法。
+#        - id: method_route
+#          uri: https://httpbin.org
+#          predicates:
+#            - Method=GET,POST
+
+# Path 路由谓词工厂需要两个参数：一个Spring PathMatcher patterns 的list和一个可选的flag matchTrailingSlash（默认为 true）。
+#        - id: path_route
+#          uri: https://httpbin.org
+#          predicates:
+#            - Path=/red/{segment},/blue/{segment}
+
+# Query 路由谓词工厂需要两个参数：一个必需的 param 和一个可选的 regexp（这是一个Java正则表达式）。
+#        - id: query_route1
+#          uri: https://httpbin.org
+#          predicates:
+#            - Query=green # 如果请求包含一个 green 的查询参数，前面的路由就会匹配。
+#        - id: query_route2
+#          uri: https://httpbin.org
+#          predicates:
+#            - Query=red, gree. # 如果请求中包含一个 red 的查询参数，其值与 gree. 表达式相匹配，那么路由就会匹配。例如： green 和 greet 。
+
+# RemoteAddr 路由谓词工厂接受一个 sources 集合（最小长度为1），它是CIDR注解（IPv4或IPv6）字符串，如 192.168.0.1/16（其中 192.168.0.1 是一个IP地址，16 是一个子网掩码）。
+#        - id: remoteaddr_route
+#          uri: https://httpbin.org
+#          predicates:
+#            - RemoteAddr=192.168.3.1/24,192.168.82.1/24,192.168.81.1/24
+
+# Weight 路由谓语工厂需要两个参数：group 和 weight（一个int值）。weight 是按 group 计算的。
+# 此路由将转发~80%的流量到 weighthigh.org，~20%的流量到 weighlow.org。
+#        - id: weight_high
+#          uri: https://weighthigh.org
+#          predicates:
+#            - Weight=group1, 8
+#        - id: weight_low
+#          uri: https://weightlow.org
+#          predicates:
+#            - Weight=group1, 2
+
+# XForwarded Remote Addr 路由谓语工厂接受一个 sources 集合（最长度为 1），这些 sources 是 CIDR注解（IPv4 或 IPv6）字符串，如 192.168.0.1/16（其中 192.168.0.1 是一个 IP 地址，16 是子网掩码）。
+# 这个路由谓词允许根据 X-Forwarded-For 的 HTTP Header 对请求进行过滤。
+# 可以与反向代理一起使用，如负载均衡器或web应用防火墙，只有当请求来自这些反向代理所使用的受信任的IP地址列表时，才应该被允许。
+#        - id: xforwarded_remoteaddr_route
+#          uri: https://httpbin.org
+#          predicates:
+#            - XForwardedRemoteAddr=192.168.1.1/24
+
+
+############################################# 默认的 GatewayFilter 工厂 ###########################################
+# 将 X-Request-red:blue header 添加到所有匹配请求的下游请求的header信息中
+#        - id: add_request_header_route
+#          uri: https://httpbin.org
+#          predicates:
+#            - Path=/get
+#          filters:
+#            - AddRequestHeader=X-Request-Red, Blue
+
+# 为所有匹配的请求在下游请求的查询字符串中添加指定的参数
+#        - id: add_request_parameter_route
+#          uri: https://httpbin.org
+#          predicates:
+#            - Path=/get
+#          filters:
+#            - AddRequestParameter=color, blue
+#            - AddRequestParameter=age, 11
+
+# 把 X-Response-Red:Blue header添加到所有匹配请求的下游响应的header中
+#        - id: add_response_header_route
+#          uri: https://httpbin.org
+#          predicates:
+#            - Path=/get
+#          filters:
+#            - AddResponseHeader=foo, bar
+
+
+
+
+
+
+
+
+# properties may be like this 如果使用 properties 文件就像下面这样
+# spring.cloud.gateway.routes[0].id=after-router
+# spring.cloud.gateway.routes[0].uri=https://httpbin.org
+# spring.cloud.gateway.routes[0].predicates[0]=After=2023-01-20T17:42:47.789-07:00[America/Denver]
+# spring.cloud.gateway.routes[0].filters[0]=AddRequestHeader=X-Request-Foo, Bar

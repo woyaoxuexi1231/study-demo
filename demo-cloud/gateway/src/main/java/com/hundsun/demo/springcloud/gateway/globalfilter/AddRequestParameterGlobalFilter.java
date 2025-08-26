@@ -7,7 +7,7 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.factory.AbstractNameValueGatewayFilterFactory;
 import org.springframework.cloud.gateway.filter.factory.AddRequestParameterGatewayFilterFactory;
 import org.springframework.core.Ordered;
-import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -18,7 +18,7 @@ import reactor.core.publisher.Mono;
  * @since 2024/4/12 22:33
  */
 
-// @Component
+@Component
 @Slf4j
 public class AddRequestParameterGlobalFilter implements org.springframework.cloud.gateway.filter.GlobalFilter, Ordered {
 
@@ -31,22 +31,14 @@ public class AddRequestParameterGlobalFilter implements org.springframework.clou
         // 在这里添加参数
         log.info("{}", exchange.getRequest().getQueryParams());
 
-        if (HttpMethod.GET.equals(exchange.getRequest().getMethod())) {
+        AbstractNameValueGatewayFilterFactory.NameValueConfig config = new AbstractNameValueGatewayFilterFactory.NameValueConfig();
+        config.setName("exampleParam");
+        config.setValue("exampleValue");
 
-            AbstractNameValueGatewayFilterFactory.NameValueConfig config = new AbstractNameValueGatewayFilterFactory.NameValueConfig();
-            config.setName("exampleParam");
-            config.setValue("exampleValue");
+        // 使用AddRequestParameterFilter添加请求参数
+        GatewayFilter filter = addRequestParameterGatewayFilterFactory.apply(config);
 
-            // 使用AddRequestParameterFilter添加请求参数
-            GatewayFilter filter = addRequestParameterGatewayFilterFactory.apply(config);
-
-            // 在调用过滤链之前执行自定义过滤器逻辑
-            return filter.filter(exchange, chain);
-        } else {
-
-            // 对于非 GET 请求，继续执行过滤链
-            return chain.filter(exchange);
-        }
+        return filter.filter(exchange, chain);
     }
 
     @Override

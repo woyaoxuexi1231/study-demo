@@ -5,10 +5,16 @@ spring:
   application:
     name: service-gateway
   profiles:
-    active: redis-connect,eureka
+    active: redis-connect,eureka,default-router
   main:
     allow-circular-references: true
     web-application-type: reactive
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
 
 logging:
   level:
