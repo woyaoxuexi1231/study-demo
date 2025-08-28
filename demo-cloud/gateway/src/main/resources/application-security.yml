@@ -1,0 +1,6 @@
+# 以下是注释部分
+ignore:
+  whites:
+    - /search/*
+  loginUrl: /security/login
+  logoutUrl: /security/logout

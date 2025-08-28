@@ -3,26 +3,25 @@ server:
 
 spring:
   application:
-    name: service-gateway
+    name: gateway
   profiles:
-    active: redis-connect,eureka,default-router
+    active: default-router,eureka,security,redis-limit-config
   main:
     allow-circular-references: true
     web-application-type: reactive
+  redis:
+    host: 192.168.3.102
+    port: 6379
+    database: 0
+    password: 123456
+
+
 management:
   endpoints:
     web:
       exposure:
         include: '*'
 
-
 logging:
   level:
     root: info
-
-# 以下是注释部分
-# ignore:
-#   whites:
-#     - /search/*
-#   loginUrl: /security/login
-#   logoutUrl: /security/logout

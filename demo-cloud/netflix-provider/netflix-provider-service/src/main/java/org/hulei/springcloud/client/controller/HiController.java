@@ -1,9 +1,13 @@
 package org.hulei.springcloud.client.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.hulei.common.autoconfigure.annotation.DoneTime;
+import org.hulei.springcloud.client.IpUtils;
 import org.hulei.util.dto.SimpleReqDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,11 +16,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
@@ -30,24 +38,111 @@ import java.util.TimeZone;
  * @createDate: 2023/5/6 22:53
  */
 
-@RequestMapping("/client")
+// @RequestMapping("/client")
 @RestController
 @Slf4j
 public class HiController {
 
+    @Autowired
+    RestTemplate restTemplate;
+
     @Value("${server.port}")
     private String port;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @DoneTime
     @SneakyThrows
-    @GetMapping("/hi")
-    public String hi(HttpServletRequest req, HttpServletResponse rsp) {
-        Map<String, Object> map = new HashMap<>();
-        String format = String.format("本服务端口：%s，本服务ip：%s，调用者ip：%s%n", port, InetAddress.getLocalHost(), req.getRemoteAddr());
-        log.info(format);
-        map.put("format", format);
-        req.getHeaderNames().asIterator().forEachRemaining((name) -> map.put(name, req.getHeader(name)));
-        return JSON.toJSONString(map);
+    @RequestMapping("/hi")
+    public void hi(HttpServletRequest req, HttpServletResponse rsp) {
+        // 响应 map
+        extracted(req, rsp);
     }
+
+    @DoneTime
+    @SneakyThrows
+    @RequestMapping("/hi-default-rate-limit")
+    public void hiDefaultRateLimit(HttpServletRequest req, HttpServletResponse rsp) {
+        extracted(req, rsp);
+    }
+
+    @DoneTime
+    @SneakyThrows
+    @RequestMapping("/hi-default-rate-limit2")
+    public void hiDefaultRateLimit2(HttpServletRequest req, HttpServletResponse rsp) {
+        extracted(req, rsp);
+    }
+
+    @DoneTime
+    @SneakyThrows
+    @RequestMapping("/hi-custom-local-ratelimit")
+    public void hiCustomLocalRatelimit(HttpServletRequest req, HttpServletResponse rsp) {
+        extracted(req, rsp);
+    }
+
+    @DoneTime
+    @SneakyThrows
+    @RequestMapping("/hi-custom-redis-ratelimit")
+    public void hiCustomRedisRatelimit(HttpServletRequest req, HttpServletResponse rsp) {
+        extracted(req, rsp);
+    }
+
+    private void extracted(HttpServletRequest req, HttpServletResponse rsp) throws IOException {
+        /* 响应 map */
+        Map<String, Object> map = new HashMap<>();
+
+        // 参数信息
+        Map<String, Object> params = new HashMap<>();
+        Enumeration<String> names = req.getParameterNames();
+        while (names.hasMoreElements()) {
+            String name = names.nextElement();
+            params.put(name, req.getParameter(name));
+        }
+        map.put("params", params);
+
+        // 返回信息
+        String format = String.format("本服务端口：%s，本服务ip：%s，调用者ip：%s%n", port, InetAddress.getLocalHost(), req.getRemoteAddr());
+        map.put("format", format);
+
+        // 塞入请求头部
+        Map<String, Object> headers = new HashMap<>();
+        req.getHeaderNames().asIterator().forEachRemaining((name) -> headers.put(name, req.getHeader(name)));
+        map.put("headers", headers);
+
+        map.put("origin", IpUtils.getClientIp(req));
+
+        map.put("url", IpUtils.getFullRequestUrl(req));
+
+
+        // 判断 Content-Type 是否为 JSON
+        String contentType = req.getContentType();
+        if (contentType != null && contentType.contains("application/json")) {
+            StringBuilder jsonBuilder = new StringBuilder();
+            try (BufferedReader reader = req.getReader()) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    jsonBuilder.append(line);
+                }
+            }
+            String jsonBody = jsonBuilder.toString();
+
+            if (!jsonBody.isEmpty()) {
+                // 解析 JSON 字符串为 Map
+                map.put("jsonBody", objectMapper.readValue(jsonBody, Map.class));
+            }
+        }
+
+        map.put("http-method", req.getMethod());
+
+
+        // 响应
+        rsp.setContentType("application/json");
+        rsp.setCharacterEncoding("UTF-8");
+        rsp.getWriter().println(JSON.toJSONString(map));
+        rsp.getWriter().flush();
+        rsp.getWriter().close();
+    }
+
 
     @GetMapping("/hi-request-param")
     @SneakyThrows

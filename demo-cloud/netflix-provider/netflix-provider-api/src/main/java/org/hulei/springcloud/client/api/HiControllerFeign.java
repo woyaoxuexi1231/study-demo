@@ -29,7 +29,7 @@ import java.util.Map;
   - @FeignClient 不能和 @RequestMapping 同时使用
   - FeignClient 无法应对方法有多个
  */
-@FeignClient(name = "${spring.application.name}", path = "/client")
+@FeignClient(name = "${spring.application.name}")
 @Service
 public interface HiControllerFeign {
 

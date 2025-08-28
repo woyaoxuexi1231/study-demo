@@ -68,5 +68,14 @@ public class MyHttpsController {
           - 公钥是在握手过程中用来加密 session key 的；
           - 你作为开发者不会看到这个细节，浏览器或 HTTP 客户端（如 Postman、curl、Java）会自动完成；
           - 如果证书是自签名的，你会在浏览器里看到“不被信任”的警告。
+     
+
+     导入证书：
+
+     1.导出证书为 .cer 文件
+     keytool.exe -exportcert -alias myclient -file mycert.cer -keystore myclientkeystore.jks
+
+     2.将 mycert.cer 导入到 JDK 的 cacerts 信任库中
+     keytool.exe -importcert -alias myclient -file mycert.cer -keystore security\cacerts -storepass changeit
      */
 }
