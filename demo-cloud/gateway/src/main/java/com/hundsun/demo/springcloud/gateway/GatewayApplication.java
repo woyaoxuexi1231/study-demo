@@ -1,6 +1,7 @@
 package com.hundsun.demo.springcloud.gateway;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -86,4 +87,10 @@ public class GatewayApplication {
     public String hi(@RequestParam("name") String name) {
         return "hello " + name;
     }
+
+    // blockHandler 方法
+    public String handleBlock(String name, BlockException ex) {
+        return "hi 接口被限流了！";
+    }
+
 }

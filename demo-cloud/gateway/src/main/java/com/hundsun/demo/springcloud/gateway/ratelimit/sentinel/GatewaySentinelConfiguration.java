@@ -158,13 +158,26 @@ public class GatewaySentinelConfiguration {
 
         ApiDefinition sentinelHiParamRulesApi = new ApiDefinition("sentinelHiParamRulesApi")
                 .setPredicateItems(new HashSet<ApiPredicateItem>() {{
-                    add(new ApiPathPredicateItem().setPattern("/netflix-provider/common/hi-param/**"));
+                    add(
+                            new ApiPathPredicateItem().setPattern("/netflix-provider/common/hi-param/*")
+                                    .setMatchStrategy(SentinelGatewayConstants.URL_MATCH_STRATEGY_PREFIX)
+                    );
                 }});
+
+        ApiDefinition sentinelHiRulesApi = new ApiDefinition("sentinelHiRulesApi")
+                .setPredicateItems(new HashSet<ApiPredicateItem>() {{
+                    add(
+                            new ApiPathPredicateItem().setPattern("/netflix-provider/common/hi-sentinel/*")
+                                    .setMatchStrategy(SentinelGatewayConstants.URL_MATCH_STRATEGY_PREFIX)
+                    );
+                }});
+
 
         definitions.add(netflixCommonHi);
         definitions.add(genImages);
         definitions.add(netflixDegradeRulesApi);
         definitions.add(sentinelHiParamRulesApi);
+        definitions.add(sentinelHiRulesApi);
 
         // 将定义的API组加载到ApiDefinitionManager
         GatewayApiDefinitionManager.loadApiDefinitions(definitions);
@@ -232,10 +245,14 @@ public class GatewaySentinelConfiguration {
             intervalSec：统计时间窗口，单位是秒，默认是 1 秒
          */
         GatewayFlowRule rule = new GatewayFlowRule();
-        rule.setResource("sentinel_hi_abc_route");
+        rule.setResource("sentinelHiRulesApi");
         rule.setGrade(RuleConstant.FLOW_GRADE_QPS);
         rule.setCount(1);
         rule.setIntervalSec(10);
+        // rule.setParamItem(new GatewayParamFlowItem()
+        //         .setParseStrategy(SentinelGatewayConstants.PARAM_PARSE_STRATEGY_URL_PARAM)
+        //         .setFieldName("userId")); // 取 query 参数 userId
+
         rules.add(rule);
         GatewayRuleManager.loadRules(rules);
     }
@@ -281,14 +298,17 @@ public class GatewaySentinelConfiguration {
                                 .filters(f -> f.stripPrefix(1))  // 去掉 1 个前缀，/netflix-provider将被去掉
                                 .uri("lb://NETFLIX-PROVIDER")
                 )
-                .route("sentinel_hi_abc_route",
-                        r -> r.order(-1).path("/netflix-provider/common/hi-sentinel/abc")
-                                .filters(f -> f.stripPrefix(1))  // 去掉 1 个前缀，/netflix-provider将被去掉
-                                .uri("lb://NETFLIX-PROVIDER"))
+
+                // .route("sentinel_hi_abc_route",
+                //         r -> r.order(-1).path("/netflix-provider/common/hi-sentinel/abc")
+                //                 .filters(f -> f.stripPrefix(1))  // 去掉 1 个前缀，/netflix-provider将被去掉
+                //                 .uri("lb://NETFLIX-PROVIDER"))
+
                 // .route("sentinel_hi_param_route",
                 //         r -> r.path("/netflix-provider/common/hi-param/**")
                 //                 .filters(f -> f.stripPrefix(1))  // 去掉 1 个前缀，/netflix-provider将被去掉
                 //                 .uri("lb://NETFLIX-PROVIDER"))
+
                 .build();
 
     }

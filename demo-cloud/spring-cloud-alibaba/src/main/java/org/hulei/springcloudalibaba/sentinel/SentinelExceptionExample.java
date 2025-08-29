@@ -1,4 +1,4 @@
-package org.hulei.demo.cj.ratelimit.sentinel;
+package org.hulei.springcloudalibaba.sentinel;
 
 import com.alibaba.csp.sentinel.Entry;
 import com.alibaba.csp.sentinel.SphU;

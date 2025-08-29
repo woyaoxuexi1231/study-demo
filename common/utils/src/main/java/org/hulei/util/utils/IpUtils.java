@@ -1,4 +1,4 @@
-package org.hulei.springcloud.client;
+package org.hulei.util.utils;
 
 import javax.servlet.http.HttpServletRequest;
 

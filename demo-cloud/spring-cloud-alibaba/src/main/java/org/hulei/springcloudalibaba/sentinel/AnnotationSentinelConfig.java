@@ -1,4 +1,4 @@
-package org.hulei.demo.cj.ratelimit.sentinel;
+package org.hulei.springcloudalibaba.sentinel;
 
 import com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect;
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Configuration
-public class SentinelConfig {
+// @Configuration
+public class AnnotationSentinelConfig {
 
     @PostConstruct
     public void initFlowRule() {
@@ -23,7 +23,7 @@ public class SentinelConfig {
         List<FlowRule> rules = new ArrayList<>();
 
         FlowRule rule = new FlowRule();
-        rule.setResource("helloResource"); // 对应 @SentinelResource 的 value
+        rule.setResource("hello"); // 对应 @SentinelResource 的 value
         rule.setGrade(RuleConstant.FLOW_GRADE_QPS); // 按 QPS 限流
         rule.setCount(2); // 每秒最多 2 次请求
 
