@@ -21,6 +21,15 @@ spring:
         ip: 192.168.1.102               # 自定义 IP（可选）
 #        port: 8080                      # 自定义端口（可选）
 
+  # Sentinel 控制台地址（可选，用于可视化监控和管理）
+    sentinel:
+      transport:
+        dashboard: 192.168.3.102:8081 # Sentinel Dashboard 地址，比如你启动了 Sentinel 控制台在 8080 端口
+        port: 8719               # Sentinel 客户端与服务端通信端口，默认 8719，若被占用会自动递增
+      eager: true                # 是否启动时立即初始化 Sentinel，默认 false
+      filter:
+        enabled: true            # 开启 Sentinel 对 Web 请求的拦截，默认 true
+
 server:
   port: 10023
 

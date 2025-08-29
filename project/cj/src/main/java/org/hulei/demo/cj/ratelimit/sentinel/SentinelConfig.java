@@ -1,19 +1,25 @@
 package org.hulei.demo.cj.ratelimit.sentinel;
 
+import com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect;
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
-public class SentinelConfig implements CommandLineRunner {
+@Slf4j
+@Configuration
+public class SentinelConfig {
 
-    @Override
-    public void run(String... args) {
+    @PostConstruct
+    public void initFlowRule() {
+        log.info("开始初始化 sentinel 配置信息");
+
         List<FlowRule> rules = new ArrayList<>();
 
         FlowRule rule = new FlowRule();
@@ -24,4 +30,10 @@ public class SentinelConfig implements CommandLineRunner {
         rules.add(rule);
         FlowRuleManager.loadRules(rules);
     }
+
+    @Bean
+    public SentinelResourceAspect sentinelResourceAspect() {
+        return new SentinelResourceAspect();
+    }
+
 }

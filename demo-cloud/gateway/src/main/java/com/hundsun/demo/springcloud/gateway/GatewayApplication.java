@@ -1,9 +1,13 @@
 package com.hundsun.demo.springcloud.gateway;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -16,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @SpringBootApplication
 public class GatewayApplication {
+
+    static ApplicationContext applicationContext;
 
     public static void main(String[] args) {
 
@@ -71,45 +77,13 @@ public class GatewayApplication {
 
 
          */
-        SpringApplication.run(GatewayApplication.class, args);
+        applicationContext = SpringApplication.run(GatewayApplication.class, args);
     }
 
-    // @Bean
-    // public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
-    //     return builder.routes()
-    //             .route("add_request_parameter_route",
-    //                     r -> r.path("/eureka-client/**")
-    //                             .filters(f -> f.addRequestParameter("paramName", "paramValue"))
-    //                             .uri("lb://eureka-client"))
-    //             .build();
-    // }
-
-    // @SentinelResource(value = "yourApi",
-    //         blockHandler = "handleBlock")
-    // @GetMapping("/hi")
-    // public String hi() {
-    //     return "hello world";
-    // }
-    //
-    // // 限流后的处理方法（参数、返回值需与原方法相同）
-    // public String handleBlock(BlockException ex) {
-    //     return "Request has been blocked!";
-    // }
-    //
-    // @Autowired
-    // RestTemplate restTemplate;
-    //
-    // @LoadBalanced
-    // @Bean
-    // public RestTemplate restTemplate() {
-    //     return new RestTemplate();
-    // }
-    //
-    // @Autowired
-    // RedisLimitConfig redisLimitConfig;
-    //
-    // @GetMapping("/test")
-    // public void test() {
-    //     log.info("{}", redisLimitConfig.getRedisLimits());
-    // }
+    @SentinelResource(value = "yourApi",
+            blockHandler = "handleBlock")
+    @GetMapping("/hi")
+    public String hi(@RequestParam("name") String name) {
+        return "hello " + name;
+    }
 }

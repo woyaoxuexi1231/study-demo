@@ -2,11 +2,14 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: my_route
-          uri: lb://eureka-client
+        # Add your routes here.
+        - id: product_route
+          uri: lb://product
           predicates:
-            - Path=/eureka-client/**
+            - Path=/product/**
+        - id: httpbin_route
+          uri: https://httpbin.org
+          predicates:
+            - Path=/httpbin/**
           filters:
-            - name: SentinelGatewayFilter
-              args:
-                resource: my_route_limit
+            - RewritePath=/httpbin/(?<segment>.*), /$\{segment}
